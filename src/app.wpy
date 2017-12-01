@@ -1,0 +1,69 @@
+<style lang="stylus">
+  @import "./common/stylus/index"
+</style>
+
+<script>
+import wepy from 'wepy'
+import 'wepy-async-function'
+import wxUtils from 'common/js/wxUtils'
+
+export default class extends wepy.app {
+  constructor () {
+    super()
+    this.use('requestfix')
+  }
+
+  onLaunch() {
+    // 校验SDK
+    wxUtils.checkSDK()
+  }
+
+  isObject(item) {
+    return typeof item === 'object' && !this.isArray(item)
+  }
+  isArray(item) {
+    return Object.prototype.toString.apply(item) === '[object Array]'
+  }
+  isUndefined(item) {
+    return typeof item === 'undefined'
+  }
+
+  // 向下暴露一个更换globalData的方法
+  updateGlobalData(name, obj) {
+    // 校验: globalData
+    if (!this.globalData) return
+    // 校验: 操作字段
+    if (typeof name !== 'string' || name === '') return {}
+    // 取已有信息
+    const info = this.globalData[name] || {}
+    // 更新缓存
+    if (obj && this.isObject(obj)) {
+      // Object合并第一层
+      this.globalData[name] = Object.assign({}, info, obj)
+    } else if (!this.isUndefined(obj)) {
+      // 其他非undefined数据直接覆盖
+      this.globalData[name] = obj
+    }
+    this.$apply && this.$apply()
+    console.info(`[${obj ? 'UPDATE' : 'GET'} GlobalData ${name}]:`, this.globalData[name])
+    return this.globalData[name]
+  }
+
+  config = {
+    pages: [
+      'pages/home/home'
+    ],
+    window: {
+      backgroundTextStyle: 'light',
+      navigationBarBackgroundColor: '#000',
+      navigationBarTitleText: '集客',
+      navigationBarTextStyle: '#ffffff'
+    }
+  }
+
+  globalData = {
+    baseUrl: '',
+    user: null
+  }
+}
+</script>
