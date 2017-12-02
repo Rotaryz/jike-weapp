@@ -60,7 +60,6 @@ export default class userMixin extends wepy.mixin {
 
   // 获取用户信息
   $getUserInfo(callback) {
-    console.log(this.$parent)
     // 顶级容错
     if (!this.$parent || !this.$parent.updateGlobalData) return
     // 取缓存信息
@@ -128,6 +127,23 @@ export default class userMixin extends wepy.mixin {
 
         // 尝试授权
         this._wxAuthModal(callback)
+      }
+    })
+  }
+
+  // 提示用户开启授权
+  _wxAuthModal(callback) {
+    // 先判断是否支持开启授权页的API
+    wx.openSetting && wx.showModal({
+      title: '授权提示',
+      content: '小程序希望获得以下权限：\n · 获取您的公开信息（昵称、头像等）',
+      confirmText: '去授权',
+      cancelText: '先不授权',
+      success: (res) => {
+        if (res.confirm) {
+          console.log('_wxAuthModal.showModal: 用户点击确定', res)
+          this._wxOpenSetting(callback)
+        }
       }
     })
   }

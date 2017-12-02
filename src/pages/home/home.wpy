@@ -29,6 +29,7 @@
     }
 
     _getUserInfo() {
+      this._wxUserInfo()
       this.$getUserInfo((userInfo) => {
         this.userInfo = userInfo
       })
