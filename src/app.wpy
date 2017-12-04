@@ -51,7 +51,7 @@ export default class extends wepy.app {
 
   config = {
     pages: [
-      'pages/home/home'
+      'pages/square/square'
     ],
     window: {
       backgroundTextStyle: 'light',
