@@ -1,6 +1,7 @@
 /* eslint-disable no-undef */
 import wepy from 'wepy'
 
+
 export default class userMixin extends wepy.mixin {
   isFunction(item) {
     return typeof item === 'function'

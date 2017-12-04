@@ -10,7 +10,6 @@
 <script>
   import wepy from 'wepy'
   import users from 'common/mixins/users'
-
   export default class Index extends wepy.page {
     mixins = [users]
 
@@ -25,7 +24,7 @@
     }
 
     onLoad() {
-      this._wxAuthModal()
+      // this._wxAuthModal()
       this._getUserInfo()
     }
 
