@@ -1,0 +1,149 @@
+<!-- 店铺信息半窗 -->
+<template>
+	<view class="shop-info">
+		<!-- 地址 -->
+		<view class="add" style="background-image:url({{images}})">
+			<image src="./image/Group9.png" class="icos"></image>
+			<text class="add_msg">广东省广州市白云区黄石街道国际单位A3白云科技...</text>
+		</view>
+		<!-- 店铺详情 -->
+		<view class="shop_con">
+			<view class="shop-item">
+				<view class="shop_head">
+					<view class="shop_title">
+						<text class="shop_name">国颐堂（天河店）</text>
+						<text class="shop_type">养发护发品牌</text>
+					</view>
+					<view class="shop_logo">
+						<image src="./image/icon-shop_bg.png" class="house"></image>
+						<view class="shop_ico">
+							
+						</view>
+					</view>
+					<view class="shop_eva">
+						<text class="shop_dis">5454人已收藏</text>
+						<text class="shop_start">评分4.8</text>
+					</view>
+				</view>
+				<view class="shop_nav">
+					<view class="shop_nav_ti"><image src="./image/icon-distance.png" class="icos"></image>距离<text class="nav_ti">1520</text>米</view>
+					<view class="shop_nav_ti"><image src="./image/icon-walk.png" class="icos"></image>步行<text class="nav_ti">10</text>分钟</view>
+					<view class="shop_nav_ti"><image src="./image/icon-navigation_1.png" class="icos"></image>开始导航</view>
+					<view class="shop_nav_ti"><image src="./image/icon-call_1.png" class="icos"></image>打电话</view>
+				</view>
+			</view>
+				
+			<Coupon></Coupon>
+		</view>
+	</view>
+</template>
+
+<script>
+	import wepy from 'wepy'
+	import Coupon from '../coupon/coupon'
+	export default class ShopInformation extends wepy.component {
+		components = {
+		    Coupon:Coupon
+		}
+   		data = {
+
+   		}
+		onLoad(){
+			
+			console.log(this.images)
+		}
+  }
+</script>
+
+<style lang="stylus">
+	@import "../../common/stylus/variable"
+	@import "../../common/stylus/mixin"
+	.shop-item
+		margin-top: $font-size-uss
+		background-color: $color-background-s
+	.add
+		height: 80rpx
+		background-color: $color-add-background
+		line-height: 80rpx
+		font-size: $font-size-title
+		text-indent: 48rpx
+		position: relative
+		padding-right:40rpx
+		no-wrap()
+		.icos
+			width 16rpx
+			height 20rpx
+			position:absolute
+			top:50%
+			left: 24rpx
+			transform:translateY(-50%)
+	
+	.shop_head
+		display:flex
+		padding:34rpx 24rpx 
+		view
+			flex:1
+		.shop_title
+			display:flex
+			flex-direction:column
+			.shop_name
+				no-wrap()
+				font-size:$font-size-btitle
+				line-height:45rpx
+			.shop_type
+				font-size:$font-size-uss
+				line-height:28rpx
+		.shop_logo
+			text-align: center
+			position:relative
+			.house
+				height:99rpx
+				width:140rpx
+			.shop_ico
+				height:82rpx
+				width:82rpx
+				border-radius:50%
+				border: 1px solid #696671
+				box-shadow: 0 0 4px 0 rgba(0,0,0,0.03)
+				position:absolute
+				right:6rpx
+				top:4rpx
+				z-index:10
+				background-color:#fff
+		.shop_eva
+			display:flex
+			flex-direction:column
+			padding-left:34rpx
+			.shop_dis
+				font-size:$font-size-mtitle
+				line-height:34rpx
+				color:$color-font1
+			.shop_start
+				font-size:$font-size-uss
+				line-height:28rpx
+				color:$color-font1
+				no-wrap()
+	.shop_nav
+		display:flex
+		border-top:1px solid #F1EFF5
+		border-bottom:1px solid #F1EFF5
+		.shop_nav_ti
+			flex:1
+			font-size:$font-size-uss
+			line-height:($font-size-uss*4)
+			color:$color-font1
+			border-right:1px solid #F1EFF5
+			text-align:center
+			.nav_ti
+				font-size:$font-size-title
+				color:$color-theme-s
+				font-weight:600
+			.icos
+				width $font-size-large
+				height $font-size-large
+				margin-right:($font-size-small-s - 2)
+			
+				
+				
+	
+</style>

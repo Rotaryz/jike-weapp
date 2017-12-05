@@ -51,13 +51,41 @@ export default class extends wepy.app {
 
   config = {
     pages: [
-      'pages/square/square'
+      'pages/square/square',
+      'pages/home/home'
     ],
     window: {
       backgroundTextStyle: 'light',
       navigationBarBackgroundColor: '#000',
       navigationBarTitleText: '集客',
       navigationBarTextStyle: '#ffffff'
+    },
+    tabBar: {
+      color: '#464646',
+      selectedColor: '#FF4E00',
+      backgroundColor: '#fff',
+      borderStyle: '#E5E5E5',
+      list: [
+        {
+          pagePath: 'pages/square/square',
+          text: '广场',
+          iconPath: './icon/icon-square_1.png',
+          selectedIconPath: './icon/icon-square_s.png'
+
+        },
+        {
+          pagePath: 'pages/home/home',
+          text: '推荐',
+          iconPath: './icon/icon-my.png',
+          selectedIconPath: './icon/icon-my-r.png'
+        }
+        // {
+        //   pagePath: 'pages/home/home',
+        //   text: '推荐',
+        //   iconPath: './icon/icon-r.png',
+        //   selectedIconPath: './icon/icon-r_s.png'
+        // }
+      ]
     }
   }
 

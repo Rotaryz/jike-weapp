@@ -1,0 +1,166 @@
+<!-- 优惠券 -->
+<template>
+	<swiper indicator-dots="{{indicatorDots}}"
+	  current="1">
+	  <block>
+	    <swiper-item>
+			<view class="con_ri">
+				<view class="con_title">20<text>元</text></view>
+				<text class="cou_subhead">满200元使用</text>
+				<text class="client client_b"></text>
+				<text class="client client_t"></text>
+			</view>
+			<view class="con_le">
+				<text class="con_title">养发项目优惠券</text>
+				<text class="cou_subhead">限国颐堂（天河店）使用</text>
+				<text class="cou_subhead">有效期：2017.11.11-2018.01.20</text>
+				<view class="con_side">
+					<text class="con_title con_t1">抢</text>
+					<text class="con_title">购</text>
+				</view>
+			</view>
+	    </swiper-item>
+	    <swiper-item>
+			<view class="con_ri">
+				<view class="con_title">20<text>元</text></view>
+				<text class="cou_subhead">满200元使用</text>
+				<text class="client client_b"></text>
+				<text class="client client_t"></text>
+			</view>
+			<view class="con_le">
+				<text class="con_title">养发项目优惠券</text>
+				<text class="cou_subhead">限国颐堂（天河店）使用</text>
+				<text class="cou_subhead">有效期：2017.11.11-2018.01.20</text>
+				<view class="con_side">
+					<text class="con_title con_t1">抢</text>
+					<text class="con_title">购</text>
+				</view>
+			</view>
+	    </swiper-item>
+	    <swiper-item>
+			<view class="con_ri">
+				<view class="con_title">20<text>元</text></view>
+				<text class="cou_subhead">满200元使用</text>
+				<text class="client client_b"></text>
+				<text class="client client_t"></text>
+			</view>
+			<view class="con_le">
+				<text class="con_title">养发项目优惠券</text>
+				<text class="cou_subhead">限国颐堂（天河店）使用</text>
+				<text class="cou_subhead">有效期：2017.11.11-2018.01.20</text>
+				<view class="con_side">
+					<text class="con_title con_t1">抢</text>
+					<text class="con_title">购</text>
+				</view>
+			</view>
+	    </swiper-item>
+	  </block>
+	</swiper>
+</template>
+
+<script>
+	import wepy from 'wepy'
+	export default class Coupon extends wepy.component {
+   		data = {
+   			indicatorDots: false,
+		    autoplay: false,
+   		}
+		onLoad(){
+			
+			
+		}
+  }
+</script>
+
+<style lang="stylus">
+	@import "../../common/stylus/variable"
+	@import "../../common/stylus/mixin"
+	swiper-item
+		width:620rpx !important
+		height:180rpx !important
+		overflow: visible !important
+		display:flex
+		margin-top:$font-size-large-x
+		margin-left:54rpx
+	.con_title
+		color:$color-theme-s
+		font-family: PingFangSC-Medium
+		no-wrap()
+	.cou_subhead
+		font-size:$font-size-uss
+		color:$color-theme-title
+		no-wrap()
+	.con_ri 
+		padding:34rpx 36rpx
+		border-left:7rpx solid $color-theme-s
+		border-top-left-radius: 6rpx
+		border-bottom-left-radius: 6rpx
+		margin-left:($font-size-title + 2)
+		border-top:1px solid $color-border-s
+		border-bottom:1px solid $color-border-s
+		border-right:1px dashed $color-border-s
+		position:relative
+		.client
+			position:absolute
+			width:$font-size-large
+			height:($font-size-large / 2)
+			right: -( $font-size-large / 2)
+			z-index:100
+			background-color:#fff
+		.client_b
+			border-right: 1px solid $color-border-s
+			border-left: 1px solid $color-border-s
+			border-top: 1px solid $color-border-s
+			border-top-right-radius: $font-size-large
+			border-top-left-radius: $font-size-large
+			bottom: -1px
+		.client_t
+			border-top: none
+			border-bottom: 1px solid $color-border-s
+			border-bottom-right-radius: $font-size-large
+			border-bottom-left-radius: $font-size-large
+			border-bottom-right-radius: $font-size-large
+			border-bottom-left-radius: $font-size-large
+			top: -1px
+		.con_title
+			font-size:($font-size-medium-x * 4)
+			text
+				font-size:$font-size-title
+				font-family:PingFangSC-Light
+	.con_le
+		padding:28rpx 34rpx	
+		width:420rpx
+		border:1px solid $color-border-s
+		border-left:none
+		border-right:none
+		position:relative
+		text
+			display:block
+		.con_title
+			font-size: ($font-size-uss * 2)
+			line-height: ($font-size-uss * 3)
+			border-bottom: 1px solid #DFDFDF
+			margin-bottom:10rpx
+			font-family: PingFangSC-Medium
+		.cou_subhead
+			line-height:$font-size-title
+		.con_side
+			position:absolute
+			background-color: $color-theme-s
+			height:100%
+			right:-5rpx
+			bottom:0px
+			width:60rpx
+			line-height:90rpx
+			border-top-right-radius: 10rpx
+			border-bottom-right-radius: 10rpx
+			.con_title
+				font-size: $font-size-title
+				color:#fff
+				text-align: center
+				border-bottom:none
+				line-height: ($font-size-uss * 2)
+			.con_t1
+				margin-top:46rpx	
+			
+</style>
