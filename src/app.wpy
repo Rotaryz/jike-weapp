@@ -52,7 +52,8 @@ export default class extends wepy.app {
   config = {
     pages: [
       'pages/square/square',
-      'pages/home/home'
+      'pages/recommend/recommend',
+      'pages/mine/mine'
     ],
     window: {
       backgroundTextStyle: 'light',
@@ -74,17 +75,17 @@ export default class extends wepy.app {
 
         },
         {
-          pagePath: 'pages/home/home',
+          pagePath: 'pages/recommend/recommend',
+          text: '推荐',
+          iconPath: './icon/icon-square.png',
+          selectedIconPath: './icon/icon-r_s.png'
+        },
+        {
+          pagePath: 'pages/mine/mine',
           text: '推荐',
           iconPath: './icon/icon-my.png',
           selectedIconPath: './icon/icon-my-r.png'
         }
-        // {
-        //   pagePath: 'pages/home/home',
-        //   text: '推荐',
-        //   iconPath: './icon/icon-r.png',
-        //   selectedIconPath: './icon/icon-r_s.png'
-        // }
       ]
     }
   }
