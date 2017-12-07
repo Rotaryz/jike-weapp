@@ -10,7 +10,7 @@
 <script>
   import wepy from 'wepy'
   import users from 'common/mixins/users'
-  export default class Index extends wepy.page {
+  export default class Mine extends wepy.page {
     mixins = [users]
 
     config = {

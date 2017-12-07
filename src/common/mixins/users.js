@@ -1,6 +1,7 @@
 /* eslint-disable no-undef */
 import wepy from 'wepy'
 
+
 export default class userMixin extends wepy.mixin {
   isFunction(item) {
     return typeof item === 'function'
@@ -108,7 +109,9 @@ export default class userMixin extends wepy.mixin {
       success: (res) => {
         console.log('wepy.getUserInfo.success:', res)
           // 缓存用户信息
-        const user = this.$parent.updateGlobalData('user', res.userInfo)
+        const user = this.$parent.updateGlobalData('user', Object.assign({}, res.userInfo, {
+          apply: 1
+        }))
 
         this.isFunction(callback) && callback(user)
         this.$apply()
@@ -118,7 +121,8 @@ export default class userMixin extends wepy.mixin {
           // 用户拒绝授权:填充默认数据
         const user = this.$parent.updateGlobalData('user', {
           nickName: '未授权',
-          avatarUrl: ''
+          avatarUrl: '',
+          apply: 0
         })
 
         // 串行回调
@@ -162,4 +166,6 @@ export default class userMixin extends wepy.mixin {
       }
     })
   }
+
+  //获取设备信息 
 }

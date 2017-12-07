@@ -20,3 +20,29 @@ extend-click()
     left: -10px
     right: -10px
     bottom: -10px
+ 
+pseudo($right,$height,$width)
+  content: ''
+  position: absolute
+  right: $right
+  height:$height
+  width:$width
+  z-index:100
+
+// 定位
+position-before($right,$height,$width)
+  position: relative
+  &:before
+    pseudo($right,$height,$width)
+    bottom:0
+    
+position-after($right,$height,$width)
+  position: relative
+  &:after
+    pseudo($right,$height,$width)
+    top:0
+    // bg-image($url)
+
+
+border-set($color)
+  border:1px solid $color
