@@ -1,9 +1,5 @@
 <template>
   <view class="home">
-    <view class="userinfo">
-      <image class="userinfo-avatar" src="{{ userInfo.avatarUrl }}" background-size="cover"/>
-      <view class="userinfo-nickname">{{ userInfo.nickName }}</view>
-    </view>
   </view>
 </template>
 
@@ -11,7 +7,7 @@
   import wepy from 'wepy'
   import users from 'common/mixins/users'
 
-  export default class Index extends wepy.page {
+  export default class Mine extends wepy.page {
     mixins = [users]
 
     config = {
@@ -25,15 +21,7 @@
     }
 
     onLoad() {
-      this._wxAuthModal()
-      this._getUserInfo()
-    }
-
-    _getUserInfo() {
-      this._wxUserInfo()
-      this.$getUserInfo((userInfo) => {
-        this.userInfo = userInfo
-      })
+      // this._wxAuthModal()
     }
   }
 </script>
@@ -45,10 +33,12 @@
     display: flex
     flex-direction: column
     align-items: center
+
   .userinfo-avatar
     width: 80px
     height: 80px
     border-radius: 50%
+
   .userinfo-nickname
     color: $color-text-d
     font-size: $font-size-medium

@@ -31,7 +31,7 @@ export default class http {
       return false
     }
     const wxData = res.data
-    return !(wxData && wxData.code !== 0)
+    return wxData && wxData.error === 0
   }
 
   /**

@@ -1,0 +1,372 @@
+<template>
+  <view class="recommend" ref="recommend">
+    <view class="slider-wrapper">
+      <Slider></Slider>
+    </view>
+    <view class="nav-wrapper">
+      <view class="content-wrapper">
+        <image class="icon" src="./icon-luckdraw@2x.png"></image>
+        <view class="content">大转盘</view>
+      </view>
+      <view class="content-wrapper">
+        <image class="icon" src="./icon-invite@2x.png"></image>
+        <view class="content">邀请返现</view>
+      </view>
+      <view class="content-wrapper">
+        <image class="icon" src="./icon-sign@2x.png"></image>
+        <view class="content">签到红包</view>
+      </view>
+      <view class="content-wrapper">
+        <image class="icon" src="./icon-live@2x.png"></image>
+        <view class="content">直播优惠</view>
+      </view>
+    </view>
+    <view class="tab-container">
+      <view class="tab-wrapper">
+        <view class="tab-content">
+          <view class="tab-item border-right-1px active">优惠券</view>
+          <view class="tab-item">发现</view>
+        </view>
+        <view class="tab-line"></view>
+      </view>
+      <view class="tab-content-wrapper">
+        <view class="coupon-panel">
+          <navigator url="{{'/pages/coupon-detail/coupon-detail?id=' + item.id}}" class="coupon" wx:for="{{couponList}}" wx:key="unique">
+            <view class="coupon-bg">
+              <image class="image" src="./pic-coupon_bg@2x.png" mode="scaleToFill"></image>
+            </view>
+            <view class="content">
+              <view class="left">
+                <view class="price"><text class="number">{{item.platformPrice}}</text><text class="yuan">元</text></view>
+                <view class="desc" wx:if="{{item.type === 'discount'}}">{{item.title}}</view>
+              </view>
+              <view class="right">
+                <view class="desc-wrapper">
+                  <view class="description">
+                    <view class="top">
+                      <view class="name">{{item.name}}</view>
+                      <view class="valid">有效期至{{item.endAt}}</view>
+                    </view>
+                    <view class="bottom">{{item.notAllowTime}}</view>
+                  </view>
+                  <view class="btn-wrapper">
+                    <view class="btn"><text class="font">抢购</text> <image class="icon" src="./icon-button_right.png"></image></view>
+                  </view>
+                </view>
+                <view class="tip-wrapper">礼包</view>
+              </view>
+            </view>
+          </navigator>
+        </view>
+        <view class="discover-panel">
+          <view class="ticky-wrapper">
+            <view class="ticky">
+
+            </view>
+            <view class="collector">
+              <view class="avatar-wrapper">
+                <view class="avatar" v-for="item in avatars">
+                  <image src="" alt=""></image>
+                </view>
+                <view class="more">
+                  <view class="dot"></view><view class="dot"></view><view class="dot"></view>
+                </view>
+              </view>
+              <view class="collect">
+                <view class="number">3000</view>
+                <view class="font">人收藏</view>
+                <view class="icon icon-collected"></view>
+              </view>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import base from 'common/mixins/base'
+  import Slider from '@/base/slider/slider'
+  import Coupon from 'api/coupon'
+  import CouponFactory from 'common/js/coupon'
+
+  export default class Index extends wepy.page {
+    mixins = [base]
+
+    data = {
+      merchantId: 100000,
+      couponList: []
+    }
+
+    async onLoad() {
+      await this.load()
+    }
+
+    async load() {
+      await this._getShopCouponList()
+      this.loaded()
+    }
+
+    async _getShopCouponList() {
+      const data = await Coupon.getShopCouponList(this.merchantId)
+      this.couponList = data.promotion.data.map((item) => {
+        return new CouponFactory({
+          id: item.id,
+          name: item.title,
+          platformPrice: item.platform_price,
+          type: item.promotion_type,
+          endAt: item.end_at,
+          notAllowTime: item.not_allow_time
+        })
+      })
+    }
+
+    methods = {
+      changeVal(e) {
+        this.swiperCurrent = e.detail.current
+      }
+    }
+
+    mathFloorNumber(number) {
+      console.log(number)
+      return Math.floor(number)
+    }
+
+    components = {
+      Slider
+    }
+
+    config = {
+      navigationBarTitleText: '推荐'
+    }
+  }
+</script>
+
+<style lang="stylus">
+  @import "../../common/stylus/variable"
+  @import "../../common/stylus/mixin"
+
+  .recommend
+    background: $color-background
+    .slider-wrapper
+      position: relative
+      width: 100%
+      height: 0
+      padding-top: 40%
+      background-color: #363636
+      .slider-content
+        position: absolute
+        top: 0
+        left: 0
+        width: 100%
+        height: 100%
+        .swiper, .swiper .slide-image
+          width: 100%
+          height: 100%
+      .dots
+        position: absolute
+        right: 12px
+        bottom: 10px
+        display: flex
+        justify-content: center
+        .dot
+          width: 5px
+          height: 5px
+          margin: 0 2.5px
+          border-radius: 50%
+          transition: all .6s
+          background: #fff
+          &.active
+            width: 12.5px
+            border-radius: 5px
+    .nav-wrapper
+      display: flex
+      align-items: center
+      height: 84px
+      margin-bottom: 10px
+      background-color: $color-white
+      .content-wrapper
+        flex: 1
+        text-align: center
+        .icon
+          width: 32px
+          height: 32px
+          background-size: 32px 32px
+        .content
+          margin-top: 4px
+          font-size: $font-size-small
+    .tab-container
+      .tab-wrapper
+        position: relative
+        .tab-content
+          display: flex
+          height: 42px
+          background: $color-white
+          .tab-item
+            flex: 1
+            line-height: 42px
+            text-align: center
+            font-size: $font-size-medium-x
+            &.active
+              color: $color-text-t
+        .tab-line
+          position: absolute
+          bottom: 0
+          width: 50%
+          height: 2px
+          background-color: $color-theme
+          transition: all .5s
+      .tab-content-wrapper
+        display: flex
+        width: 200%
+        transition: all .5s
+        transform: translate3d(0, 0, 0)
+        .coupon-panel
+          width: 50%
+          box-sizing: border-box
+          padding: 10px 12px
+          .coupon
+            position: relative
+            width: 100%
+            height: 0
+            margin-bottom: 10px
+            padding-top: 28.409090909%
+            overflow: hidden
+            .coupon-bg
+              position: absolute
+              top: 0
+              left: 0
+              width: 100%
+              height: 100%
+              .image
+                width: 100%
+                height: 100%
+            .content
+              position: absolute
+              top: 0
+              left: 0
+              display: flex
+              width: 100%
+              height: 100%
+              .left
+                flex: 0 0 28%
+                display: flex
+                flex-direction: column
+                justify-content: center
+                width: 28%
+                height: 100%
+                color: $color-text-d
+                text-align: center
+                .price
+                  font-size: 0
+                  .number
+                    font-family: Impact
+                    font-size: 40px
+                    line-height: 49px
+                  .yuan
+                    font-size: $font-size-small
+                .desc
+                  font-size: $font-size-small-s
+              .right
+                position: relative
+                flex: 1
+                .desc-wrapper
+                  display: flex
+                  height: 100%
+                  padding: 0 12px
+                  .description
+                    flex: 1
+                    display: flex
+                    flex-direction: column
+                    justify-content: space-between
+                    padding: 10px 0
+                    .top
+                      .name
+                        line-height: $font-size-large-m
+                        font-size: $font-size-medium
+                        no-wrap()
+                      .valid
+                        font-size: $font-size-small-s
+                    .bottom
+                      font-size: $font-size-small-s
+                  .btn-wrapper
+                    display: flex
+                    align-items: center
+                    width: 58px
+                    flex: 0 0 58px
+                    .btn
+                      width: 58px
+                      height: 24px
+                      margin: auto
+                      text-align: center
+                      line-height: 24px
+                      font-size: 0
+                      background: $color-button
+                      .font
+                        display: inline-block
+                        vertical-align: middle
+                        margin-right: 3px
+                        font-size: $font-size-small
+                        color: $color-white
+                      .icon
+                        vertical-align: middle
+                        width: 11px
+                        height: 11px
+
+                .tip-wrapper
+                  position: absolute
+                  top: 3px
+                  right: -18px
+                  display: inline-block
+                  padding: 5px 20px
+                  font-size: $font-size-small
+                  background-color: $color-yellow
+                  transform: rotate(40deg)
+        .discover-panel
+          width: 50%
+          box-sizing: border-box
+          padding: 10px 12px
+          .ticky-wrapper
+            border-1px()
+            .ticky
+              width: 100%
+              height: 0
+              padding-top: 23.96011396%
+            .collector
+              display: flex
+              align-items: center
+              justify-content: space-between
+              height: 35.5px
+              padding: 0 12px
+              .avatar-wrapper
+                .avatar
+                  display: inline-block
+                  width: 21px
+                  height: 21px
+                  margin-right: -3px
+                  border-1px($color-white, 50%)
+                .more
+                  display: inline-block
+                  margin-left: 3.6px
+                  .dot
+                    display: inline-block
+                    width: 3px
+                    height: 3px
+                    margin-right: 2px
+                    border-radius: 50%
+                    background: $color-ellipse
+              .collect
+                display: flex
+                align-items: center
+                .number
+                  font-size: $font-size-small-s
+                  color: $color-text-t
+                .font
+                  font-size: $font-size-small-s
+                .icon
+                  width: 14px
+                  height: 14px
+                  margin-left: 4px
+</style>

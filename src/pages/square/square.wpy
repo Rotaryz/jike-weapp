@@ -1,0 +1,42 @@
+<template>
+  <view></view>
+</template>
+<script>
+  import wepy from 'wepy'
+  import users from 'common/mixins/users'
+
+  export default class Square extends wepy.page {
+    mixins = [users];
+    config = {
+      navigationBarTitleText: '广场'
+    }
+
+    // 分享
+    onShareAppMessage() {
+      return {
+        title: '国颐堂（黄石店）',
+        path: '/page/user?id=123',
+        imageUrl: ''
+      }
+    }
+
+    // 生成新数组
+    buildArr() {
+
+    }
+
+    onLoad() {
+    }
+  }
+
+</script>
+<style lang="stylus">
+  page
+    height: 100%
+    overflow: hidden
+
+  #map
+    @extend page
+    width: 100%
+
+</style>

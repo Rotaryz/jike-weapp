@@ -1,0 +1,357 @@
+<template>
+  <scroll-view class="coupon-detail">
+    <view class="slider-wrapper">
+      <view class="slider">
+        <slider></slider>
+      </view>
+    </view>
+    <view class="desc-wrapper">
+      <view class="description">
+        <view class="name">{{coupon.title}}</view>
+        <view class="limit">限量{{coupon.stock}}件</view>
+        <view class="price-wrapper">
+          <view class="price">
+            <text class="rmb">¥</text>
+            <text class="number">{{coupon.platform_price}}</text>
+          </view>
+          <view class="origin-price">门市价:￥{{coupon.shop_price}}</view>
+          <view class="buy-number"><image class="icon" src="./icon-many.png"></image>
+            <text class="font">{{coupon.collected}}人已购买</text>
+          </view>
+        </view>
+      </view>
+      <view class="share-wrapper">
+        <view class="share-btn">
+          <view class="icon-share-polite">
+            <image src="./icon-share_polite.png" class="icon-share-polite"></image>
+          </view>
+          <view class="content">分享有礼</view>
+          <image class="icon-money" src="./icon-money.png"></image>
+        </view>
+      </view>
+    </view>
+    <view class="service-detail">
+      <view class="header border-bottom-1px">服务详情</view>
+      <view class="detail-wrapper">
+        <view wx:for="{{coupon.detail}}" wx:key="unique" class="item-wrapper border-bottom-1px">
+          <view class="content left">
+            <text class="circle"></text>
+            <text class="font">{{item.servie}}</text>
+          </view>
+          <view class="content middle">{{item.number}}次</view>
+          <view class="content right">￥{{item.price}}</view>
+        </view>
+      </view>
+    </view>
+    <view class="know-detail">
+      <view class="header border-bottom-1px">购买须知</view>
+      <view class="detail-wrapper">
+        <view class="item-wrapper">
+          <view class="title">是否需要预约：</view>
+          <view class="content">
+            <text class="circle"></text>
+            <text class="value">{{note.need_subscribe === '0' ? '需要预约' : '不需要预约'}}</text>
+          </view>
+        </view>
+        <view class="item-wrapper">
+          <view class="title">单人购买上限：</view>
+          <view class="content">
+            <text class="circle"></text>
+            <text class="value">{{note.buy_upper_limit === '-1' ? '无上限' : note.buy_upper_limit + '人'}}</text>
+          </view>
+        </view>
+        <view class="item-wrapper">
+          <view class="title">使用人数：</view>
+          <view class="content">
+            <text class="circle"></text>
+            <text class="value">{{note.can_use_number === '-1' ? '不限人数' : note.can_use_number + '人'}}</text>
+          </view>
+        </view>
+        <view class="item-wrapper">
+          <view class="title">备注：</view>
+          <view class="content">
+            <text class="circle"></text>
+            <text class="value">{{note.remarks}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+    <view class="buy-button-wrapper border-top-1px">
+      <view class="button-group">
+        <view class="collect border-right-1px">
+          <image class="icon" src="./icon-collection_1.png"></image>
+          收藏
+        </view>
+        <view class="customer-service">
+          <image class="icon" src="./icon-my_service.png"></image>
+          客服
+        </view>
+      </view>
+      <view class="buy-btn" @click="postOrder">立即购买</view>
+    </view>
+  </scroll-view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import users from 'common/mixins/users'
+  import base from 'common/mixins/base'
+  import Slider from '@/base/slider/slider'
+  import Coupon from 'api/coupon'
+//  import CouponFactory from 'common/js/coupon'
+
+  export default class CouponDetail extends wepy.page {
+    mixins = [users, base]
+
+    data = {
+      id: '',
+      imageUrl: [],
+      coupon: {},
+      note: {}
+    }
+
+    async onLoad(option) {
+      this.id = option.id
+      await this.load()
+    }
+
+    async load() {
+      await this._getCouponDetail()
+      this.loaded()
+    }
+
+    async _getCouponDetail() {
+      const data = await Coupon.getShopCouponDetail(this.id || 1)
+      data.platform_price = Math.floor(data.platform_price)
+      data.shop_price = Math.floor(data.shop_price)
+      this.coupon = data
+      this.note = data.note
+    }
+
+    methods = {
+      postOrder() {
+        const orderInfo = {
+          customer_id: this.coupon.customer_id,
+          merchant_id: 1000,
+          promotion_id: this.coupon.id,
+          title: this.coupon.title,
+          price: this.coupon.price
+        }
+        console.log(orderInfo)
+      }
+    }
+
+    components = {
+      slider: Slider
+    }
+
+    config = {
+      backgroundColor: '#F9F9F9',
+      backgroundTextStyle: 'light',
+      navigationBarBackgroundColor: '#ffffff',
+      navigationBarTitleText: '优惠券详情',
+      navigationBarTextStyle: 'black'
+    }
+  }
+</script>
+
+<style scoped lang="stylus" rel="stylesheet/stylus">
+  @import "../../common/stylus/variable"
+  @import "../../common/stylus/mixin"
+
+  .coupon-detail
+    width: 100%
+    padding-bottom: 44px
+    .slider-wrapper
+      position: relative
+      width: 100%
+      height: 0
+      padding-top: 53.333333333%
+      .slider
+        position: absolute
+        top: 0
+        left: 0
+        width: 100%
+        height: 100%
+        background-color: #363636
+    .desc-wrapper
+      display: flex
+      height: 94px
+      margin-bottom: 10px
+      padding: 0 12px
+      background-color: $color-white
+      .description
+        flex: 1
+        padding-top: 11px
+        .name
+          margin-bottom: 5px
+          font-size: $font-size-medium
+        .limit
+          font-size: $font-size-small
+          color: $color-text-d
+        .price-wrapper
+          display: flex
+          align-items: flex-end
+          margin-top: 12.5px
+          .price
+            color: $color-text-t
+            fonot-size: 0
+            .rmb
+              display: inline-block
+              vertical-align: bottom
+              font-size: $font-size-small
+            .number
+              display: inline-block
+              vertical-align: bottom
+              font-family: "PingFangSC-Medium"
+              font-size: $font-size-large-xx
+              transform: translateY(4px)
+          .origin-price
+            margin-left: 5px
+            font-size: $font-size-small-s
+          .buy-number
+            margin-left: 34px
+            font-size: 0
+            .icon
+              width: 11px
+              height: 10px
+              vertical-align: middle
+            .font
+              display: inline-block
+              vertical-align: middle
+              font-size: $font-size-small-s
+      .share-wrapper
+        flex: 0 0 48px
+        display: flex
+        align-items: center
+        .share-btn
+          position: relative
+          width: 48px
+          height: 48px
+          padding-top: 5px
+          border-1px($color-col-line, 3px)
+          .icon-share-polite
+            display: block
+            width: 23px
+            height: 25px
+            margin: 0 auto
+          .content
+            margin-top: 3px
+            text-align: center
+            font-size: $font-size-small-s
+          .icon-money
+            position: absolute
+            top: -2.5px
+            right: -.5px
+            width: 15px
+            height: 18px
+    .service-detail
+      margin-bottom: 10px
+      padding-left: 12px
+      background-color: $color-white
+      .header
+        height: 39px
+        line-height: 39px
+        font-size: $font-size-medium
+        color: $color-text-l
+      .detail-wrapper
+        .item-wrapper
+          display: flex
+          align-items: center
+          height: 28px
+          padding-right: 12px
+          &:last-child
+            border-none()
+          .content
+            flex: 1
+            color: $color-text-dd
+            font-size: $font-size-small
+            &.left
+              text-align: left
+              .circle
+                display: inline-block
+                vertical-align: middle
+                width: 4.5px
+                height: 4.5px
+                margin-right: 5.25px
+                border-radius: 50%
+                background-color: $color-circle
+              .font
+                display: inline-block
+                vertical-align: middle
+            &.middle
+              text-align: center
+            &.right
+              text-align: right
+    .know-detail
+      padding-left: 12px
+      background-color: $color-white
+      .header
+        height: 39px
+        line-height: 39px
+        font-size: $font-size-medium
+        color: $color-text-l
+      .detail-wrapper
+        padding: 7.5px 0
+        .item-wrapper
+          margin-bottom: 13px
+          &:last-child
+            margin-bottom: 0
+          .title
+            margin-bottom: 8.5px
+            font-size: $font-size-small
+            color: $color-text-t
+          .content
+            font-size: 0
+            .circle
+              display: inline-block
+              vertical-align: middle
+              width: 4.5px
+              height: 4.5px
+              margin-right: 5.25px
+              border-radius: 50%
+              background-color: $color-circle
+            .value
+              display: inline-block
+              vertical-align: middle
+              font-size: $font-size-small
+    .buy-button-wrapper
+      position: fixed
+      bottom: 0
+      left: 0
+      display: flex
+      width: 100%
+      height: 44px
+      background-color: $color-white
+      .button-group
+        flex: 1
+        display: flex
+        font-size: $font-size-small-s
+        .collect
+          flex: 1
+          display: flex
+          flex-direction: column
+          align-items: center
+          justify-content: center
+          .icon
+            width: 15px
+            height: 14px
+            margin-bottom: 3px
+        .customer-service
+          flex: 1
+          display: flex
+          flex-direction: column
+          align-items: center
+          justify-content: center
+          .icon
+            width: 15.5px
+            height: 14px
+            margin-bottom: 3px
+      .buy-btn
+        flex: 0 0 200px
+        line-height: 44px
+        text-align: center
+        font-size: $font-size-medium
+        color: $color-white
+        background-color: $color-button
+</style>

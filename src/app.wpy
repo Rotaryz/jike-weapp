@@ -11,6 +11,7 @@ export default class extends wepy.app {
   constructor () {
     super()
     this.use('requestfix')
+    this.use('promisify')
   }
 
   onLaunch() {
@@ -55,31 +56,51 @@ export default class extends wepy.app {
       'pages/user/myCenter/myCenter',
       'pages/user/myOrder/myOrder',
       'pages/user/myCoupon/myCoupon'
+      'pages/coupon-detail/coupon-detail',
+      'pages/recommend/recommend',
+      'pages/post-order/post-order',
+      'pages/square/square'
     ],
     window: {
+      backgroundColor: '#F9F9F9',
       backgroundTextStyle: 'light',
-      navigationBarBackgroundColor: '#000',
+      navigationBarBackgroundColor: '#fff',
       navigationBarTitleText: '集客',
-      navigationBarTextStyle: '#ffffff'
+      navigationBarTextStyle: 'black'
     },
     tabBar: {
-      list: [{
-        pagePath: 'pages/user/mine/mine',
-        text: '广场'
-      }, {
-        pagePath: 'pages/user/mine/mine',
-        text: '推荐'
-      }, {
-        pagePath: 'pages/user/mine/mine',
-        text: '我的'
-      }]
+      color: '#464646',
+      selectedColor: '#FF4E00',
+      backgroundColor: '#fff',
+      borderStyle: '#E5E5E5',
+      list: [
+        {
+          pagePath: 'pages/square/square',
+          text: '广场',
+          iconPath: './icon/icon-square_1.png',
+          selectedIconPath: './icon/icon-square_s.png'
+
+        },
+        {
+          pagePath: 'pages/recommend/recommend',
+          text: '推荐',
+          iconPath: './icon/icon-square.png',
+          selectedIconPath: './icon/icon-r_s.png'
+        },
+        {
+          pagePath: 'pages/mine/mine',
+          text: '我的',
+          iconPath: './icon/icon-my.png',
+          selectedIconPath: './icon/icon-my-r.png'
+        }
+      ]
     }
   }
 
   globalData = {
-    baseUrl: '',
+    baseUrl: 'http://jike-wap-api.chenrilong.top/',
     user: null,
-    sign: null
+    orderInfo: {}
   }
 }
 </script>
