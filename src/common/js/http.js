@@ -13,6 +13,7 @@ export default class http {
       Tips.loading()
     }
     const res = await wepy.request(param)
+    Tips.loaded()
     if (this.isSuccess(res)) {
       return res.data.data
     } else {

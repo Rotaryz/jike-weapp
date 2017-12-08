@@ -52,11 +52,14 @@ export default class extends wepy.app {
 
   config = {
     pages: [
+      'pages/user/mine/mine',
+      'pages/user/myCenter/myCenter',
+      'pages/user/myOrder/myOrder',
+      'pages/user/myCoupon/myCoupon',
       'pages/coupon-detail/coupon-detail',
       'pages/recommend/recommend',
       'pages/post-order/post-order',
       'pages/square/square',
-      'pages/mine/mine'
     ],
     window: {
       backgroundColor: '#F9F9F9',
@@ -85,7 +88,7 @@ export default class extends wepy.app {
           selectedIconPath: './icon/icon-r_s.png'
         },
         {
-          pagePath: 'pages/mine/mine',
+          pagePath: 'pages/user/mine/mine',
           text: '我的',
           iconPath: './icon/icon-my.png',
           selectedIconPath: './icon/icon-my-r.png'
@@ -97,6 +100,7 @@ export default class extends wepy.app {
   globalData = {
     baseUrl: 'http://jike-wap-api.chenrilong.top/',
     user: null,
+    sign: null,
     orderInfo: {}
   }
 }
