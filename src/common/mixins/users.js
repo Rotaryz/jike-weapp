@@ -52,7 +52,8 @@ export default class userMixin extends wepy.mixin {
           // 缓存用户信息
           wx.setStorageSync('user', res.userInfo)
         },
-        fail: (res) => {}
+        fail: (res) => {
+        }
       })
     }
     return user
@@ -61,11 +62,11 @@ export default class userMixin extends wepy.mixin {
   // 获取token，有就直接请求返回用户数据，没有走登陆授权
   $getToken(callback) {
     let token = wx.getStorageSync('jk_token')
-    if(!token){
+    if (!token) {
       this.$getUserInfo(callback)
-    }else{
-      let data = {jk_token:token}
-      this._getSqlUserInfo(data,callback)
+    } else {
+      let data = {jk_token: token}
+      this._getSqlUserInfo(data, callback)
     }
   }
 
@@ -91,7 +92,8 @@ export default class userMixin extends wepy.mixin {
   }
 
   // 进行微信登陆
-  $login(success = () => {}, noAutoLogin) {
+  $login(success = () => {
+  }, noAutoLogin) {
     // 先登录
     wepy.login({
       success: (res) => {
@@ -117,23 +119,24 @@ export default class userMixin extends wepy.mixin {
   }
 
   // 获取用户信息 (数据库)
-  _getSqlUserInfo(data,callback) {
+  _getSqlUserInfo(data, callback) {
     wx.request({
       url: 'http://192.168.4.148/wap/jike-wap-api/public/index.php/api/info/index',
       data,
       success: (res) => {
         console.log(res)
+        let statusObject
         if (res.data.data.customer_id === 0) {
-          var statusObject = {
-            isPhone:0
+          statusObject = {
+            isPhone: 0
           }
-        }else {
-          var statusObject = {
-            isPhone:1
+        } else {
+          statusObject = {
+            isPhone: 1
           }
         }
         // 缓存用户信息
-        const user = this.$parent.updateGlobalData('user', Object.assign({},res.data.data,{apply:1},statusObject))
+        const user = this.$parent.updateGlobalData('user', Object.assign({}, res.data.data, {apply: 1}, statusObject))
 
         this.isFunction(callback) && callback(user)
         this.$apply()
@@ -163,8 +166,8 @@ export default class userMixin extends wepy.mixin {
             console.log(res2)
             wx.setStorageSync('jk_token', res2.data.data.jk_token)
 
-            let reqData = {jk_token:res2.data.data.jk_token}
-            this._getSqlUserInfo(reqData,callback)
+            let reqData = {jk_token: res2.data.data.jk_token}
+            this._getSqlUserInfo(reqData, callback)
           }
         })
       },

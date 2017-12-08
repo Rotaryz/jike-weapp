@@ -59,7 +59,7 @@ export default class extends wepy.app {
       'pages/coupon-detail/coupon-detail',
       'pages/recommend/recommend',
       'pages/post-order/post-order',
-      'pages/square/square',
+      'pages/square/square'
     ],
     window: {
       backgroundColor: '#F9F9F9',
@@ -100,7 +100,6 @@ export default class extends wepy.app {
   globalData = {
     baseUrl: 'http://jike-wap-api.chenrilong.top/',
     user: null,
-    sign: null,
     orderInfo: {}
   }
 }

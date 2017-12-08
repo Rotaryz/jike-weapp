@@ -32,7 +32,7 @@
       height: 48rpx
       font-size: $font-size-small
       color: #F43530
-      border: 1rpx solid #F43530 
+      border: 1rpx solid #F43530
       border-radius: 4rpx
       text-align: center
       line-height: 48rpx
@@ -149,7 +149,7 @@
     <view class="phoneTest-txtBox">
       <image src="./image/icon-my_call.png" class="phoneTest-pcPhone"></image>
       <text class="phoneTest-txt">绑定手机号，获取更多优惠信息</text>
-    </view>    
+    </view>
 
     <view class="phoneTest-btn" @tap="bindPhone">绑定手机</view>
 
@@ -175,7 +175,7 @@
               <input type="text" placeholder="验证码" placeholder-class="phoneTest-list-item-placeh" class="phoneTest-list-item-input" maxlength="6" bindinput="phoneCodeIn"/>
               <view class="{{phoneCodeDisabled?'phoneTest-list-code phoneTest-list-codeRed':'phoneTest-list-code'}}" @tap="getPhoneCode">{{phoneCodeTime}}</view>
             </view>
-          </view>         
+          </view>
         </view>
 
         <view class="{{submitDisabled?'phoneTest-submit':'phoneTest-submit phoneTest-submit-disabled'}}" @tap="submitMsg">确定</view>
@@ -185,6 +185,7 @@
 </template>
 
 <script>
+  /* eslint-disable no-undef */
   import wepy from 'wepy'
   import tips from '@/common/js/tips'
 
@@ -212,7 +213,7 @@
       closeCover: function() {
         this.phoneTestCover = false
       },
-      phoneNumIn: function(e) {        
+      phoneNumIn: function(e) {
         this.phoneNum = e.detail.value
         var reg = /^1[3|4|5|7|8][0-9]{9}$/
         if (reg.test(this.phoneNum) && this.phoneCode.length === 6) {
@@ -222,7 +223,7 @@
         }
       },
       phoneCodeIn: function(e) {
-        this.phoneCode = e.detail.value 
+        this.phoneCode = e.detail.value
         var reg = /^1[3|4|5|7|8][0-9]{9}$/
         if (reg.test(this.phoneNum) && this.phoneCode.length === 6) {
           this.submitDisabled = false
@@ -235,12 +236,12 @@
         var self = this
         if (reg.test(self.phoneNum) && !self.phoneCodeDisabled) {
           console.log(this.phoneNum)
-          let jk_token = wx.getStorageSync('jk_token')
+          let jkToken = wx.getStorageSync('jk_token')
           self.phoneCodeTime = '发送中···'
           wx.request({
             url: 'http://192.168.4.148/wap/jike-wap-api/public/index.php/api/info/message_bind',
             data: {
-              jk_token,
+              jk_token: jkToken,
               mobile: self.phoneNum
             },
             success: (res) => {
@@ -251,15 +252,15 @@
                 time--
                 self.phoneCodeTime = time + 's'
                 self.$apply()
-                if (time <= 0) {                 
+                if (time <= 0) {
                   self.phoneCodeTime = '获取验证码'
-                  self.phoneCodeDisabled = false 
+                  self.phoneCodeDisabled = false
                   self.$apply()
-                  clearInterval(timer)                
+                  clearInterval(timer)
                 }
               }, 1000)
             }
-          })                 
+          })
         } else {
           console.log('err')
         }
@@ -268,11 +269,11 @@
         var reg = /^1[3|4|5|7|8][0-9]{9}$/
         var self = this
         if (this.phoneNum && reg.test(self.phoneNum) && this.phoneCode && this.phoneCode.length === 6) {
-          let jk_token = wx.getStorageSync('jk_token')
+          let jkToken = wx.getStorageSync('jk_token')
           wx.request({
             url: 'http://192.168.4.148/wap/jike-wap-api/public/index.php/api/info/valida',
             data: {
-              jk_token,
+              jk_token: jkToken,
               mobile: self.phoneNum,
               code: self.phoneCode
             },

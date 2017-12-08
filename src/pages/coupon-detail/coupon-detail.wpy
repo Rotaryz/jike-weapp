@@ -130,6 +130,7 @@
 
     methods = {
       postOrder() {
+        this.$getToken()
         const orderInfo = {
           customer_id: this.coupon.customer_id,
           merchant_id: 1000,
