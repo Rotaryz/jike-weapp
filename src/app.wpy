@@ -11,6 +11,7 @@ export default class extends wepy.app {
   constructor () {
     super()
     this.use('requestfix')
+    this.use('promisify')
   }
 
   onLaunch() {
@@ -51,15 +52,18 @@ export default class extends wepy.app {
 
   config = {
     pages: [
-      'pages/square/square',
+      'pages/coupon-detail/coupon-detail',
       'pages/recommend/recommend',
+      'pages/post-order/post-order',
+      'pages/square/square',
       'pages/mine/mine'
     ],
     window: {
+      backgroundColor: '#F9F9F9',
       backgroundTextStyle: 'light',
-      navigationBarBackgroundColor: '#000',
+      navigationBarBackgroundColor: '#fff',
       navigationBarTitleText: '集客',
-      navigationBarTextStyle: '#ffffff'
+      navigationBarTextStyle: 'black'
     },
     tabBar: {
       color: '#464646',
@@ -82,7 +86,7 @@ export default class extends wepy.app {
         },
         {
           pagePath: 'pages/mine/mine',
-          text: '推荐',
+          text: '我的',
           iconPath: './icon/icon-my.png',
           selectedIconPath: './icon/icon-my-r.png'
         }
@@ -91,8 +95,9 @@ export default class extends wepy.app {
   }
 
   globalData = {
-    baseUrl: '',
-    user: null
+    baseUrl: 'http://jike-wap-api.chenrilong.top/',
+    user: null,
+    orderInfo: {}
   }
 }
 </script>

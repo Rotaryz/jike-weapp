@@ -1,7 +1,6 @@
 /* eslint-disable no-undef */
 import wepy from 'wepy'
 
-
 export default class userMixin extends wepy.mixin {
   isFunction(item) {
     return typeof item === 'function'
@@ -44,15 +43,16 @@ export default class userMixin extends wepy.mixin {
 
   $getUser() {
     let user = wx.getStorageSync('user')
-      // 不重复获取用户信息
+    // 不重复获取用户信息
     if (!user || !user.nickName) {
       wepy.getUserInfo({
         success: (res) => {
           console.log('wepy.getUserInfo.success:', res)
-            // 缓存用户信息
+          // 缓存用户信息
           wx.setStorageSync('user', res.userInfo)
         },
-        fail: (res) => {}
+        fail: (res) => {
+        }
       })
     }
     return user
@@ -61,11 +61,11 @@ export default class userMixin extends wepy.mixin {
   // 获取用户信息
   $getUserInfo(callback) {
     console.log(this.$parent)
-      // 顶级容错
+    // 顶级容错
     if (!this.$parent || !this.$parent.updateGlobalData) return
-      // 取缓存信息
+    // 取缓存信息
     const user = this.$parent.updateGlobalData('user')
-      // 不重复获取用户信息
+    // 不重复获取用户信息
     if (user && user.nickName) {
       this.isFunction(callback) && callback(user)
       this.$apply()
@@ -79,7 +79,8 @@ export default class userMixin extends wepy.mixin {
   }
 
   // 进行微信登陆
-  $login(success = () => {}, noAutoLogin) {
+  $login(success = () => {
+  }, noAutoLogin) {
     // 先登录
     wepy.login({
       success: (res) => {
@@ -108,7 +109,7 @@ export default class userMixin extends wepy.mixin {
     wepy.getUserInfo({
       success: (res) => {
         console.log('wepy.getUserInfo.success:', res)
-          // 缓存用户信息
+        // 缓存用户信息
         const user = this.$parent.updateGlobalData('user', Object.assign({}, res.userInfo, {
           apply: 1
         }))
@@ -118,7 +119,7 @@ export default class userMixin extends wepy.mixin {
       },
       fail: (res) => {
         console.log('wepy.getUserInfo.fail:', res)
-          // 用户拒绝授权:填充默认数据
+        // 用户拒绝授权:填充默认数据
         const user = this.$parent.updateGlobalData('user', {
           nickName: '未授权',
           avatarUrl: '',
@@ -156,8 +157,8 @@ export default class userMixin extends wepy.mixin {
   _wxOpenSetting(callback) {
     wx.openSetting && wx.openSetting({
       success: ({
-        authSetting
-      }) => {
+                  authSetting
+                }) => {
         console.log('wx.openSetting.success', authSetting)
         if (authSetting['scope.userInfo']) {
           // 用户打开设置，重新获取信息
@@ -166,6 +167,4 @@ export default class userMixin extends wepy.mixin {
       }
     })
   }
-
-  //获取设备信息 
 }

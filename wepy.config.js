@@ -23,9 +23,6 @@ module.exports = {
     stylus: {
       compress: true
     },
-    less: {
-      compress: true
-    },
     babel: {
       sourceMap: true,
       presets: [
@@ -51,7 +48,6 @@ if (prod) {
   // module.exports.compilers['sass'] = {outputStyle: 'compressed'}
 
   // 压缩less
-  module.exports.compilers['less'] = {compress: true}
   module.exports.compilers['stylus'] = {compress: true}
 
   // 压缩js
