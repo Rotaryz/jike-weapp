@@ -11,7 +11,7 @@
     </view>
 
     <view class="myOrder-orderBox">
-      <view class="myOrder-noOrderMsg" wx:if="{{false}}">
+      <view class="myOrder-noOrderMsg" wx:if="{{true}}">
         <image src="{{noOrderIcon[menuIdx]}}" wx:if="noOrder" class="myOrder-noOrderMsg-Img"></image>
         <view class="myOrder-noOrderMsg-txt">您还没有相关订单</view>
         <view class="myOrder-noOrderBtn">随便逛逛</view>
@@ -27,8 +27,8 @@
             <view class="myOrder-orderList-item-total myOrder-orderList-item-detail">总价: ￥200</view>
           </view>
           <view class="myOrder-orderList-item-btnBox">
-            <view class="myOrder-orderList-item-status">待付款</view>
-            <view class="myOrder-orderList-item-btn">付款</view>
+            <view class="myOrder-orderList-item-status">{{orderItemStatus[menuIdx]}}</view>
+            <view class="myOrder-orderList-item-btn">{{orderItemBtnTxt[menuIdx]}}</view>
           </view>
         </view>
       </view>
@@ -161,6 +161,7 @@
           color: #706b82
 
     .myOrder-orderList-item
+      position: relative
       height: 137rpx
       margin-top: 20rpx
       background: #fff
@@ -186,7 +187,7 @@
         .myOrder-orderList-item-detail
           font-size: $font-size-small
           color: #696671
-          line-height: 30rpx
+          line-height: 33rpx
 
 
       .myOrder-orderList-item-btnBox
@@ -196,9 +197,12 @@
           font-size: $font-size-small-s
           color: #FF4E00
           text-align: right
-          margin-bottom: 22rpx
+          line-height: 30rpx
 
         .myOrder-orderList-item-btn
+          position: absolute
+          right: 24rpx
+          bottom: 58rpx
           width: 114rpx
           height: 46rpx
           border: 1rpx solid #656079
@@ -206,5 +210,7 @@
           border-radius: 4rpx
           text-align: center
           line-height: 46rpx
+          font-size: $font-size-small
+          color: #fff
 
 </style>
