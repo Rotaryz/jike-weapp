@@ -1,0 +1,210 @@
+<template>
+  <view class="myOrder">
+    <view class="myOrder-menuTab">
+      <view wx:for="{{menuItems}}" wx:key="{{item}}" class="{{index==menuIdx?'myOrder-menuTab-item active':'myOrder-menuTab-item'}}" @tap="tabChange({{index}})">
+        {{item}}
+      </view>
+    </view>
+
+    <view class="myOrder-phoneTestBox" wx:if="{{userInfo.isPhone===0}}">
+      <PhoneTest></PhoneTest>
+    </view>
+
+    <view class="myOrder-orderBox">
+      <view class="myOrder-noOrderMsg" wx:if="{{false}}">
+        <image src="{{noOrderIcon[menuIdx]}}" wx:if="noOrder" class="myOrder-noOrderMsg-Img"></image>
+        <view class="myOrder-noOrderMsg-txt">您还没有相关订单</view>
+        <view class="myOrder-noOrderBtn">随便逛逛</view>
+      </view>
+
+      <view class="myOrder-orderList">
+        <view class="myOrder-orderList-item">
+          <image class="myOrder-orderList-item-logo" src="./image/pic-default-1.png"></image>
+          <view class="myOrder-orderList-item-msg">
+            <view class="myOrder-orderList-item-title">圣诞活动</view>
+            <view class="myOrder-orderList-item-count myOrder-orderList-item-detail" wx:if="{{menuIdx===0}}">数量: 2</view>
+            <view class="myOrder-orderList-item-time myOrder-orderList-item-detail" wx:if="{{menuIdx!==0}}">下单时间: 2017-08-01</view>
+            <view class="myOrder-orderList-item-total myOrder-orderList-item-detail">总价: ￥200</view>
+          </view>
+          <view class="myOrder-orderList-item-btnBox">
+            <view class="myOrder-orderList-item-status">待付款</view>
+            <view class="myOrder-orderList-item-btn">付款</view>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import users from 'common/mixins/users'
+  import PhoneTest from '@/components/phoneTest/phoneTest'
+
+  export default class MyOrder extends wepy.page {
+    mixins = [users]
+
+    config = {
+      navigationBarTitleText: '我的订单',
+      navigationBarBackgroundColor: '#fff',
+      navigationBarTextStyle: 'black',
+      backgroundColor: '#F9F9F9'
+    }
+
+    components = {
+      PhoneTest
+    }
+
+    data = {
+      userInfo: {
+        isPhone: 0
+      },
+      menuIdx: 1,
+      menuItems: ['待付款', '待使用', '待评价', '退款/售后'],
+      noOrderIcon: ['./image/pic-my_nopaid.png', './image/pic-my_noused.png', './image/pic-my_noevaluated.png', './image/pic-my_norefund.png'],
+      orderItemStatus: ['待付款', '', '', '已退款'],
+      orderItemBtnTxt: ['付款', '进店使用', '评价', '再来一单'],
+      noOrder: false
+    }
+
+    methods = {
+      tabChange: (idx) => {
+        this.menuIdx = idx
+      }
+    }
+
+    onLoad(option) {
+      this.userInfo = this.$parent.globalData.user
+      if (option.idx) {
+        this.menuIdx = option.idx
+      }
+      console.log(this.menuIdx)
+    }
+
+    _getUserInfo() {
+      this._wxUserInfo()
+      this.$getUserInfo((userInfo) => {
+        this.userInfo = userInfo
+      })
+    }
+
+    events = {
+      'isPhoneOk': () => {
+        console.log(999)
+      }
+    }
+  }
+</script>
+
+<style lang="stylus">
+  @import "../../../common/stylus/variable"
+
+  $color-text-gary = #464646
+  page
+    background: #F9F9F9
+    font-family: PingFangSC-Light
+
+    .myOrder-menuTab 
+      display: flex
+      height: 84rpx
+      background: #fff   
+      border-bottom: 1rpx solid #F0EFF5
+
+      .myOrder-menuTab-item
+        font-size: $font-size-medium
+        color: $color-text-gary
+        flex: 1
+        line-height: 84rpx
+        text-align: center
+        margin: 0 22rpx
+        margin-bottom: -1rpx
+        border-bottom: 0 none
+
+      .myOrder-menuTab-item.active
+        color: #FF4E00
+        border-bottom: 4rpx solid #FF4E00
+
+    .myOrder-phoneTestBox
+      height: 110rpx
+
+    .myOrder-noOrderMsg
+      height: 320rpx
+      background: #fff
+      border-bottom: 1rpx solid #F1EFF5
+      padding-top: 64rpx
+      display: flex
+      flex-direction: column
+      align-items: center
+
+      .myOrder-noOrderMsg-Img
+        width: 185rpx
+        height: 106rpx
+        margin-bottom: 20rpx
+        padding-left: 30rpx
+
+      .myOrder-noOrderMsg-txt
+        font-size: $font-size-small
+        color: $color-text-gary
+        margin-bottom: 70rpx
+
+      .myOrder-noOrderBtn
+        width: 171rpx
+        height: 48rpx
+        border: 1rpx solid #F0EFF5
+        text-align: center
+        line-height: 48rpx
+        font-size: $font-size-small
+        border-radius: 4rpx
+
+        &:active
+          border: 1rpx solid #706b82
+          color: #706b82
+
+    .myOrder-orderList-item
+      height: 137rpx
+      margin-top: 20rpx
+      background: #fff
+      padding: 27rpx 23rpx
+      display: flex
+      justify-content: space-between
+
+      .myOrder-orderList-item-logo
+        width: 128rpx
+        height: 128rpx
+        border: 1rpx solid #F1EFF5
+        margin-right: 18rpx
+
+      .myOrder-orderList-item-msg
+        width: 440rpx
+
+        .myOrder-orderList-item-title
+          font-size: $font-size-medium
+          color: $color-text-gary
+          line-height: 40rpx
+          margin-bottom: 22rpx
+
+        .myOrder-orderList-item-detail
+          font-size: $font-size-small
+          color: #696671
+          line-height: 30rpx
+
+
+      .myOrder-orderList-item-btnBox
+        width: 116rpx
+
+        .myOrder-orderList-item-status
+          font-size: $font-size-small-s
+          color: #FF4E00
+          text-align: right
+          margin-bottom: 22rpx
+
+        .myOrder-orderList-item-btn
+          width: 114rpx
+          height: 46rpx
+          border: 1rpx solid #656079
+          background: #706B82
+          border-radius: 4rpx
+          text-align: center
+          line-height: 46rpx
+
+</style>

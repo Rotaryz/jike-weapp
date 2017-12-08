@@ -1,0 +1,285 @@
+<template>
+  <view class="mine">
+    <view class="mine-head">
+      <view class="mine-head-avatarBox" @tap="navToMsgPage">
+        <image class="mine-head-avatar" src="{{userInfo.customer_id.image_id?userInfo.customer_id.image_id:userInfo.avatarUrl}}" style="background-image: url('./image/pic-default.png'); background-size: 96rpx 96rpx"></image>
+        <text class="mine-head-nickName">{{userInfo.nickname}}</text>
+      </view>     
+    </view>
+    <image src="./image/my_headbc.png" class="mine-head-arc"></image>
+
+    <view class="mine-phoneTestBox" wx:if="{{userInfo.isPhone===0}}">
+      <PhoneTest></PhoneTest>
+    </view>
+
+    <view class="mine-order">
+      <view class="mine-order-head" @tap="navgto('/pages/user/myOrder/myOrder')">
+        <text class="mine-order-headTxt">我的订单</text>
+        <image src="./image/icon-my_Rectangle.png" class="mine-order-headIcon"></image>
+      </view>
+      <view class="mine-order-menu">
+        <view class="mine-order-menuItem" wx:for="{{orderMenu}}" wx:key="{{item.text}}" @tap="navgto('/pages/user/myOrder/myOrder?idx={{index}}')">
+          <image src="{{item.imgUrl}}" class="mine-order-menuItem-image"></image>
+          <view class="mine-order-menuItem-txt">{{item.text}}</view>
+        </view>
+      </view>
+    </view>
+
+    <view @tap="navgto('/pages/user/myCoupon/myCoupon')" class="mine-serve">
+      <view class="mine-serve-head">我的服务</view>
+      <view class="mine-serve-menu">
+        <view class="mine-serve-menuItem" wx:for="{{serveMenu}}" wx:key="{{item.text}}">
+          <image src="{{item.imgUrl}}" class="mine-serve-menuItem-image"></image>
+          <view class="mine-serve-menuItem-txt">{{item.text}}</view>
+        </view>
+      </view>      
+    </view>
+
+    <view class="mine-logo">
+      <image class="mine-logo-image" src="./image/logo-jike.png"></image>
+      <view class="mine-logo-txt">集客小程序技术支持</view>
+    </view>
+    
+    <view class="mine-cover" @tap="userLogin" wx-if="{{userInfo.apply===0}}"></view>
+  </view> 
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import users from 'common/mixins/users'
+  import wxUtils from 'common/js/wxUtils'
+  import PhoneTest from '@/components/phoneTest/phoneTest'
+
+  export default class Mine extends wepy.page {
+    mixins = [users]
+
+    config = {
+      navigationBarTitleText: '我的',
+      navigationBarBackgroundColor: '#706B82',
+      navigationBarTextStyle: 'white',
+      backgroundColor: '#F9F9F9'
+    }
+
+    components = {
+      PhoneTest
+    }
+
+    data = {
+      userInfo: {
+        nickname: '加载中...',
+        avatarUrl: null,
+        apply: 0,
+        isPhone: 0
+      },
+      orderMenu: [
+        {
+          imgUrl: './image/icon-my_paid.png',
+          text: '待付款'
+        }, {
+          imgUrl: './image/icon-my_used.png',
+          text: '待使用'
+        }, {
+          imgUrl: './image/icon-my_evaluated.png',
+          text: '待评价'
+        }, {
+          imgUrl: './image/icon-my_refund.png',
+          text: '退款/售后'
+        }
+      ],
+      serveMenu: [
+        {
+          imgUrl: './image/icon-my_coupon.png',
+          text: '优惠券'
+        }, {
+          imgUrl: './image/icon-my_moeny_1.png',
+          text: '红包'
+        }, {
+          imgUrl: './image/icon-my_collection.png',
+          text: '收藏'
+        }, {
+          imgUrl: './image/icon-my_service.png',
+          text: '客服'
+        }, {
+          imgUrl: './image/icon-my_help.png',
+          text: '帮助'
+        }
+      ]
+    }
+
+    onLoad() {
+      this._getUserInfo()
+    }
+
+    _getUserInfo() {
+      this.$getToken((userInfo) => {
+        this.userInfo = userInfo       
+      })
+    }
+
+    methods = {
+      navgto: function(url) {
+        wxUtils.backOrNavigate(url)
+      },
+      userLogin: function() {
+        this._getUserInfo()
+      },
+      navToMsgPage: function() {
+        if (this.data.userInfo.isPhone !== 0) {
+          this.methods.navgto('/pages/user/myCenter/myCenter')
+        } else {
+          this.$invoke('PhoneTest', 'bindPhone')
+        }
+      }
+    }
+
+    events = {
+      'isPhoneOk': () => {
+        this._getUserInfo()
+      }
+    }
+  }
+</script>
+
+<style lang="stylus">
+  @import "../../../common/stylus/variable"
+  
+  $color-text-gary = #464646
+  page
+    height: 100%
+
+  .mine
+    height: 100%
+    background: #F9F9F9
+    font-family: PingFangSC-Light
+
+    .mine-cover
+      position: absolute
+      left: 0
+      top: 0
+      width: 750rpx
+      height: 100%
+
+    .mine-head
+      height: 190rpx
+      background: #706B82
+      padding-left: 24rpx
+      display: flex
+      flex-direction: row
+      align-items: center
+
+      .mine-head-avatarBox
+        display: flex
+        flex-direction: row
+        align-items: center
+        width: 350rpx
+
+        .mine-head-avatar
+          height: 96rpx
+          width: 96rpx
+          border-radius: 50%
+          margin-right: 22rpx
+          border: 1rpx solid #fff
+
+        .mine-head-nickName
+          font-family: PingFangSC-Regular
+          color: #fff
+          font-size: $font-size-medium-x
+
+    .mine-head-arc
+      width: 750rpx
+      height: 24rpx
+      margin: 0
+      display: block
+      background: #fff
+
+    .mine-phoneTestBox
+      height: 110rpx
+
+    .mine-order
+      border-bottom: 1rpx solid #F0EFF5
+      border-top: 1rpx solid #F0EFF5
+      background: #fff
+      margin-bottom: 20rpx
+
+      .mine-order-head
+        height: 40rpx        
+        border-bottom: 1rpx solid #F0EFF5
+        padding: 20rpx 0
+        padding-right: 24rpx
+        margin-left: 24rpx
+        display: flex
+        flex-direction: row
+        align-items: center
+        justify-content: space-between
+
+        .mine-order-headTxt
+          font-size: $font-size-medium
+          color: #696671
+        .mine-order-headIcon
+          width: 12rpx
+          height: 20rpx
+
+      .mine-order-menu
+        display: flex
+        flex-direction: row
+
+        .mine-order-menuItem
+          flex: 1
+          text-align: center
+          padding: 40rpx 0
+
+
+          .mine-order-menuItem-image
+            width: 40rpx
+            height: 40rpx
+            margin-bottom: 14rpx
+
+          .mine-order-menuItem-txt            
+            font-size: $font-size-small
+            color: $color-text-gary
+
+    .mine-serve
+      background: #fff
+      border-top: 1rpx solid #F0EFF5
+      border-bottom: 1rpx solid #F0EFF5
+
+      .mine-serve-head
+        height: 78rpx
+        line-height: 78rpx
+        font-size: $font-size-medium
+        border-bottom: 1rpx solid #F0EFF5
+        margin-left: 24rpx
+        color: #696671
+
+      .mine-serve-menu
+        display: flex
+        flex-wrap: wrap
+
+        .mine-serve-menuItem
+          width: 25%
+          text-align: center
+          padding: 30rpx 0
+
+          .mine-serve-menuItem-image
+            width: 40rpx
+            height: 40rpx
+            margin-bottom: 14rpx
+
+          .mine-serve-menuItem-txt            
+            font-size: $font-size-small
+            color: $color-text-gary
+
+    .mine-logo
+      text-align: center
+      padding-top: 42rpx
+
+      .mine-logo-image
+        width: 66rpx
+        height: 60rpx
+
+      .mine-logo-txt
+        font-size: $font-size-small-s
+        color: #DADADA
+
+
+</style>

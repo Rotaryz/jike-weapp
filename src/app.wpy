@@ -51,19 +51,35 @@ export default class extends wepy.app {
 
   config = {
     pages: [
-      'pages/home/home'
+      'pages/user/mine/mine',
+      'pages/user/myCenter/myCenter',
+      'pages/user/myOrder/myOrder',
+      'pages/user/myCoupon/myCoupon'
     ],
     window: {
       backgroundTextStyle: 'light',
       navigationBarBackgroundColor: '#000',
       navigationBarTitleText: '集客',
       navigationBarTextStyle: '#ffffff'
+    },
+    tabBar: {
+      list: [{
+        pagePath: 'pages/user/mine/mine',
+        text: '广场'
+      }, {
+        pagePath: 'pages/user/mine/mine',
+        text: '推荐'
+      }, {
+        pagePath: 'pages/user/mine/mine',
+        text: '我的'
+      }]
     }
   }
 
   globalData = {
     baseUrl: '',
-    user: null
+    user: null,
+    sign: null
   }
 }
 </script>

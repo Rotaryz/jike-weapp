@@ -1,0 +1,37 @@
+<template>
+  <view>我的优惠券</view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import users from 'common/mixins/users'
+
+  export default class MyCoupon extends wepy.page {
+    mixins = [users]
+
+    config = {
+      navigationBarTitleText: '我的优惠券'
+    }
+
+    data = {
+      userInfo: {
+        nickName: '加载中...'
+      }
+    }
+
+    onLoad() {
+      
+    }
+
+    _getUserInfo() {
+      this._wxUserInfo()
+      this.$getUserInfo((userInfo) => {
+        this.userInfo = userInfo
+      })
+    }
+  }
+</script>
+
+<style lang="stylus">
+  @import "../../../common/stylus/variable"
+</style>

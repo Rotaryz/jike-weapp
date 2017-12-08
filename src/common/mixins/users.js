@@ -1,5 +1,6 @@
 /* eslint-disable no-undef */
 import wepy from 'wepy'
+import http from '../js/http.js'
 
 export default class userMixin extends wepy.mixin {
   isFunction(item) {
@@ -35,7 +36,7 @@ export default class userMixin extends wepy.mixin {
   $getCode() {
     let code = wx.getStorageSync('code')
     if (!code) {
-      this.$setCode()
+      this.$setCode()  
     }
     code = wx.getStorageSync('code')
     return code
@@ -57,6 +58,17 @@ export default class userMixin extends wepy.mixin {
     return user
   }
 
+  // 获取token，有就直接请求返回用户数据，没有走登陆授权
+  $getToken(callback) {
+    let token = wx.getStorageSync('jk_token')
+    if(!token){
+      this.$getUserInfo(callback)
+    }else{
+      let data = {jk_token:token}
+      this._getSqlUserInfo(data,callback)
+    }
+  }
+
   // 获取用户信息
   $getUserInfo(callback) {
     console.log(this.$parent)
@@ -64,8 +76,9 @@ export default class userMixin extends wepy.mixin {
     if (!this.$parent || !this.$parent.updateGlobalData) return
       // 取缓存信息
     const user = this.$parent.updateGlobalData('user')
+
       // 不重复获取用户信息
-    if (user && user.nickName) {
+    if (user && user.nickname && user.apply === 1) {
       this.isFunction(callback) && callback(user)
       this.$apply()
       return user
@@ -83,6 +96,7 @@ export default class userMixin extends wepy.mixin {
     wepy.login({
       success: (res) => {
         console.log('wepy.login.success:', res)
+        wx.setStorageSync('code', res.code)
 
         // 如果不需要自动登录，就return
         if (noAutoLogin) {
@@ -102,23 +116,66 @@ export default class userMixin extends wepy.mixin {
     })
   }
 
+  // 获取用户信息 (数据库)
+  _getSqlUserInfo(data,callback) {
+    wx.request({
+      url: 'http://192.168.4.148/wap/jike-wap-api/public/index.php/api/info/index',
+      data,
+      success: (res) => {
+        console.log(res)
+        if (res.data.data.customer_id === 0) {
+          var statusObject = {
+            isPhone:0
+          }         
+        }else {
+          var statusObject = {
+            isPhone:1
+          }
+        }
+        // 缓存用户信息
+        const user = this.$parent.updateGlobalData('user', Object.assign({},res.data.data,{apply:1},statusObject))
+
+        this.isFunction(callback) && callback(user)
+        this.$apply()
+      }
+    })
+  }
+
   // 获取用户公开信息（微信）
   _wxUserInfo(callback) {
     wepy.getUserInfo({
       success: (res) => {
         console.log('wepy.getUserInfo.success:', res)
-          // 缓存用户信息
-        const user = this.$parent.updateGlobalData('user', res.userInfo)
+        
+        let code = wx.getStorageSync('code')
+        let iv = res.iv
+        let encryptedData = res.encryptedData
+        let data = {
+          code,
+          iv,
+          encryptedData
+        }
+        wx.request({
+          url: 'http://192.168.4.148/wap/jike-wap-api/public/index.php/api/info/authorise',
+          method: 'POST',
+          data,
+          success: (res2) => {
+            console.log(res2)
+            wx.setStorageSync('jk_token', res2.data.data.jk_token)
 
-        this.isFunction(callback) && callback(user)
-        this.$apply()
+            let reqData = {jk_token:res2.data.data.jk_token}
+            this._getSqlUserInfo(reqData,callback)
+          }
+        })               
       },
       fail: (res) => {
         console.log('wepy.getUserInfo.fail:', res)
           // 用户拒绝授权:填充默认数据
         const user = this.$parent.updateGlobalData('user', {
-          nickName: '未授权',
-          avatarUrl: ''
+          nickname: '未授权',
+          avatarUrl: '',
+          apply: 0,
+          isPhone: 0
         })
 
         // 串行回调
@@ -162,4 +219,6 @@ export default class userMixin extends wepy.mixin {
       }
     })
   }
+
+
 }
