@@ -155,13 +155,13 @@
         display: flex
         flex-direction: column
         align-items: center
-        padding: 44 rpx 0
+        padding: 44rpx 0
 
         .myCenter-head-avatar
-          width: 96 rpx
-          height: 96 rpx
+          width: 96rpx
+          height: 96rpx
           border-radius: 50%
-          margin: 14 rpx
+          margin: 14rpx
 
         .myCenter-head-txt
           color: $color-text
@@ -178,9 +178,9 @@
 
       .myCenter-msgList-item
         flex: 1
-        height: 40 rpx
-        padding: 20 rpx 0
-        margin-left: 24 rpx
+        height: 40rpx
+        padding: 20rpx 0
+        margin-left: 24rpx
         display: flex
         border-bottom: 1rpx solid $color-row-line
 
@@ -196,7 +196,7 @@
           color: $color-text
 
         .myCenter-msgList-item-msg label
-          margin-right: 30 rpx
+          margin-right: 30rpx
 
       .myCenter-msgList-id .myCenter-msgList-item-msg, .myCenter-msgList-name .myCenter-msgList-item-msg
         color: #B6B6B6

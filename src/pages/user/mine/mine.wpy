@@ -2,13 +2,13 @@
   <view class="mine">
     <view class="mine-head">
       <view class="mine-head-avatarBox" @tap="navToMsgPage">
-        <image class="mine-head-avatar" src="{{userInfo.customer_id.image_id?userInfo.customer_id.image_id:userInfo.avatarUrl}}" style="background-image: url('./image/pic-default.png'); background-size: 96rpx 96rpx"></image>
-        <text class="mine-head-nickName">{{userInfo.nickname}}</text>
+        <image class="mine-head-avatar" src="{{userInfo.avatarUrl}}" style="background-image: url('./image/pic-default.png'); background-size: 96rpx 96rpx"></image>
+        <text class="mine-head-nickName">{{userInfo.nickName}}</text>
       </view>
     </view>
     <image src="./image/my_headbc.png" class="mine-head-arc"></image>
 
-    <view class="mine-phoneTestBox" wx:if="{{userInfo.isPhone===0}}">
+    <view class="mine-phoneTestBox" wx:if="{{true}}">
       <PhoneTestHint></PhoneTestHint>
       <PhoneTest></PhoneTest>
     </view>
