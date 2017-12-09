@@ -98,13 +98,16 @@ export default class userMixin extends wepy.mixin {
       return
     }
     const res = await this._getSqlUserInfo(token)
+    let user
     wepy.setStorageSync('customerId', res.customer_id)
     console.log(res.customer_id)
     if (res.customer_id === 0) {
-      return await this.$getUser()
+      user = await this.$getUser()
     } else {
-      return res
+      user = res
     }
+    this.$parent.updateGlobalData('user', user)
+    return user
   }
 
   async _getSqlUserInfo(token) {
