@@ -9,6 +9,10 @@ export default class http {
       method: method,
       data: data
     }
+    const Authorization = wepy.getStorageSync('jk_token')
+    if (Authorization) {
+      param.header = Object.assign({}, {Authorization})
+    }
     if (loading) {
       Tips.loading()
     }

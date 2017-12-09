@@ -87,7 +87,7 @@
           客服
         </view>
       </view>
-      <view class="buy-btn" @click="postOrder">立即购买</view>
+      <view class="buy-btn" bindtap="postOrder">立即购买</view>
     </view>
   </scroll-view>
 </template>
@@ -98,7 +98,7 @@
   import base from 'common/mixins/base'
   import Slider from '@/base/slider/slider'
   import Coupon from 'api/coupon'
-//  import CouponFactory from 'common/js/coupon'
+// import CouponFactory from 'common/js/coupon'
 
   export default class CouponDetail extends wepy.page {
     mixins = [users, base]
@@ -130,14 +130,15 @@
 
     methods = {
       postOrder() {
-        const orderInfo = {
-          customer_id: this.coupon.customer_id,
-          merchant_id: 1000,
-          promotion_id: this.coupon.id,
-          title: this.coupon.title,
-          price: this.coupon.price
-        }
-        console.log(orderInfo)
+        this.$getToken(() => {
+          const orderInfo = {
+            promotion_id: this.coupon.id,
+            title: this.coupon.title,
+            price: this.coupon.price
+          }
+          this.$parent.updateGlobalData('orderInfo', orderInfo)
+          this.$navigate('/pages/post-order/post-order')
+        })
       }
     }
 

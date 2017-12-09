@@ -88,7 +88,7 @@ export default class extends wepy.app {
           selectedIconPath: './icon/icon-r_s.png'
         },
         {
-          pagePath: 'pages/mine/mine',
+          pagePath: 'pages/user/mine/mine',
           text: '我的',
           iconPath: './icon/icon-my.png',
           selectedIconPath: './icon/icon-my-r.png'
@@ -98,7 +98,7 @@ export default class extends wepy.app {
   }
 
   globalData = {
-    baseUrl: 'http://jike-wap-api.chenrilong.top/',
+    baseUrl: 'http://jike-wap-api.chenrilong.top',
     user: null,
     orderInfo: {}
   }

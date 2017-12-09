@@ -31,7 +31,9 @@
       </view>
       <view class="tab-content-wrapper">
         <view class="coupon-panel">
-          <navigator url="{{'/pages/coupon-detail/coupon-detail?id=' + item.id}}" class="coupon" wx:for="{{couponList}}" wx:key="unique">
+          <view url="{{'/pages/coupon-detail/coupon-detail?id=' + item.id}}" class="coupon"
+                wx:for="{{couponList}}" wx:key="unique"
+                @tap="goToCouponDetail('{{item.id}}')">
             <view class="coupon-bg">
               <image class="image" src="./pic-coupon_bg@2x.png" mode="scaleToFill"></image>
             </view>
@@ -56,7 +58,7 @@
                 <view class="tip-wrapper">礼包</view>
               </view>
             </view>
-          </navigator>
+          </view>
         </view>
         <view class="discover-panel">
           <view class="ticky-wrapper">
@@ -88,12 +90,13 @@
 <script>
   import wepy from 'wepy'
   import base from 'common/mixins/base'
+  import users from 'common/mixins/users'
   import Slider from '@/base/slider/slider'
   import Coupon from 'api/coupon'
   import CouponFactory from 'common/js/coupon'
 
   export default class Index extends wepy.page {
-    mixins = [base]
+    mixins = [users, base]
 
     data = {
       merchantId: 100000,
@@ -126,6 +129,15 @@
     methods = {
       changeVal(e) {
         this.swiperCurrent = e.detail.current
+      },
+      async goToCouponDetail(couponId) {
+        const isAuthorise = await this.$getUserInfo()
+        console.log(isAuthorise)
+//        const jkToken = wepy.getStorageSync('jk_token')
+//        if (!jkToken) {}
+//        console.log(jkToken)
+//        this.$getToken()
+//        console.log(couponId)
       }
     }
 

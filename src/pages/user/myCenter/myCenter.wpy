@@ -2,7 +2,10 @@
   <view class="myCenter">
     <view class="myCenter-head">
       <view class="myCenter-head-avatarBox" @tap="updateAvatar">
-        <image model="aspectFill" src="{{userInfo.customer_id.image_id?userInfo.customer_id.image_id:userInfo.avatarUrl}}" class="myCenter-head-avatar" style="background-image: url('./image/pic-default.png'); background-size: 96rpx 96rpx"></image>
+        <image model="aspectFill"
+               src="{{userInfo.customer_id.image_id?userInfo.customer_id.image_id:userInfo.avatarUrl}}"
+               class="myCenter-head-avatar"
+               style="background-image: url('./image/pic-default.png'); background-size: 96rpx 96rpx"></image>
         <view class="myCenter-head-txt">点击修改头像</view>
       </view>
     </view>
@@ -44,6 +47,7 @@
   /* eslint-disable no-undef */
   import wepy from 'wepy'
   import users from 'common/mixins/users'
+  import user from 'api/user'
 
   export default class MyCenter extends wepy.page {
     mixins = [users]
@@ -69,70 +73,54 @@
       console.log(this.userInfo)
     }
 
-    _getUserInfo() {
-      this._wxUserInfo()
-      this.$getUserInfo((userInfo) => {
-        this.userInfo = userInfo
-      })
+    async _updateMsg(data) {
+      await user.updataMsg(data)
     }
 
     methods = {
-      genderChange: function(e) {
-        var self = this
-
+      genderChange: function (e) {
         if (e.detail.value === this.userInfo.customer_id.sex) {
           return
         }
         let token = wx.getStorageSync('jk_token')
-        console.log('修改中。。。')
-        wx.request({
-          url: 'http://192.168.4.148/wap/jike-wap-api/public/index.php/api/info/update',
-          method: 'POST',
-          data: {
-            jk_token: token,
-            sex: e.detail.value
-          },
-          success: (res) => {
-            self.userInfo.customer_id.sex = e.detail.value
-            self.$parent.updateGlobalData('user', Object.assign({}, self.userInfo))
-            self.$apply()
-          }
-        })
+        let data = {
+          jk_token: token,
+          sex: e.detail.value
+        }
+        this._updateMsg(data)
+        this.userInfo.customer_id.sex = e.detail.value
+        this.$parent.updateGlobalData('user', Object.assign({}, this.userInfo))
+        this.$apply()
       },
-      birthdayChange: function(e) {
-        var self = this
+      birthdayChange: function (e) {
         if (e.detail.value === this.userInfo.customer_id.birth) {
           return
         }
         let token = wx.getStorageSync('jk_token')
-        wx.request({
-          url: 'http://192.168.4.148/wap/jike-wap-api/public/index.php/api/info/update',
-          method: 'POST',
-          data: {
-            jk_token: token,
-            birth: e.detail.value
-          },
-          success: (res) => {
-            self.userInfo.customer_id.birth = e.detail.value
-            self.$parent.updateGlobalData('user', Object.assign({}, self.userInfo))
-            self.$apply()
-          }
-        })
+        let data = {
+          jk_token: token,
+          birth: e.detail.value
+        }
+        this._updateMsg(data)
+        this.userInfo.customer_id.birth = e.detail.value
+        this.$parent.updateGlobalData('user', Object.assign({}, this.userInfo))
+        this.$apply()
       },
-      updateAvatar: function() {
+      updateAvatar: function () {
         var self = this
+        let baseUrl = this.$parent.globalData.baseUrl
         wx.chooseImage({
-          success: function(res) {
+          success: function (res) {
             var tempFilePaths = res.tempFilePaths
             let token = wx.getStorageSync('jk_token')
             wx.uploadFile({
-              url: 'http://192.168.4.148/wap/jike-wap-api/public/index.php/api/info/store_image',
+              url: `${baseUrl}api/info/store_image`,
               filePath: tempFilePaths[0],
               name: 'image_id',
               formData: {
                 jk_token: token
               },
-              success: function(res) {
+              success: function (res) {
                 console.log(JSON.parse(res.data))
                 let resData = JSON.parse(res.data)
                 console.log(self)
@@ -167,13 +155,13 @@
         display: flex
         flex-direction: column
         align-items: center
-        padding: 44rpx 0
+        padding: 44 rpx 0
 
         .myCenter-head-avatar
-          width: 96rpx
-          height: 96rpx
+          width: 96 rpx
+          height: 96 rpx
           border-radius: 50%
-          margin: 14rpx
+          margin: 14 rpx
 
         .myCenter-head-txt
           color: $color-text
@@ -190,9 +178,9 @@
 
       .myCenter-msgList-item
         flex: 1
-        height: 40rpx
-        padding: 20rpx 0
-        margin-left: 24rpx
+        height: 40 rpx
+        padding: 20 rpx 0
+        margin-left: 24 rpx
         display: flex
         border-bottom: 1rpx solid $color-row-line
 
@@ -208,9 +196,9 @@
           color: $color-text
 
         .myCenter-msgList-item-msg label
-          margin-right: 30rpx
+          margin-right: 30 rpx
 
-      .myCenter-msgList-id .myCenter-msgList-item-msg,.myCenter-msgList-name .myCenter-msgList-item-msg
+      .myCenter-msgList-id .myCenter-msgList-item-msg, .myCenter-msgList-name .myCenter-msgList-item-msg
         color: #B6B6B6
 
 </style>

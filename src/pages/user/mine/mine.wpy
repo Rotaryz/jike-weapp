@@ -48,12 +48,13 @@
 <script>
   import wepy from 'wepy'
   import users from 'common/mixins/users'
+  import base from 'common/mixins/base'
   import wxUtils from 'common/js/wxUtils'
   import PhoneTest from '@/base/phoneTest/phoneTest'
   import PhoneTestHint from '@/base/phoneTestHint/phoneTestHint'
 
   export default class Mine extends wepy.page {
-    mixins = [users]
+    mixins = [users, base]
 
     config = {
       navigationBarTitleText: '我的',
@@ -109,14 +110,18 @@
       ]
     }
 
-    onLoad() {
-      this._getUserInfo()
+    async onLoad() {
+      this.load()
     }
 
-    _getUserInfo() {
-      this.$getToken((userInfo) => {
-        this.userInfo = userInfo
-      })
+    async load() {
+      await this._getUserInfo()
+      this.loaded()
+    }
+
+    async _getUserInfo() {
+      this.userInfo = await this.$getUserInfo()
+      console.log(this.userInfo)
     }
 
     methods = {
