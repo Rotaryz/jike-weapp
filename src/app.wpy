@@ -52,12 +52,12 @@ export default class extends wepy.app {
 
   config = {
     pages: [
+      'pages/recommend/recommend',
+      'pages/coupon-detail/coupon-detail',
       'pages/user/mine/mine',
       'pages/user/myCenter/myCenter',
       'pages/user/myOrder/myOrder',
       'pages/user/myCoupon/myCoupon',
-      'pages/coupon-detail/coupon-detail',
-      'pages/recommend/recommend',
       'pages/post-order/post-order',
       'pages/square/square'
     ],
@@ -98,7 +98,7 @@ export default class extends wepy.app {
   }
 
   globalData = {
-    baseUrl: 'http://jike-wap-api.chenrilong.top/',
+    baseUrl: 'http://jike-wap-api.chenrilong.top',
     user: null,
     orderInfo: {}
   }
