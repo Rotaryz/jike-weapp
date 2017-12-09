@@ -1,0 +1,188 @@
+<template>
+  <view class="myRedPacket">
+
+    <view class="myRedPacket-pandect">
+      <view class="myRedPacket-pandect-item">
+        <view class="myRedPacket-pandect-item-num">
+          <text>580</text>
+          <text class="myRedPacket-pandect-item-num-small">.50</text>
+        </view>
+        <view class="myRedPacket-pandect-item-txt">金额（元）</view>
+      </view>
+      <view class="myRedPacket-pandect-item">
+        <view class="myRedPacket-pandect-item-num">6</view>
+        <view class="myRedPacket-pandect-item-txt">数量（个）</view>
+      </view>
+    </view>
+
+    <view class="myRedPacket-withDraw">提现</view>
+
+    <view class="myRedPacket-list">
+      <view class="myRedPacket-list-item">
+        <image src="./image/icon-my_money.png" class="myRedPacket-list-item-image"></image>
+        <view class="myRedPacket-list-item-msg">
+          <view class="myRedPacket-list-item-msg-title">圣诞活动</view>
+          <view class="myRedPacket-list-item-msg-time">11月20日  12:00</view>
+        </view>
+        <view class="myRedPacket-list-item-num"><text class="myRedPacket-list-item-num-money">1.00</text>元</view>
+      </view>
+
+      <view class="myRedPacket-list-item">
+        <image src="./image/icon-my_money.png" class="myRedPacket-list-item-image"></image>
+        <view class="myRedPacket-list-item-msg">
+          <view class="myRedPacket-list-item-msg-title">圣诞活动</view>
+          <view class="myRedPacket-list-item-msg-time">11月20日  12:00</view>
+        </view>
+        <view class="myRedPacket-list-item-num"><text class="myRedPacket-list-item-num-money">1.00</text>元</view>
+      </view>
+    </view>
+
+    <view class="myRedPacket-noList">
+      <image src="./image/pic-my-money.png" class="myRedPacket-noList-img"></image>
+      <view class="myRedPacket-noList-txt">您还没有红包</view>
+    </view>
+
+  </view>
+</template>
+
+<script>
+  /* eslint-disable no-undef */
+  import wepy from 'wepy'
+  import base from 'common/mixins/base'
+  import GetRedPacket from 'api/myRedPacket'
+
+  export default class RedPacket extends wepy.page {
+    mixins = [base]
+
+    config = {
+      navigationBarTitleText: '我的红包',
+      navigationBarBackgroundColor: '#fff',
+      navigationBarTextStyle: 'black',
+      backgroundColor: '#F9F9F9'
+    }
+
+    data = {
+      packetTotal: null,
+      packetList: null
+    }
+
+    async onLoad() {
+      await this.load()
+    }
+
+    async load() {
+      await this._getRedPacket()
+      this.loaded()
+    }
+
+    async _getRedPacket() {
+      let jkToken = wx.getStorageSync('jk_token')
+      this.packetTotal = await GetRedPacket.getTotalRedpacket(jkToken)
+      this.packetList = await GetRedPacket.getTotalRedpacketList(jkToken)
+      this.$apply()
+      console.log(this)
+    }
+  }
+</script>
+
+<style lang="stylus">
+  @import "../../../common/stylus/variable"
+
+  page
+    background: $color-background
+
+    .myRedPacket
+      background: $color-highlight-background
+      .myRedPacket-pandect
+        height: 224rpx
+        display: flex
+
+        .myRedPacket-pandect-item
+          flex: 1
+          text-align: center
+
+          .myRedPacket-pandect-item-num
+            font-size: $font-size-large-xx
+            color: $color-text-t
+            line-height: 67rpx
+            margin-bottom: 21rpx
+            margin-top: 49rpx
+
+            .myRedPacket-pandect-item-num-small
+              font-size: $font-size-medium
+
+          .myRedPacket-pandect-item-txt
+            font-size: $font-size-small-s
+            color: $color-text
+            line-height: 28rpx
+
+      .myRedPacket-withDraw
+        width: 702rpx
+        height: 88rpx
+        background: $color-button
+        border-radius: 4rpx
+        margin: 0 auto
+        text-align: center
+        line-height: 88rpx
+        font-size: $font-size-medium
+        color: $color-white
+
+        &:active
+          background: rgba(0,0,0,.2)
+
+      .myRedPacket-list
+        padding: 10rpx 0 0 24rpx
+
+        .myRedPacket-list-item
+          height: 90rpx
+          border-bottom: 1rpx solid $color-row-line
+          display: flex
+          align-items: center
+
+          .myRedPacket-list-item-image
+            width: 37rpx
+            height: 46rpx
+            margin-right: 23rpx
+
+          .myRedPacket-list-item-msg
+            width: 480rpx
+
+            .myRedPacket-list-item-msg-title
+              font-size: $font-size-small
+              color: $color-text
+              line-height: 33rpx
+
+            .myRedPacket-list-item-msg-time
+              font-size: $font-size-small-s
+              color: $color-text-ddd
+              line-height: 28rpx
+
+          .myRedPacket-list-item-num
+            width: 180rpx
+            padding-right: 24rpx
+            text-align: right
+            font-size: $font-size-small
+
+            .myRedPacket-list-item-num-money
+              color: $color-text-t
+
+      .myRedPacket-noList
+        height: 304rpx
+        display: flex
+        flex-direction: column
+        align-items: center
+
+        .myRedPacket-noList-img
+          width: 167rpx
+          height: 130rpx
+          margin: 65rpx 0 35rpx 30rpx
+
+        .myRedPacket-noList-txt
+          font-size: $font-size-small
+          color: $color-text
+
+
+
+
+
+</style>

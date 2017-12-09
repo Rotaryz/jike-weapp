@@ -38,11 +38,11 @@
 
 <script>
   import wepy from 'wepy'
-  import users from 'common/mixins/users'
-  import PhoneTest from '@/components/phoneTest/phoneTest'
+  import base from 'common/mixins/base'
+  import PhoneTest from '@/base/phoneTest/phoneTest'
 
   export default class MyOrder extends wepy.page {
-    mixins = [users]
+    mixins = [base]
 
     config = {
       navigationBarTitleText: '我的订单',
@@ -73,19 +73,21 @@
       }
     }
 
-    onLoad(option) {
+    async onLoad(option) {
+      await this.load(option)
+    }
+
+    async load(option) {
       this.userInfo = this.$parent.globalData.user
       if (option.idx) {
         this.menuIdx = option.idx
       }
-      console.log(this.menuIdx)
+      await this._getOrderList()
+      this.loaded()
     }
 
-    _getUserInfo() {
-      this._wxUserInfo()
-      this.$getUserInfo((userInfo) => {
-        this.userInfo = userInfo
-      })
+    async _getOrderList() {
+      console.log(999)
     }
 
     events = {
@@ -99,20 +101,19 @@
 <style lang="stylus">
   @import "../../../common/stylus/variable"
 
-  $color-text-gary = #464646
   page
-    background: #F9F9F9
+    background: $color-background
     font-family: PingFangSC-Light
 
-    .myOrder-menuTab 
+    .myOrder-menuTab
       display: flex
       height: 84rpx
-      background: #fff   
-      border-bottom: 1rpx solid #F0EFF5
+      background: $color-highlight-background
+      border-bottom: 1rpx solid $color-row-line
 
       .myOrder-menuTab-item
         font-size: $font-size-medium
-        color: $color-text-gary
+        color: $color-text
         flex: 1
         line-height: 84rpx
         text-align: center
@@ -121,16 +122,16 @@
         border-bottom: 0 none
 
       .myOrder-menuTab-item.active
-        color: #FF4E00
-        border-bottom: 4rpx solid #FF4E00
+        color: $color-text-t
+        border-bottom: 4rpx solid $color-text-t
 
     .myOrder-phoneTestBox
       height: 110rpx
 
     .myOrder-noOrderMsg
       height: 320rpx
-      background: #fff
-      border-bottom: 1rpx solid #F1EFF5
+      background: $color-highlight-background
+      border-bottom: 1rpx solid $color-row-line
       padding-top: 64rpx
       display: flex
       flex-direction: column
@@ -144,27 +145,27 @@
 
       .myOrder-noOrderMsg-txt
         font-size: $font-size-small
-        color: $color-text-gary
+        color: $color-text
         margin-bottom: 70rpx
 
       .myOrder-noOrderBtn
         width: 171rpx
         height: 48rpx
-        border: 1rpx solid #F0EFF5
+        border: 1rpx solid $color-row-line
         text-align: center
         line-height: 48rpx
         font-size: $font-size-small
         border-radius: 4rpx
 
         &:active
-          border: 1rpx solid #706b82
-          color: #706b82
+          border: 1rpx solid $color-button
+          color: $color-button
 
     .myOrder-orderList-item
       position: relative
       height: 137rpx
       margin-top: 20rpx
-      background: #fff
+      background: $color-highlight-background
       padding: 27rpx 23rpx
       display: flex
       justify-content: space-between
@@ -172,7 +173,7 @@
       .myOrder-orderList-item-logo
         width: 128rpx
         height: 128rpx
-        border: 1rpx solid #F1EFF5
+        border: 1rpx solid $color-row-line
         margin-right: 18rpx
 
       .myOrder-orderList-item-msg
@@ -180,7 +181,7 @@
 
         .myOrder-orderList-item-title
           font-size: $font-size-medium
-          color: $color-text-gary
+          color: $color-text
           line-height: 40rpx
           margin-bottom: 22rpx
 
@@ -195,7 +196,7 @@
 
         .myOrder-orderList-item-status
           font-size: $font-size-small-s
-          color: #FF4E00
+          color: $color-text-t
           text-align: right
           line-height: 30rpx
 
@@ -206,7 +207,7 @@
           width: 114rpx
           height: 46rpx
           border: 1rpx solid #656079
-          background: #706B82
+          background: $color-button
           border-radius: 4rpx
           text-align: center
           line-height: 46rpx

@@ -9,25 +9,25 @@ export default class userMixin extends wepy.mixin {
 
   // 进行微信登陆
   $doLogin() {
-    wepy.login({
+    wx.login({
       success: (res) => {
-        console.log('wepy.login.success:', res)
+        console.log('wx.login.success:', res)
       },
       fail: (res) => {
-        console.log('wepy.login.fail:', res)
+        console.log('wx.login.fail:', res)
       }
     })
   }
 
   // set Code
   $setCode() {
-    wepy.login({
+    wx.login({
       success: (res) => {
-        console.log('wepy.login.success:', res)
+        console.log('wx.login.success:', res)
         wx.setStorageSync('code', res.code)
       },
       fail: (res) => {
-        console.log('wepy.login.fail:', res)
+        console.log('wx.login.fail:', res)
       }
     })
   }
@@ -36,7 +36,7 @@ export default class userMixin extends wepy.mixin {
   $getCode() {
     let code = wx.getStorageSync('code')
     if (!code) {
-      this.$setCode()  
+      this.$setCode()
     }
     code = wx.getStorageSync('code')
     return code
@@ -46,9 +46,9 @@ export default class userMixin extends wepy.mixin {
     let user = wx.getStorageSync('user')
     // 不重复获取用户信息
     if (!user || !user.nickName) {
-      wepy.getUserInfo({
+      wx.getUserInfo({
         success: (res) => {
-          console.log('wepy.getUserInfo.success:', res)
+          console.log('wx.getUserInfo.success:', res)
           // 缓存用户信息
           wx.setStorageSync('user', res.userInfo)
         },
@@ -96,9 +96,9 @@ export default class userMixin extends wepy.mixin {
   $login(success = () => {
   }, noAutoLogin) {
     // 先登录
-    wepy.login({
+    wx.login({
       success: (res) => {
-        console.log('wepy.login.success:', res)
+        console.log('wx.login.success:', res)
         wx.setStorageSync('code', res.code)
 
         // 如果不需要自动登录，就return
@@ -114,7 +114,7 @@ export default class userMixin extends wepy.mixin {
         this.$apply()
       },
       fail: (res) => {
-        console.log('wepy.login.fail:', res)
+        console.log('wx.login.fail:', res)
       }
     })
   }
@@ -126,12 +126,13 @@ export default class userMixin extends wepy.mixin {
       data,
       success: (res) => {
         console.log(res)
+        let statusObject
         if (res.data.data.customer_id === 0) {
-          var statusObject = {
+          statusObject = {
             isPhone:0
-          }         
+          }
         }else {
-          var statusObject = {
+          statusObject = {
             isPhone:1
           }
         }
@@ -146,9 +147,9 @@ export default class userMixin extends wepy.mixin {
 
   // 获取用户公开信息（微信）
   _wxUserInfo(callback) {
-    wepy.getUserInfo({
+    wx.getUserInfo({
       success: (res) => {
-        console.log('wepy.getUserInfo.success:', res)       
+        console.log('wx.getUserInfo.success:', res)
         let code = wx.getStorageSync('code')
         let iv = res.iv
         let encryptedData = res.encryptedData
@@ -168,10 +169,10 @@ export default class userMixin extends wepy.mixin {
             let reqData = {jk_token:res2.data.data.jk_token}
             this._getSqlUserInfo(reqData,callback)
           }
-        })               
+        })
       },
       fail: (res) => {
-        console.log('wepy.getUserInfo.fail:', res)
+        console.log('wx.getUserInfo.fail:', res)
         // 用户拒绝授权:填充默认数据
         const user = this.$parent.updateGlobalData('user', {
           nickname: '未授权',

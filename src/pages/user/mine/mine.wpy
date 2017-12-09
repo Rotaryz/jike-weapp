@@ -4,11 +4,12 @@
       <view class="mine-head-avatarBox" @tap="navToMsgPage">
         <image class="mine-head-avatar" src="{{userInfo.customer_id.image_id?userInfo.customer_id.image_id:userInfo.avatarUrl}}" style="background-image: url('./image/pic-default.png'); background-size: 96rpx 96rpx"></image>
         <text class="mine-head-nickName">{{userInfo.nickname}}</text>
-      </view>     
+      </view>
     </view>
     <image src="./image/my_headbc.png" class="mine-head-arc"></image>
 
     <view class="mine-phoneTestBox" wx:if="{{userInfo.isPhone===0}}">
+      <PhoneTestHint></PhoneTestHint>
       <PhoneTest></PhoneTest>
     </view>
 
@@ -32,23 +33,24 @@
           <image src="{{item.imgUrl}}" class="mine-serve-menuItem-image"></image>
           <view class="mine-serve-menuItem-txt">{{item.text}}</view>
         </view>
-      </view>      
+      </view>
     </view>
 
     <view class="mine-logo">
       <image class="mine-logo-image" src="./image/logo-jike.png"></image>
       <view class="mine-logo-txt">集客小程序技术支持</view>
     </view>
-    
+
     <view class="mine-cover" @tap="userLogin" wx-if="{{userInfo.apply===0}}"></view>
-  </view> 
+  </view>
 </template>
 
 <script>
   import wepy from 'wepy'
   import users from 'common/mixins/users'
   import wxUtils from 'common/js/wxUtils'
-  import PhoneTest from '@/components/phoneTest/phoneTest'
+  import PhoneTest from '@/base/phoneTest/phoneTest'
+  import PhoneTestHint from '@/base/phoneTestHint/phoneTestHint'
 
   export default class Mine extends wepy.page {
     mixins = [users]
@@ -61,7 +63,8 @@
     }
 
     components = {
-      PhoneTest
+      PhoneTest,
+      PhoneTestHint
     }
 
     data = {
@@ -112,7 +115,7 @@
 
     _getUserInfo() {
       this.$getToken((userInfo) => {
-        this.userInfo = userInfo       
+        this.userInfo = userInfo
       })
     }
 
@@ -142,14 +145,13 @@
 
 <style lang="stylus">
   @import "../../../common/stylus/variable"
-  
-  $color-text-gary = #464646
+
   page
     height: 100%
 
   .mine
     height: 100%
-    background: #F9F9F9
+    background: $color-background
     font-family: PingFangSC-Light
 
     .mine-cover
@@ -190,7 +192,7 @@
       height: 24rpx
       margin: 0
       display: block
-      background: #fff
+      background: $color-highlight-background
 
     .mine-phoneTestBox
       height: 110rpx
@@ -198,11 +200,11 @@
     .mine-order
       border-bottom: 1rpx solid #F0EFF5
       border-top: 1rpx solid #F0EFF5
-      background: #fff
+      background: $color-highlight-background
       margin-bottom: 20rpx
 
       .mine-order-head
-        height: 40rpx        
+        height: 40rpx
         border-bottom: 1rpx solid #F0EFF5
         padding: 20rpx 0
         padding-right: 24rpx
@@ -234,20 +236,20 @@
             height: 40rpx
             margin-bottom: 14rpx
 
-          .mine-order-menuItem-txt            
+          .mine-order-menuItem-txt
             font-size: $font-size-small
-            color: $color-text-gary
+            color: $color-text
 
     .mine-serve
-      background: #fff
-      border-top: 1rpx solid #F0EFF5
-      border-bottom: 1rpx solid #F0EFF5
+      background: $color-highlight-background
+      border-top: 1rpx solid $color-row-line
+      border-bottom: 1rpx solid $color-row-line
 
       .mine-serve-head
         height: 78rpx
         line-height: 78rpx
         font-size: $font-size-medium
-        border-bottom: 1rpx solid #F0EFF5
+        border-bottom: 1rpx solid $color-row-line
         margin-left: 24rpx
         color: #696671
 
@@ -265,9 +267,9 @@
             height: 40rpx
             margin-bottom: 14rpx
 
-          .mine-serve-menuItem-txt            
+          .mine-serve-menuItem-txt
             font-size: $font-size-small
-            color: $color-text-gary
+            color: $color-text
 
     .mine-logo
       text-align: center

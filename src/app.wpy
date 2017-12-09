@@ -55,7 +55,8 @@ export default class extends wepy.app {
       'pages/user/mine/mine',
       'pages/user/myCenter/myCenter',
       'pages/user/myOrder/myOrder',
-      'pages/user/myCoupon/myCoupon'
+      'pages/user/myCoupon/myCoupon',
+      'pages/user/redPacket/redPacket',
       'pages/coupon-detail/coupon-detail',
       'pages/recommend/recommend',
       'pages/post-order/post-order',
@@ -79,7 +80,6 @@ export default class extends wepy.app {
           text: '广场',
           iconPath: './icon/icon-square_1.png',
           selectedIconPath: './icon/icon-square_s.png'
-
         },
         {
           pagePath: 'pages/recommend/recommend',
