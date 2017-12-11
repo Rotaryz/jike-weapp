@@ -1,0 +1,34 @@
+<template>
+  <view>订单详情</view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import users from 'common/mixins/users'
+
+  export default class MyCoupon extends wepy.page {
+    mixins = [users]
+
+    config = {
+      navigationBarTitleText: '订单详情'
+    }
+
+    data = {
+      userInfo: {
+        nickName: '加载中...'
+      }
+    }
+
+    onLoad() {
+
+    }
+
+    _getUserInfo() {
+
+    }
+  }
+</script>
+
+<style lang="stylus">
+  @import "../../../common/stylus/variable"
+</style>

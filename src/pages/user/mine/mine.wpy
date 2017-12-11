@@ -8,7 +8,7 @@
     </view>
     <image src="./image/my_headbc.png" class="mine-head-arc"></image>
 
-    <view class="mine-phoneTestBox" wx:if="{{true}}">
+    <view class="mine-phoneTestBox" wx:if="{{isPhone===0}}">
       <PhoneTestHint></PhoneTestHint>
       <PhoneTest></PhoneTest>
     </view>
@@ -117,24 +117,25 @@
 
     async load() {
       await this._getUserInfo()
-      let customerId = wx.getStorageSync('customer_id')
-      if (customerId) {
-        this.isPhone = 0
-      } else {
-        this.isPhone = 1
-      }
-      let token = wx.getStorageSync('token')
-      if (token) {
-        this.allpy = 0
-      } else {
-        this.apply = 1
-      }
       this.loaded()
     }
 
     async _getUserInfo() {
-      this.userInfo = await this.$getUserInfo()
-      console.log(this.userInfo)
+      await this.$getUserInfo()
+      this.userInfo = this.$parent.globalData.user
+      let customerId = wx.getStorageSync('customerId')
+      if (customerId) {
+        this.isPhone = 1
+        this.allpy = 1
+        return
+      }
+      this.isPhone = 0
+      let token = wx.getStorageSync('token')
+      if (token) {
+        this.allpy = 1
+      } else {
+        this.apply = 0
+      }
     }
 
     methods = {
@@ -146,6 +147,7 @@
       },
       navToMsgPage() {
         if (this.isPhone === 1) {
+          console.log(999)
           this.methods.navgto('/pages/user/myCenter/myCenter')
         } else {
           this.$invoke('PhoneTest', 'bindPhone')

@@ -78,7 +78,7 @@
     }
 
     methods = {
-      genderChange: function (e) {
+      genderChange(e) {
         if (e.detail.value === this.userInfo.customer_id.sex) {
           return
         }
@@ -92,7 +92,7 @@
         this.$parent.updateGlobalData('user', Object.assign({}, this.userInfo))
         this.$apply()
       },
-      birthdayChange: function (e) {
+      birthdayChange(e) {
         if (e.detail.value === this.userInfo.customer_id.birth) {
           return
         }
@@ -106,7 +106,7 @@
         this.$parent.updateGlobalData('user', Object.assign({}, this.userInfo))
         this.$apply()
       },
-      updateAvatar: function () {
+      updateAvatar() {
         const res = user.updateImg('image_id')
         console.log(res)
 //        wx.chooseImage({

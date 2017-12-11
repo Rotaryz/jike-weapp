@@ -11,15 +11,15 @@
       <PhoneTest></PhoneTest>
     </view>
 
-    <view class="myOrder-orderBox">
-      <view class="myOrder-noOrderMsg" wx:if="{{true}}">
+    <scroll-view scroll-y class="myOrder-orderBox" bindscrolltolower="orderLower">
+      <view class="myOrder-noOrderMsg" wx:if="{{false}}">
         <image src="{{noOrderIcon[menuIdx]}}" wx:if="noOrder" class="myOrder-noOrderMsg-Img"></image>
         <view class="myOrder-noOrderMsg-txt">您还没有相关订单</view>
         <view class="myOrder-noOrderBtn">随便逛逛</view>
       </view>
 
       <view class="myOrder-orderList">
-        <view class="myOrder-orderList-item">
+        <view class="myOrder-orderList-item" wx:for="orderList" wx:key="item">
           <image class="myOrder-orderList-item-logo" src="./image/pic-default-1.png"></image>
           <view class="myOrder-orderList-item-msg">
             <view class="myOrder-orderList-item-title">圣诞活动</view>
@@ -33,7 +33,7 @@
           </view>
         </view>
       </view>
-    </view>
+    </scroll-view>
   </view>
 </template>
 
@@ -67,12 +67,23 @@
       orderItemStatus: ['待付款', '', '', '已退款'],
       orderItemBtnTxt: ['付款', '进店使用', '评价', '再来一单'],
       noOrder: false,
-      isPhone: 0
+      isPhone: 0,
+      LowerLoading: false,
+      orderList: [1, 2, 3, 4]
     }
 
     methods = {
-      tabChange: (idx) => {
+      tabChange(idx) {
         this.menuIdx = idx
+      },
+      orderUpper() {
+        console.log('刷新')
+      },
+      orderLower() {
+        if (!this.LowerLoading) {
+          console.log('加载')
+          this.LowerLoading = true
+        }
       }
     }
 
@@ -85,19 +96,18 @@
       if (option.idx) {
         this.menuIdx = option.idx
       }
-      await this._getOrderList(this.menuIdx)
-      let customerId = wx.getStorageSync('customer_id')
+      await this._getOrderList(1, 1)
+      let customerId = wx.getStorageSync('customerId')
       if (customerId) {
-        this.isPhone = 0
-      } else {
         this.isPhone = 1
+      } else {
+        this.isPhone = 0
       }
       this.loaded()
     }
 
-    async _getOrderList(idx) {
-      let token = wx.getStorageSync('token')
-      const listData = await getMyOrder.getOrderList(token, idx, 1)
+    async _getOrderList(idx, page) {
+      const listData = await getMyOrder.getOrderList(idx, page)
     }
 
     events = {
@@ -135,93 +145,97 @@
         color: $color-text-t
         border-bottom: 4rpx solid $color-text-t
 
+
     .myOrder-phoneTestBox
       height: 110rpx
 
-    .myOrder-noOrderMsg
-      height: 320rpx
-      background: $color-highlight-background
-      border-bottom: 1rpx solid $color-row-line
-      padding-top: 64rpx
-      display: flex
-      flex-direction: column
-      align-items: center
+    .myOrder-orderBox
+      max-height: 1120rpx
 
-      .myOrder-noOrderMsg-Img
-        width: 185rpx
-        height: 106rpx
-        margin-bottom: 20rpx
-        padding-left: 30rpx
+      .myOrder-noOrderMsg
+        height: 320rpx
+        background: $color-highlight-background
+        border-bottom: 1rpx solid $color-row-line
+        padding-top: 64rpx
+        display: flex
+        flex-direction: column
+        align-items: center
 
-      .myOrder-noOrderMsg-txt
-        font-size: $font-size-small
-        color: $color-text
-        margin-bottom: 70rpx
+        .myOrder-noOrderMsg-Img
+          width: 185rpx
+          height: 106rpx
+          margin-bottom: 20rpx
+          padding-left: 30rpx
 
-      .myOrder-noOrderBtn
-        width: 171rpx
-        height: 48rpx
-        border: 1rpx solid $color-row-line
-        text-align: center
-        line-height: 48rpx
-        font-size: $font-size-small
-        border-radius: 4rpx
-
-        &:active
-          border: 1rpx solid $color-button
-          color: $color-button
-
-    .myOrder-orderList-item
-      position: relative
-      height: 137rpx
-      margin-top: 20rpx
-      background: $color-highlight-background
-      padding: 27rpx 23rpx
-      display: flex
-      justify-content: space-between
-
-      .myOrder-orderList-item-logo
-        width: 128rpx
-        height: 128rpx
-        border: 1rpx solid $color-row-line
-        margin-right: 18rpx
-
-      .myOrder-orderList-item-msg
-        width: 440rpx
-
-        .myOrder-orderList-item-title
-          font-size: $font-size-medium
+        .myOrder-noOrderMsg-txt
+          font-size: $font-size-small
           color: $color-text
-          line-height: 40rpx
-          margin-bottom: 22rpx
+          margin-bottom: 70rpx
 
-        .myOrder-orderList-item-detail
-          font-size: $font-size-small
-          color: #696671
-          line-height: 33rpx
-
-
-      .myOrder-orderList-item-btnBox
-        width: 116rpx
-
-        .myOrder-orderList-item-status
-          font-size: $font-size-small-s
-          color: $color-text-t
-          text-align: right
-          line-height: 30rpx
-
-        .myOrder-orderList-item-btn
-          position: absolute
-          right: 24rpx
-          bottom: 58rpx
-          width: 114rpx
-          height: 46rpx
-          border: 1rpx solid #656079
-          background: $color-button
-          border-radius: 4rpx
+        .myOrder-noOrderBtn
+          width: 171rpx
+          height: 48rpx
+          border: 1rpx solid $color-row-line
           text-align: center
-          line-height: 46rpx
+          line-height: 48rpx
           font-size: $font-size-small
-          color: #fff
+          border-radius: 4rpx
+
+          &:active
+            border: 1rpx solid $color-button
+            color: $color-button
+
+      .myOrder-orderList-item
+        position: relative
+        height: 137rpx
+        margin-top: 20rpx
+        background: $color-highlight-background
+        padding: 27rpx 23rpx
+        display: flex
+        justify-content: space-between
+
+        .myOrder-orderList-item-logo
+          width: 128rpx
+          height: 128rpx
+          border: 1rpx solid $color-row-line
+          margin-right: 18rpx
+
+        .myOrder-orderList-item-msg
+          width: 440rpx
+
+          .myOrder-orderList-item-title
+            font-size: $font-size-medium
+            color: $color-text
+            line-height: 40rpx
+            margin-bottom: 22rpx
+
+          .myOrder-orderList-item-detail
+            font-size: $font-size-small
+            color: #696671
+            line-height: 33rpx
+
+
+        .myOrder-orderList-item-btnBox
+          width: 116rpx
+
+          .myOrder-orderList-item-status
+            font-size: $font-size-small-s
+            color: $color-text-t
+            text-align: right
+            line-height: 30rpx
+
+          .myOrder-orderList-item-btn
+            position: absolute
+            right: 24rpx
+            bottom: 58rpx
+            width: 114rpx
+            height: 46rpx
+            border: 1rpx solid #656079
+            background: $color-button
+            border-radius: 4rpx
+            text-align: center
+            line-height: 46rpx
+            font-size: $font-size-small
+            color: #fff
 
 </style>

@@ -45,7 +45,7 @@ export default class userMixin extends wepy.mixin {
    * 判断是否绑定用户手机号码
    * @returns {boolean}
    */
-  isAuthorise() {
+  async isAuthorise() {
     const code = wepy.getStorageSync('code')
     const token = wepy.getStorageSync('token')
     if (!code || !token) {
@@ -53,8 +53,9 @@ export default class userMixin extends wepy.mixin {
     }
     let customerId = wepy.getStorageSync('customerId')
     if (customerId === '') {
-      const userInfo = this._getUserInfo(token)
+      const userInfo = await this._getSqlUserInfo(token)
       customerId = userInfo.customer_id
+      wepy.setStorageSync('customerId', customerId)
     }
     if (!customerId) {
       return false
@@ -102,14 +103,16 @@ export default class userMixin extends wepy.mixin {
     if (res.customer_id === 0) {
       user = await this.$getUser()
     } else {
-      user = res
+      user = res.customer_id
     }
     this.$parent.updateGlobalData('user', user)
     return user
   }
 
   async _getSqlUserInfo(token) {
-    return await User.getUserInfo({jk_token: token})
+    const res = await User.getUserInfo({jk_token: token})
+    wepy.setStorageSync('openId', res.openid)
+    return res
   }
 
   // // 提示用户开启授权

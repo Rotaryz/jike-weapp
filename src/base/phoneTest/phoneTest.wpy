@@ -38,9 +38,12 @@
 <script>
   /* eslint-disable no-undef */
   import wepy from 'wepy'
+  import tips from '@/common/js/tips'
+  import users from 'common/mixins/users'
   import user from 'api/user'
 
   export default class PhoneTest extends wepy.component {
+    mixins = [users]
     data = {
       phoneCodeTime: '获取验证码',
       phoneCodeDisabled: false,
@@ -62,14 +65,13 @@
     }
 
     methods = {
-      bindPhone: function () {
-        console.log(888)
+      bindPhone() {
         this.phoneTestCover = true
       },
-      closeCover: function () {
+      closeCover() {
         this.phoneTestCover = false
       },
-      phoneNumIn: function (e) {
+      phoneNumIn(e) {
         this.phoneNum = e.detail.value
         var reg = /^1[3|4|5|7|8][0-9]{9}$/
         if (reg.test(this.phoneNum) && this.phoneCode.length === 6) {
@@ -78,7 +80,7 @@
           this.submitDisabled = true
         }
       },
-      phoneCodeIn: function (e) {
+      phoneCodeIn(e) {
         this.phoneCode = e.detail.value
         var reg = /^1[3|4|5|7|8][0-9]{9}$/
         if (reg.test(this.phoneNum) && this.phoneCode.length === 6) {
@@ -87,19 +89,18 @@
           this.submitDisabled = true
         }
       },
-      getPhoneCode: function () {
+      async getPhoneCode() {
         var reg = /^1[3|4|5|7|8][0-9]{9}$/
         var self = this
         if (reg.test(self.phoneNum) && !self.phoneCodeDisabled) {
-          console.log(this.phoneNum)
-          let jkToken = wx.getStorageSync('token')
+          let jkToken = await this.$getToken()
           self.phoneCodeTime = '发送中···'
           let data = {
             jk_token: jkToken,
-            mobile: self.phoneNum,
-            customer_id: 100000
+            mobile: self.phoneNum
           }
-          this._getPhoneCode(data)
+          let resData = this._getPhoneCode(data)
+          console.log(resData)
           this.phoneCodeDisabled = true
           let time = 60
           this.phoneCodeTime = time + 's'
@@ -118,18 +119,19 @@
           console.log('err')
         }
       },
-      submitMsg: function () {
+      async submitMsg() {
         let reg = /^1[3|4|5|7|8][0-9]{9}$/
         let self = this
         if (this.phoneNum && reg.test(self.phoneNum) && this.phoneCode && this.phoneCode.length === 6) {
-          let jkToken = wx.getStorageSync('jk_token')
+          let jkToken = await this.$getToken()
+          console.log(this.$getToken())
           let data = {
             jk_token: jkToken,
             mobile: self.phoneNum,
             code: self.phoneCode
           }
-          let resData = this._bindPhone(data)
-          console.log(resData)
+          let resData = await this._bindPhone(data)
+          console.log(resData,1)
 //          if (res.data.status === 'success') {
 //            self.phoneTestCover = false
 //            self.$apply()
@@ -217,7 +219,7 @@
           .phoneTest-list-item-input
             width: 240rpx
           .phoneTest-list-code
-            border-left: 1rpx solid #E6E6E6
+            border-left: 1px solid #E6E6E6
             height: 33rpx
             width: 120rpx
             text-align: center
