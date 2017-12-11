@@ -14,7 +14,8 @@ export default class extends wepy.app {
     this.use('promisify')
   }
 
-  onLaunch() {
+  onLaunch(option) {
+    wepy.setStorageSync('merchantId', option.query.merchantId)
     // 校验SDK
     wxUtils.checkSDK()
   }
