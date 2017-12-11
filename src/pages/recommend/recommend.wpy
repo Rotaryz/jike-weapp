@@ -101,13 +101,11 @@
     mixins = [users, base]
 
     data = {
-      merchantId: 100000,
+      merchantId: wepy.getStorageSync('merchantId'),
       couponList: []
     }
 
     async onLoad() {
-      const isAuthorise = await this.isAuthorise()
-      console.log(isAuthorise)
       await this.load()
     }
 

@@ -13,14 +13,15 @@ export default class http {
     if (Authorization) {
       param.header = Object.assign({}, {Authorization)
     }
-    param.header = Object.assign({}, param.header, {'Current-merchant': 100000})
+    param.header = Object.assign({}, param.header, {'Current-merchant': wepy.getStorageSync('merchantId')})
     if (loading) {
       Tips.loading()
     }
     const res = await wepy.request(param)
     Tips.loaded()
     if (this.isSuccess(res)) {
-      return res.data.data
+      const result = res.data.data ? res.data.data : res.data
+      return result
     } else {
       throw this.requestException(res)
     }
