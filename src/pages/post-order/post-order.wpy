@@ -29,7 +29,7 @@
         <view class="price"><text class="number">200</text><text class="yuan">元</text></view>
       </view>
     </view>
-    <view class="post-btn">
+    <view class="post-btn" @tap="postOrder">
       提交订单
     </view>
   </view>
@@ -37,10 +37,33 @@
 
 <script>
   import wepy from 'wepy'
+  import Order from 'api/order'
 
   export default class PostOrder extends wepy.page {
     onLoad() {
+      console.log(this.$parent.globalData)
+    }
 
+    methods = {
+      async postOrder() {
+        const {promotion_id, title, price} = this.$parent.globalData.orderInfo
+        const data = {
+          promotion_id,
+          title,
+          price: 0.01,
+          total: 0.01,
+          count: 1,
+          openId: wepy.getStorageSync('openId')
+        }
+        const res = await Order.operation(data)
+        const {timestamp, nonceStr, signType, paySign} = res.payInfo
+        const pay = await wepy.requestPayment({timeStamp: timestamp, nonceStr, package: res.payInfo.package, signType, paySign})
+        if (pay.errMsg === 'requestPayment:ok') {
+          const orderId = res.order.orderId
+          const order = Order.produceOrder({id: orderId})
+          console.log(order)
+        }
+      }
     }
   }
 </script>

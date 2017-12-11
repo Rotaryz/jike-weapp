@@ -15,7 +15,8 @@
             <text class="number">{{coupon.platform_price}}</text>
           </view>
           <view class="origin-price">门市价:￥{{coupon.shop_price}}</view>
-          <view class="buy-number"><image class="icon" src="./icon-many.png"></image>
+          <view class="buy-number">
+            <image class="icon" src="./icon-many.png"></image>
             <text class="font">{{coupon.collected}}人已购买</text>
           </view>
         </view>
@@ -87,7 +88,7 @@
           客服
         </view>
       </view>
-      <view class="buy-btn" bindtap="postOrder">立即购买</view>
+      <view class="buy-btn" @tap="postOrder">立即购买</view>
     </view>
   </scroll-view>
 </template>
@@ -98,7 +99,7 @@
   import base from 'common/mixins/base'
   import Slider from '@/base/slider/slider'
   import Coupon from 'api/coupon'
-// import CouponFactory from 'common/js/coupon'
+  // import CouponFactory from 'common/js/coupon'
 
   export default class CouponDetail extends wepy.page {
     mixins = [users, base]
@@ -130,15 +131,13 @@
 
     methods = {
       postOrder() {
-        this.$getToken(() => {
-          const orderInfo = {
-            promotion_id: this.coupon.id,
-            title: this.coupon.title,
-            price: this.coupon.price
-          }
-          this.$parent.updateGlobalData('orderInfo', orderInfo)
-          this.$navigate('/pages/post-order/post-order')
-        })
+        const orderInfo = {
+          promotion_id: this.coupon.id,
+          title: this.coupon.title,
+          price: this.coupon.platform_price
+        }
+        this.$parent.updateGlobalData('orderInfo', orderInfo)
+        this.$navigate('/pages/post-order/post-order')
       }
     }
 

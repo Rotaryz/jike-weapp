@@ -84,6 +84,7 @@
         </view>
       </view>
     </view>
+    <PhoneTest></PhoneTest>
   </view>
 </template>
 
@@ -94,6 +95,7 @@
   import Slider from '@/base/slider/slider'
   import Coupon from 'api/coupon'
   import CouponFactory from 'common/js/coupon'
+  import PhoneTest from '@/base/phoneTest/phoneTest'
 
   export default class Index extends wepy.page {
     mixins = [users, base]
@@ -104,12 +106,13 @@
     }
 
     async onLoad() {
+      const isAuthorise = await this.isAuthorise()
+      console.log(isAuthorise)
       await this.load()
     }
 
     async load() {
       await this._getShopCouponList()
-      await this.$getUserInfo()
       this.loaded()
     }
 
@@ -132,13 +135,11 @@
         this.swiperCurrent = e.detail.current
       },
       async goToCouponDetail(couponId) {
-        const isAuthorise = await this.$getUserInfo()
-        console.log(isAuthorise)
-//        const jkToken = wepy.getStorageSync('jk_token')
-//        if (!jkToken) {}
-//        console.log(jkToken)
-//        this.$getToken()
-//        console.log(couponId)
+        const isAuthorise = await this.isAuthorise()
+        if (!isAuthorise) {
+          this.$invoke('PhoneTest', 'show')
+        }
+        this.$navigate('/pages/coupon-detail/coupon-detail?id' + couponId)
       }
     }
 
@@ -148,7 +149,8 @@
     }
 
     components = {
-      Slider
+      Slider,
+      PhoneTest
     }
 
     config = {

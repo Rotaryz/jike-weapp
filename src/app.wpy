@@ -52,13 +52,13 @@ export default class extends wepy.app {
 
   config = {
     pages: [
+      'pages/coupon-detail/coupon-detail',
+      'pages/recommend/recommend',
       'pages/user/mine/mine',
       'pages/user/myCenter/myCenter',
       'pages/user/myOrder/myOrder',
       'pages/user/myCoupon/myCoupon',
       'pages/user/redPacket/redPacket',
-      'pages/coupon-detail/coupon-detail',
-      'pages/recommend/recommend',
       'pages/post-order/post-order',
       'pages/square/square'
     ],
