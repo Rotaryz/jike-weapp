@@ -42,4 +42,12 @@ export default class User extends base {
     const url = `${this.baseUrl}/api/info/valida`
     return await this.get(url, data)
   }
+  /**
+   * 上传头像
+   * @returns {Promise.<*>}
+   */
+  static async updateAvatar(name) {
+    const url = `${this.baseUrl}/api/info/store_image`
+    return await this.updateImg(url, name)
+  }
 }

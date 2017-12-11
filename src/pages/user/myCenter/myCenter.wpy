@@ -82,7 +82,7 @@
         if (e.detail.value === this.userInfo.customer_id.sex) {
           return
         }
-        let token = wx.getStorageSync('jk_token')
+        let token = wx.getStorageSync('token')
         let data = {
           jk_token: token,
           sex: e.detail.value
@@ -96,7 +96,7 @@
         if (e.detail.value === this.userInfo.customer_id.birth) {
           return
         }
-        let token = wx.getStorageSync('jk_token')
+        let token = wx.getStorageSync('token')
         let data = {
           jk_token: token,
           birth: e.detail.value
@@ -107,30 +107,30 @@
         this.$apply()
       },
       updateAvatar: function () {
-        var self = this
-        let baseUrl = this.$parent.globalData.baseUrl
-        wx.chooseImage({
-          success: function (res) {
-            var tempFilePaths = res.tempFilePaths
-            let token = wx.getStorageSync('jk_token')
-            wx.uploadFile({
-              url: `${baseUrl}api/info/store_image`,
-              filePath: tempFilePaths[0],
-              name: 'image_id',
-              formData: {
-                jk_token: token
-              },
-              success: function (res) {
-                console.log(JSON.parse(res.data))
-                let resData = JSON.parse(res.data)
-                console.log(self)
-                self.userInfo.customer_id.image_id = resData.data.url
-                self.$parent.updateGlobalData('user', Object.assign({}, self.userInfo))
-                self.$apply()
-              }
-            })
-          }
-        })
+        const res = user.updateImg('image_id')
+        console.log(res)
+//        wx.chooseImage({
+//          success: function (res) {
+//            var tempFilePaths = res.tempFilePaths
+//            let token = wx.getStorageSync('token')
+//            wx.uploadFile({
+//              url: `${baseUrl}api/info/store_image`,
+//              filePath: tempFilePaths[0],
+//              name: 'image_id',
+//              formData: {
+//                jk_token: token
+//              },
+//              success: function (res) {
+//                console.log(JSON.parse(res.data))
+//                let resData = JSON.parse(res.data)
+//                console.log(self)
+//                self.userInfo.customer_id.image_id = resData.data.url
+//                self.$parent.updateGlobalData('user', Object.assign({}, self.userInfo))
+//                self.$apply()
+//              }
+//            })
+//          }
+//        })
       }
     }
   }

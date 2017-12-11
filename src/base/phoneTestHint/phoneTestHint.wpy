@@ -12,14 +12,15 @@
 <script>
   import wepy from 'wepy'
 
-  export default class PhoneTestHint extends wepy.page {
-
+  export default class PhoneTestHint extends wepy.component {
     data = {
 
     }
 
-    onLoad() {
-
+    methods = {
+      bindPhone() {
+        this.$parent.$invoke('PhoneTest', 'bindPhone')
+      }
     }
   }
 

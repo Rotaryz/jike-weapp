@@ -9,9 +9,9 @@ export default class http {
       method: method,
       data: data
     }
-    const Authorization = wepy.getStorageSync('jk_token')
+    const Authorization = wepy.getStorageSync('token')
     if (Authorization) {
-      param.header = Object.assign({}, {Authorization})
+      param.header = Object.assign({}, {Authorization,merchant_id: 100000})
     }
     if (loading) {
       Tips.loading()
@@ -25,6 +25,29 @@ export default class http {
     }
   }
 
+  static async update (url, name) {
+    const tempFilePaths = await wepy.chooseImage()
+    const token = wepy.getStorageSync('token')
+    const param = {
+      url: url,
+      filePath: tempFilePaths[0],
+      name: name,
+      formData: {
+        jk_token: token
+      }
+    }
+    if (loading) {
+      Tips.loading()
+    }
+    const res = await wepy.uploadFile(param)
+    Tips.loaded()
+    if (this.isSuccess(res)) {
+      return res.data.data
+    } else {
+      throw this.requestException(res)
+    }
+
+  }
   /**
    * 判断请求是否成功
    */
@@ -72,5 +95,9 @@ export default class http {
 
   static delete (url, data, loading = true) {
     return this.request('DELETE', url, data, loading)
+  }
+
+  static updateImg (url, name, loading = true) {
+    return this.update(url, name, loading)
   }
 }

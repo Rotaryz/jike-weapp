@@ -41,11 +41,12 @@
       <view class="mine-logo-txt">集客小程序技术支持</view>
     </view>
 
-    <view class="mine-cover" @tap="userLogin" wx-if="{{userInfo.apply===0}}"></view>
+    <view class="mine-cover" @tap="userLogin" wx-if="{{false}}"></view>
   </view>
 </template>
 
 <script>
+  /* eslint-disable no-undef */
   import wepy from 'wepy'
   import users from 'common/mixins/users'
   import base from 'common/mixins/base'
@@ -71,10 +72,10 @@
     data = {
       userInfo: {
         nickname: '加载中...',
-        avatarUrl: null,
-        apply: 0,
-        isPhone: 0
+        avatarUrl: null
       },
+      isPhone: 0,
+      apply: 0,
       orderMenu: [
         {
           imgUrl: './image/icon-my_paid.png',
@@ -116,6 +117,18 @@
 
     async load() {
       await this._getUserInfo()
+      let customerId = wx.getStorageSync('customer_id')
+      if (customerId) {
+        this.isPhone = 0
+      } else {
+        this.isPhone = 1
+      }
+      let token = wx.getStorageSync('token')
+      if (token) {
+        this.allpy = 0
+      } else {
+        this.apply = 1
+      }
       this.loaded()
     }
 
@@ -125,14 +138,14 @@
     }
 
     methods = {
-      navgto: function(url) {
+      navgto(url) {
         wxUtils.backOrNavigate(url)
       },
-      userLogin: function() {
-        this._getUserInfo()
+      userLogin() {
+        console.log('重新授权')
       },
-      navToMsgPage: function() {
-        if (this.data.userInfo.isPhone !== 0) {
+      navToMsgPage() {
+        if (this.isPhone === 1) {
           this.methods.navgto('/pages/user/myCenter/myCenter')
         } else {
           this.$invoke('PhoneTest', 'bindPhone')

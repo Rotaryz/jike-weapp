@@ -6,7 +6,8 @@
       </view>
     </view>
 
-    <view class="myOrder-phoneTestBox" wx:if="{{userInfo.isPhone===0}}">
+    <view class="myOrder-phoneTestBox" wx:if="{{isPhone===0}}">
+      <PhoneTestHint></PhoneTestHint>
       <PhoneTest></PhoneTest>
     </view>
 
@@ -37,9 +38,12 @@
 </template>
 
 <script>
+  /* eslint-disable no-undef */
   import wepy from 'wepy'
   import base from 'common/mixins/base'
   import PhoneTest from '@/base/phoneTest/phoneTest'
+  import PhoneTestHint from '@/base/phoneTestHint/phoneTestHint'
+  import getMyOrder from '@/api/myOrder'
 
   export default class MyOrder extends wepy.page {
     mixins = [base]
@@ -52,19 +56,18 @@
     }
 
     components = {
-      PhoneTest
+      PhoneTest,
+      PhoneTestHint
     }
 
     data = {
-      userInfo: {
-        isPhone: 0
-      },
       menuIdx: 1,
       menuItems: ['待付款', '待使用', '待评价', '退款/售后'],
       noOrderIcon: ['./image/pic-my_nopaid.png', './image/pic-my_noused.png', './image/pic-my_noevaluated.png', './image/pic-my_norefund.png'],
       orderItemStatus: ['待付款', '', '', '已退款'],
       orderItemBtnTxt: ['付款', '进店使用', '评价', '再来一单'],
-      noOrder: false
+      noOrder: false,
+      isPhone: 0
     }
 
     methods = {
@@ -82,12 +85,19 @@
       if (option.idx) {
         this.menuIdx = option.idx
       }
-      await this._getOrderList()
+      await this._getOrderList(this.menuIdx)
+      let customerId = wx.getStorageSync('customer_id')
+      if (customerId) {
+        this.isPhone = 0
+      } else {
+        this.isPhone = 1
+      }
       this.loaded()
     }
 
-    async _getOrderList() {
-      console.log(999)
+    async _getOrderList(idx) {
+      let token = wx.getStorageSync('token')
+      const listData = await getMyOrder.getOrderList(token, idx, 1)
     }
 
     events = {

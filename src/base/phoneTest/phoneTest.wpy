@@ -1,37 +1,35 @@
 <template>
-  <view class="phoneTest">
-    <view class="phoneTest-phoneCover" wx:if="{{phoneTestCover}}">
-      <view class="phoneTest-phoneWindow">
+  <view class="phoneTest-phoneCover" wx:if="{{phoneTestCover}}">
+    <view class="phoneTest-phoneWindow">
 
-        <view class="phoneTest-phoneWindow-head">
-          <text class="phoneTest-phoneWindow-headTxt">绑定手机号</text>
-          <image class="phoneTest-closeBtn" src="./image/icon-close_win.png" @tap="closeCover"></image>
+      <view class="phoneTest-phoneWindow-head">
+        <text class="phoneTest-phoneWindow-headTxt">绑定手机号</text>
+        <image class="phoneTest-closeBtn" src="./image/icon-close_win.png" @tap="closeCover"></image>
+      </view>
+
+      <text class="phoneTest-titleTxt">绑定手机号,获取更多红包、优惠券等信息</text>
+
+      <view class="phoneTest-list">
+        <view class="phoneTest-list-item">
+          <image class="phoneTest-list-item-image" src="./image/icon-phone.png"></image>
+          <input type="number" placeholder="输入手机号" placeholder-class="phoneTest-list-item-placeh"
+                 class="phoneTest-list-item-input" maxlength="11" bindinput="phoneNumIn"/>
         </view>
 
-        <text class="phoneTest-titleTxt">绑定手机号,获取更多红包、优惠券等信息</text>
-
-        <view class="phoneTest-list">
-          <view class="phoneTest-list-item">
-            <image class="phoneTest-list-item-image" src="./image/icon-phone.png"></image>
-            <input type="number" placeholder="输入手机号" placeholder-class="phoneTest-list-item-placeh"
-                   class="phoneTest-list-item-input" maxlength="11" bindinput="phoneNumIn"/>
-          </view>
-
-          <view class="phoneTest-list-item">
-            <image class="phoneTest-list-item-image" src="./image/icon-code.png"></image>
-            <view class="phoneTest-list-codeBox">
-              <input type="text" placeholder="验证码" placeholder-class="phoneTest-list-item-placeh"
-                     class="phoneTest-list-item-input" maxlength="6" bindinput="phoneCodeIn"/>
-              <view class="{{phoneCodeDisabled?'phoneTest-list-code phoneTest-list-codeRed':'phoneTest-list-code'}}"
-                    @tap="getPhoneCode">{{phoneCodeTime}}
-              </view>
+        <view class="phoneTest-list-item">
+          <image class="phoneTest-list-item-image" src="./image/icon-code.png"></image>
+          <view class="phoneTest-list-codeBox">
+            <input type="text" placeholder="验证码" placeholder-class="phoneTest-list-item-placeh"
+                   class="phoneTest-list-item-input" maxlength="6" bindinput="phoneCodeIn"/>
+            <view class="{{phoneCodeDisabled?'phoneTest-list-code phoneTest-list-codeRed':'phoneTest-list-code'}}"
+                  @tap="getPhoneCode">{{phoneCodeTime}}
             </view>
           </view>
         </view>
+      </view>
 
-        <view class="{{submitDisabled?'phoneTest-submit':'phoneTest-submit phoneTest-submit-disabled'}}"
-              @tap="submitMsg">确定
-        </view>
+      <view class="{{submitDisabled?'phoneTest-submit':'phoneTest-submit phoneTest-submit-disabled'}}"
+            @tap="submitMsg">确定
       </view>
     </view>
   </view>
@@ -40,7 +38,6 @@
 <script>
   /* eslint-disable no-undef */
   import wepy from 'wepy'
-  import tips from '@/common/js/tips'
   import user from 'api/user'
 
   export default class PhoneTest extends wepy.component {
@@ -56,16 +53,17 @@
     onLoad() {
     }
 
-    async _getPhoneCode(data){
+    async _getPhoneCode(data) {
       return await user.getPhoneCode(data)
     }
 
-    async _bindPhone(data){
+    async _bindPhone(data) {
       return await user.bindPhone(data)
     }
 
     methods = {
       bindPhone: function () {
+        console.log(888)
         this.phoneTestCover = true
       },
       closeCover: function () {
@@ -94,11 +92,12 @@
         var self = this
         if (reg.test(self.phoneNum) && !self.phoneCodeDisabled) {
           console.log(this.phoneNum)
-          let jkToken = wx.getStorageSync('jk_token')
+          let jkToken = wx.getStorageSync('token')
           self.phoneCodeTime = '发送中···'
           let data = {
             jk_token: jkToken,
-            mobile: self.phoneNum
+            mobile: self.phoneNum,
+            customer_id: 100000
           }
           this._getPhoneCode(data)
           this.phoneCodeDisabled = true
@@ -140,115 +139,109 @@
         }
       }
     }
-
   }
 </script>
 
 <style lang="stylus">
   @import "../../common/stylus/variable"
 
-  .phoneTest
-    height: 0
-    font-size: $font-size-medium
-    font-family: PingFangSC-Light
+  .phoneTest-phoneCover
+    position: fixed
+    z-index: 1000
+    left: 0
+    top: 0
+    height: 100vh
+    width: 750rpx
+    background: rgba(54, 53, 71, .5)
 
-    .phoneTest-phoneCover
-      position: fixed
-      z-index: 1000
-      left: 0
-      top: 0
-      height: 100vh
-      width: 750 rpx
-      background: rgba(54, 53, 71, .5)
+  .phoneTest-phoneWindow
+    position: fixed
+    height: 443rpx
+    width: 460rpx
+    margin: auto
+    left: 0
+    top: 0
+    right: 0
+    bottom: 0
+    background: #fff
+    border-radius: 8rpx
+    padding: 20rpx
 
-    .phoneTest-phoneWindow
-      position: fixed
-      height: 443 rpx
-      width: 460 rpx
-      margin: auto
-      left: 0
-      top: 0
-      right: 0
-      bottom: 0
-      background: #fff
-      border-radius: 8 rpx
-      padding: 20 rpx
+    .phoneTest-phoneWindow-head
+      height: 40rpx
+      display: flex
+      flex-direction: row
+      justify-content: space-between
+      margin-bottom: 11rpx
 
-      .phoneTest-phoneWindow-head
-        height: 40 rpx
+      .phoneTest-phoneWindow-headTxt
+        font-size: $font-size-medium
+        color: $color-text
+        line-height: 40rpx
+
+      .phoneTest-closeBtn
+        width: 20rpx
+        height: 20rpx
+        margin: 10rpx
+
+    .phoneTest-titleTxt
+      font-size: $font-size-small-s
+      color: #9B9B9B
+
+    .phoneTest-list
+      padding-top: 20rpx
+      padding-left: 3rpx
+
+      .phoneTest-list-item
+        height: 54rpx
+        border-bottom: 1rpx solid #D6D6D6
         display: flex
         flex-direction: row
-        justify-content: space-between
-        margin-bottom: 11 rpx
+        align-items: center
+        margin-top: 40rpx
 
-        .phoneTest-phoneWindow-headTxt
-          font-size: $font-size-medium
-          color: $color-text
-          line-height: 40 rpx
+        .phoneTest-list-item-image
+          width: 28rpx
+          height: 34rpx
+          margin-right: 20rpx
 
-        .phoneTest-closeBtn
-          width: 20 rpx
-          height: 20 rpx
-          margin: 10 rpx
+        .phoneTest-list-item-placeh
+          font-size: $font-size-small
+          color: #9B9B9B
 
-      .phoneTest-titleTxt
-        font-size: $font-size-small-s
-        color: #9B9B9B
-
-      .phoneTest-list
-        padding-top: 20 rpx
-        padding-left: 3 rpx
-
-        .phoneTest-list-item
-          height: 54 rpx
-          border-bottom: 1 rpx solid #D6D6D6
+        .phoneTest-list-codeBox
           display: flex
-          flex-direction: row
+          justify-content: space-between
           align-items: center
-          margin-top: 40 rpx
 
-          .phoneTest-list-item-image
-            width: 28 rpx
-            height: 34 rpx
-            margin-right: 20 rpx
-
-          .phoneTest-list-item-placeh
+          .phoneTest-list-item-input
+            width: 240rpx
+          .phoneTest-list-code
+            border-left: 1rpx solid #E6E6E6
+            height: 33rpx
+            width: 120rpx
+            text-align: center
+            padding-left: 10rpx
+            line-height: 33rpx
             font-size: $font-size-small
-            color: #9B9B9B
+            color: #C8C8C8
+            margin-left: 26rpx
+          .phoneTest-list-codeRed
+            color: $color-text-t
 
-          .phoneTest-list-codeBox
-            display: flex
-            justify-content: space-between
-            align-items: center
+    .phoneTest-submit
+      width: 460rpx
+      height: 80rpx
+      opacity: 0.3
+      background: $color-text-t
+      border-radius: 2px
+      text-align: center
+      line-height: 80rpx
+      font-size: $font-size-small
+      color: #fff
+      margin-top: 60rpx
 
-            .phoneTest-list-item-input
-              width: 240 rpx
-            .phoneTest-list-code
-              border-left: 1px solid #E6E6E6
-              height: 33 rpx
-              width: 120 rpx
-              text-align: center
-              padding-left: 10 rpx
-              line-height: 33 rpx
-              font-size: $font-size-small
-              color: #C8C8C8
-              margin-left: 26 rpx
-            .phoneTest-list-codeRed
-              color: $color-text-t
-
-      .phoneTest-submit
-        width: 460 rpx
-        height: 80 rpx
-        opacity: 0.3
-        background: $color-text-t
-        border-radius: 2px
-        text-align: center
-        line-height: 80 rpx
-        font-size: $font-size-small
-        color: #fff
-        margin-top: 60 rpx
-
-      .phoneTest-submit-disabled
-        opacity: 1
+    .phoneTest-submit-disabled
+      opacity: 1
 
 </style>
