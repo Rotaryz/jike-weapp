@@ -20,7 +20,8 @@ export default class http {
     const res = await wepy.request(param)
     Tips.loaded()
     if (this.isSuccess(res)) {
-      return res.data.data
+      const result = res.data.data ? res.data.data : res.data
+      return result
     } else {
       throw this.requestException(res)
     }
