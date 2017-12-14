@@ -1,0 +1,27 @@
+<template>
+  <view class="live-show">
+    <LiveVideo></LiveVideo>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import LiveVideo from '@/components/live-video/live-video'
+  export default class Live extends wepy.page {
+    config = {
+      navigationBarTitleText: '直播优惠'
+    }
+
+    components = {
+      LiveVideo: LiveVideo
+    }
+  }
+</script>
+
+<style lang="stylus">
+  @import "../../common/stylus/variable"
+  @import "../../common/stylus/mixin"
+  page,.live-show
+    background-color: $color-master
+    height: 100%
+</style>

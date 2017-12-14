@@ -20,7 +20,7 @@ extend-click()
     left: -10px
     right: -10px
     bottom: -10px
- 
+
 pseudo($right,$height,$width)
   content: ''
   position: absolute
@@ -35,7 +35,7 @@ position-before($right,$height,$width)
   &:before
     pseudo($right,$height,$width)
     bottom:0
-    
+
 position-after($right,$height,$width)
   position: relative
   &:after
@@ -46,3 +46,19 @@ position-after($right,$height,$width)
 
 border-set($color)
   border:1px solid $color
+
+//  水平居中
+row-center()
+  left:50%
+  transform :translateX(-50%)
+
+//垂直居中
+col-center()
+  top:50%
+  transform :translateY(-50%)
+
+//  全居中
+all-center()
+  top:50%
+  left:50%
+  transform :translate(-50%,-50%)

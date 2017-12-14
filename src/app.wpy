@@ -51,15 +51,18 @@ export default class extends wepy.app {
 
   config = {
     pages: [
+      'pages/live/live',
       'pages/square/square',
       'pages/recommend/recommend',
       'pages/mine/mine'
+
     ],
     window: {
+      backgroundColor: '#F9F9F9',
       backgroundTextStyle: 'light',
-      navigationBarBackgroundColor: '#000',
+      navigationBarBackgroundColor: '#fff',
       navigationBarTitleText: '集客',
-      navigationBarTextStyle: '#ffffff'
+      navigationBarTextStyle: 'black'
     },
     tabBar: {
       color: '#464646',
