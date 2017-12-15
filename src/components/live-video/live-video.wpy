@@ -6,39 +6,58 @@
         <view class="con-title">
           <view>美发项目</view>
           <view>优惠券</view>
-          <view class="monlogo">￥
-            <text>50</text>
-          </view>
+          <view class="monlogo">10</view>
         </view>
       </view>
       <view class="con-item">
-        <image class="con_bk"></image>
-        <view>1</view>
+        <image class="con_bk" src="./pic-play_couponbg.png"></image>
+        <view class="con-title">
+          <view>美发项目</view>
+          <view>优惠券</view>
+          <view class="monlogo">10</view>
+        </view>
       </view>
       <view class="con-item">
-        <image class="con_bk"></image>
-        <view>1</view>
+        <image class="con_bk" src="./pic-play_couponbg.png"></image>
+        <view class="con-title">
+          <view>美发项目</view>
+          <view>优惠券</view>
+          <view class="monlogo">10</view>
+        </view>
       </view>
       <view class="con-item">
-        <image class="con_bk"></image>
-        <view>1</view>
+        <image class="con_bk" src="./pic-play_couponbg.png"></image>
+        <view class="con-title">
+          <view>美发项目</view>
+          <view>优惠券</view>
+          <view class="monlogo">10</view>
+        </view>
       </view>
       <view class="con-item">
-        <image class="con_bk"></image>
-        <view>1</view>
+        <image class="con_bk" src="./pic-play_couponbg.png"></image>
+        <view class="con-title">
+          <view>美发项目</view>
+          <view>优惠券</view>
+          <view class="monlogo">10</view>
+        </view>
       </view>
       <view class="con-item">
-        <image class="con_bk"></image>
-        <view>1</view>
+        <image class="con_bk" src="./pic-play_couponbg.png"></image>
+        <view class="con-title">
+          <view>美发项目</view>
+          <view>优惠券</view>
+          <view class="monlogo">10</view>
+        </view>
       </view>
       <view class="con-item">
-        <image class="con_bk"></image>
-        <view>1</view>
+        <image class="con_bk" src="./pic-play_couponbg.png"></image>
+        <view class="con-title">
+          <view>美发项目</view>
+          <view>优惠券</view>
+          <view class="monlogo">10</view>
+        </view>
       </view>
-      <view class="con-item">
-        <image class="con_bk"></image>
-        <view>1</view>
-      </view>
+
     </scroll-view>
     <video class="live_video" enable-danmu danmu-btn
            poster="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1513242262920&di=f0c9fe761eb817e8249ae9eed2ed6a87&imgtype=0&src=http%3A%2F%2Fpic15.nipic.com%2F20110715%2F128199_103814486000_2.jpg"></video>
@@ -77,15 +96,31 @@
         width: 100%
         height: 100%
         row-center()
-       .con-title
-         position: absolute
-         z-index:10
-         font-size:$font-size-small-s
-         color:#5D5D5D
-         width:100%
-         view
-           padding-bottom:2px
-           text-align :center
+      .con-title
+        position: absolute
+        z-index: 10
+        font-size: $font-size-small-s
+        color: #5D5D5D
+        width: 100%
+        padding-top: 4px
+        view
+          padding-bottom: 4px
+          padding-left:16px
+        .monlogo
+          font-size: $font-size-large-xx
+          color: #5D5D5D
+          position: relative
+          text-indent :5px
+          font-family :$font-family-m
+          &:before
+            content: '￥'
+            color: #5D5D5D
+            font-size:$font-size-small-s
+            position: absolute
+            top: 3px
+            left:9px
+
+
     .live_video
       flex: 7.46
       height: 100%

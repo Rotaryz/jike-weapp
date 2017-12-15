@@ -1,0 +1,107 @@
+<template>
+  <view class="comall">
+    <view class="shade"></view>
+    <scroll-view scroll-y="true">
+      <view class="com_item">
+        <text class="com_name">守望远方：</text>
+        <text class="com_msg">迫不及待地下了订单</text>
+      </view>
+      <view class="com_item">
+        <text class="com_name">守望远方：</text>
+        <text class="com_msg">迫不及待地下了订单</text>
+      </view>
+      <view class="com_item">
+        <text class="com_name">守望远方：</text>
+        <text class="com_msg">迫不及待地下了订单</text>
+      </view>
+      <view class="com_item">
+        <text class="com_name">守望远方：</text>
+        <text class="com_msg">迫不及待地下了订单</text>
+      </view>
+      <view class="com_item">
+        <text class="com_name">守望远方：</text>
+        <text class="com_msg">迫不及待地下了订单</text>
+      </view>
+    </scroll-view>
+
+    <image class="btn_com" src="./icon- info.png"/>
+    <view class="inp_cpm">
+      <input type="text" placeholder="弹幕更容易引起主播的注意哦~">
+      <view>
+        <image src="./icon-sendout.png"></image>
+      </view>
+    </view>
+
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  export default class Comment extends wepy.page {
+    config = {
+      navigationBarTitleText: ''
+    }
+  }
+</script>
+
+<style lang="stylus">
+  @import "../../common/stylus/variable"
+  @import "../../common/stylus/mixin"
+  .comall
+    height: 24.4%
+    position: relative
+    .shade
+      content: ''
+      position: absolute
+      z-index: 100
+      top: 0
+      width: 100%
+      height: 32px
+      background: linear-gradient(rgba(112, 107, 130, 1) 40%, rgba(112, 107,
+      130, 0) 100%)
+    scroll-view
+      height: 66%
+      .com_item
+        font-size: $font-size-small
+        padding: $font-size-medium 0 0 $padding-all
+
+        .com_name
+          color: $color-text-tr
+        .com_msg
+          color: $color-white
+    .btn_com
+      display: none
+      position: absolute
+      width: 32px
+      height: 32px
+      bottom: 16.5px
+      right: $padding-all
+    .inp_cpm
+      height: 32px
+      padding :5px $padding-all
+      display: flex
+      input
+        display: inline-block
+        background: $color-white
+        flex: 20
+        height: 30px
+        border: 0.5px solid #EBEAF2
+        border-radius: 1px
+        font-size: $font-size-small
+        text-indent: 7px
+      view
+        display: inline-block
+        flex: 3
+        height: 30px
+        border: 0.5px solid #EBEAF2
+        border-radius: 1px
+        margin-left: 5px
+        background: $color-white
+        position: relative
+        image
+          position: absolute
+          width: 30.3%
+          height: 53.4%
+          all-center()
+
+</style>
