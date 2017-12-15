@@ -1,8 +1,8 @@
 <template>
   <view class="mine">
     <view class="mine-head">
-      <view class="mine-head-avatarBox" @tap="navToMsgPage">
-        <image class="mine-head-avatar" src="{{userInfo.avatarUrl}}" style="background-image: url('./image/pic-default.png'); background-size: 96rpx 96rpx"></image>
+      <view class="mine-head-avatarBox" @tap="navToMsgPage('/pages/user/myCenter/myCenter')">
+        <image class="mine-head-avatar" src="{{userInfo.avatarUrl}}" style="background-image: url('./image/pic-default.png'); background-size: 48px 48px"></image>
         <text class="mine-head-nickName">{{userInfo.nickName}}</text>
       </view>
     </view>
@@ -14,22 +14,22 @@
     </view>
 
     <view class="mine-order">
-      <view class="mine-order-head" @tap="navgto('/pages/user/myOrder/myOrder')">
+      <view class="mine-order-head" @tap="navToMsgPage('/pages/user/myOrder/myOrder')">
         <text class="mine-order-headTxt">我的订单</text>
         <image src="./image/icon-my_Rectangle.png" class="mine-order-headIcon"></image>
       </view>
       <view class="mine-order-menu">
-        <view class="mine-order-menuItem" wx:for="{{orderMenu}}" wx:key="{{item.text}}" @tap="navgto('/pages/user/myOrder/myOrder?idx={{index}}')">
+        <view class="mine-order-menuItem" wx:for="{{orderMenu}}" wx:key="{{item.text}}" @tap="navToMsgPage('/pages/user/myOrder/myOrder?idx={{index}}')">
           <image src="{{item.imgUrl}}" class="mine-order-menuItem-image"></image>
           <view class="mine-order-menuItem-txt">{{item.text}}</view>
         </view>
       </view>
     </view>
 
-    <view @tap="navgto('/pages/user/myCoupon/myCoupon')" class="mine-serve">
+    <view class="mine-serve">
       <view class="mine-serve-head">我的服务</view>
       <view class="mine-serve-menu">
-        <view class="mine-serve-menuItem" wx:for="{{serveMenu}}" wx:key="{{item.text}}">
+        <view class="mine-serve-menuItem" wx:for="{{serveMenu}}" wx:key="{{item.text}}" @tap="navToMsgPage({{item.url}})">
           <image src="{{item.imgUrl}}" class="mine-serve-menuItem-image"></image>
           <view class="mine-serve-menuItem-txt">{{item.text}}</view>
         </view>
@@ -50,7 +50,6 @@
   import wepy from 'wepy'
   import users from 'common/mixins/users'
   import base from 'common/mixins/base'
-  import wxUtils from 'common/js/wxUtils'
   import PhoneTest from '@/base/phoneTest/phoneTest'
   import PhoneTestHint from '@/base/phoneTestHint/phoneTestHint'
 
@@ -71,7 +70,7 @@
 
     data = {
       userInfo: {
-        nickname: '加载中...',
+        nickName: '加载中...',
         avatarUrl: null
       },
       isPhone: 0,
@@ -94,19 +93,24 @@
       serveMenu: [
         {
           imgUrl: './image/icon-my_coupon.png',
-          text: '优惠券'
+          text: '优惠券',
+          url: '/pages/user/myCoupon/myCoupon'
         }, {
           imgUrl: './image/icon-my_moeny_1.png',
-          text: '红包'
+          text: '红包',
+          url: '/pages/user/redPacket/redPacket'
         }, {
           imgUrl: './image/icon-my_collection.png',
-          text: '收藏'
+          text: '收藏',
+          url: '/pages/user/mySelect/mySelect'
         }, {
           imgUrl: './image/icon-my_service.png',
-          text: '客服'
+          text: '客服',
+          url: ''
         }, {
           imgUrl: './image/icon-my_help.png',
-          text: '帮助'
+          text: '帮助',
+          url: ''
         }
       ]
     }
@@ -139,16 +143,12 @@
     }
 
     methods = {
-      navgto(url) {
-        wxUtils.backOrNavigate(url)
-      },
       userLogin() {
         console.log('重新授权')
       },
-      navToMsgPage() {
+      navToMsgPage(url) {
         if (this.isPhone === 1) {
-          console.log(999)
-          this.methods.navgto('/pages/user/myCenter/myCenter')
+          this.$navigate(url)
         } else {
           this.$invoke('PhoneTest', 'bindPhone')
         }
@@ -178,13 +178,13 @@
       position: absolute
       left: 0
       top: 0
-      width: 750rpx
-      height: 100%
+      width: 100vw
+      height: 100vh
 
     .mine-head
-      height: 190rpx
+      height: 95px
       background: #706B82
-      padding-left: 24rpx
+      padding-left: 12px
       display: flex
       flex-direction: row
       align-items: center
@@ -193,14 +193,14 @@
         display: flex
         flex-direction: row
         align-items: center
-        width: 350rpx
+        width: 175px
 
         .mine-head-avatar
-          height: 96rpx
-          width: 96rpx
+          height: 48px
+          width: 48px
           border-radius: 50%
-          margin-right: 22rpx
-          border: 1rpx solid #fff
+          margin-right: 11px
+          border: 1px solid #fff
 
         .mine-head-nickName
           font-family: PingFangSC-Regular
@@ -208,27 +208,27 @@
           font-size: $font-size-medium-x
 
     .mine-head-arc
-      width: 750rpx
+      width: 100%
       height: 24rpx
       margin: 0
       display: block
       background: $color-highlight-background
 
     .mine-phoneTestBox
-      height: 110rpx
+      height: 55px
 
     .mine-order
-      border-bottom: 1rpx solid #F0EFF5
-      border-top: 1rpx solid #F0EFF5
+      border-bottom: 1px solid #F0EFF5
+      border-top: 1px solid #F0EFF5
       background: $color-highlight-background
-      margin-bottom: 20rpx
+      margin-bottom: 10px
 
       .mine-order-head
-        height: 40rpx
-        border-bottom: 1rpx solid #F0EFF5
-        padding: 20rpx 0
-        padding-right: 24rpx
-        margin-left: 24rpx
+        height: 20px
+        border-bottom: 1px solid #F0EFF5
+        padding: 10px 0
+        padding-right: 12px
+        margin-left: 12px
         display: flex
         flex-direction: row
         align-items: center
@@ -238,8 +238,8 @@
           font-size: $font-size-medium
           color: #696671
         .mine-order-headIcon
-          width: 12rpx
-          height: 20rpx
+          width: 6px
+          height: 10px
 
       .mine-order-menu
         display: flex
@@ -248,13 +248,13 @@
         .mine-order-menuItem
           flex: 1
           text-align: center
-          padding: 40rpx 0
+          padding: 20px 0
 
 
           .mine-order-menuItem-image
-            width: 40rpx
-            height: 40rpx
-            margin-bottom: 14rpx
+            width: 20px
+            height: 20px
+            margin-bottom: 7px
 
           .mine-order-menuItem-txt
             font-size: $font-size-small
@@ -262,15 +262,15 @@
 
     .mine-serve
       background: $color-highlight-background
-      border-top: 1rpx solid $color-row-line
-      border-bottom: 1rpx solid $color-row-line
+      border-top: 1px solid $color-row-line
+      border-bottom: 1px solid $color-row-line
 
       .mine-serve-head
-        height: 78rpx
-        line-height: 78rpx
+        height: 39px
+        line-height: 39px
         font-size: $font-size-medium
-        border-bottom: 1rpx solid $color-row-line
-        margin-left: 24rpx
+        border-bottom: 1px solid $color-row-line
+        margin-left: 12px
         color: #696671
 
       .mine-serve-menu
@@ -280,12 +280,12 @@
         .mine-serve-menuItem
           width: 25%
           text-align: center
-          padding: 30rpx 0
+          padding: 15px 0
 
           .mine-serve-menuItem-image
-            width: 40rpx
-            height: 40rpx
-            margin-bottom: 14rpx
+            width: 20px
+            height: 20px
+            margin-bottom: 6px
 
           .mine-serve-menuItem-txt
             font-size: $font-size-small
@@ -293,11 +293,11 @@
 
     .mine-logo
       text-align: center
-      padding-top: 42rpx
+      padding-top: 21px
 
       .mine-logo-image
-        width: 66rpx
-        height: 60rpx
+        width: 33px
+        height: 30px
 
       .mine-logo-txt
         font-size: $font-size-small-s

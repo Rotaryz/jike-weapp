@@ -102,8 +102,13 @@ export default class userMixin extends wepy.mixin {
     wepy.setStorageSync('customerId', res.customer_id)
     if (res.customer_id === 0) {
       user = await this.$getUser()
+      console.log(user)
     } else {
-      user = res.customer_id
+      if(!res.customer.avatarUrl) {
+        user = Object.assign(res.customer,{avatarUrl:res.avatarUrl})
+      } else {
+        user = res.customer
+      }
     }
     this.$parent.updateGlobalData('user', user)
     return user

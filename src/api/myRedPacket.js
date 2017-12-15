@@ -6,20 +6,21 @@ export default class GetRedPacket extends base {
    * @param token jk_token
    * @returns {Promise.<*>}
    */
-  static async getTotalRedpacket(token) {
-    const url = `${this.baseUrl}api/redpackets/monies`
-    let data = {jk_token: token}
-    return await this.get(url, data, false)
+  static async getTotalRedpacket() {
+    const url = `${this.baseUrl}/api/redpackets/monies`
+    return await this.get(url)
   }
 
   /**
    * 获取用户红包列表
-   * @param token jk_token
+   * @param page 页码
    * @returns {Promise.<*>}
    */
-  static async getTotalRedpacketList(token) {
-    const url = `${this.baseUrl}api/redpackets/promotion`
-    let data = {jk_token: token}
+  static async getTotalRedpacketList(page) {
+    const url = `${this.baseUrl}/api/redpackets/promotion`
+    let data = {
+      page
+    }
     return await this.get(url, data)
   }
 }

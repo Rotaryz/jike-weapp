@@ -1,0 +1,173 @@
+<template>
+  <view class="couponEwm-Cover" wx:if="{{erWMCover}}">
+    <view class="couponEwm-Msg">
+      <view class="couponEwm-Msg-head">
+        <view class="couponEwm-item" style="background-image: url('./image/icon_couponBc.png'); background-size: 245px 70px">
+          <view class="couponEwm-itemPay">
+            <view ><text class="couponEwm-midMoney">￥</text><text class="couponEwm-bigMoney">{{couponMsg.price}}</text></view>
+            <view>{{couponMsg.restriction}}</view>
+          </view>
+          <view class="couponEwm-itemMsg">
+            <view>
+              <view class="couponEwm-item-title">{{couponMsg.title}}</view>
+              <view class="couponEwm-item-time">{{couponMsg.endAt}}</view>
+            </view>
+            <view class="couponEwm-item-time">{{couponMsg.notAllowTime}}</view>
+          </view>
+        </view>
+      </view>
+
+      <view class="couponEwm-Msg-body">
+        <image src="{{couponMsg.qrcodeUrl}}" class="couponEwm-Msg-body-EWM"></image>
+        <view style="background-image: url('./image/pic-mabg.png'); background-size: 178px 40px" class="couponEwm-Msg-body-couponNum">{{couponMsg.beautyCode}}</view>
+        <view class="couponEwm-Msg-body-txt">该券码用于线下门店核销</view>
+      </view>
+    </view>
+
+    <image class="couponEwm-closeBtn" src="./image/icon-close_white.png" @tap="closeEWM"></image>
+  </view>
+</template>
+
+<script>
+  /* eslint-disable no-undef */
+  import wepy from 'wepy'
+  import base from 'common/mixins/base'
+  import getMyOrder from '@/api/myOrder'
+
+  export default class couponEwm extends wepy.component {
+    mixins = [base]
+
+    data = {
+      erWMCover: false,
+      couponMsg: null
+    }
+
+    onLoad() {
+    }
+
+    methods = {
+      showEWM() {
+        this.erWMCover = true
+      },
+      closeEWM() {
+        this.erWMCover = false
+      }
+    }
+
+    events = {
+      sendCouponMsg(msg) {
+        console.log(msg)
+        this.couponMsg = msg
+        this.$apply()
+      },
+      async getCouponMsg(id) {
+        let res = await getMyOrder.getOrderDetail(id)
+        console.log(res)
+      }
+    }
+  }
+</script>
+
+<style lang="stylus">
+  @import "../../common/stylus/variable"
+
+  .couponEwm-Cover
+    position: fixed
+    z-index: 1000
+    left: 0
+    top: 0
+    height: 100vh
+    width: 100vw
+    background: rgba(54, 53, 71, .5)
+
+    .couponEwm-Msg
+      position: fixed
+      height: 360px
+      width: 265px
+      margin: auto
+      left: 0
+      top: 0
+      right: 0
+      bottom: 0
+      background: #fff
+      border-radius: 0 0 2px 2px
+
+      .couponEwm-Msg-head
+        height: 70px
+        padding: 10px 10px
+        background: $color-text
+
+        .couponEwm-item
+          width: 245px
+          height: 70px
+          display: flex
+          align-items: center
+
+          .couponEwm-itemPay
+            width: 70px
+            text-align: center
+            font-size: $font-size-small-s
+
+            .couponEwm-midMoney
+              font-size: $font-size-small-s
+              font-family: PingFangSC-Semibold
+
+            .couponEwm-bigMoney
+              color: #5D5D5D
+              font-size: 30px
+              font-family: Impact
+
+        .couponEwm-itemMsg
+          display: flex
+          flex-direction: column
+          justify-content: space-between
+          height: 60px
+          padding: 5px 0 5px 10px
+
+          .couponEwm-item-title
+            font-family: PingFangSC-Regular
+            font-size: $font-size-medium
+            line-height: 20px
+
+          .couponEwm-item-time
+            font-size: $font-size-small-s
+            color: $color-text-d
+            line-height: 14px
+
+      .couponEwm-Msg-body
+        height: 270px
+        display: flex
+        flex-direction: column
+        align-items: center
+
+        .couponEwm-Msg-body-EWM
+          width: 178px
+          height: 178px
+          margin: 10px 0
+          background: #ccc
+          border: 1px solid $color-col-line
+
+        .couponEwm-Msg-body-couponNum
+          height: 40px
+          width: 178px
+          text-align: center
+          line-height: 40px
+          font-family: PingFangSC-Medium
+          font-size: 24px
+
+        .couponEwm-Msg-body-txt
+          font-size: $font-size-small-s
+          color: $color-text-d
+          line-height: 14px
+          margin-top: 5px
+
+    .couponEwm-closeBtn
+      width: 23px
+      height: 23px
+      position: fixed
+      bottom: 30px
+      left: 50%
+      transform: translate(-50%, 0)
+
+
+</style>

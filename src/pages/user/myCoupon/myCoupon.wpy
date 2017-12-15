@@ -1,32 +1,144 @@
 <template>
-  <view>我的优惠券</view>
+  <view class="myCoupon">
+    <view class="myCoupon-tab">
+      <view class="myCoupon-tab-item" wx:for="{{tabList}}" wx:key="{{item}}">
+        <view class="{{index===menuIdx?'myCoupon-tab-itemTxt active':'myCoupon-tab-itemTxt'}}" @tap="changeTab({{index}})">{{item}}</view>
+      </view>
+    </view>
+
+    <view class="myCoupon-nothing" wx:if="{{couponList.length===0}}">
+      <image src="./image/pic-my-nocoupon.png" class="myCoupon-nothing-img"></image>
+      <view class="myCoupon-nothing-txt">您还没有相关优惠券</view>
+      <view class="myCoupon-nothingBtn" @tap="toRecommend">随便逛逛</view>
+    </view>
+
+    <scroll-view scroll-y class="{{menuIdx===0?'myCoupon-couponList':'myCoupon-couponList-ccc'}}" bindscrolltolower="couponLower" wx:if="{{couponList.length>0}}">
+      <view class="myCoupon-couponList-item" style="background-image: url({{backgroundUrl}}); background-size: 700rpx 200rpx; background-repeat: norepeat" wx:for="{{couponList}}" wx:key="{{index}}" @tap="couponDetail(item.id)">
+        <view class="myCoupon-couponList-itemPay">
+          <view ><text class="myCoupon-midMoney">￥</text><text class="myCoupon-bigMoney">{{item.price}}</text></view>
+          <view>{{item.restriction}}</view>
+        </view>
+        <view class="myCoupon-couponList-itemMsg">
+          <view>
+            <view class="myCoupon-couponList-item-title">{{item.title}}</view>
+            <view class="myCoupon-couponList-item-time">有效期至{{item.endAt}}</view>
+          </view>
+          <view class="myCoupon-couponList-item-time">{{item.notAllowTime}}</view>
+        </view>
+        <view class="myCoupon-couponList-itemBtn" wx:if="{{menuIdx===0}}" catchtap="useCoupon({{item}})">进店使用</view>
+        <image class="myCoupon-couponList-noItemBtn" wx:if="{{menuIdx===1}}" src="./image/pic-my_already .png"></image>
+        <image class="myCoupon-couponList-noItemBtn" wx:if="{{menuIdx===2}}" src="./image/pic-my_overdue.png"></image>
+      </view>
+    </scroll-view>
+
+    <CouponEwm></CouponEwm>
+  </view>
 </template>
 
 <script>
+  /* eslint-disable no-undef */
   import wepy from 'wepy'
-  import users from 'common/mixins/users'
+  import base from 'common/mixins/base'
+  import myCoupon from '@/api/coupon'
+  import CouponEwm from '@/base/couponEwm/couponEwm'
 
   export default class MyCoupon extends wepy.page {
-    mixins = [users]
+    mixins = [base]
 
     config = {
       navigationBarTitleText: '我的优惠券'
     }
 
     data = {
-      userInfo: {
-        nickName: '加载中...'
+      tabList: ['未使用', '已使用', '已失效'],
+      menuIdx: 0,
+      couponList: [],
+      backgroundUrl: './image/icon_couponBc.png',
+      page: 1,
+      LowerLoading: false,
+      nothingAdd: false
+    }
+
+    components = {
+      CouponEwm
+    }
+
+    methods = {
+      async changeTab(idx) {
+        this.menuIdx = idx
+        let resList = await this._getCouponList(this.menuIdx, 1)
+        if (this.menuIdx === 0) {
+          this.backgroundUrl = './image/icon_couponBc.png'
+        } else {
+          this.backgroundUrl = './image/icon_couponBc_gay.png'
+        }
+        this.page = 1
+        this.nothingAdd = false
+        this.couponList = this._computed(resList)
+        this.$apply()
+      },
+      async couponLower() {
+        if (!this.LowerLoading && !this.nothingAdd) {
+          this.LowerLoading = true
+          this.page++
+          console.log(this.page)
+          let res = await this._getCouponList(this.menuIdx, this.page)
+          if (res.length === 0) {
+            this.nothingAdd = true
+            console.log('已经到底')
+          }
+          let resArr = this._computed(res)
+          this.couponList.push(...resArr)
+          this.LowerLoading = false
+          this.$apply()
+          console.log('加载完成')
+        } else if (this.nothingAdd) {
+          console.log('已经没有可以加载的了')
+        }
+      },
+      useCoupon(msg) {
+        this.$broadcast('sendCouponMsg', msg)
+        this.$invoke('CouponEwm', 'showEWM')
+      },
+      toRecommend() {
+        wx.switchTab({url: '/pages/recommend/recommend'})
+      },
+      couponDetail(id) {
+        if (this.menuIdx === 0) {
+          this.$navigate('/pages/coupon-detail/coupon-detail?id=' + id)
+        }
       }
     }
 
-    onLoad() {
-      
+    async onLoad() {
+      await this.load()
     }
 
-    _getUserInfo() {
-      this._wxUserInfo()
-      this.$getUserInfo((userInfo) => {
-        this.userInfo = userInfo
+    async load() {
+      let resList = await this._getCouponList(this.menuIdx, 1)
+      this.couponList = this._computed(resList)
+      console.log(this.couponList)
+      this.loaded()
+    }
+
+    async _getCouponList(idx, page) {
+      return await myCoupon.getUserCouponList(idx, page)
+    }
+
+    _computed(arr) {
+      return arr.map((item) => {
+        let beautyCode = item.code.replace(/(\d{4})/g, '$1 ')
+        return {
+          price: Math.floor(item.promotion.platform_price),
+          restriction: item.promotion.restriction,
+          title: item.promotion.title,
+          endAt: item.promotion.end_at,
+          notAllowTime: item.promotion.not_allow_time,
+          code: item.code,
+          beautyCode,
+          qrcodeUrl: item.qrcode_url,
+          id: item.promotion_id
+        }
       })
     }
   }
@@ -34,4 +146,163 @@
 
 <style lang="stylus">
   @import "../../../common/stylus/variable"
+
+  .myCoupon-midMoney
+    font-size: $font-size-medium
+    font-family: PingFangSC-Semibold
+
+  .myCoupon-bigMoney
+    color: #5D5D5D
+    font-size: 40px
+    font-family: Impact
+
+  .myCoupon-tab
+    display: flex
+    background: $color-highlight-background
+    height: 8vh
+
+    .myCoupon-tab-item
+      flex: 1
+      display: flex
+      justify-content: center
+      border-bottom: 1px solid $color-row-line
+
+      .myCoupon-tab-itemTxt
+        color: $color-text
+        font-size: $font-size-medium
+        text-align: center
+        line-height: 8vh
+        width: 71px
+        border-bottom: 2px solid #fff
+
+      .myCoupon-tab-itemTxt.active
+        color: $color-text-t
+        border-bottom: 2px solid $color-theme
+
+  .myCoupon-nothing
+    height: 201px
+    background: $color-highlight-background
+    border-bottom: 1px solid $color-row-line
+    display: flex
+    flex-direction: column
+    align-items: center
+
+    .myCoupon-nothing-img
+      width: 73px
+      height: 53.5px
+      margin-top: 50rpx
+      margin-bottom: 17rpx
+
+    .myCoupon-nothing-txt
+      font-size: $font-size-small
+      line-height: 33rpx
+      margin-bottom: 68rpx
+
+    .myCoupon-nothingBtn
+      width: 86px
+      height: 24px
+      border: 1px solid $color-row-line
+      text-align: center
+      line-height: 24px
+      font-size: $font-size-small
+      border-radius: 2px
+
+      &:active
+        border: 1px solid $color-button
+        color: $color-button
+
+  .myCoupon-couponList
+    max-height: 92vh
+    color: $color-text-n
+
+    .myCoupon-couponList-item
+      margin: 20rpx 0 0 24rpx
+      width: 700rpx
+      height: 200rpx
+      display: flex
+      align-items: center
+
+      .myCoupon-couponList-itemPay
+        text-align: center
+        width: 200rpx
+        font-size: $font-size-small-s
+
+      .myCoupon-couponList-itemMsg
+        display: flex
+        flex-direction: column
+        justify-content: space-between
+        height: 160rpx
+        width: 312rpx
+        padding: 20rpx 0 20rpx 24rpx
+
+        .myCoupon-couponList-item-title
+          font-family: PingFangSC-Regular
+          font-size: $font-size-medium
+          line-height: 20px
+
+        .myCoupon-couponList-item-time
+          font-size: $font-size-small-s
+          color: $color-text-d
+          line-height: 14px
+
+    .myCoupon-couponList-itemBtn
+      width: 65px
+      height: 24px
+      background: $color-button
+      border-radius: 2px
+      font-size: $font-size-small
+      line-height: 24px
+      text-align: center
+      color: $color-white
+
+  .myCoupon-couponList-ccc
+    max-height: 80vh
+
+    .myCoupon-bigMoney
+      color: $color-text-n
+      font-size: 40px
+      font-family: Impact
+
+    .myCoupon-midMoney
+      color: $color-text-n
+      font-size: $font-size-medium
+      font-family: PingFangSC-Semibold
+
+    .myCoupon-couponList-item
+      margin: 10px 0 0 12px
+      width: 700rpx
+      height: 200rpx
+      display: flex
+      align-items: center
+
+      .myCoupon-couponList-itemPay
+        text-align: center
+        width: 200rpx
+        font-size: $font-size-small-s
+
+      .myCoupon-couponList-itemMsg
+        display: flex
+        flex-direction: column
+        justify-content: space-between
+        height: 80px
+        width: 156px
+        padding: 10px 0 10px 12px
+
+        .myCoupon-couponList-item-title
+          color: $color-text-n
+          font-family: PingFangSC-Regular
+          font-size: $font-size-medium
+          line-height: 20px
+
+        .myCoupon-couponList-item-time
+          color: $color-text-n
+          font-size: $font-size-small-s
+          color: $color-text-n
+          line-height: 14px
+
+    .myCoupon-couponList-noItemBtn
+      width: 67.5px
+      height: 68px
+
+
 </style>

@@ -4,7 +4,9 @@
 
       <view class="phoneTest-phoneWindow-head">
         <text class="phoneTest-phoneWindow-headTxt">绑定手机号</text>
-        <image class="phoneTest-closeBtn" src="./image/icon-close_win.png" @tap="closeCover"></image>
+        <view class="phoneTest-closeBtn" @tap="closeCover">
+          <image class="phoneTest-closeBtn-icon" src="./image/icon-close_win.png"></image>
+        </view>
       </view>
 
       <text class="phoneTest-titleTxt">绑定手机号,获取更多红包、优惠券等信息</text>
@@ -38,7 +40,6 @@
 <script>
   /* eslint-disable no-undef */
   import wepy from 'wepy'
-  import tips from '@/common/js/tips'
   import users from 'common/mixins/users'
   import user from 'api/user'
 
@@ -131,13 +132,12 @@
             code: self.phoneCode
           }
           let resData = await this._bindPhone(data)
-          console.log(resData,1)
-//          if (res.data.status === 'success') {
-//            self.phoneTestCover = false
-//            self.$apply()
-//            tips.success('手机绑定成功')
-//            self.$emit('isPhoneOk')
-//          }
+          console.log(resData)
+          if (resData.error === 0) {
+            self.phoneTestCover = false
+            self.$apply()
+            self.$emit('isPhoneOk')
+          }
         }
       }
     }
@@ -153,59 +153,66 @@
     left: 0
     top: 0
     height: 100vh
-    width: 750rpx
-    background: rgba(54, 53, 71, .5)
+    width: 100vw
+    background: $color-mask-bgc
 
   .phoneTest-phoneWindow
     position: fixed
-    height: 443rpx
-    width: 460rpx
+    height: 222px
+    width: 230px
     margin: auto
     left: 0
     top: 0
     right: 0
     bottom: 0
     background: #fff
-    border-radius: 8rpx
-    padding: 20rpx
+    border-radius: 4px
+    padding: 10px
 
     .phoneTest-phoneWindow-head
-      height: 40rpx
+      height: 20px
       display: flex
       flex-direction: row
       justify-content: space-between
-      margin-bottom: 11rpx
+      margin-bottom: 5.5px
 
       .phoneTest-phoneWindow-headTxt
         font-size: $font-size-medium
         color: $color-text
-        line-height: 40rpx
+        line-height: 20px
 
       .phoneTest-closeBtn
-        width: 20rpx
-        height: 20rpx
-        margin: 10rpx
+        width: 20px
+        height: 20px
+
+        .phoneTest-closeBtn-icon
+          width: 10px
+          height: 10px
+          margin: 5px
 
     .phoneTest-titleTxt
       font-size: $font-size-small-s
       color: #9B9B9B
 
     .phoneTest-list
-      padding-top: 20rpx
-      padding-left: 3rpx
+      padding-top: 10px
+      padding-left: 1.5px
 
       .phoneTest-list-item
-        height: 54rpx
-        border-bottom: 1rpx solid #D6D6D6
+        height: 27px
+        border-bottom: 1px solid #D6D6D6
         display: flex
         flex-direction: row
         align-items: center
-        margin-top: 40rpx
+        margin-top: 20px
 
         .phoneTest-list-item-image
-          width: 28rpx
-          height: 34rpx
-          margin-right: 20rpx
+          width: 14px
+          height: 17px
+          margin-right: 10px
+
+        .phoneTest-list-item-input
+          font-size: $font-size-medium
 
         .phoneTest-list-item-placeh
           font-size: $font-size-small
@@ -217,31 +224,32 @@
           align-items: center
 
           .phoneTest-list-item-input
-            width: 240rpx
+            width: 120px
+
           .phoneTest-list-code
             border-left: 1px solid #E6E6E6
-            height: 33rpx
-            width: 120rpx
+            height: 16.5px
+            width: 60px
             text-align: center
-            padding-left: 10rpx
-            line-height: 33rpx
+            padding-left: 5px
+            line-height: 16.5px
             font-size: $font-size-small
             color: #C8C8C8
-            margin-left: 26rpx
+            margin-left: 13px
           .phoneTest-list-codeRed
             color: $color-text-t
 
     .phoneTest-submit
-      width: 460rpx
-      height: 80rpx
+      width: 230px
+      height: 40px
       opacity: 0.3
       background: $color-text-t
       border-radius: 2px
       text-align: center
-      line-height: 80rpx
+      line-height: 40px
       font-size: $font-size-small
       color: #fff
-      margin-top: 60rpx
+      margin-top: 30px
 
     .phoneTest-submit-disabled
       opacity: 1

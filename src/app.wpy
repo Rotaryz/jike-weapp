@@ -58,8 +58,13 @@ export default class extends wepy.app {
       'pages/user/mine/mine',
       'pages/user/myCenter/myCenter',
       'pages/user/myOrder/myOrder',
+      'pages/user/myOrder-detail/myOrderDetail',
+      'pages/user/refund/refund',
       'pages/user/myCoupon/myCoupon',
+      'pages/user/withDraw/withDraw',
+      'pages/coupon-use/couponUse',
       'pages/user/redPacket/redPacket',
+      'pages/user/mySelect/mySelect',
       'pages/post-order/post-order',
       'pages/square/square'
     ],
@@ -99,7 +104,7 @@ export default class extends wepy.app {
   }
 
   globalData = {
-    baseUrl: 'http://jike-wap-api.chenrilong.top',
+    baseUrl: 'http://jike-wap-api.majy999.com',
     user: null,
     orderInfo: {}
   }

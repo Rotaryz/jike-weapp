@@ -30,14 +30,14 @@
   @import "../../common/stylus/variable"
 
   .phoneTestHint
-    height: 90rpx
-    margin-bottom: 20rpx
+    height: 45px
+    margin-bottom: 10px
     display: flex
     background: $color-highlight-background
     flex-direction: row
     align-items: center
     justify-content: space-between
-    padding: 0 24rpx
+    padding: 0 12px
     font-size: $font-size-medium
 
     .phoneTest-txtBox
@@ -46,22 +46,21 @@
       align-items: center
 
       .phoneTest-pcPhone
-        width: 20rpx
-        height: 28rpx
-        margin-right: 10rpx
+        width: 10px
+        height: 14px
+        margin-right: 5px
 
       .phoneTest-txt
         color: $color-text
 
     .phoneTest-btn
-      width: 120rpx
-      height: 48rpx
+      width: 60px
       font-size: $font-size-small
       color: $color-text-t
-      border: 1rpx solid $color-text-t
-      border-radius: 4rpx
+      border: 1px solid $color-text-t
+      border-radius: 2px
       text-align: center
-      line-height: 48rpx
+      line-height: 24px
 
       &:active
         background: $color-text-t

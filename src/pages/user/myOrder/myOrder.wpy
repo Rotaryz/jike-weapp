@@ -12,28 +12,32 @@
     </view>
 
     <scroll-view scroll-y class="myOrder-orderBox" bindscrolltolower="orderLower">
-      <view class="myOrder-noOrderMsg" wx:if="{{false}}">
+      <view class="myOrder-noOrderMsg" wx:if="{{orderList.length===0}}">
         <image src="{{noOrderIcon[menuIdx]}}" wx:if="noOrder" class="myOrder-noOrderMsg-Img"></image>
         <view class="myOrder-noOrderMsg-txt">您还没有相关订单</view>
-        <view class="myOrder-noOrderBtn">随便逛逛</view>
+        <view class="myOrder-noOrderBtn" @tap="toRecommend">随便逛逛</view>
       </view>
 
-      <view class="myOrder-orderList">
-        <view class="myOrder-orderList-item" wx:for="orderList" wx:key="item">
-          <image class="myOrder-orderList-item-logo" src="./image/pic-default-1.png"></image>
-          <view class="myOrder-orderList-item-msg">
-            <view class="myOrder-orderList-item-title">圣诞活动</view>
-            <view class="myOrder-orderList-item-count myOrder-orderList-item-detail" wx:if="{{menuIdx===0}}">数量: 2</view>
-            <view class="myOrder-orderList-item-time myOrder-orderList-item-detail" wx:if="{{menuIdx!==0}}">下单时间: 2017-08-01</view>
-            <view class="myOrder-orderList-item-total myOrder-orderList-item-detail">总价: ￥200</view>
+      <view class="myOrder-orderList" wx:if="{{orderList.length > 0}}">
+        <view class="myOrder-orderList-item" wx:for="{{orderList}}" @tap="showDetail({{item.id}},{{menuIdx}})" wx:key="{{item.id}}">
+          <view class="myOrder-orderList-item-left">
+            <image class="myOrder-orderList-item-logo" src="{{item.merchant_logo}}"></image>
+            <view class="myOrder-orderList-item-msg">
+              <view class="myOrder-orderList-item-title">{{item.title}}</view>
+              <view class="myOrder-orderList-item-count myOrder-orderList-item-detail" wx:if="{{menuIdx===0}}">数量: {{item.count}}</view>
+              <view class="myOrder-orderList-item-time myOrder-orderList-item-detail" wx:if="{{menuIdx!==0}}">下单时间: {{item.created_at}}</view>
+              <view class="myOrder-orderList-item-total myOrder-orderList-item-detail">总价: ￥{{item.total}}</view>
+            </view>
           </view>
           <view class="myOrder-orderList-item-btnBox">
-            <view class="myOrder-orderList-item-status">{{orderItemStatus[menuIdx]}}</view>
-            <view class="myOrder-orderList-item-btn">{{orderItemBtnTxt[menuIdx]}}</view>
+            <view class="myOrder-orderList-item-status">{{orderItemStatus[item.status]}}</view>
+            <view class="myOrder-orderList-item-btn" catchtap="useCoupon({{item.id}},{{item.promotion_id}})">{{orderItemBtnTxt[menuIdx]}}</view>
           </view>
         </view>
       </view>
     </scroll-view>
+
+    <Appraise></Appraise>
   </view>
 </template>
 
@@ -44,6 +48,7 @@
   import PhoneTest from '@/base/phoneTest/phoneTest'
   import PhoneTestHint from '@/base/phoneTestHint/phoneTestHint'
   import getMyOrder from '@/api/myOrder'
+  import Appraise from '@/base/appraise/appraise'
 
   export default class MyOrder extends wepy.page {
     mixins = [base]
@@ -57,33 +62,81 @@
 
     components = {
       PhoneTest,
-      PhoneTestHint
+      PhoneTestHint,
+      Appraise
     }
 
     data = {
       menuIdx: 1,
       menuItems: ['待付款', '待使用', '待评价', '退款/售后'],
       noOrderIcon: ['./image/pic-my_nopaid.png', './image/pic-my_noused.png', './image/pic-my_noevaluated.png', './image/pic-my_norefund.png'],
-      orderItemStatus: ['待付款', '', '', '已退款'],
+      orderItemStatus: ['待付款', '', '', '退款完成', '退款中', '已完成'],
       orderItemBtnTxt: ['付款', '进店使用', '评价', '再来一单'],
-      noOrder: false,
       isPhone: 0,
       LowerLoading: false,
-      orderList: [1, 2, 3, 4]
+      orderList: [],
+      page: 1,
+      nothingAdd: false
     }
 
     methods = {
-      tabChange(idx) {
+      async tabChange(idx) {
         this.menuIdx = idx
+        let resList = await this._getOrderList(idx, this.page)
+        this.page = 1
+        this.nothingAdd = false
+        this.orderList = resList
+        this.$apply()
       },
       orderUpper() {
         console.log('刷新')
       },
-      orderLower() {
-        if (!this.LowerLoading) {
-          console.log('加载')
+      async orderLower() {
+        if (!this.LowerLoading && !this.nothingAdd) {
           this.LowerLoading = true
+          this.page++
+          console.log(this.page)
+          const res = await this._getOrderList(this.menuIdx, this.page)
+          if (res.length === 0) {
+            this.nothingAdd = true
+            console.log('已经到底')
+          }
+          this.orderList.push(...res)
+          this.$apply()
+          this.LowerLoading = false
+          console.log('加载完成')
+        } else if (this.nothingAdd) {
+          console.log('已经没有可以加载的了')
         }
+      },
+      showDetail(id, status) {
+        let url = '/pages/user/myOrder-detail/myOrderDetail?status=' + status + '&id=' + id
+        this.$navigate(url)
+      },
+      orderUse(id, status) {
+        console.log(id, status)
+      },
+      useCoupon(orderId, couponId) {
+        switch (this.menuIdx) {
+          case 0:
+            console.log('付款')
+            break
+          case 1:
+            this.$navigate('/pages/coupon-use/couponUse?id=' + orderId)
+            break
+          case 2:
+            console.log('评价')
+            this.$invoke('Appraise', 'showCover')
+            this.$broadcast('sendCouponMsg', orderId, couponId)
+            break
+          case 3:
+            console.log('再来一单')
+            this.$navigate('/pages/coupon-detail/coupon-detail?id=' + couponId)
+            break
+        }
+      },
+      toRecommend() {
+        wx.switchTab({url: '/pages/recommend/recommend'})
       }
     }
 
@@ -94,9 +147,12 @@
     async load(option) {
       this.userInfo = this.$parent.globalData.user
       if (option.idx) {
-        this.menuIdx = option.idx
+        this.menuIdx = Number(option.idx)
+      } else {
+        this.menuIdx = 1
       }
-      await this._getOrderList(1, 1)
+      let resList = await this._getOrderList(this.menuIdx, 1)
+      this.orderList.push(...resList)
       let customerId = wx.getStorageSync('customerId')
       if (customerId) {
         this.isPhone = 1
@@ -107,12 +163,12 @@
     }
 
     async _getOrderList(idx, page) {
-      const listData = await getMyOrder.getOrderList(idx, page)
+      return await getMyOrder.getOrderList(idx, page)
     }
 
     events = {
       'isPhoneOk': () => {
-        console.log(999)
+        this.isPhone = 1
       }
     }
   }
@@ -127,115 +183,121 @@
 
     .myOrder-menuTab
       display: flex
-      height: 84rpx
+      height: 8vh
+      padding-right: 8px
+      box-sizing: border-box
       background: $color-highlight-background
-      border-bottom: 1rpx solid $color-row-line
+      border-bottom: 1px solid $color-row-line
 
       .myOrder-menuTab-item
         font-size: $font-size-medium
         color: $color-text
         flex: 1
-        line-height: 84rpx
+        line-height: 8vh
         text-align: center
-        margin: 0 22rpx
+        margin: 0 11px
         margin-bottom: -1rpx
         border-bottom: 0 none
+        white-space: nowrap
 
       .myOrder-menuTab-item.active
         color: $color-text-t
-        border-bottom: 4rpx solid $color-text-t
+        border-bottom: 2px solid $color-text-t
 
 
     .myOrder-phoneTestBox
-      height: 110rpx
+      height: 55px
 
     .myOrder-orderBox
-      max-height: 1120rpx
+      max-height: 92vh
 
       .myOrder-noOrderMsg
-        height: 320rpx
+        height: 160px
         background: $color-highlight-background
-        border-bottom: 1rpx solid $color-row-line
-        padding-top: 64rpx
+        border-bottom: 1px solid $color-row-line
+        padding-top: 32px
         display: flex
         flex-direction: column
         align-items: center
 
         .myOrder-noOrderMsg-Img
-          width: 185rpx
-          height: 106rpx
-          margin-bottom: 20rpx
-          padding-left: 30rpx
+          width: 92.5px
+          height: 53px
+          margin-bottom: 10px
+          padding-left: 15px
 
         .myOrder-noOrderMsg-txt
           font-size: $font-size-small
           color: $color-text
-          margin-bottom: 70rpx
+          margin-bottom: 35px
 
         .myOrder-noOrderBtn
-          width: 171rpx
-          height: 48rpx
-          border: 1rpx solid $color-row-line
+          width: 65.5px
+          height: 24px
+          border: 1px solid $color-row-line
           text-align: center
-          line-height: 48rpx
+          line-height: 24px
           font-size: $font-size-small
           border-radius: 4rpx
 
           &:active
-            border: 1rpx solid $color-button
+            border: 1px solid $color-button
             color: $color-button
 
       .myOrder-orderList-item
         position: relative
-        height: 137rpx
-        margin-top: 20rpx
+        height: 68.5px
+        margin-top: 10px
         background: $color-highlight-background
-        padding: 27rpx 23rpx
+        padding: 13.5px 11.5px
         display: flex
         justify-content: space-between
 
-        .myOrder-orderList-item-logo
-          width: 128rpx
-          height: 128rpx
-          border: 1rpx solid $color-row-line
-          margin-right: 18rpx
+        .myOrder-orderList-item-left
+          display: flex
+          width: 80%
 
-        .myOrder-orderList-item-msg
-          width: 440rpx
+          .myOrder-orderList-item-logo
+            width: 64px
+            height: 64px
+            border: 1px solid $color-row-line
+            margin-right: 9px
 
-          .myOrder-orderList-item-title
-            font-size: $font-size-medium
-            color: $color-text
-            line-height: 40rpx
-            margin-bottom: 22rpx
+          .myOrder-orderList-item-msg
 
-          .myOrder-orderList-item-detail
-            font-size: $font-size-small
-            color: #696671
-            line-height: 33rpx
+            .myOrder-orderList-item-title
+              font-size: $font-size-medium
+              color: $color-text
+              line-height: 20px
+              margin-bottom: 11px
+
+            .myOrder-orderList-item-detail
+              font-size: $font-size-small
+              color: #696671
+              line-height: 16.5px
 
 
         .myOrder-orderList-item-btnBox
-          width: 116rpx
+          width: 58px
 
           .myOrder-orderList-item-status
             font-size: $font-size-small-s
             color: $color-text-t
             text-align: right
-            line-height: 30rpx
+            line-height: 15px
 
           .myOrder-orderList-item-btn
             position: absolute
-            right: 24rpx
-            bottom: 58rpx
-            width: 114rpx
-            height: 46rpx
-            border: 1rpx solid #656079
+            right: 12px
+            bottom: 29px
+            width: 57px
+            height: 23px
+            border: 1px solid #656079
             background: $color-button
-            border-radius: 4rpx
+            border-radius: 2px
             text-align: center
-            line-height: 46rpx
+            line-height: 23px
             font-size: $font-size-small
-            color: #fff
+            color: $color-white
 
 </style>

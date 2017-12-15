@@ -11,9 +11,9 @@ export default class http {
     }
     const Authorization = wepy.getStorageSync('token')
     if (Authorization) {
-      param.header = Object.assign({}, {Authorization)
+      param.header = Object.assign({}, {Authorization})
     }
-    param.header = Object.assign({}, param.header, {'Current-merchant': wepy.getStorageSync('merchantId')})
+    param.header = Object.assign({}, param.header, {'Current-merchant': 100000})
     if (loading) {
       Tips.loading()
     }
@@ -27,28 +27,33 @@ export default class http {
     }
   }
 
-  static async update (url, name) {
-    const tempFilePaths = await wepy.chooseImage()
+  static async update (url, name, loading = true) {
+    const resImage = await wepy.chooseImage()
     const token = wepy.getStorageSync('token')
     const param = {
       url: url,
-      filePath: tempFilePaths[0],
+      filePath: resImage.tempFilePaths[0],
       name: name,
       formData: {
         jk_token: token
       }
     }
+    const Authorization = wepy.getStorageSync('token')
+    if (Authorization) {
+      param.header = Object.assign({}, {Authorization})
+    }
+    param.header = Object.assign({}, param.header, {'Current-merchant': 100000})
     if (loading) {
       Tips.loading()
     }
     const res = await wepy.uploadFile(param)
+    const resData = JSON.parse(res.data)
     Tips.loaded()
-    if (this.isSuccess(res)) {
-      return res.data.data
+    if (res.statusCode === 200 && resData.error === 0) {
+      return resData
     } else {
-      throw this.requestException(res)
+      throw this.requestException(resData)
     }
-
   }
   /**
    * 判断请求是否成功

@@ -1,11 +1,11 @@
 <template>
   <view class="myCenter">
     <view class="myCenter-head">
-      <view class="myCenter-head-avatarBox" @tap="updateAvatar">
+      <view class="myCenter-head-avatarBox" @tap="updateAvatarImg">
         <image model="aspectFill"
-               src="{{userInfo.customer_id.image_id?userInfo.customer_id.image_id:userInfo.avatarUrl}}"
+               src="{{userInfo.avatarUrl}}"
                class="myCenter-head-avatar"
-               style="background-image: url('./image/pic-default.png'); background-size: 96rpx 96rpx"></image>
+               style="background-image: url('./image/pic-default.png'); background-size: 48px 48px"></image>
         <view class="myCenter-head-txt">点击修改头像</view>
       </view>
     </view>
@@ -13,29 +13,30 @@
     <view class="myCenter-msgList">
       <view class="myCenter-msgList-item myCenter-msgList-id">
         <view class="myCenter-msgList-item-title">用户ID</view>
-        <view class="myCenter-msgList-item-msg">{{userInfo.customer_id.user_id}}</view>
+        <view class="myCenter-msgList-item-msg">{{userInfo.user_id}}</view>
       </view>
-      <view class="myCenter-msgList-item myCenter-msgList-phone">
+      <view class="myCenter-msgList-item myCenter-msgList-phone" @tap="changePhone">
         <view class="myCenter-msgList-item-title">手机号</view>
-        <view class="myCenter-msgList-item-msg">{{userInfo.customer_id.mobile}}</view>
+        <view class="myCenter-msgList-item-msg">{{userInfo.mobile}}</view>
       </view>
+      <PhoneTest></PhoneTest>
       <view class="myCenter-msgList-item myCenter-msgList-name">
         <view class="myCenter-msgList-item-title">昵称</view>
-        <view class="myCenter-msgList-item-msg">{{userInfo.customer_id.nickname}}</view>
+        <view class="myCenter-msgList-item-msg">{{userInfo.nickName}}</view>
       </view>
       <view class="myCenter-msgList-item myCenter-msgList-gender">
         <view class="myCenter-msgList-item-title">性别</view>
         <view class="myCenter-msgList-item-msg">
-          <picker bindchange="genderChange" value="{{userInfo.customer_id.sex}}" range="{{genders}}">
-            <view>{{genders[userInfo.customer_id.sex]}}</view>
+          <picker bindchange="genderChange" value="{{userInfo.sex}}" range="{{genderSelect}}">
+            <view>{{genders[userInfo.sex]}}</view>
           </picker>
         </view>
       </view>
       <view class="myCenter-msgList-item myCenter-msgList-birthday">
         <view class="myCenter-msgList-item-title">出生日期</view>
         <view class="myCenter-msgList-item-msg">
-          <picker mode="date" value="{{userInfo.customer_id.birth}}" end="{{now}}" bindchange="birthdayChange">
-            <view>{{userInfo.customer_id.birth}}</view>
+          <picker mode="date" value="{{userInfo.birth}}" end="{{now}}" bindchange="birthdayChange">
+            <view>{{userInfo.birth}}</view>
           </picker>
         </view>
       </view>
@@ -48,6 +49,7 @@
   import wepy from 'wepy'
   import users from 'common/mixins/users'
   import user from 'api/user'
+  import PhoneTest from '@/base/phoneTest/phoneTest'
 
   export default class MyCenter extends wepy.page {
     mixins = [users]
@@ -58,13 +60,18 @@
       navigationBarTextStyle: 'black'
     }
 
+    components = {
+      PhoneTest
+    }
+
     data = {
       userInfo: {
         nickName: '加载中...',
         avatarUrl: '',
         birth: '1986-01-01'
       },
-      genders: ['保密', '男', '女'],
+      genders: ['未知', '男', '女'],
+      genderSelect: ['男', '女'],
       now: '2017-01-01'
     }
 
@@ -77,23 +84,31 @@
       await user.updataMsg(data)
     }
 
+    async _updataUser() {
+      await this.$getUserInfo()
+      this.userInfo = this.$parent.globalData.user
+      this.$apply()
+    }
+
     methods = {
       genderChange(e) {
-        if (e.detail.value === this.userInfo.customer_id.sex) {
+        let choiceValue = Number(e.detail.value) + 1
+        let self = this
+        if (choiceValue === Number(self.userInfo.sex)) {
           return
         }
         let token = wx.getStorageSync('token')
         let data = {
           jk_token: token,
-          sex: e.detail.value
+          sex: choiceValue
         }
         this._updateMsg(data)
-        this.userInfo.customer_id.sex = e.detail.value
+        this.userInfo.sex = choiceValue
         this.$parent.updateGlobalData('user', Object.assign({}, this.userInfo))
         this.$apply()
       },
       birthdayChange(e) {
-        if (e.detail.value === this.userInfo.customer_id.birth) {
+        if (e.detail.value === this.userInfo.birth) {
           return
         }
         let token = wx.getStorageSync('token')
@@ -102,35 +117,25 @@
           birth: e.detail.value
         }
         this._updateMsg(data)
-        this.userInfo.customer_id.birth = e.detail.value
+        this.userInfo.birth = e.detail.value
         this.$parent.updateGlobalData('user', Object.assign({}, this.userInfo))
         this.$apply()
       },
-      updateAvatar() {
-        const res = user.updateImg('image_id')
+      async updateAvatarImg() {
+        const res = await user.updateAvatar('image_id')
         console.log(res)
-//        wx.chooseImage({
-//          success: function (res) {
-//            var tempFilePaths = res.tempFilePaths
-//            let token = wx.getStorageSync('token')
-//            wx.uploadFile({
-//              url: `${baseUrl}api/info/store_image`,
-//              filePath: tempFilePaths[0],
-//              name: 'image_id',
-//              formData: {
-//                jk_token: token
-//              },
-//              success: function (res) {
-//                console.log(JSON.parse(res.data))
-//                let resData = JSON.parse(res.data)
-//                console.log(self)
-//                self.userInfo.customer_id.image_id = resData.data.url
-//                self.$parent.updateGlobalData('user', Object.assign({}, self.userInfo))
-//                self.$apply()
-//              }
-//            })
-//          }
-//        })
+        this.userInfo.avatarUrl = res.data
+        this.$parent.updateGlobalData('user', Object.assign({}, this.userInfo))
+        this.$apply()
+      },
+      changePhone() {
+        this.$invoke('PhoneTest', 'bindPhone')
+      }
+    }
+
+    events = {
+      'isPhoneOk': () => {
+        this._updataUser()
       }
     }
   }
@@ -155,21 +160,21 @@
         display: flex
         flex-direction: column
         align-items: center
-        padding: 44rpx 0
+        padding: 22px 0
 
         .myCenter-head-avatar
-          width: 96rpx
-          height: 96rpx
+          width: 48px
+          height: 48px
           border-radius: 50%
-          margin: 14rpx
+          margin: 7px
 
         .myCenter-head-txt
           color: $color-text
 
     .myCenter-cutLine
       background: $color-background
-      border: 1rpx solid $color-row-line
-      height: 20rpx
+      border: 1px solid $color-row-line
+      height: 10px
 
     .myCenter-msgList
       display: flex
@@ -178,11 +183,11 @@
 
       .myCenter-msgList-item
         flex: 1
-        height: 40rpx
-        padding: 20rpx 0
-        margin-left: 24rpx
+        height: 20px
+        padding: 10px 0
+        margin-left: 12px
         display: flex
-        border-bottom: 1rpx solid $color-row-line
+        border-bottom: 1px solid $color-row-line
 
         .myCenter-msgList-item-title
           flex: 1
@@ -196,7 +201,7 @@
           color: $color-text
 
         .myCenter-msgList-item-msg label
-          margin-right: 30rpx
+          margin-right: 15px
 
       .myCenter-msgList-id .myCenter-msgList-item-msg, .myCenter-msgList-name .myCenter-msgList-item-msg
         color: #B6B6B6
