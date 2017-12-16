@@ -38,6 +38,7 @@
     </scroll-view>
 
     <Appraise></Appraise>
+
   </view>
 </template>
 
@@ -125,6 +126,7 @@
             this.$navigate('/pages/coupon-use/couponUse?id=' + orderId)
             break
           case 2:
+            this.showAppraise = true
             this.$invoke('Appraise', 'showCover')
             this.$broadcast('sendCouponMsg', orderId, couponId)
             break

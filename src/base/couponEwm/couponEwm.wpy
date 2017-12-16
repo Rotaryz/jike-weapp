@@ -165,7 +165,7 @@
       width: 23px
       height: 23px
       position: fixed
-      bottom: 30px
+      bottom: 8vh
       left: 50%
       transform: translate(-50%, 0)
 

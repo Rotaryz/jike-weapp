@@ -79,9 +79,11 @@
 
     methods = {
       showCover() {
+        this._init()
         this.appraiseCover = true
       },
       closeCover() {
+        this._init()
         this.appraiseCover = false
       },
       chioseStar(idx) {
@@ -174,6 +176,18 @@
       return arr.filter((item) => {
         return item > 10
       })
+    }
+
+    _init() {
+      this.starCount = -1
+      this.appraiseGood = this._clearAppraise(this.appraiseGood)
+      this.appraiseBad = this._clearAppraise(this.appraiseBad)
+      this.appraiseChecked = []
+      this.couponMsg = null
+      this.appraise = null
+      this.appraiseSuccess = false
+      this.btnDisabled = true
+      this.$apply()
     }
   }
 </script>

@@ -70,6 +70,9 @@
         this.phoneTestCover = true
       },
       closeCover() {
+        this.phoneNum = null
+        this.phoneCode = null
+        this.submitDisabled = true
         this.phoneTestCover = false
       },
       phoneNumIn(e) {
