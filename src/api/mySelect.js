@@ -14,12 +14,12 @@ export default class mySelect extends base {
     return await this.get(url, data)
   }
   /**
-   * 获取单条订单数据
+   * 获取用户收藏内容列表
    * @param token jk_token
    * @returns {Promise.<*>}
    */
-  static async getOrderDetail(id) {
-    const url = `${this.baseUrl}/api/order/operation/${id}`
+  static async getContentList(page) {
+    const url = `${this.baseUrl}/api/contents/merchant-contents`
     return await this.get(url)
   }
 }

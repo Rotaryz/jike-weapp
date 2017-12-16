@@ -6,7 +6,7 @@
       </view>
     </view>
 
-    <view class="mySelect-nothing" wx:if="{{couponList.length===0}}">
+    <view class="mySelect-nothing" wx:if="{{nothingBoxShow}}">
       <image src="{{emptyImg[menuIdx]}}" class="mySelect-nothing-img"></image>
       <view class="mySelect-nothing-txt">{{emptyMsg[menuIdx]}}</view>
       <view class="mySelect-nothingBtn" @tap="toRecommend">随便逛逛</view>
@@ -29,8 +29,26 @@
       </view>
     </scroll-view>
 
-    <scroll-view class="mySelect-contentList">
-      <view></view>
+    <scroll-view class="mySelect-contentList" wx:if="{{contentList.length > 0}}">
+      <view class="mySelect-contentList-item" wx:for="{{contentList}}" wx:key="{{index}}">
+        <image src="{{item.image_url}}" class="mySelect-contentList-item-contentImg"></image>
+        <view class="mySelect-contentList-Msg">
+          <view class="mySelect-contentList-Msg-left">
+            <view></view>
+            <view wx:for="{{[1,2,3]}}" class="mySelect-contentList-Msg-left-dot"></view>
+          </view>
+          <view class="mySelect-contentList-Msg-right">
+            <view class="mySelect-contentList-Msg-right-select">
+              <image src="./image/icon-my_collection.png"></image>
+              <text>{{item.favorite_count}}</text>
+            </view>
+            <view class="mySelect-contentList-Msg-right-share">
+              <image src="./image/icon-share_content.png"></image>
+              <text>{{item.share_count}}</text>
+            </view>
+          </view>
+        </view>
+      </view>
     </scroll-view>
   </view>
 </template>
@@ -56,7 +74,9 @@
       couponList: [],
       LowerLoading: false,
       page: 1,
-      nothingAdd: false
+      nothingAdd: false,
+      contentList: [],
+      nothingBoxShow: true
     }
 
     methods = {
@@ -66,12 +86,25 @@
           this.couponList = []
           this.page = 1
           this.nothingAdd = false
+          this.contentList = await this._getContentList(1)
+          if (this.contentList.length > 0) {
+            this.nothingBoxShow = false
+          } else {
+            this.nothingBoxShow = true
+          }
+          this.$apply()
           return
         }
+        this.contentList = []
         let resList = await this._getCouponList(1)
         this.page = 1
         this.nothingAdd = false
         this.couponList = this._computed(resList)
+        if (this.couponList.length > 0) {
+          this.nothingBoxShow = false
+        } else {
+          this.nothingBoxShow = true
+        }
         this.$apply()
       },
       async couponLower() {
@@ -111,6 +144,11 @@
     async load() {
       const res = await this._getCouponList(1)
       this.couponList = this._computed(res)
+      if (this.couponList.length > 0) {
+        this.nothingBoxShow = false
+      } else {
+        this.nothingBoxShow = true
+      }
       this.$apply()
       this.loaded()
     }
@@ -119,6 +157,9 @@
       return await mySelect.getSelectList(page)
     }
 
+    async _getContentList(page) {
+      return await mySelect.getContentList(page)
+    }
     _computed(arr) {
       return arr.map((item) => {
         return {
@@ -244,6 +285,74 @@
         line-height: 24px
         text-align: center
         color: $color-white
+
+    .mySelect-contentList
+      max-height: 92vh
+      padding: 10px 3.2vw 0
+
+      .mySelect-contentList-item
+        width: 93.6vw
+        height: 40vw
+        background: $color-highlight-background
+
+        .mySelect-contentList-item-contentImg
+          width: 93.6vw
+          height: 29.3vw
+          background: #ccc
+
+        .mySelect-contentList-Msg
+          height: 10.7vw
+          display: flex
+          align-items: center
+          justify-content: space-between
+
+          .mySelect-contentList-Msg-left
+            display: flex
+
+            .mySelect-contentList-Msg-left-dot
+              width: 3px
+              height: 3px
+              background: #000
+              border-radius: 50%
+              margin-left: 4px
+
+          .mySelect-contentList-Msg-right
+            display: flex
+
+            .mySelect-contentList-Msg-right-select
+              display: flex
+              height: 100%
+              align-items: center
+              font-size: $font-size-small
+              margin-right: 21px
+
+              text
+                line-height: 15px
+                padding-top: 3px
+
+              image
+                width: 15px
+                height: 15px
+                margin-right: 3px
+
+            .mySelect-contentList-Msg-right-share
+              display: flex
+              height: 100%
+              align-items: center
+              font-size: $font-size-small
+              margin-right: 10px
+
+              image
+                width: 15px
+                height: 14px
+                margin-right: 3px
+
+              text
+                line-height: 15px
+                padding-top: 3px
+
+
+
 
 
 </style>
