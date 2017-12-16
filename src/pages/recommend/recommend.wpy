@@ -1,13 +1,21 @@
 <template>
   <view class="recommend" ref="recommend">
     <view class="slider-wrapper">
-      <Slider></Slider>
+      <Slider :list.sync="shopImages">
+        <block slot="content">
+          <block wx:for="{{shopImages}}" wx:key="unique">
+            <swiper-item>
+              <image src="{{item.image.url}}" class="slide-image" width="355" height="150"/>
+            </swiper-item>
+          </block>
+        </block>
+      </Slider>
     </view>
     <view class="nav-wrapper">
-      <view class="content-wrapper">
+      <navigator url="/pages/activity/activity" class="content-wrapper">
         <image class="icon" src="./icon-luckdraw@2x.png"></image>
         <view class="content">大转盘</view>
-      </view>
+      </navigator>
       <view class="content-wrapper">
         <image class="icon" src="./icon-invite@2x.png"></image>
         <view class="content">邀请返现</view>
@@ -31,34 +39,12 @@
       </view>
       <view class="tab-content-wrapper">
         <view class="coupon-panel">
-          <view url="{{'/pages/coupon-detail/coupon-detail?id=' + item.id}}" class="coupon"
-                wx:for="{{couponList}}" wx:key="unique"
-                @tap="goToCouponDetail('{{item.id}}')">
-            <view class="coupon-bg">
-              <image class="image" src="./pic-coupon_bg@2x.png" mode="scaleToFill"></image>
-            </view>
-            <view class="content">
-              <view class="left">
-                <view class="price"><text class="number">{{item.platformPrice}}</text><text class="yuan">元</text></view>
-                <view class="desc" wx:if="{{item.type === 'discount'}}">{{item.title}}</view>
-              </view>
-              <view class="right">
-                <view class="desc-wrapper">
-                  <view class="description">
-                    <view class="top">
-                      <view class="name">{{item.name}}</view>
-                      <view class="valid">有效期至{{item.endAt}}</view>
-                    </view>
-                    <view class="bottom">{{item.notAllowTime}}</view>
-                  </view>
-                  <view class="btn-wrapper">
-                    <view class="btn"><text class="font">抢购</text> <image class="icon" src="./icon-button_right.png"></image></view>
-                  </view>
-                </view>
-                <view class="tip-wrapper">礼包</view>
-              </view>
-            </view>
-          </view>
+          <repeat for="{{giftBags}}" key="index" index="index" item="item">
+            <package :coupon.sync="item" :type.sync="packageType" @handleClick.user="goToCouponDetail"></package>
+          </repeat>
+          <repeat for="{{couponList}}" key="index" index="index" item="item">
+            <coupon :coupon.sync="item" :type.sync="couponType" @handleClick.user="goToCouponDetail"></coupon>
+          </repeat>
         </view>
         <view class="discover-panel">
           <view class="ticky-wrapper">
@@ -71,7 +57,9 @@
                   <image src="" alt=""></image>
                 </view>
                 <view class="more">
-                  <view class="dot"></view><view class="dot"></view><view class="dot"></view>
+                  <view class="dot"></view>
+                  <view class="dot"></view>
+                  <view class="dot"></view>
                 </view>
               </view>
               <view class="collect">
@@ -93,16 +81,24 @@
   import base from 'common/mixins/base'
   import users from 'common/mixins/users'
   import Slider from '@/base/slider/slider'
-  import Coupon from 'api/coupon'
+  import Coupon from '@/base/coupon/coupon'
+  import CouponApi from 'api/coupon'
+  import ContentsApi from 'api/contents'
   import CouponFactory from 'common/js/coupon'
-  import PhoneTest from '@/base/phoneTest/phoneTest'
+
+  const COUPON_TYPE = 1
+  const PACKAGE_TYPE = 2
 
   export default class Index extends wepy.page {
     mixins = [users, base]
 
     data = {
+      couponType: COUPON_TYPE,
+      packageType: PACKAGE_TYPE,
       merchantId: wepy.getStorageSync('merchantId'),
-      couponList: []
+      shopImages: [],
+      couponList: [],
+      giftBags: []
     }
 
     async onLoad() {
@@ -110,34 +106,47 @@
     }
 
     async load() {
+      const isAuthorise = await this.isAuthorise()
+      this.$parent.updateGlobalData('isAuthorise', isAuthorise)
       await this._getShopCouponList()
+      await this._getMerchantContents()
       this.loaded()
     }
 
     async _getShopCouponList() {
-//      const data = await Coupon.getShopCouponList(this.merchantId)
-//      this.couponList = data.promotion.data.map((item) => {
-//        return new CouponFactory({
-//          id: item.id,
-//          name: item.title,
-//          platformPrice: item.platform_price,
-//          type: item.promotion_type,
-//          endAt: item.end_at,
-//          notAllowTime: item.not_allow_time
-//        })
-//      })
+      const data = await CouponApi.getShopCouponList(this.merchantId)
+      this.couponList = data.promotions.data.map((item) => {
+        return new CouponFactory({
+          id: item.id,
+          name: item.title,
+          platformPrice: item.platform_price,
+          type: item.promotion_type,
+          endAt: item.end_at,
+          notAllowTime: item.not_allow_time
+        })
+      })
+      this.giftBags = data.gift_bags.map((item) => {
+        return new CouponFactory({
+          id: item.id,
+          name: item.title,
+          platformPrice: item.platform_price,
+          endAt: item.sell_end_at
+        })
+      })
+      this.shopImages = data.merchant_data.shop_image
+    }
+
+    async _getMerchantContents() {
+      const data = await ContentsApi.getMerchantContents()
+      console.log(data)
     }
 
     methods = {
       changeVal(e) {
         this.swiperCurrent = e.detail.current
       },
-      async goToCouponDetail(couponId) {
-        const isAuthorise = await this.isAuthorise()
-        if (!isAuthorise) {
-          this.$invoke('PhoneTest', 'show')
-        }
-        this.$navigate('/pages/coupon-detail/coupon-detail?id' + couponId)
+      async goToCouponDetail(type, couponId) {
+        this.$navigate(`/pages/coupon-detail/coupon-detail?type=${type}&id=${couponId}`)
       }
     }
 
@@ -148,7 +157,8 @@
 
     components = {
       Slider,
-      PhoneTest
+      package: Coupon,
+      coupon: Coupon
     }
 
     config = {
@@ -162,6 +172,8 @@
   @import "../../common/stylus/mixin"
 
   .recommend
+    width: 100%
+    overflow: hidden
     background: $color-background
     .slider-wrapper
       position: relative

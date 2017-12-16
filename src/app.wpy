@@ -15,7 +15,7 @@ export default class extends wepy.app {
   }
 
   onLaunch(option) {
-    wepy.setStorageSync('merchantId', option.query.merchantId)
+    wepy.setStorageSync('merchantId', option.query.merchantId || 100000)
     // 校验SDK
     wxUtils.checkSDK()
   }
@@ -53,8 +53,9 @@ export default class extends wepy.app {
 
   config = {
     pages: [
-      'pages/recommend/recommend',
       'pages/coupon-detail/coupon-detail',
+      'pages/recommend/recommend',
+      'pages/activity/activity',
       'pages/user/mine/mine',
       'pages/user/myCenter/myCenter',
       'pages/user/myOrder/myOrder',
@@ -105,6 +106,7 @@ export default class extends wepy.app {
 
   globalData = {
     baseUrl: 'http://jike-wap-api.majy999.com',
+    isAuthorise: false,
     user: null,
     orderInfo: {}
   }
