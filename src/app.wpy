@@ -48,6 +48,7 @@ export default class extends wepy.app {
     }
     this.$apply && this.$apply()
     console.info(`[${obj ? 'UPDATE' : 'GET'} GlobalData ${name}]:`, this.globalData[name])
+    console.log('test')
     return this.globalData[name]
   }
 
