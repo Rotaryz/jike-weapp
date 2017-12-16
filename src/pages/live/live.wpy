@@ -16,7 +16,7 @@
 
     components = {
       LiveVideo: LiveVideo,
-      Comment:Comment
+      Comment: Comment
     }
   }
 </script>
@@ -24,7 +24,7 @@
 <style lang="stylus">
   @import "../../common/stylus/variable"
   @import "../../common/stylus/mixin"
-  page,.live-show
+  page, .live-show
     background-color: $color-master
     height: 100%
 </style>

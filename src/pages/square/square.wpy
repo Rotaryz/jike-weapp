@@ -1,81 +1,81 @@
-<template>
-  <ShopInformation></ShopInformation>
-  <map id="map" longitude="{{longitude}}" latitude="{{latitude}}"
-       scale="{{scale}}" bindmarkertap='markertap' markers="{{markers}}"></map>
-</template>
-<script>
-  import wepy from 'wepy'
-  import users from 'common/mixins/users'
-  //  import squareMethod from 'common/js/square'
-  //  import amapFile from 'common/libs/amap-wx.js'
-  import ShopInformation from '@/components/shopInformation/shopInformation'
-  export default class Square extends wepy.page {
-    mixins = [users]
-    config = {
-      navigationBarTitleText: '广场'
-    }
-    components = {
-      ShopInformation: ShopInformation
-    }
+<!--<template>-->
+  <!--<ShopInformation></ShopInformation>-->
+  <!--<map id="map" longitude="{{longitude}}" latitude="{{latitude}}"-->
+       <!--scale="{{scale}}" bindmarkertap='markertap' markers="{{markers}}"></map>-->
+<!--</template>-->
+<!--<script>-->
+  <!--import wepy from 'wepy'-->
+  <!--import users from 'common/mixins/users'-->
+  <!--//  import squareMethod from 'common/js/square'-->
+  <!--//  import amapFile from 'common/libs/amap-wx.js'-->
+  <!--import ShopInformation from '@/components/shopInformation/shopInformation'-->
+  <!--export default class Square extends wepy.page {-->
+    <!--mixins = [users]-->
+    <!--config = {-->
+      <!--navigationBarTitleText: '广场'-->
+    <!--}-->
+    <!--components = {-->
+      <!--ShopInformation: ShopInformation-->
+    <!--}-->
 
-    data = {
-      scale: 18,
-      longitude: 113.265544,
-      latitude: 23.123957,
-      markers: [{
-        'address': [],
-        'id': 0,
-        'name': '111',
-        'longitude': 113.265544,
-        'latitude': 23.123957,
-        'height': 32,
-        'width': 22,
-        'iconPath': '44.png'
-      }]
-    }
+    <!--data = {-->
+      <!--scale: 18,-->
+      <!--longitude: 113.265544,-->
+      <!--latitude: 23.123957,-->
+      <!--markers: [{-->
+        <!--'address': [],-->
+        <!--'id': 0,-->
+        <!--'name': '111',-->
+        <!--'longitude': 113.265544,-->
+        <!--'latitude': 23.123957,-->
+        <!--'height': 32,-->
+        <!--'width': 22,-->
+        <!--'iconPath': '44.png'-->
+      <!--}]-->
+    <!--}-->
 
-    // 分享
-    onShareAppMessage() {
-      return {
-        title: '国颐堂（黄石店）',
-        path: '/page/user?id=123',
-        imageUrl: ''
-      }
-    }
+    <!--// 分享-->
+    <!--onShareAppMessage() {-->
+      <!--return {-->
+        <!--title: '国颐堂（黄石店）',-->
+        <!--path: '/page/user?id=123',-->
+        <!--imageUrl: ''-->
+      <!--}-->
+    <!--}-->
 
-    // 点击图标是触发
-    markertap(e) {
-      var id = e.markerId
-//      var that = this
-      console.log(id)
-    }
+    <!--// 点击图标是触发-->
+    <!--markertap(e) {-->
+      <!--var id = e.markerId-->
+<!--//      var that = this-->
+      <!--console.log(id)-->
+    <!--}-->
 
-//    生成数组
-    buildArr() {
+<!--//    生成数组-->
+    <!--buildArr() {-->
 
-    }
+    <!--}-->
 
-    onLoad() {
-      this._getUserInfo()
-    }
+    <!--onLoad() {-->
+      <!--this._getUserInfo()-->
+    <!--}-->
 
-    // 登陆
-    _getUserInfo() {
-      this._wxUserInfo()
-      this.$getUserInfo((userInfo) => {
-        this.userInfo = userInfo
-      })
-    }
-  }
+    <!--// 登陆-->
+    <!--_getUserInfo() {-->
+      <!--this._wxUserInfo()-->
+      <!--this.$getUserInfo((userInfo) => {-->
+        <!--this.userInfo = userInfo-->
+      <!--})-->
+    <!--}-->
+  <!--}-->
 
-</script>
-<style lang="stylus">
-  page
-    height: 100%
-    overflow: hidden
+<!--</script>-->
+<!--<style lang="stylus">-->
+  <!--page-->
+    <!--height: 100%-->
+    <!--overflow: hidden-->
 
-  #map
-    @extend page
-    width: 100%
+  <!--#map-->
+    <!--@extend page-->
+    <!--width: 100%-->
 
-</style>
+<!--</style>-->

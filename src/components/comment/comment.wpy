@@ -38,9 +38,6 @@
 <script>
   import wepy from 'wepy'
   export default class Comment extends wepy.page {
-    config = {
-      navigationBarTitleText: ''
-    }
   }
 </script>
 
@@ -78,7 +75,7 @@
       right: $padding-all
     .inp_cpm
       height: 32px
-      padding :5px $padding-all
+      padding: 5px $padding-all
       display: flex
       input
         display: inline-block
