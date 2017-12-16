@@ -1,0 +1,17 @@
+<template>
+  <web-view src="http://zf.boseca.cn/jike/index.html#/wheel"></web-view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+
+  export default class Activity extends wepy.page {
+    onLoad() {
+      console.log('normal')
+    }
+  }
+</script>
+
+<style lang="stylus">
+
+</style>

@@ -5,28 +5,31 @@
     </view>
     <view class="form-wrapper">
       <view class="label-control border-bottom-1px">
-        <view class="label">养发护发项目优惠券</view>
-        <view class="content">200元</view>
+        <view class="label">{{orderInfo.title}}</view>
+        <view class="content">{{orderInfo.price}}元</view>
       </view>
       <view class="label-control border-bottom-1px">
         <view class="label">数量</view>
         <view class="content">
           <view class="number-control">
-            <view class="desc">-</view>
-            <view class="number">1</view>
-            <view class="add">+</view>
+            <view class="desc" @tap="descCount">-</view>
+            <view class="number">{{count}}</view>
+            <view class="add" @tap="addCount">+</view>
           </view>
         </view>
       </view>
       <view class="label-control">
         <view class="label">小计</view>
-        <view class="content">200元</view>
+        <view class="content">{{total}}元</view>
       </view>
     </view>
     <view class="price-wrapper">
       <view class="content">
         <view class="label">订单总价</view>
-        <view class="price"><text class="number">200</text><text class="yuan">元</text></view>
+        <view class="price">
+          <text class="number">{{total}}</text>
+          <text class="yuan">元</text>
+        </view>
       </view>
     </view>
     <view class="post-btn" @tap="postOrder">
@@ -40,28 +43,57 @@
   import Order from 'api/order'
 
   export default class PostOrder extends wepy.page {
+    data = {
+      orderInfo: {},
+      count: 1,
+      total: 0
+    }
+
     onLoad() {
-      console.log(this.$parent.globalData)
+      this._setOrderInfo()
+    }
+
+    _setOrderInfo() {
+      this.orderInfo = this.$parent.globalData.orderInfo
+      this.total = this.orderInfo.price
     }
 
     methods = {
+      descCount() {
+        if (this.count <= 1) {
+          this.count = 1
+        } else {
+          this.count -= 1
+        }
+        this.total = this.count * this.orderInfo.price
+      },
+      addCount() {
+        this.count += 1
+        this.total = this.count * this.orderInfo.price
+      },
       async postOrder() {
-        const {promotion_id, title, price} = this.$parent.globalData.orderInfo
+        const {promotion_type, promotion_id, title, price} = this.orderInfo
         const data = {
+          promotion_type,
           promotion_id,
           title,
-          price: 0.01,
+          price,
           total: 0.01,
-          count: 1,
+          count: this.count,
           openId: wepy.getStorageSync('openId')
         }
         const res = await Order.operation(data)
         const {timestamp, nonceStr, signType, paySign} = res.payInfo
-        const pay = await wepy.requestPayment({timeStamp: timestamp, nonceStr, package: res.payInfo.package, signType, paySign})
+        const pay = await wepy.requestPayment({
+          timeStamp: timestamp,
+          nonceStr,
+          package: res.payInfo.package,
+          signType,
+          paySign
+        })
         if (pay.errMsg === 'requestPayment:ok') {
           const orderId = res.order.orderId
-          const order = Order.produceOrder({id: orderId})
-          console.log(order)
+          console.log(orderId)
         }
       }
     }

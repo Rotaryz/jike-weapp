@@ -133,16 +133,24 @@
           }
           let resData = await this._bindPhone(data)
           console.log(resData)
-//          if (res.data.status === 'success') {
-//            self.phoneTestCover = false
-//            self.$apply()
-//            tips.success('手机绑定成功')
-//            self.$emit('isPhoneOk')
-//          }
+          if (resData.error === 0) {
+            self.phoneTestCover = false
+            self.$apply()
+            tips.success('手机绑定成功')
+            self.$emit('isPhoneOk')
+          } else {
+            self.phoneTestCover = false
+            self.$apply()
+            tips.fail('绑定失败')
+          }
         }
       }
     }
 
+    show() {
+      this.phoneTestCover = true
+      this.$apply()
+    }
   }
 </script>
 

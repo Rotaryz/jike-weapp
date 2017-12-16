@@ -1,0 +1,160 @@
+<template>
+  <view class="coupon">
+    <view class="coupon-bg">
+      <image class="image" src="./pic-coupon_bg@2x.png" mode="scaleToFill"></image>
+    </view>
+    <view class="content" @tap="handleClick">
+      <view class="left">
+        <view class="price"><text class="number">{{coupon.platformPrice}}</text><text class="yuan">元</text></view>
+        <view class="desc" wx:if="{{coupon.type === 'discount'}}">{{coupon.title}}</view>
+      </view>
+      <view class="right">
+        <view class="desc-wrapper">
+          <view class="description">
+            <view class="top">
+              <view class="name">{{coupon.name}}</view>
+              <view class="valid">有效期至{{coupon.endAt}}</view>
+            </view>
+            <view class="bottom">{{coupon.notAllowTime}}</view>
+          </view>
+          <view class="btn-wrapper">
+            <view class="btn"><text class="font">抢购</text> <image class="icon" src="./icon-button_right.png"></image></view>
+          </view>
+        </view>
+        <view class="tip-wrapper" wx:if="{{type === packageType}}">礼包</view>
+      </view>
+    </view>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+
+  const COUPON_TYPE = 1
+  const PACKAGE_TYPE = 2
+
+  export default class Coupon extends wepy.component {
+    props = {
+      coupon: {
+        type: Object,
+        default: {}
+      },
+      type: {
+        type: String,
+        default: COUPON_TYPE
+      }
+    }
+
+    data = {
+      couponType: COUPON_TYPE,
+      packageType: PACKAGE_TYPE
+    }
+
+    methods = {
+      handleClick() {
+        this.$emit('handleClick', this.type, this.coupon.id)
+      }
+    }
+  }
+</script>
+
+<style lang="stylus">
+  @import "../../common/stylus/variable"
+  .coupon
+    position: relative
+    width: 100%
+    height: 0
+    margin-bottom: 10px
+    padding-top: 28.409090909%
+    overflow: hidden
+    .coupon-bg
+      position: absolute
+      top: 0
+      left: 0
+      width: 100%
+      height: 100%
+      .image
+        width: 100%
+        height: 100%
+    .content
+      position: absolute
+      top: 0
+      left: 0
+      display: flex
+      width: 100%
+      height: 100%
+      .left
+        flex: 0 0 28%
+        display: flex
+        flex-direction: column
+        justify-content: center
+        width: 28%
+        height: 100%
+        color: $color-text-d
+        text-align: center
+        .price
+          font-size: 0
+          .number
+            font-family: Impact
+            font-size: 40px
+            line-height: 49px
+          .yuan
+            font-size: $font-size-small
+        .desc
+          font-size: $font-size-small-s
+      .right
+        position: relative
+        flex: 1
+        .desc-wrapper
+          display: flex
+          height: 100%
+          padding: 0 12px
+          .description
+            flex: 1
+            display: flex
+            flex-direction: column
+            justify-content: space-between
+            padding: 10px 0
+            .top
+              .name
+                line-height: $font-size-large-m
+                font-size: $font-size-medium
+                no-wrap()
+              .valid
+                font-size: $font-size-small-s
+            .bottom
+              font-size: $font-size-small-s
+          .btn-wrapper
+            display: flex
+            align-items: center
+            width: 58px
+            flex: 0 0 58px
+            .btn
+              width: 58px
+              height: 24px
+              margin: auto
+              text-align: center
+              line-height: 24px
+              font-size: 0
+              background: $color-button
+              .font
+                display: inline-block
+                vertical-align: middle
+                margin-right: 3px
+                font-size: $font-size-small
+                color: $color-white
+              .icon
+                vertical-align: middle
+                width: 11px
+                height: 11px
+
+        .tip-wrapper
+          position: absolute
+          top: 3px
+          right: -18px
+          display: inline-block
+          padding: 5px 20px
+          font-size: $font-size-small
+          background-color: $color-yellow
+          transform: rotate(40deg)
+</style>

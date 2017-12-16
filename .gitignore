@@ -1,7 +1,6 @@
 node_modules
 dist
 .idea
-.wepycache
 .DB_store
 .wepycache
 *.wpy___jb_tmp___

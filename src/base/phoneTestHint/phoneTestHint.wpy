@@ -13,7 +13,6 @@
   import wepy from 'wepy'
 
   export default class PhoneTestHint extends wepy.page {
-
     data = {
 
     }

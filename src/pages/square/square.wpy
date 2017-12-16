@@ -1,5 +1,9 @@
 <template>
-  <view></view>
+  <map id="map" longitude="113.324520" latitude="23.099994" scale="14" controls="{{controls}}" bindcontroltap="controltap" markers="{{markers}}" bindmarkertap="markertap" polyline="{{polyline}}" bindregionchange="regionchange" show-location>
+    <cover-view class="slide-modal">
+
+    </cover-view>
+  </map>
 </template>
 <script>
   import wepy from 'wepy'
@@ -38,5 +42,12 @@
   #map
     @extend page
     width: 100%
+    .slide-modal
+      position: absolute
+      top: 20px
+      left: 0
+      width: 80%
+      height: 100px
+      background-color: #ffffff
 
 </style>
