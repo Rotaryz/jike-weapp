@@ -115,17 +115,17 @@
     }
 
     async _getShopCouponList() {
-      const data = await Coupon.getShopCouponList(this.merchantId)
-      this.couponList = data.promotion.data.map((item) => {
-        return new CouponFactory({
-          id: item.id,
-          name: item.title,
-          platformPrice: item.platform_price,
-          type: item.promotion_type,
-          endAt: item.end_at,
-          notAllowTime: item.not_allow_time
-        })
-      })
+//      const data = await Coupon.getShopCouponList(this.merchantId)
+//      this.couponList = data.promotion.data.map((item) => {
+//        return new CouponFactory({
+//          id: item.id,
+//          name: item.title,
+//          platformPrice: item.platform_price,
+//          type: item.promotion_type,
+//          endAt: item.end_at,
+//          notAllowTime: item.not_allow_time
+//        })
+//      })
     }
 
     methods = {

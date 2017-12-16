@@ -3,7 +3,7 @@
     <view class="orderDetail-head">
       <view class="orderDetail-head-detailBox"  @tap="couponDetail">
         <view class="orderDetail-head-left">
-          <image src="{{orderMsg.merchant_image}}" class="orderDetail-head-img"></image>
+          <image src="{{orderMsg.promotion_image}}" class="orderDetail-head-img"></image>
           <view class="orderDetail-head-msg">
             <view class="orderDetail-head-msg-title">{{orderMsg.title}}</view>
             <view class="orderDetail-head-msg-content">{{orderMsg.promotion_subhead}}</view>
@@ -124,6 +124,7 @@
     async load(option) {
       this.statusIdx = option.status
       this.orderMsg = await getMyOrder.getOrderDetail(option.id)
+      console.log(this.orderMsg)
       this.$apply()
       this.loaded()
     }
@@ -140,7 +141,6 @@
             this.refundIng = true
             break
           case 2:
-            console.log('评价')
             this.$invoke('Appraise', 'showCover')
             this.$broadcast('sendCouponMsg', this.orderMsg.id, this.orderMsg.promotion_id)
             break
@@ -172,7 +172,7 @@
         const res = await getMyOrder.orderRebate(this.orderMsg.id, this.orderMsg.count, this.orderMsg.total, cause)
         console.log(res)
         if (res.status === 'success') {
-          this.$navigate('../myOrder/myOrder?idx=3')
+          this.$redirect('../myOrder/myOrder?idx=3')
         } else {
           console.log('退款失败')
         }
@@ -255,7 +255,7 @@
         .orderDetail-head-statusBtn
           width: 58px
           height: 24px
-          border-radius: 2px
+          border-radius: 4px
           line-height: 24px
           text-align: center
           font-size: $font-size-small
@@ -289,11 +289,13 @@
           font-size: $font-size-medium-x
           letter-spacing: 0.48px
           line-height: 22.5px
+          font-family: PingFangSC-Regular
 
         .orderDetail-merchant-msgWork
           font-size: $font-size-small-s
           letter-spacing: 0.3px
           line-height: 14px
+          margin-top: 3px
 
       .orderDetail-merchant-detail
         display: flex
