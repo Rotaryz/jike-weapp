@@ -29,9 +29,9 @@
       </view>
     </scroll-view>
 
-    <view class="mySelect-contentList">
-
-    </view>
+    <scroll-view class="mySelect-contentList">
+      <view></view>
+    </scroll-view>
   </view>
 </template>
 
@@ -97,7 +97,7 @@
         wx.switchTab({url: '/pages/recommend/recommend'})
       },
       couponDetail(id) {
-        this.$navigate('/pages/coupon-detail/coupon-detail?id=' + id)
+        this.$navigate('/pages/coupon-detail/coupon-detail?type=1&id=' + id)
       },
       buySubmit() {
         console.log('购买')

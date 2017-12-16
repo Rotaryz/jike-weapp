@@ -151,7 +151,13 @@
             break
           case 5:
             console.log('已完成')
-            this.$navigate('/pages/coupon-detail/coupon-detail?id=' + this.orderMsg.promotion_id)
+            let couponType
+            if (this.orderMsg.promotion_type === 1) {
+              couponType = 1
+            } else if (this.orderMsg.promotion_type === 2) {
+              couponType = 2
+            }
+            this.$navigate('/pages/coupon-detail/coupon-detail?id=' + this.orderMsg.promotion_id + '&type=' + couponType)
             break
         }
       },
@@ -162,7 +168,13 @@
       },
       couponDetail() {
         let id = this.orderMsg.promotion_id
-        this.$navigate('/pages/coupon-detail/coupon-detail?id=' + id)
+        let couponType
+        if (this.orderMsg.promotion_type === 1) {
+          couponType = 1
+        } else if (this.orderMsg.promotion_type === 2) {
+          couponType = 2
+        }
+        this.$navigate('/pages/coupon-detail/coupon-detail?id=' + id + '&type=' + couponType)
       },
       serviceValChange(e) {
         this.refundChecked = e.detail.value

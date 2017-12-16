@@ -1,0 +1,59 @@
+<template>
+  <view class="shareAndPrize">
+    <view class="shareAndPrize-item">
+      <view class="shareAndPrize-item-head">
+        <text>{{item.txt}}</text>
+        <view>
+          <text>活动规则</text>
+          <image src=""></image>
+        </view>
+      </view>
+      <view class="shareAndPrize-item-body">
+        <image src=""></image>
+      </view>
+    </view>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import base from 'common/mixins/base'
+
+  export default class ShareAndPrize extends wepy.page {
+    mixins = [base]
+
+    config = {
+      navigationBarTitleText: '分享有礼'
+    }
+
+    data = {
+      orderMsg: null
+    }
+
+    methods = {
+
+    }
+
+    async onLoad(option) {
+      await this.load(option.id)
+    }
+
+    async load(id) {
+      let resMsg = await getMyOrder.getRefundDetail(id)
+      this.orderMsg = resMsg
+      this.loaded()
+    }
+  }
+</script>
+
+<style lang="stylus">
+  @import "../../../common/stylus/variable"
+
+  .shareAndPrize-item
+
+    .shareAndPrize-item-head
+      height: 40px
+
+    .shareAndPrize-item-body
+      width: 
+</style>

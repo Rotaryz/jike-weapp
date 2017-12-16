@@ -13,7 +13,7 @@
     </view>
 
     <scroll-view scroll-y class="{{menuIdx===0?'myCoupon-couponList':'myCoupon-couponList-ccc'}}" bindscrolltolower="couponLower" wx:if="{{couponList.length>0}}">
-      <view class="myCoupon-couponList-item" style="background-image: url({{backgroundUrl}}); background-size: 700rpx 200rpx; background-repeat: norepeat" wx:for="{{couponList}}" wx:key="{{index}}" @tap="couponDetail(item.id)">
+      <view class="myCoupon-couponList-item" style="background-image: url({{backgroundUrl}}); background-size: 700rpx 200rpx; background-repeat: norepeat" wx:for="{{couponList}}" wx:key="{{index}}" @tap="couponDetail({{item.id}}, {{item.type}})">
         <view class="myCoupon-couponList-itemPay">
           <view ><text class="myCoupon-midMoney">￥</text><text class="myCoupon-bigMoney">{{item.price}}</text></view>
           <view>{{item.restriction}}</view>
@@ -103,9 +103,13 @@
       toRecommend() {
         wx.switchTab({url: '/pages/recommend/recommend'})
       },
-      couponDetail(id) {
+      couponDetail(id, type) {
         if (this.menuIdx === 0) {
-          this.$navigate('/pages/coupon-detail/coupon-detail?id=' + id)
+          if (!type) {
+            this.$navigate('/pages/coupon-detail/coupon-detail?type=1&id=' + id)
+          } else {
+            this.$navigate('/pages/coupon-detail/coupon-detail?type=2&id=' + type)
+          }
         }
       }
     }
@@ -137,7 +141,8 @@
           code: item.code,
           beautyCode,
           qrcodeUrl: item.qrcode_url,
-          id: item.promotion_id
+          id: item.promotion_id,
+          type: item.gift_bag_id
         }
       })
     }
