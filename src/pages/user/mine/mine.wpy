@@ -152,6 +152,9 @@
         } else {
           this.$invoke('PhoneTest', 'bindPhone')
         }
+      },
+      submit(e) {
+        console.log(e)
       }
     }
 
@@ -302,6 +305,5 @@
       .mine-logo-txt
         font-size: $font-size-small-s
         color: #DADADA
-
 
 </style>

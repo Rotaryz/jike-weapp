@@ -102,7 +102,6 @@
     }
 
     data = {
-      statusIdx: 0,
       btnTxt: ['付款', '申请退款', '评价', '查看详情', '查看详情', '再来一单'],
       statusTxt: ['待付款', '待使用', '待评价', '退款成功', '退款中', '已完成'],
       orderMsg: null,
@@ -122,9 +121,7 @@
     }
 
     async load(option) {
-      this.statusIdx = option.status
       this.orderMsg = await getMyOrder.getOrderDetail(option.id)
-      console.log(this.orderMsg)
       this.$apply()
       this.loaded()
     }
@@ -137,7 +134,6 @@
             console.log('付款')
             break
           case 1:
-            console.log('申请退款')
             this.refundIng = true
             break
           case 2:
@@ -146,11 +142,9 @@
             break
           case 3:
           case 4:
-            console.log('退款详情')
             this.$navigate('../refund/refund?id=' + id)
             break
           case 5:
-            console.log('已完成')
             let couponType
             if (this.orderMsg.promotion_type === 1) {
               couponType = 1
@@ -191,6 +185,12 @@
       },
       closeRefund() {
         this.refundIng = false
+      }
+    }
+
+    events = {
+      'appraiseSuccess': () => {
+        this.load(this.orderMsg.id)
       }
     }
   }
