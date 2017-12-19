@@ -1,0 +1,335 @@
+<template>
+  <view class="appraise-Cover" wx:if="{{appraiseCover}}">
+    <view class="appraise-Msg">
+      <view class="appraise-Msg-head">
+        <view class="appraise-Msg-closeBtn" @tap="closeCover">
+          <image src="./image/icon-close_win.png" class="appraise-Msg-closeIcon"></image>
+        </view>
+        <text>评价</text>
+      </view>
+      <view class="appraise-Msg-list" wx:if="{{!appraiseSuccess}}">
+        <view class="appraise-Msg-list-star">
+          <view wx:for="{{[0,1,2,3,4]}}" wx:key="{{item}}" @tap="chioseStar({{index}})">
+            <image src="{{index <= starCount?'./image/icon-evaluate_red.png':'./image/icon-evaluate_gray.png'}}" class="starImg"></image>
+          </view>
+        </view>
+
+        <view class="appraise-Msg-list-star-describe">{{starDescribe[starCount]}}</view>
+        <checkbox-group bindchange="appraiseMsgChange">
+          <view class="appraise-Msg-listBox">
+            <view class="appraise-Msg-items" wx:for="{{starCount===4||starCount===-1?appraiseGood:appraiseBad}}" wx:key="{{item}}">
+              <label class="checkbox {{item.checked?'active':''}}">
+                <checkbox value="{{item.value}}" checked="{{item.checked}}" hidden="true" />{{item.txt}}
+              </label>
+            </view>
+            <input type="text" class="appraise-Msg-input" placeholder="其他想说的" placeholder-class="appraise-Msg-input-holder" bindinput="appraiseMsginput" />
+          </view>
+        </checkbox-group>
+        <view class="appraise-submitBtn {{btnDisabled?'disabled':''}}" @tap="appraiseSubmit">匿名提交</view>
+      </view>
+      <view class="appraise-Msg-success" wx:if="{{appraiseSuccess}}">
+        <image src="./image/pic-good@2x.png" class="appraise-Msg-success-img"></image>
+        <text class="appraise-Msg-success-txt">评价成功</text>
+      </view>
+    </view>
+  </view>
+</template>
+
+<script>
+  /* eslint-disable no-undef */
+  import wepy from 'wepy'
+  import base from 'common/mixins/base'
+  import getMyOrder from '@/api/myOrder'
+
+  export default class appraise extends wepy.component {
+    mixins = [base]
+
+    data = {
+      appraiseCover: false,
+      starCount: -1,
+      starDescribe: ['非常不满意，各方面都很差', '不满意，比较差', '一般，还需改善', '比较满意，仍可改善', '非常满意，无可挑剔'],
+      appraiseGood: [
+        {txt: '服务热情', value: '1', checked: false},
+        {txt: '性价比高', value: '2', checked: false},
+        {txt: '无推销', value: '3', checked: false},
+        {txt: '干净卫生', value: '4', checked: false},
+        {txt: '环境优雅', value: '5', checked: false},
+        {txt: '价格实惠', value: '6', checked: false},
+        {txt: '停车方便', value: '7', checked: false},
+        {txt: '效果好', value: '8', checked: false}],
+      appraiseBad: [
+        {txt: '服务态度恶劣', value: '11', checked: false},
+        {txt: '性价比低', value: '12', checked: false},
+        {txt: '强推销', value: '13', checked: false},
+        {txt: '没有效果', value: '14', checked: false},
+        {txt: '环境差', value: '15', checked: false},
+        {txt: '脏乱', value: '16', checked: false},
+        {txt: '位置难找', value: '17', checked: false},
+        {txt: '价格贵', value: '18', checked: false}],
+      appraiseChecked: [],
+      couponMsg: null,
+      appraise: null,
+      appraiseSuccess: false,
+      btnDisabled: true
+    }
+
+    onLoad() {
+
+    }
+
+    methods = {
+      showCover() {
+        this._init()
+        this.appraiseCover = true
+      },
+      closeCover() {
+        this._init()
+        this.appraiseCover = false
+      },
+      chioseStar(idx) {
+        this.starCount = idx
+        this.appraiseGood = this._clearAppraise(this.appraiseGood)
+        this.appraiseBad = this._clearAppraise(this.appraiseBad)
+        if (idx === 4) {
+          this.btnDisabled = false
+        } else {
+          this.btnDisabled = true
+        }
+        this.$apply()
+      },
+      appraiseMsgChange(e) {
+        this.appraiseChecked = e.detail.value
+        this._choiseChecked(this.appraiseGood)
+        this._choiseChecked(this.appraiseBad)
+        let resGood = this._checkGood(this.appraiseChecked)
+        let resBad = this._checkBad(this.appraiseChecked)
+        if (resGood.length > 0) {
+          this.starCount = 4
+          this.btnDisabled = false
+        } else if (resGood.length === 0 && resBad.length === 0 && this.starCount < 4) {
+          this.btnDisabled = true
+        } else if (resGood.length === 0 && resBad.length > 0 && this.starCount < 4) {
+          this.btnDisabled = false
+        }
+        this.$apply()
+      },
+      appraiseMsginput(e) {
+        this.appraise = e.detail.value
+      },
+      async appraiseSubmit() {
+        if (this.btnDisabled) {
+          return
+        }
+        let data = {
+          star_level: this.starCount,
+          detail: this.appraise,
+          impression: this.appraiseChecked,
+          promotion_id: this.couponMsg.couponId,
+          customer_orders_id: this.couponMsg.orderId
+        }
+        console.log(data)
+        let res = await getMyOrder.setAppraise(data)
+        console.log(res)
+        if (res.status === 'success') {
+          this.appraiseSuccess = true
+          this.$apply()
+        } else {
+          console.log('评价失败')
+        }
+      }
+    }
+
+    events = {
+      sendCouponMsg(orderId, couponId) {
+        this.couponMsg = {
+          orderId,
+          couponId
+        }
+        this.$apply()
+      }
+    }
+
+    _clearAppraise(arr) {
+      return arr.map((item) => {
+        item.checked = false
+        return item
+      })
+    }
+
+    _choiseChecked(arr) {
+      arr.forEach((item) => {
+        if (this.appraiseChecked.indexOf(item.value) !== -1) {
+          item.checked = true
+        } else {
+          item.checked = false
+        }
+      })
+    }
+
+    _checkGood(arr) {
+      return arr.filter((item) => {
+        return item < 10
+      })
+    }
+
+    _checkBad(arr) {
+      return arr.filter((item) => {
+        return item > 10
+      })
+    }
+
+    _init() {
+      this.starCount = -1
+      this.appraiseGood = this._clearAppraise(this.appraiseGood)
+      this.appraiseBad = this._clearAppraise(this.appraiseBad)
+      this.appraiseChecked = []
+      this.couponMsg = null
+      this.appraise = null
+      this.appraiseSuccess = false
+      this.btnDisabled = true
+      this.$apply()
+    }
+  }
+</script>
+
+<style lang="stylus">
+  @import "../../common/stylus/variable"
+
+  .appraise-Cover
+    position: fixed
+    z-index: 1000
+    left: 0
+    top: 0
+    height: 100vh
+    width: 100vw
+    background: rgba(54, 53, 71, .5)
+
+    .appraise-Msg
+      position: fixed
+      bottom: 0
+      left: 0
+      right: 0
+      background: $color-highlight-background
+
+      .appraise-Msg-head
+        padding: 0 10px
+        text-align: center
+        line-height: 40px
+        position: relative
+        font-size: $font-size-medium
+
+        .appraise-Msg-closeBtn
+          position: absolute
+          width: 40px
+          height: 40px
+          left: 0
+
+          .appraise-Msg-closeIcon
+            position: absolute
+            width: 10px
+            height: 10px
+            left: 10px
+            top: 15px
+
+      .appraise-Msg-list
+        border-top: 1px solid $color-col-line
+
+        .appraise-Msg-list-star
+          display: flex
+          justify-content: center
+          padding-top: 25px
+          padding-bottom: 10px
+
+          .starImg
+            width: 22px
+            height: 22px
+            margin: 0 10px
+
+      .appraise-Msg-list-star-describe
+        text-align: center
+        line-height: 14px
+        font-size: $font-size-medium
+        color: $color-text-t
+
+      .appraise-Msg-listBox
+        width: 70vw
+        margin: 0 auto
+        display: flex
+        flex-wrap: wrap
+        margin-top: 17px
+
+        view:nth-child(2n)
+          margin-left: 4vw
+
+        .appraise-Msg-items
+          width: 33vw
+          height: 8vw
+          font-size: $font-size-medium
+          margin-top: 10px
+
+          .checkbox
+            width: 100%
+            height: 100%
+            display: flex
+            color: #8d8d8d
+            box-sizing: border-box
+            justify-content: center
+            border-radius: 2px
+            align-items: center
+            border: 1px solid $color-row-line
+
+          .checkbox.active
+            background: #FFEFE7
+            color: $color-text
+            border: 1px solid $color-theme
+
+        .appraise-Msg-input
+          width: 70vw
+          height: 8vw
+          font-size: $font-size-medium
+          border: 1px solid $color-col-line
+          border-radius: 2px
+          background: $color-background
+          margin-top: 15px
+          padding-left: 5px
+
+        .appraise-Msg-input-holder
+          font-size: $font-size-medium
+          color: #ccc
+
+      .appraise-submitBtn
+        width: 70vw
+        height: 10vw
+        background: $color-button
+        color: $color-white
+        font-size: $font-size-small
+        display: flex
+        justify-content: center
+        align-items: center
+        margin: 0 auto
+        margin-top: 15px
+        margin-bottom: 25px
+        border-radius: 2px
+
+        &:active
+          background: $color-button-act
+
+      .appraise-submitBtn.disabled
+        background: $color-button-dis
+
+      .appraise-Msg-success
+        display: flex
+        flex-direction: column
+        align-items: center
+        padding: 25% 0
+
+        .appraise-Msg-success-img
+          width: 67.5px
+          height: 65px
+          margin-bottom: 13px
+
+        .appraise-Msg-success-txt
+          font-size: $font-size-medium-x
+
+
+</style>

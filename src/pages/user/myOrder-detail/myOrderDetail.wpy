@@ -1,0 +1,420 @@
+<template>
+  <view class="orderDetail">
+    <view class="orderDetail-head">
+      <view class="orderDetail-head-detailBox"  @tap="couponDetail">
+        <view class="orderDetail-head-left">
+          <image src="{{orderMsg.promotion_image}}" class="orderDetail-head-img"></image>
+          <view class="orderDetail-head-msg">
+            <view class="orderDetail-head-msg-title">{{orderMsg.title}}</view>
+            <view class="orderDetail-head-msg-content">{{orderMsg.promotion_subhead}}</view>
+            <view class="orderDetail-head-msg-pay">￥<text class="orderDetail-head-msg-payMoney">{{orderMsg.price}}</text></view>
+          </view>
+        </view>
+
+        <view class="orderDetail-head-detailBtn">
+          <image src="./image/icon-my_Rectangle.png" class="orderDetail-head-detailBtnImg"></image>
+        </view>
+      </view>
+      <view class="orderDetail-head-status">
+        <view class="orderDetail-head-statusTxt">{{statusTxt[orderMsg.status]}}</view>
+        <view class="orderDetail-head-statusBtn" @tap="followWork({{orderMsg.status}}, {{orderMsg.id}})">{{btnTxt[orderMsg.status]}}</view>
+      </view>
+    </view>
+
+    <view class="orderDetail-merchant">
+      <view class="orderDetail-merchant-title">商家信息</view>
+      <view class="orderDetail-merchant-msgBox">
+        <image src="{{orderMsg.merchant_image}}" class="orderDetail-merchant-logo"></image>
+        <view class="orderDetail-merchant-msg">
+          <view class="orderDetail-merchant-msgName">{{orderMsg.merchant_shop_name}}</view>
+          <view class="orderDetail-merchant-msgWork">{{orderMsg.merchant_describe}}</view>
+        </view>
+      </view>
+      <view class="orderDetail-merchant-detail">
+        <view class="orderDetail-merchant-detail-item">
+          <image src="./image/icon-navigation_1.png" class="orderDetail-merchant-detailIcon"></image>
+          <text>开始导航</text>
+        </view>
+        <view class="orderDetail-merchant-detail-item" @tap="call({{orderMsg.merchant_mobile}})">
+          <image src="./image/icon-call_1.png" class="orderDetail-merchant-detailIcon"></image>
+          <text>打电话</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="orderDetail-orderList">
+      <view class="orderDetail-orderList-title">订单信息</view>
+      <view class="orderDetail-orderList-msg">
+        <view class="orderDetail-orderList-msgItem">订单编号：{{orderMsg.order_sn}}</view>
+        <view class="orderDetail-orderList-msgItem">手机号码：{{orderMsg.customer_phone}}</view>
+        <view class="orderDetail-orderList-msgItem">下单时间：{{orderMsg.created_at}}</view>
+      </view>
+      <view class="orderDetail-orderList-pay">
+        <view class="orderDetail-orderList-msgItem">数量：{{orderMsg.count}}</view>
+        <view class="orderDetail-orderList-msgItem">总价：{{orderMsg.total}}</view>
+      </view>
+    </view>
+
+    <view class="orderDetail-refundCover" wx:if="{{refundIng}}">
+      <view class="orderDetail-refundCover-Msg">
+        <view class="orderDetail-refundCover-Msghead">
+          <view class="orderDetail-refundCover-closeBtn" @tap="closeRefund">
+            <image src="./image/icon-close_win.png" class="orderDetail-refundCover-closeIcon"></image>
+          </view>
+          <text>选择退款原因</text>
+        </view>
+        <view class="orderDetail-refundCover-MsgList">
+          <radio-group bindchange="serviceValChange">
+            <view class="orderDetail-refundCover-MsgList-item" wx:for="{{refundCause}}" wx:key="{{index}}">
+              <label class="checkbox">
+                <radio value="{{item.value}}" checked="{{item.checked}}" hidden="{{true}}" />{{item.txt}}
+                <image class="checkbox-Icon" src="{{item.value===refundChecked?'./image/icon-selected_green.png':'./image/icon-selected_gray.png'}}"></image>
+              </label>
+            </view>
+          </radio-group>
+        </view>
+        <view class="orderDetail-refundCover-submit" @tap="refundSubmit">
+          <view class="orderDetail-refundCover-submitTxt">提交</view>
+        </view>
+      </view>
+    </view>
+
+    <Appraise></Appraise>
+  </view>
+</template>
+
+<script>
+  /* eslint-disable no-undef */
+  import wepy from 'wepy'
+  import base from 'common/mixins/base'
+  import getMyOrder from '@/api/myOrder'
+  import Appraise from '@/base/appraise/appraise'
+
+  export default class MyCoupon extends wepy.page {
+    mixins = [base]
+
+    config = {
+      navigationBarTitleText: '订单详情'
+    }
+
+    components = {
+      Appraise
+    }
+
+    data = {
+      statusIdx: 0,
+      btnTxt: ['付款', '申请退款', '评价', '查看详情', '查看详情', '再来一单'],
+      statusTxt: ['待付款', '待使用', '待评价', '退款成功', '退款中', '已完成'],
+      orderMsg: null,
+      refundIng: false,
+      refundCause: [
+        {value: '0', txt: '买多了/买错了'},
+        {value: '1', txt: '商家说可以现金/刷卡付款来享受折扣'},
+        {value: '2', txt: '计划有变没时间消费', checked: true},
+        {value: '3', txt: '预约不到'},
+        {value: '4', txt: '评价不好'},
+        {value: '5', txt: '后悔了不想要了'}],
+      refundChecked: '2'
+    }
+
+    async onLoad(option) {
+      await this.load(option)
+    }
+
+    async load(option) {
+      this.statusIdx = option.status
+      this.orderMsg = await getMyOrder.getOrderDetail(option.id)
+      console.log(this.orderMsg)
+      this.$apply()
+      this.loaded()
+    }
+
+    methods = {
+      async followWork(status, id) {
+        let num = Number(status)
+        switch (num) {
+          case 0:
+            console.log('付款')
+            break
+          case 1:
+            console.log('申请退款')
+            this.refundIng = true
+            break
+          case 2:
+            this.$invoke('Appraise', 'showCover')
+            this.$broadcast('sendCouponMsg', this.orderMsg.id, this.orderMsg.promotion_id)
+            break
+          case 3:
+          case 4:
+            console.log('退款详情')
+            this.$navigate('../refund/refund?id=' + id)
+            break
+          case 5:
+            console.log('已完成')
+            this.$navigate('/pages/coupon-detail/coupon-detail?id=' + this.orderMsg.promotion_id)
+            break
+        }
+      },
+      call(tel) {
+        wx.makePhoneCall({
+          phoneNumber: tel
+        })
+      },
+      couponDetail() {
+        let id = this.orderMsg.promotion_id
+        this.$navigate('/pages/coupon-detail/coupon-detail?id=' + id)
+      },
+      serviceValChange(e) {
+        this.refundChecked = e.detail.value
+      },
+      async refundSubmit() {
+        let cause = this.refundCause[this.refundChecked].txt
+        const res = await getMyOrder.orderRebate(this.orderMsg.id, this.orderMsg.count, this.orderMsg.total, cause)
+        console.log(res)
+        if (res.status === 'success') {
+          this.$redirect('../myOrder/myOrder?idx=3')
+        } else {
+          console.log('退款失败')
+        }
+      },
+      closeRefund() {
+        this.refundIng = false
+      }
+    }
+  }
+</script>
+
+<style lang="stylus">
+  @import "../../../common/stylus/variable"
+
+  .orderDetail
+
+    .orderDetail-head
+      margin-top: 10px
+      background: $color-highlight-background
+      padding: 11.5px 0 0 11.5px
+
+      .orderDetail-head-detailBox
+        display: flex
+        justify-content: space-between
+        border-bottom: 1px solid $color-row-line
+        padding-bottom: 11.5px
+        height: 64.5px
+
+        .orderDetail-head-left
+          display: flex
+
+
+          .orderDetail-head-img
+            width: 120px
+            height: 64px
+            background: #ccc
+            border: 1px solid $color-row-line
+            border-radius: 2px
+            margin-right: 9.5px
+
+          .orderDetail-head-msg
+            width: 200px
+
+            .orderDetail-head-msg-title
+              line-height: 20px
+              font-size: $font-size-medium
+
+            .orderDetail-head-msg-content
+              line-height: 17px
+              font-size: $font-size-small
+              margin-bottom: 4.5px
+
+            .orderDetail-head-msg-pay
+              color: $color-text-t
+              font-size: $font-size-small
+
+              .orderDetail-head-msg-payMoney
+                font-size: $font-size-large
+
+        .orderDetail-head-detailBtn
+          width: 30px
+          line-height: 64px
+          text-align: center
+
+          .orderDetail-head-detailBtnImg
+            width: 6px
+            height: 10px
+
+      .orderDetail-head-status
+        display: flex
+        justify-content: space-between
+        padding-right: 12px
+        align-items: center
+        height: 43px
+
+        .orderDetail-head-statusTxt
+          font-size: $font-size-small-s
+          color: $color-text-d
+
+        .orderDetail-head-statusBtn
+          width: 58px
+          height: 24px
+          border-radius: 4px
+          line-height: 24px
+          text-align: center
+          font-size: $font-size-small
+          color: $color-white
+          border: 1px solid $color-row-line
+          background: $color-button
+
+    .orderDetail-merchant
+      background: $color-highlight-background
+      margin-top: 10px
+
+      .orderDetail-merchant-title
+        line-height: 38.5px
+        margin-left: 12px
+        border-bottom: 1px solid $color-row-line
+        font-size: $font-size-medium
+        color: $color-text-d
+
+      .orderDetail-merchant-msgBox
+        display: flex
+        padding: 9px 0 9px 12px
+
+        .orderDetail-merchant-logo
+          width: 65px
+          height: 65px
+          border-radius: 2px
+          margin-right: 8px
+          background: #ccc
+
+        .orderDetail-merchant-msgName
+          font-size: $font-size-medium-x
+          letter-spacing: 0.48px
+          line-height: 22.5px
+          font-family: PingFangSC-Regular
+
+        .orderDetail-merchant-msgWork
+          font-size: $font-size-small-s
+          letter-spacing: 0.3px
+          line-height: 14px
+          margin-top: 3px
+
+      .orderDetail-merchant-detail
+        display: flex
+        border-top: 1px solid $color-row-line
+
+        .orderDetail-merchant-detail-item
+          flex: 1
+          border-right: 1px solid $color-row-line
+          display: flex
+          height: 39.5px
+          align-items: center
+          justify-content: center
+
+          .orderDetail-merchant-detailIcon
+            width: 10px
+            height: 10px
+            margin-right: 2.5px
+
+          text
+            font-size: $font-size-small-s
+            line-height: 16px
+
+        view:last-child
+          border-right: 0 none
+
+    .orderDetail-orderList
+      margin-top: 10px
+      padding-left: 12px
+      background: $color-highlight-background
+
+      .orderDetail-orderList-title
+        line-height: 38.5px
+        border-bottom: 1px solid $color-row-line
+        font-size: $font-size-medium
+        color: $color-text-d
+
+      .orderDetail-orderList-msgItem
+        font-size: $font-size-small
+        line-height: 30px
+
+      .orderDetail-orderList-pay
+        border-top: 1px dashed $color-row-line
+
+    .orderDetail-refundCover
+      position: fixed
+      z-index: 1000
+      left: 0
+      top: 0
+      height: 100vh
+      width: 100vw
+      background: $color-mask-bgc
+
+      .orderDetail-refundCover-Msg
+        position: fixed
+        bottom: 0
+        left: 0
+        right: 0
+        background: $color-highlight-background
+
+        .orderDetail-refundCover-Msghead
+          padding: 0 10px
+          text-align: center
+          line-height: 40px
+          position: relative
+          font-size: $font-size-medium
+          border-bottom: 1px solid $color-col-line
+
+          .orderDetail-refundCover-closeBtn
+            position: absolute
+            width: 40px
+            height: 40px
+            left: 0
+
+            .orderDetail-refundCover-closeIcon
+              position: absolute
+              width: 10px
+              height: 10px
+              left: 10px
+              margin-top: 15px
+
+
+        .orderDetail-refundCover-MsgList
+          padding-left: 10px
+          margin-bottom: 20px
+
+          .orderDetail-refundCover-MsgList-item
+            line-height: 36px
+            font-size: $font-size-small
+            border-bottom: 1px solid $color-col-line
+
+            .checkbox
+              display: block
+              width: 100%
+              position: relative
+
+              .checkbox-Icon
+                width: 16px
+                height: 16px
+                position: absolute
+                right: 10px
+                top: 10px
+
+        .orderDetail-refundCover-submit
+          margin: 0 12px
+          border: 1px solid $color-row-line
+          padding-top: 12%
+          position: relative
+          margin-bottom: 20px
+
+          .orderDetail-refundCover-submitTxt
+            position: absolute
+            left: 50%
+            top: 50%
+            transform: translate(-50%, -50%)
+            font-size: $font-size-medium
+
+
+
+
+
+
+</style>

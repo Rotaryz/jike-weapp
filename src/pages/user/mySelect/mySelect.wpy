@@ -1,0 +1,249 @@
+<template>
+  <view class="mySelect">
+    <view class="mySelect-tab">
+      <view class="mySelect-tab-item" wx:for="{{tabList}}" wx:key="{{item}}">
+        <view class="{{index===menuIdx?'mySelect-tab-itemTxt active':'mySelect-tab-itemTxt'}}" @tap="changeTab({{index}})">{{item}}</view>
+      </view>
+    </view>
+
+    <view class="mySelect-nothing" wx:if="{{couponList.length===0}}">
+      <image src="{{emptyImg[menuIdx]}}" class="mySelect-nothing-img"></image>
+      <view class="mySelect-nothing-txt">{{emptyMsg[menuIdx]}}</view>
+      <view class="mySelect-nothingBtn" @tap="toRecommend">随便逛逛</view>
+    </view>
+
+    <scroll-view scroll-y class="mySelect-couponList" bindscrolltolower="couponLower" wx:if="{{couponList.length>0}}">
+      <view class="mySelect-couponList-item" style="background-image: url('./image/icon_couponBc.png'); background-size: 700rpx 200rpx" wx:for="{{couponList}}" wx:key="{{index}}" @tap="couponDetail({{item.id}})">
+        <view class="mySelect-couponList-itemPay">
+          <view ><text class="mySelect-midMoney">￥</text><text class="mySelect-bigMoney">{{item.price}}</text></view>
+          <view>{{item.restriction}}</view>
+        </view>
+        <view class="mySelect-couponList-itemMsg">
+          <view>
+            <view class="mySelect-couponList-item-title">标题{{item.title}}</view>
+            <view class="mySelect-couponList-item-time">有效期至{{item.endAt}}</view>
+          </view>
+          <view class="mySelect-couponList-item-time">注意{{item.notAllowTime}}</view>
+        </view>
+        <!--<view class="mySelect-couponList-itemBtn" catchtap="buySubmit">购买</view>-->
+      </view>
+    </scroll-view>
+
+    <scroll-view class="mySelect-contentList">
+      <view></view>
+    </scroll-view>
+  </view>
+</template>
+
+<script>
+  /* eslint-disable no-undef */
+  import wepy from 'wepy'
+  import base from 'common/mixins/base'
+  import mySelect from '@/api/mySelect'
+
+  export default class MySelect extends wepy.page {
+    mixins = [base]
+
+    config = {
+      navigationBarTitleText: '我的收藏'
+    }
+
+    data = {
+      tabList: ['优惠券', '内容'],
+      menuIdx: 0,
+      emptyImg: ['./image/pic-my-nocoupon.png', './image/pic-my_no_c.png'],
+      emptyMsg: ['您还没有相关优惠券', '您还没有相关收藏'],
+      couponList: [],
+      LowerLoading: false,
+      page: 1,
+      nothingAdd: false
+    }
+
+    methods = {
+      async changeTab(idx) {
+        this.menuIdx = idx
+        if (idx === 1) {
+          this.couponList = []
+          this.page = 1
+          this.nothingAdd = false
+          return
+        }
+        let resList = await this._getCouponList(1)
+        this.page = 1
+        this.nothingAdd = false
+        this.couponList = this._computed(resList)
+        this.$apply()
+      },
+      async couponLower() {
+        if (!this.LowerLoading && !this.nothingAdd) {
+          this.LowerLoading = true
+          this.page++
+          console.log(this.page)
+          let res = await this._getCouponList(this.page)
+          if (res.length === 0) {
+            this.nothingAdd = true
+            console.log('已经到底')
+          }
+          let resArr = this._computed(res)
+          this.couponList.push(...resArr)
+          this.LowerLoading = false
+          this.$apply()
+          console.log('加载完成')
+        } else if (this.nothingAdd) {
+          console.log('已经没有可以加载的了')
+        }
+      },
+      toRecommend() {
+        wx.switchTab({url: '/pages/recommend/recommend'})
+      },
+      couponDetail(id) {
+        this.$navigate('/pages/coupon-detail/coupon-detail?id=' + id)
+      },
+      buySubmit() {
+        console.log('购买')
+      }
+    }
+
+    async onLoad() {
+      await this.load()
+    }
+
+    async load() {
+      const res = await this._getCouponList(1)
+      this.couponList = this._computed(res)
+      this.$apply()
+      this.loaded()
+    }
+
+    async _getCouponList(page) {
+      return await mySelect.getSelectList(page)
+    }
+
+    _computed(arr) {
+      return arr.map((item) => {
+        return {
+          price: Math.floor(item.promotion.platform_price),
+          restriction: item.promotion.restriction,
+          title: item.promotion.title,
+          endAt: item.promotion.end_at,
+          notAllowTime: item.promotion.not_allow_time,
+          id: item.promotion_id
+        }
+      })
+    }
+  }
+</script>
+
+<style lang="stylus">
+  @import "../../../common/stylus/variable"
+
+  .mySelect
+
+    .mySelect-midMoney
+      font-size: $font-size-medium
+      font-family: PingFangSC-Semibold
+
+    .mySelect-bigMoney
+      color: #5D5D5D
+      font-size: 40px
+      font-family: Impact
+
+    .mySelect-tab
+      display: flex
+      height: 8vh
+      background: $color-highlight-background
+
+      .mySelect-tab-item
+        flex: 1
+        display: flex
+        justify-content: center
+        border-bottom: .5px solid $color-row-line
+
+        .mySelect-tab-itemTxt
+          color: $color-text
+          font-size: $font-size-medium
+          text-align: center
+          line-height: 8vh
+          width: 71px
+          border-bottom: 2px solid #fff
+
+        .mySelect-tab-itemTxt.active
+          color: $color-text-t
+          border-bottom: 2px solid $color-theme
+
+    .mySelect-nothing
+      height: 201px
+      background: $color-highlight-background
+      border-bottom: .5px solid $color-row-line
+      display: flex
+      flex-direction: column
+      align-items: center
+
+      .mySelect-nothing-img
+        width: 73px
+        height: 53.5px
+        margin-top: 25px
+        margin-bottom: 8.5px
+
+      .mySelect-nothing-txt
+        font-size: $font-size-small
+        line-height: 16.5px
+        margin-bottom: 34px
+
+      .mySelect-nothingBtn
+        width: 85.5px
+        height: 24px
+        border: 1px solid $color-row-line
+        text-align: center
+        line-height: 24px
+        font-size: $font-size-small
+        border-radius: 2px
+
+        &:active
+          border: 1px solid $color-button
+          color: $color-button
+
+    .mySelect-couponList
+      max-height: 92vh
+
+      .mySelect-couponList-item
+        margin: 20rpx 0 0 24rpx
+        width: 700rpx
+        height: 200rpx
+        display: flex
+        align-items: center
+
+        .mySelect-couponList-itemPay
+          text-align: center
+          width: 200rpx
+          font-size: $font-size-small-s
+
+        .mySelect-couponList-itemMsg
+          display: flex
+          flex-direction: column
+          justify-content: space-between
+          height: 160rpx
+          padding: 20rpx 0 20rpx 25rpx
+
+          .mySelect-couponList-item-title
+            font-family: PingFangSC-Regular
+            font-size: $font-size-medium
+            line-height: 20px
+
+          .mySelect-couponList-item-time
+            font-size: $font-size-small-s
+            color: $color-text-d
+            line-height: 14px
+
+      .mySelect-couponList-itemBtn
+        width: 65px
+        height: 24px
+        background: $color-button
+        border-radius: 2px
+        font-size: $font-size-small
+        line-height: 24px
+        text-align: center
+        color: $color-white
+
+
+</style>

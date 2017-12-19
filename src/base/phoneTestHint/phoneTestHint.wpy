@@ -1,0 +1,68 @@
+<template>
+  <view class="phoneTestHint">
+    <view class="phoneTest-txtBox">
+      <image src="./image/icon-my_call.png" class="phoneTest-pcPhone"></image>
+      <text class="phoneTest-txt">绑定手机号，获取更多优惠信息</text>
+    </view>
+
+    <view class="phoneTest-btn" @tap="bindPhone">绑定手机</view>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+
+  export default class PhoneTestHint extends wepy.component {
+    data = {
+
+    }
+
+    methods = {
+      bindPhone() {
+        this.$parent.$invoke('PhoneTest', 'bindPhone')
+      }
+    }
+  }
+
+</script>
+
+<style lang="stylus">
+  @import "../../common/stylus/variable"
+
+  .phoneTestHint
+    height: 45px
+    margin-bottom: 10px
+    display: flex
+    background: $color-highlight-background
+    flex-direction: row
+    align-items: center
+    justify-content: space-between
+    padding: 0 12px
+    font-size: $font-size-medium
+
+    .phoneTest-txtBox
+      display: flex
+      flex-direction: row
+      align-items: center
+
+      .phoneTest-pcPhone
+        width: 10px
+        height: 14px
+        margin-right: 5px
+
+      .phoneTest-txt
+        color: $color-text
+
+    .phoneTest-btn
+      width: 60px
+      font-size: $font-size-small
+      color: $color-text-t
+      border: 1px solid $color-text-t
+      border-radius: 2px
+      text-align: center
+      line-height: 24px
+
+      &:active
+        background: $color-text-t
+        color: $color-white
+</style>

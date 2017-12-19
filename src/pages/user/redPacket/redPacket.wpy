@@ -1,0 +1,228 @@
+<template>
+  <view class="myRedPacket">
+
+    <view class="myRedPacket-top">
+      <view class="myRedPacket-pandect">
+        <view class="myRedPacket-pandect-item">
+          <view class="myRedPacket-pandect-item-num">
+            <text>{{packetTotalNum[0]}}</text>
+            <text class="myRedPacket-pandect-item-num-small">{{packetTotalNum[1]}}</text>
+          </view>
+          <view class="myRedPacket-pandect-item-txt">金额（元）</view>
+        </view>
+        <view class="myRedPacket-pandect-item">
+          <view class="myRedPacket-pandect-item-num">{{packetTotal.redpacker_count}}</view>
+          <view class="myRedPacket-pandect-item-txt">数量（个）</view>
+        </view>
+      </view>
+
+      <view class="myRedPacket-withDraw {{packetTotal.redpacker_count_monies>0?'':'disabled'}}" @tap="withDrawSub">提现</view>
+    </view>
+
+    <scroll-view scroll-y class="myRedPacket-list" wx:if="{{packetList.length>0}}" bindscrolltolower="redPacketLower">
+      <view class="myRedPacket-list-item" wx:for="{{packetList}}" wx:key="{{index}}">
+        <view class="myRedPacket-list-item-left">
+          <image src="./image/icon-my_money.png" class="myRedPacket-list-item-image"></image>
+          <view class="myRedPacket-list-item-msg">
+            <view class="myRedPacket-list-item-msg-title">{{item.activity_name}}</view>
+            <view class="myRedPacket-list-item-msg-time">{{item.created_at}}</view>
+          </view>
+        </view>
+
+        <view class="myRedPacket-list-item-num"><text class="myRedPacket-list-item-num-money">{{item.price}}</text>元</view>
+      </view>
+    </scroll-view>
+
+    <view class="myRedPacket-noList" wx:if="{{packetList.length===0}}">
+      <image src="./image/pic-my-money.png" class="myRedPacket-noList-img"></image>
+      <view class="myRedPacket-noList-txt">您还没有红包</view>
+    </view>
+
+  </view>
+</template>
+
+<script>
+  /* eslint-disable no-undef */
+  import wepy from 'wepy'
+  import base from 'common/mixins/base'
+  import GetRedPacket from 'api/myRedPacket'
+
+  export default class RedPacket extends wepy.page {
+    mixins = [base]
+
+    config = {
+      navigationBarTitleText: '我的红包',
+      navigationBarBackgroundColor: '#fff',
+      navigationBarTextStyle: 'black',
+      backgroundColor: '#F9F9F9'
+    }
+
+    data = {
+      packetTotal: {redpacker_count: 0},
+      packetList: [],
+      packetTotalNum: ['0', '.00'],
+      LowerLoading: false,
+      page: 1,
+      nothingAdd: false
+    }
+
+    methods = {
+      async redPacketLower() {
+        if (!this.LowerLoading && !this.nothingAdd) {
+          this.LowerLoading = true
+          this.page++
+          console.log(this.page)
+          let res = await this._getRedPacketList(this.page)
+          if (res.length === 0) {
+            this.nothingAdd = true
+            console.log('已经到底')
+          }
+          this.packetList.push(...res)
+          this.LowerLoading = false
+          this.$apply()
+          console.log('加载完成')
+        } else if (this.nothingAdd) {
+          console.log('已经没有可以加载的了')
+        }
+      },
+      withDrawSub() {
+        if (this.packetTotal.redpacker_count_monies > 0) {
+          console.log('可以提现,功能暂未开放')
+        } else {
+          console.log('没有可以提现的金额')
+        }
+      }
+    }
+
+    async onLoad() {
+      await this.load()
+    }
+
+    async load() {
+      this.packetTotal = await GetRedPacket.getTotalRedpacket()
+      this.packetTotalNum = this._computed(this.packetTotal.redpacker_count_monies)
+      this.packetList = await this._getRedPacketList(1)
+      this.$apply()
+      this.loaded()
+    }
+
+    async _getRedPacketList(page) {
+      return await GetRedPacket.getTotalRedpacketList(page)
+    }
+
+    _computed(num) {
+      let arr = num.split('.')
+      arr[1] = '.' + arr[1]
+      return arr
+    }
+  }
+</script>
+
+<style lang="stylus">
+  @import "../../../common/stylus/variable"
+
+  page
+    background: $color-background
+
+    .myRedPacket
+      background: $color-highlight-background
+
+      .myRedPacket-top
+        height: 28vh
+        display: flex
+        flex-direction: column
+        justify-content: space-between
+
+      .myRedPacket-pandect
+        display: flex
+
+        .myRedPacket-pandect-item
+          flex: 1
+          text-align: center
+
+          .myRedPacket-pandect-item-num
+            font-size: $font-size-large-xx
+            color: $color-text-t
+            line-height: 33.5px
+            height: 33.5px
+            margin-bottom: 11.5px
+            margin-top: 24.5px
+
+            .myRedPacket-pandect-item-num-small
+              font-size: $font-size-medium
+
+          .myRedPacket-pandect-item-txt
+            font-size: $font-size-small-s
+            color: $color-text
+            line-height: 14px
+
+      .myRedPacket-withDraw
+        margin: 0 12px
+        height: 44px
+        background: $color-button
+        border-radius: 2px
+        text-align: center
+        line-height: 44px
+        font-size: $font-size-medium
+        color: $color-white
+        margin-bottom: 10px
+
+        &:active
+          background: $color-button-act
+
+      .myRedPacket-withDraw.disabled
+        background: $color-button-dis
+
+      .myRedPacket-list
+        max-height: 72vh
+
+        .myRedPacket-list-item
+          padding: 0 12px
+          height: 45px
+          border-bottom: 1px solid $color-row-line
+          display: flex
+          align-items: center
+          justify-content: space-between
+
+          .myRedPacket-list-item-left
+            display: flex
+
+            .myRedPacket-list-item-image
+              width: 18.5px
+              height: 23px
+              margin-right: 11.5px
+
+            .myRedPacket-list-item-msg
+
+              .myRedPacket-list-item-msg-title
+                font-size: $font-size-small
+                color: $color-text
+                line-height: 16.5px
+
+              .myRedPacket-list-item-msg-time
+                font-size: $font-size-small-s
+                color: $color-text-ddd
+                line-height: 14px
+
+          .myRedPacket-list-item-num
+            font-size: $font-size-small
+
+            .myRedPacket-list-item-num-money
+              color: $color-text-t
+
+      .myRedPacket-noList
+        height: 152px
+        display: flex
+        flex-direction: column
+        align-items: center
+
+        .myRedPacket-noList-img
+          width: 83.5px
+          height: 65px
+          margin: 32.5px 0 17.5px 15px
+
+        .myRedPacket-noList-txt
+          font-size: $font-size-small
+          color: $color-text
+
+</style>

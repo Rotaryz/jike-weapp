@@ -1,0 +1,160 @@
+<template>
+  <view class="couponUse">
+    <view class="couponUse-item" wx:for="{{couponList}}" wx:key="{{item}}">
+      <view class="couponUse-item-head" style="background-image: url('./image/icon_couponBc.png'); background-size: 700rpx 200rpx">
+        <view class="couponUse-itemPay">
+          <view ><text class="couponUse-midMoney">￥</text><text class="couponUse-bigMoney">{{item.price}}</text></view>
+          <view>{{item.restriction}}</view>
+        </view>
+        <view class="couponUse-itemMsg">
+          <view>
+            <view class="couponUse-item-title">{{item.title}}</view>
+            <view class="couponUse-item-time">有效期至{{item.endAt}}</view>
+          </view>
+          <view class="couponUse-item-time">{{item.notAllowTime}}</view>
+        </view>
+      </view>
+      <view class="couponUse-coverIn"></view>
+      <view class="couponEwm-Msg-body">
+        <image src="{{item.qrcodeUrl}}" class="couponEwm-Msg-body-EWM"></image>
+        <view style="background-image: url('./image/pic-mabg.png'); background-size: 356rpx 80rpx" class="couponEwm-Msg-body-couponNum">{{item.beautyCode}}</view>
+        <view class="couponEwm-Msg-body-txt">该券码用于线下门店核销</view>
+      </view>
+    </view>
+  </view>
+</template>
+
+<script>
+  /* eslint-disable no-undef */
+  import wepy from 'wepy'
+  import base from 'common/mixins/base'
+  import getMyOrder from '@/api/myOrder'
+
+  export default class MyCoupon extends wepy.page {
+    mixins = [base]
+
+    config = {
+      navigationBarTitleText: '进店使用',
+      navigationBarBackgroundColor: '#706B82',
+      navigationBarTextStyle: 'white',
+      backgroundColor: '#F9F9F9'
+    }
+
+    data = {
+      couponList: []
+    }
+
+    methods = {
+
+    }
+
+    async onLoad(option) {
+      this.load(option.id)
+    }
+
+    async load(id) {
+      let resList = await getMyOrder.getOrderCouponList(id)
+      this.couponList = this._computed(resList)
+      this.loaded()
+    }
+
+    _computed(arr) {
+      return arr.map((item) => {
+        let beautyCode = item.code.replace(/(\d{4})/g, '$1 ')
+        return {
+          price: Math.floor(item.platform_price),
+          restriction: item.restriction,
+          title: item.title,
+          endAt: item.promotion.end_at,
+          notAllowTime: item.not_allow_time,
+          code: item.code,
+          beautyCode,
+          qrcodeUrl: item.qrcode_url,
+          id: item.promotion_id
+        }
+      })
+    }
+  }
+</script>
+
+<style lang="stylus">
+  @import "../../common/stylus/variable"
+
+  page
+    background: $color-button
+
+    .couponUse-item
+      margin: 20rpx 24rpx
+      width: 700rpx
+
+      .couponUse-item-head
+        width: 700rpx
+        height: 200rpx
+        display: flex
+        align-items: center
+
+        .couponUse-midMoney
+          font-size: $font-size-medium
+          font-family: PingFangSC-Semibold
+
+        .couponUse-bigMoney
+          color: #5D5D5D
+          font-size: 80rpx
+          font-family: Impact
+
+        .couponUse-itemPay
+          text-align: center
+          width: 200rpx
+          font-size: $font-size-small-s
+
+        .couponUse-itemMsg
+          display: flex
+          flex-direction: column
+          justify-content: space-between
+          height: 160rpx
+          width: 312rpx
+          padding: 20rpx 0 20rpx 25rpx
+
+          .couponUse-item-title
+            font-family: PingFangSC-Regular
+            font-size: $font-size-medium
+            line-height: 40rpx
+
+          .couponUse-item-time
+            font-size: $font-size-small-s
+            color: $color-text-d
+            line-height: 28rpx
+
+      .couponUse-coverIn
+        height: 20rpx
+        background: $color-background
+
+      .couponEwm-Msg-body
+        height: 540rpx
+        display: flex
+        flex-direction: column
+        align-items: center
+        background: $color-highlight-background
+
+        .couponEwm-Msg-body-EWM
+          width: 356rpx
+          height: 356rpx
+          border: 1px solid $color-col-line
+          margin: 20rpx 0
+          background: #ccc
+
+        .couponEwm-Msg-body-couponNum
+          height: 80rpx
+          width: 356rpx
+          text-align: center
+          line-height: 80rpx
+          font-family: PingFangSC-Medium
+          font-size: $font-size-large-xx
+
+        .couponEwm-Msg-body-txt
+          font-size: $font-size-small-s
+          color: $color-text-d
+          line-height: 14px
+          margin-top: 5px
+
+</style>

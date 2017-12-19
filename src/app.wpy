@@ -11,9 +11,11 @@ export default class extends wepy.app {
   constructor () {
     super()
     this.use('requestfix')
+    this.use('promisify')
   }
 
-  onLaunch() {
+  onLaunch(option) {
+    wepy.setStorageSync('merchantId', option.query.merchantId)
     // 校验SDK
     wxUtils.checkSDK()
   }
@@ -52,10 +54,20 @@ export default class extends wepy.app {
   config = {
     pages: [
       'pages/live/live',
-      'pages/square/square',
       'pages/recommend/recommend',
-      'pages/mine/mine'
-
+      'pages/coupon-detail/coupon-detail',
+      'pages/user/mine/mine',
+      'pages/user/myCenter/myCenter',
+      'pages/user/myOrder/myOrder',
+      'pages/user/myOrder-detail/myOrderDetail',
+      'pages/user/refund/refund',
+      'pages/user/myCoupon/myCoupon',
+      'pages/user/withDraw/withDraw',
+      'pages/coupon-use/couponUse',
+      'pages/user/redPacket/redPacket',
+      'pages/user/mySelect/mySelect',
+      'pages/post-order/post-order',
+      'pages/square/square'
     ],
     window: {
       backgroundColor: '#F9F9F9',
@@ -75,7 +87,6 @@ export default class extends wepy.app {
           text: '广场',
           iconPath: './icon/icon-square_1.png',
           selectedIconPath: './icon/icon-square_s.png'
-
         },
         {
           pagePath: 'pages/recommend/recommend',
@@ -84,8 +95,8 @@ export default class extends wepy.app {
           selectedIconPath: './icon/icon-r_s.png'
         },
         {
-          pagePath: 'pages/mine/mine',
-          text: '推荐',
+          pagePath: 'pages/user/mine/mine',
+          text: '我的',
           iconPath: './icon/icon-my.png',
           selectedIconPath: './icon/icon-my-r.png'
         }
@@ -94,8 +105,9 @@ export default class extends wepy.app {
   }
 
   globalData = {
-    baseUrl: '',
-    user: null
+    baseUrl: 'http://jike-wap-api.majy999.com',
+    user: null,
+    orderInfo: {}
   }
 }
 </script>

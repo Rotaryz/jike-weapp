@@ -1,0 +1,148 @@
+<template>
+  <view class="comall">
+    <view class="shade"></view>
+    <scroll-view scroll-y="true" scroll-into-view="item{{comment.length-1}}">
+      <repeat for="{{comment}}" key="index" index="index" item="item">
+        <view class="com_item" id="item{{index}}">
+          <text class="com_name">{{item.customer_name}}：</text>
+          <text class="com_msg">{{item.content}}</text>
+        </view>
+      </repeat>
+    </scroll-view>
+
+    <image class="btn_com" src="../live/icon- info.png" wx:if="{{!showCom}}"
+           @tap="showInput"/>
+    <view class="inp_cpm" wx:if="{{showCom}}">
+      <input type="text" placeholder="弹幕更容易引起主播的注意哦~" @input="bindTestInput"
+             value="{{content}}" @blur="hideInput" focus="true">
+      <view @tap="putContent({{activityId}})">
+        <image src="../live/icon-sendout.png"></image>
+      </view>
+    </view>
+
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import Live from 'api/live'
+  import base from 'common/mixins/base'
+  import users from 'common/mixins/users'
+  export default class Comment extends wepy.page {
+    mixins = [users, base]
+    props = {
+      comment: {
+        type: Array,
+        default: []
+      },
+      activityId: {
+        typr: Number,
+        default: 0
+      }
+    }
+    data = {
+      showCom: false,
+      content: '',
+      ifHide: 0
+    }
+    methods = {
+      showInput() {
+        this.showCom = true
+      },
+      hideInput() {
+        if (this.ifHide === 0) {
+          setTimeout(() => {
+            this.showCom = false
+            this.$apply()
+          }, 300)
+        }
+
+      },
+      bindTestInput(e) {
+        this.content = e.detail.value
+      },
+      async putContent(id) {
+        this.ifHide = 1
+        if (this.content !== '') {
+          let res = await Live.setComment(id, this.content)
+          this.content = ''
+          this.comment.push(res[0])
+          this.$apply()
+        }else {
+          wepy.showModal({
+            content: '评论内容不能为空',
+            success: function(res) {
+              if (res.confirm) {
+                console.log('用户点击确定')
+              } else if (res.cancel) {
+                console.log('用户点击取消')
+              }
+            }
+          })
+        }
+      }
+    }
+  }
+</script>
+
+<style lang="stylus">
+  @import "../../common/stylus/variable"
+  @import "../../common/stylus/mixin"
+  .comall
+    height: 24.4%
+    position: relative
+    .shade
+      content: ''
+      position: absolute
+      z-index: 100
+      top: -2px
+      width: 100%
+      height: 32px
+      background: linear-gradient(rgba(112, 107, 130, 1) 40%, rgba(112, 107,
+      130, 0) 100%)
+    scroll-view
+      height: 66%
+      .com_item
+        font-size: $font-size-small
+        padding: $font-size-medium 0 0 $padding-all
+
+        .com_name
+          color: $color-text-tr
+        .com_msg
+          color: $color-white
+    .btn_com
+
+      position: absolute
+      width: 32px
+      height: 32px
+      bottom: 16.5px
+      right: $padding-all
+    .inp_cpm
+      height: 32px
+      padding: 5px $padding-all
+      display: flex
+      input
+        display: inline-block
+        background: $color-white
+        flex: 20
+        height: 30px
+        border: 0.5px solid #EBEAF2
+        border-radius: 1px
+        font-size: $font-size-small
+        text-indent: 7px
+      view
+        display: inline-block
+        flex: 3
+        height: 30px
+        border: 0.5px solid #EBEAF2
+        border-radius: 1px
+        margin-left: 5px
+        background: $color-white
+        position: relative
+        image
+          position: absolute
+          width: 30.3%
+          height: 53.4%
+          all-center()
+
+</style>
