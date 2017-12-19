@@ -14,7 +14,7 @@
     <view class="nav-wrapper">
       <navigator url="/pages/activity/activity" class="content-wrapper">
         <image class="icon" src="./icon-luckdraw@2x.png"></image>
-        <view class="content">大转盘</view>
+        <view class="content">大转盘 </view>
       </navigator>
       <view class="content-wrapper">
         <image class="icon" src="./icon-invite@2x.png"></image>
