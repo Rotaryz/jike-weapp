@@ -36,7 +36,7 @@
           <view class="mySelect-contentList-Msg-left">
             <view class="mySelect-contentList-Msg-left-avatarBox" wx:for="{{item.content.customer_content_favorite}}" wx:key="{{item}}">
               <view class="mySelect-contentList-avatarBox-item">
-                <image class="mySelect-contentList-avatarBox-img" src="{{item.wechat_data.avatarUrl}}"></image>
+                <image class="mySelect-contentList-avatarBox-img" src="{{item.wechat_data.avatar_url}}"></image>
               </view>
             </view>
             <view class="dot-box" wx:if="{{item.content.favorite_count>5}}">
@@ -203,8 +203,7 @@
         this.$navigate('/pages/coupon-detail/coupon-detail?type=1&id=' + id)
       },
       contentDetail(id) {
-        console.log(id)
-        this.$navigate('/pages/coupon-detail/coupon-detail?type=1&id=' + id)
+        this.$navigate('/pages/content-detail/content-detail?id=' + id)
       },
       async select(id, index, select) {
         console.log(id, index, select)

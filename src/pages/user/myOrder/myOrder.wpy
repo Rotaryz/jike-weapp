@@ -114,9 +114,6 @@
         let url = '/pages/user/myOrder-detail/myOrderDetail?status=' + status + '&id=' + id
         this.$navigate(url)
       },
-      orderUse(id, status) {
-        console.log(id, status)
-      },
       useCoupon(orderId, couponId, type) {
         switch (this.menuIdx) {
           case 0:

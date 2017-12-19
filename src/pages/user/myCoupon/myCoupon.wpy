@@ -121,7 +121,6 @@
     async load() {
       let resList = await this._getCouponList(this.menuIdx, 1)
       this.couponList = this._computed(resList)
-      console.log(this.couponList)
       this.loaded()
     }
 
