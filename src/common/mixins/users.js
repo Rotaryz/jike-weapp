@@ -47,12 +47,12 @@ export default class userMixin extends wepy.mixin {
    */
   async isAuthorise() {
     const code = wepy.getStorageSync('code')
-    const token = wepy.getStorageSync('token')
+    let token = wepy.getStorageSync('token')
     if (!code || !token) {
-      return false
+      token = await this.$getToken()
     }
     let customerId = wepy.getStorageSync('customerId')
-    if (customerId === '') {
+    if (!customerId) {
       const userInfo = await this._getSqlUserInfo(token)
       customerId = userInfo.customer_id
       wepy.setStorageSync('customerId', customerId)
@@ -152,4 +152,3 @@ export default class userMixin extends wepy.mixin {
   //   })
   // }
 }
-

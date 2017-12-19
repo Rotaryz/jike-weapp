@@ -1,19 +1,15 @@
 <template>
-  <view class="slider">
+  <view class="slider" wx:if="{{list.length}}">
     <view class="slider-content">
       <swiper indicator-dots="{{indicatorDots}}" indicator-color="{{indicatorColor}}"
               indicator-active-color="{{indicatorActiveColor}}" current="{{swiperCurrent}}"
               autoplay="{{autoplay}}" interval="{{interval}}" duration="{{duration}}" class="swiper"
               circular="{{circular}}" @change="changeVal">
-        <block wx:for="{{imgUrls}}" wx:key="unique">
-          <swiper-item>
-            <image src="{{item}}" class="slide-image"/>
-          </swiper-item>
-        </block>
+        <slot name="content"></slot>
       </swiper>
     </view>
     <view class="dots">
-      <block wx:for="{{imgUrls}}" wx:key="unique">
+      <block wx:for="{{list}}" wx:key="unique">
         <view class="dot{{index == swiperCurrent ? ' active' : ''}}"></view>
       </block>
     </view>
@@ -24,15 +20,15 @@
   import wepy from 'wepy'
 
   export default class Slider extends wepy.component {
+    props = {
+      list: {
+        type: Array,
+        default: []
+      }
+    }
+
     data = {
-      imgUrls: [
-        'http://img02.tooopen.com/images/20150928/tooopen_sy_143912755726.jpg',
-        'http://img06.tooopen.com/images/20160818/tooopen_sy_175866434296.jpg',
-        'http://img06.tooopen.com/images/20160818/tooopen_sy_175833047715.jpg'
-      ],
       indicatorDots: false,
-      indicatorColor: '#fff',
-      indicatorActiveColor: '#fff',
       autoplay: false,
       interval: 5000,
       duration: 1000,

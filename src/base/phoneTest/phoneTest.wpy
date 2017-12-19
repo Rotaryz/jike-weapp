@@ -40,6 +40,7 @@
 <script>
   /* eslint-disable no-undef */
   import wepy from 'wepy'
+  import tips from '@/common/js/tips'
   import users from 'common/mixins/users'
   import user from 'api/user'
 
@@ -103,8 +104,7 @@
             jk_token: jkToken,
             mobile: self.phoneNum
           }
-          let resData = this._getPhoneCode(data)
-          console.log(resData)
+          this._getPhoneCode(data)
           this.phoneCodeDisabled = true
           let time = 60
           this.phoneCodeTime = time + 's'
@@ -139,10 +139,20 @@
           if (resData.error === 0) {
             self.phoneTestCover = false
             self.$apply()
+            tips.success('手机绑定成功')
             self.$emit('isPhoneOk')
+          } else {
+            self.phoneTestCover = false
+            self.$apply()
+            tips.fail('绑定失败')
           }
         }
       }
+    }
+
+    show() {
+      this.phoneTestCover = true
+      this.$apply()
     }
   }
 </script>

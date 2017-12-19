@@ -1,14 +1,20 @@
 <template>
   <scroll-view class="coupon-detail">
     <view class="slider-wrapper">
-      <view class="slider">
-        <slider></slider>
-      </view>
+      <slider :list.sync="promotionImages">
+        <block slot="content">
+          <block wx:for="{{promotionImages}}" wx:key="unique">
+            <swiper-item>
+              <image src="{{item.image_url.url}}" class="slide-image" width="355" height="150"/>
+            </swiper-item>
+          </block>
+        </block>
+      </slider>
     </view>
     <view class="desc-wrapper">
       <view class="description">
         <view class="name">{{coupon.title}}</view>
-        <view class="limit">限量{{coupon.stock}}件</view>
+        <view class="limit">{{coupon.stock === -1 ? '不限量' : '限量' + coupon.stock +'件'}}</view>
         <view class="price-wrapper">
           <view class="price">
             <text class="rmb">¥</text>
@@ -31,51 +37,19 @@
         </view>
       </view>
     </view>
-    <view class="service-detail">
-      <view class="header border-bottom-1px">服务详情</view>
-      <view class="detail-wrapper">
-        <view wx:for="{{coupon.detail}}" wx:key="unique" class="item-wrapper border-bottom-1px">
-          <view class="content left">
-            <text class="circle"></text>
-            <text class="font">{{item.servie}}</text>
-          </view>
-          <view class="content middle">{{item.number}}次</view>
-          <view class="content right">￥{{item.price}}</view>
-        </view>
+    <view class="promotion-detail" wx:if="{{promotions.length > 0}}">
+      <view class="header border-bottom-1px">礼包详情</view>
+      <view class="promotion-wrapper">
+        <repeat for="{{promotions}}" key="index" index="index" item="item">
+          <coupon :coupon.sync="item" :notBuy="notBuy"></coupon>
+        </repeat>
       </view>
     </view>
-    <view class="know-detail">
-      <view class="header border-bottom-1px">购买须知</view>
-      <view class="detail-wrapper">
-        <view class="item-wrapper">
-          <view class="title">是否需要预约：</view>
-          <view class="content">
-            <text class="circle"></text>
-            <text class="value">{{note.need_subscribe === '0' ? '需要预约' : '不需要预约'}}</text>
-          </view>
-        </view>
-        <view class="item-wrapper">
-          <view class="title">单人购买上限：</view>
-          <view class="content">
-            <text class="circle"></text>
-            <text class="value">{{note.buy_upper_limit === '-1' ? '无上限' : note.buy_upper_limit + '人'}}</text>
-          </view>
-        </view>
-        <view class="item-wrapper">
-          <view class="title">使用人数：</view>
-          <view class="content">
-            <text class="circle"></text>
-            <text class="value">{{note.can_use_number === '-1' ? '不限人数' : note.can_use_number + '人'}}</text>
-          </view>
-        </view>
-        <view class="item-wrapper">
-          <view class="title">备注：</view>
-          <view class="content">
-            <text class="circle"></text>
-            <text class="value">{{note.remarks}}</text>
-          </view>
-        </view>
-      </view>
+    <view wx:if="{{services.length > 0}}">
+      <service-detail :services.sync="services"></service-detail>
+    </view>
+    <view wx:if="{{type === 1}}">
+      <know-detail :note.sync="note"></know-detail>
     </view>
     <view class="buy-button-wrapper border-top-1px">
       <view class="button-group">
@@ -90,6 +64,7 @@
       </view>
       <view class="buy-btn" @tap="postOrder">立即购买</view>
     </view>
+    <phone-test @isPhoneOk.user="getSymbol"></phone-test>
   </scroll-view>
 </template>
 
@@ -98,40 +73,88 @@
   import users from 'common/mixins/users'
   import base from 'common/mixins/base'
   import Slider from '@/base/slider/slider'
-  import Coupon from 'api/coupon'
-  // import CouponFactory from 'common/js/coupon'
+  import CouponApi from 'api/coupon'
+  import Coupon from '@/base/coupon/coupon'
+  import CouponFactory from 'common/js/coupon'
+  import PhoneTest from '@/base/phoneTest/phoneTest'
+  import ServiceDetail from '@/base/service-detail/service-detail'
+  import KnowDetail from '@/base/know-detail/know-detail'
+
+  const COUPON_TYPE = 1
+  const PACKAGE_TYPE = 2
 
   export default class CouponDetail extends wepy.page {
     mixins = [users, base]
 
     data = {
+      type: 0,
       id: '',
-      imageUrl: [],
+      promotionImages: [],
       coupon: {},
+      services: [],
+      promotions: [],
       note: {}
     }
 
     async onLoad(option) {
+      this.type = Math.floor(option.type)
       this.id = option.id
       await this.load()
     }
 
     async load() {
-      await this._getCouponDetail()
+      if (this.type === COUPON_TYPE) {
+        await this._getCouponDetail()
+      } else if (this.type === PACKAGE_TYPE) {
+        this.notBuy = 'yes'
+        await this._getPackageDetail()
+      }
       this.loaded()
     }
 
     async _getCouponDetail() {
-      const data = await Coupon.getShopCouponDetail(this.id || 1)
+      const data = await CouponApi.getShopCouponDetail(this.id || 1)
+      data.platform_price = Math.floor(data.platform_price)
+      data.shop_price = Math.floor(data.shop_price)
+      this.coupon = data
+      this.services = data.detail
+      this.note = data.note
+    }
+
+    async _getPackageDetail() {
+      const data = await CouponApi.getPackageDetail(this.id || 2)
       data.platform_price = Math.floor(data.platform_price)
       data.shop_price = Math.floor(data.shop_price)
       this.coupon = data
       this.note = data.note
+      this.promotionImages = data.gift_bag_images
+      this.promotions = data.gift_bag_details.map((item) => {
+        return new CouponFactory({
+          id: item.promotion.id,
+          name: item.promotion.title,
+          platformPrice: item.promotion.platform_price,
+          type: item.promotion.promotion_type,
+          endAt: item.promotion.end_at,
+          notAllowTime: item.promotion.not_allow_time
+        })
+      })
     }
 
     methods = {
-      postOrder() {
+      async getSymbol() {
+        const isAuthorise = await this.isAuthorise()
+        if (isAuthorise) {
+          this.postOrder()
+        }
+      },
+      async postOrder() {
+        const isAuthorise = await this.isAuthorise()
+        if (!isAuthorise) {
+          this.$invoke('phone-test', 'show')
+          return
+        }
         const orderInfo = {
+          promotion_type: this.type,
           promotion_id: this.coupon.id,
           title: this.coupon.title,
           price: this.coupon.platform_price
@@ -142,7 +165,11 @@
     }
 
     components = {
-      slider: Slider
+      'phone-test': PhoneTest,
+      'service-detail': ServiceDetail,
+      'know-detail': KnowDetail,
+      slider: Slider,
+      coupon: Coupon
     }
 
     config = {
@@ -245,7 +272,7 @@
             right: -.5px
             width: 15px
             height: 18px
-    .service-detail
+    .promotion-detail
       margin-bottom: 10px
       padding-left: 12px
       background-color: $color-white
@@ -254,67 +281,9 @@
         line-height: 39px
         font-size: $font-size-medium
         color: $color-text-l
-      .detail-wrapper
-        .item-wrapper
-          display: flex
-          align-items: center
-          height: 28px
-          padding-right: 12px
-          &:last-child
-            border-none()
-          .content
-            flex: 1
-            color: $color-text-dd
-            font-size: $font-size-small
-            &.left
-              text-align: left
-              .circle
-                display: inline-block
-                vertical-align: middle
-                width: 4.5px
-                height: 4.5px
-                margin-right: 5.25px
-                border-radius: 50%
-                background-color: $color-circle
-              .font
-                display: inline-block
-                vertical-align: middle
-            &.middle
-              text-align: center
-            &.right
-              text-align: right
-    .know-detail
-      padding-left: 12px
-      background-color: $color-white
-      .header
-        height: 39px
-        line-height: 39px
-        font-size: $font-size-medium
-        color: $color-text-l
-      .detail-wrapper
-        padding: 7.5px 0
-        .item-wrapper
-          margin-bottom: 13px
-          &:last-child
-            margin-bottom: 0
-          .title
-            margin-bottom: 8.5px
-            font-size: $font-size-small
-            color: $color-text-t
-          .content
-            font-size: 0
-            .circle
-              display: inline-block
-              vertical-align: middle
-              width: 4.5px
-              height: 4.5px
-              margin-right: 5.25px
-              border-radius: 50%
-              background-color: $color-circle
-            .value
-              display: inline-block
-              vertical-align: middle
-              font-size: $font-size-small
+      .promotion-wrapper
+        padding-top: 9px
+        padding-right: 12px
     .buy-button-wrapper
       position: fixed
       bottom: 0

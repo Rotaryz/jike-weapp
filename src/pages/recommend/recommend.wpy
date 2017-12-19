@@ -1,13 +1,21 @@
 <template>
   <view class="recommend" ref="recommend">
     <view class="slider-wrapper">
-      <Slider></Slider>
+      <Slider :list.sync="shopImages">
+        <block slot="content">
+          <block wx:for="{{shopImages}}" wx:key="unique">
+            <swiper-item>
+              <image src="{{item.image.url}}" class="slide-image" width="355" height="150"/>
+            </swiper-item>
+          </block>
+        </block>
+      </Slider>
     </view>
     <view class="nav-wrapper">
-      <view class="content-wrapper">
+      <navigator url="/pages/activity/activity" class="content-wrapper">
         <image class="icon" src="./icon-luckdraw@2x.png"></image>
-        <view class="content">大转盘</view>
-      </view>
+        <view class="content">大转盘 </view>
+      </navigator>
       <view class="content-wrapper">
         <image class="icon" src="./icon-invite@2x.png"></image>
         <view class="content">邀请返现</view>
@@ -24,63 +32,44 @@
     <view class="tab-container">
       <view class="tab-wrapper">
         <view class="tab-content">
-          <view class="tab-item border-right-1px active">优惠券</view>
-          <view class="tab-item">发现</view>
+          <view class="tab-item border-right-1px {{activeTab === '1' ? 'active' : ''}}" @tap="clickTab(1)">优惠券</view>
+          <view class="tab-item {{activeTab === '2' ? 'active' : ''}}" @tap="clickTab(2)">发现</view>
         </view>
-        <view class="tab-line"></view>
+        <view class="tab-line {{activeTab === '2' ? 'discover' : ''}}"></view>
       </view>
       <view class="tab-content-wrapper">
-        <view class="coupon-panel">
-          <view url="{{'/pages/coupon-detail/coupon-detail?id=' + item.id}}" class="coupon"
-                wx:for="{{couponList}}" wx:key="unique"
-                @tap="goToCouponDetail('{{item.id}}')">
-            <view class="coupon-bg">
-              <image class="image" src="./pic-coupon_bg@2x.png" mode="scaleToFill"></image>
-            </view>
-            <view class="content">
-              <view class="left">
-                <view class="price"><text class="number">{{item.platformPrice}}</text><text class="yuan">元</text></view>
-                <view class="desc" wx:if="{{item.type === 'discount'}}">{{item.title}}</view>
-              </view>
-              <view class="right">
-                <view class="desc-wrapper">
-                  <view class="description">
-                    <view class="top">
-                      <view class="name">{{item.name}}</view>
-                      <view class="valid">有效期至{{item.endAt}}</view>
-                    </view>
-                    <view class="bottom">{{item.notAllowTime}}</view>
-                  </view>
-                  <view class="btn-wrapper">
-                    <view class="btn"><text class="font">抢购</text> <image class="icon" src="./icon-button_right.png"></image></view>
-                  </view>
-                </view>
-                <view class="tip-wrapper">礼包</view>
-              </view>
-            </view>
-          </view>
+        <view class="coupon-panel" style="display: {{activeTab === '1' ? 'block':''}}">
+          <repeat for="{{giftBags}}" key="index" index="index" item="item">
+            <package :coupon.sync="item" :type.sync="packageType" @handleClick.user="goToCouponDetail"></package>
+          </repeat>
+          <repeat for="{{couponList}}" key="index" index="index" item="item">
+            <coupon :coupon.sync="item" :type.sync="couponType" @handleClick.user="goToCouponDetail"></coupon>
+          </repeat>
         </view>
-        <view class="discover-panel">
-          <view class="ticky-wrapper">
+        <view class="discover-panel" style="display: {{activeTab === '2' ? 'block':''}}">
+          <navigator url="/pages/content-detail/content-detail?id={{item.id}}" class="ticky-wrapper" wx:for="{{contents}}" wx:key="unique">
             <view class="ticky">
 
             </view>
             <view class="collector">
               <view class="avatar-wrapper">
-                <view class="avatar" v-for="item in avatars">
-                  <image src="" alt=""></image>
+                <view class="avatar" wx:for="{{item.customer_content_favorite}}" wx:key="unique" wx:for-item="avatar">
+                  <image src="{{avatar.wechat_data.avatarUrl}}" alt="" class="full-image"></image>
                 </view>
-                <view class="more">
-                  <view class="dot"></view><view class="dot"></view><view class="dot"></view>
+                <view class="more" wx:if="{{item.favorite_count > 5}}">
+                  <view class="dot"></view>
+                  <view class="dot"></view>
+                  <view class="dot"></view>
                 </view>
               </view>
               <view class="collect">
-                <view class="number">3000</view>
-                <view class="font">人收藏</view>
-                <view class="icon icon-collected"></view>
+                <view class="icon icon-collected">
+                  <image src="./icon-collection_1.png" class="full-image"></image>
+                </view>
+                <view class="font">{{item.favorite_count}}</view>
               </view>
             </view>
-          </view>
+          </navigator>
         </view>
       </view>
     </view>
@@ -93,16 +82,29 @@
   import base from 'common/mixins/base'
   import users from 'common/mixins/users'
   import Slider from '@/base/slider/slider'
-  import Coupon from 'api/coupon'
+  import Coupon from '@/base/coupon/coupon'
+  import CouponApi from 'api/coupon'
+  import ContentsApi from 'api/contents'
   import CouponFactory from 'common/js/coupon'
-  import PhoneTest from '@/base/phoneTest/phoneTest'
+
+  const COUPON_TYPE = 1
+  const PACKAGE_TYPE = 2
+
+  const COUPON_TAB = '1'
+  const DISCOVER_TAB = '2'
 
   export default class Index extends wepy.page {
     mixins = [users, base]
 
     data = {
+      couponType: COUPON_TYPE,
+      packageType: PACKAGE_TYPE,
       merchantId: wepy.getStorageSync('merchantId'),
-      couponList: []
+      shopImages: [],
+      couponList: [],
+      giftBags: [],
+      activeTab: COUPON_TAB,
+      contents: []
     }
 
     async onLoad() {
@@ -110,34 +112,53 @@
     }
 
     async load() {
+      const isAuthorise = await this.isAuthorise()
+      this.$parent.updateGlobalData('isAuthorise', isAuthorise)
       await this._getShopCouponList()
       this.loaded()
     }
 
     async _getShopCouponList() {
-//      const data = await Coupon.getShopCouponList(this.merchantId)
-//      this.couponList = data.promotion.data.map((item) => {
-//        return new CouponFactory({
-//          id: item.id,
-//          name: item.title,
-//          platformPrice: item.platform_price,
-//          type: item.promotion_type,
-//          endAt: item.end_at,
-//          notAllowTime: item.not_allow_time
-//        })
-//      })
+      const data = await CouponApi.getShopCouponList(this.merchantId)
+      this.couponList = data.promotions.data.map((item) => {
+        return new CouponFactory({
+          id: item.id,
+          name: item.title,
+          platformPrice: item.platform_price,
+          type: item.promotion_type,
+          endAt: item.end_at,
+          notAllowTime: item.not_allow_time
+        })
+      })
+      this.giftBags = data.gift_bags.map((item) => {
+        return new CouponFactory({
+          id: item.id,
+          name: item.title,
+          platformPrice: item.platform_price,
+          endAt: item.sell_end_at
+        })
+      })
+      this.shopImages = data.merchant_data.shop_image
+    }
+
+    async _getMerchantContents() {
+      const data = await ContentsApi.getMerchantContents()
+      this.contents = data
+      this.$apply()
     }
 
     methods = {
       changeVal(e) {
         this.swiperCurrent = e.detail.current
       },
-      async goToCouponDetail(couponId) {
-        const isAuthorise = await this.isAuthorise()
-        if (!isAuthorise) {
-          this.$invoke('PhoneTest', 'show')
+      async clickTab(index) {
+        this.activeTab = index
+        if (index === DISCOVER_TAB && !this.contents.length) {
+          await this._getMerchantContents()
         }
-        this.$navigate('/pages/coupon-detail/coupon-detail?id' + couponId)
+      },
+      async goToCouponDetail(type, couponId) {
+        this.$navigate(`/pages/coupon-detail/coupon-detail?type=${type}&id=${couponId}`)
       }
     }
 
@@ -148,7 +169,8 @@
 
     components = {
       Slider,
-      PhoneTest
+      package: Coupon,
+      coupon: Coupon
     }
 
     config = {
@@ -162,6 +184,8 @@
   @import "../../common/stylus/mixin"
 
   .recommend
+    width: 100%
+    overflow: hidden
     background: $color-background
     .slider-wrapper
       position: relative
@@ -222,6 +246,7 @@
             line-height: 42px
             text-align: center
             font-size: $font-size-medium-x
+            transition: all .3s
             &.active
               color: $color-text-t
         .tab-line
@@ -230,14 +255,19 @@
           width: 50%
           height: 2px
           background-color: $color-theme
-          transition: all .5s
+          transition: all .3s
+          &.discover
+            transform: translate3d(100%, 0, 0)
       .tab-content-wrapper
         display: flex
-        width: 200%
+        width: 100%
         transition: all .5s
         transform: translate3d(0, 0, 0)
+        &.discover
+          transform: translate3d(-50%, 0, 0)
         .coupon-panel
-          width: 50%
+          display: none
+          width: 100%
           box-sizing: border-box
           padding: 10px 12px
           .coupon
@@ -338,11 +368,13 @@
                   background-color: $color-yellow
                   transform: rotate(40deg)
         .discover-panel
-          width: 50%
+          display: none
+          width: 100%
           box-sizing: border-box
           padding: 10px 12px
           .ticky-wrapper
             border-1px()
+            background-color: $color-white
             .ticky
               width: 100%
               height: 0
@@ -354,17 +386,20 @@
               height: 35.5px
               padding: 0 12px
               .avatar-wrapper
+                flex: 1
+                display: flex
+                align-items: center
                 .avatar
-                  display: inline-block
                   width: 21px
                   height: 21px
-                  margin-right: -3px
+                  margin-right: -7px
+                  border-radius: 50%
+                  overflow: hidden
                   border-1px($color-white, 50%)
                 .more
-                  display: inline-block
-                  margin-left: 3.6px
+                  display: flex
+                  margin-left: 10.6px
                   .dot
-                    display: inline-block
                     width: 3px
                     height: 3px
                     margin-right: 2px
@@ -373,13 +408,12 @@
               .collect
                 display: flex
                 align-items: center
-                .number
-                  font-size: $font-size-small-s
-                  color: $color-text-t
                 .font
                   font-size: $font-size-small-s
                 .icon
                   width: 14px
                   height: 14px
-                  margin-left: 4px
+                  margin-right: 1px
+                  image
+                    display: block
 </style>

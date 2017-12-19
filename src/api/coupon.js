@@ -34,4 +34,14 @@ export default class Coupon extends base {
     }
     return await this.get(url, data)
   }
+
+  /**
+   * 获取商家礼包详情
+   * @param packageId 礼包id
+   * @returns {Promise.<*>}
+   */
+  static async getPackageDetail(packageId) {
+    const url = `${this.baseUrl}/api/merchants/gift-bags/${packageId}`
+    return await this.get(url)
+  }
 }

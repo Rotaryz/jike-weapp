@@ -13,7 +13,7 @@ export default class http {
     if (Authorization) {
       param.header = Object.assign({}, {Authorization})
     }
-    param.header = Object.assign({}, param.header, {'Current-merchant': 100000})
+    param.header = Object.assign({}, param.header, {'Current-merchant': wepy.getStorageSync('merchantId') || 100000})
     if (loading) {
       Tips.loading()
     }
