@@ -41,7 +41,7 @@
       <view class="header border-bottom-1px">礼包详情</view>
       <view class="promotion-wrapper">
         <repeat for="{{promotions}}" key="index" index="index" item="item">
-          <coupon :coupon.sync="item"></coupon>
+          <coupon :coupon.sync="item" :notBuy="notBuy"></coupon>
         </repeat>
       </view>
     </view>
@@ -106,6 +106,7 @@
       if (this.type === COUPON_TYPE) {
         await this._getCouponDetail()
       } else if (this.type === PACKAGE_TYPE) {
+        this.notBuy = 'yes'
         await this._getPackageDetail()
       }
       this.loaded()
@@ -141,9 +142,7 @@
 
     methods = {
       async getSymbol() {
-        console.log('123')
         const isAuthorise = await this.isAuthorise()
-        console.log(isAuthorise)
         if (isAuthorise) {
           this.postOrder()
         }
