@@ -6,7 +6,7 @@
       </view>
     </view>
 
-    <view class="mySelect-nothing" wx:if="{{couponList.length===0}}">
+    <view class="mySelect-nothing" wx:if="{{nothingBoxShow}}">
       <image src="{{emptyImg[menuIdx]}}" class="mySelect-nothing-img"></image>
       <view class="mySelect-nothing-txt">{{emptyMsg[menuIdx]}}</view>
       <view class="mySelect-nothingBtn" @tap="toRecommend">随便逛逛</view>
@@ -15,7 +15,7 @@
     <scroll-view scroll-y class="mySelect-couponList" bindscrolltolower="couponLower" wx:if="{{couponList.length>0}}">
       <view class="mySelect-couponList-item" style="background-image: url('./image/icon_couponBc.png'); background-size: 700rpx 200rpx" wx:for="{{couponList}}" wx:key="{{index}}" @tap="couponDetail({{item.id}})">
         <view class="mySelect-couponList-itemPay">
-          <view ><text class="mySelect-midMoney">￥</text><text class="mySelect-bigMoney">{{item.price}}</text></view>
+          <view><text class="mySelect-midMoney">￥</text><text class="mySelect-bigMoney">{{item.price}}</text></view>
           <view>{{item.restriction}}</view>
         </view>
         <view class="mySelect-couponList-itemMsg">
@@ -29,9 +29,31 @@
       </view>
     </scroll-view>
 
-    <view class="mySelect-contentList">
-
-    </view>
+    <scroll-view scroll-y class="mySelect-contentList" bindscrolltolower="contentLower" wx:if="{{contentList.length > 0}}">
+      <view class="mySelect-contentList-item" wx:for="{{contentList}}" wx:key="{{index}}">
+        <image src="{{item.content.image}}" class="mySelect-contentList-item-contentImg"></image>
+        <view class="mySelect-contentList-Msg">
+          <view class="mySelect-contentList-Msg-left">
+            <view class="mySelect-contentList-Msg-left-avatarBox" wx:for="[1,2]">
+              <view class="mySelect-contentList-avatarBox-item">
+                <image class="mySelect-contentList-avatarBox-img"></image>
+              </view>
+            </view>
+            <view class="dot-box">
+              <view wx:for="{{[1,2,3]}}" wx:key="{{item}}" class="mySelect-contentList-Msg-left-dot"></view>
+            </view>
+          </view>
+          <view class="mySelect-contentList-Msg-right">
+            <view class="mySelect-contentList-select" @tap="select({{item.content_id}}, {{index}}, {{item.selectStatus===0?0:1}})">
+              <view class="mySelect-contentList-select-left">
+                <text class="mySelect-contentList-select-red">{{item.content.favorite_count}}</text>人收藏
+              </view>
+              <image src="{{item.selectStatus===0?'./image/icon-collection_1@2x.png':'./image/icon-collection_2@2x.png'}}" class="mySelect-contentList-select-star"></image>
+            </view>
+          </view>
+        </view>
+      </view>
+    </scroll-view>
   </view>
 </template>
 
@@ -56,7 +78,9 @@
       couponList: [],
       LowerLoading: false,
       page: 1,
-      nothingAdd: false
+      nothingAdd: false,
+      contentList: [],
+      nothingBoxShow: true
     }
 
     methods = {
@@ -66,12 +90,27 @@
           this.couponList = []
           this.page = 1
           this.nothingAdd = false
+          this.LowerLoading = false
+          this.contentList = await this._getContentList(1)
+          if (this.contentList.length > 0) {
+            this.nothingBoxShow = false
+          } else {
+            this.nothingBoxShow = true
+          }
+          this.$apply()
           return
         }
+        this.contentList = []
         let resList = await this._getCouponList(1)
         this.page = 1
         this.nothingAdd = false
+        this.LowerLoading = false
         this.couponList = this._computed(resList)
+        if (this.couponList.length > 0) {
+          this.nothingBoxShow = false
+        } else {
+          this.nothingBoxShow = true
+        }
         this.$apply()
       },
       async couponLower() {
@@ -93,14 +132,57 @@
           console.log('已经没有可以加载的了')
         }
       },
+      async contentLower() {
+        if (!this.LowerLoading && !this.nothingAdd) {
+          this.LowerLoading = true
+          this.page++
+          console.log(this.page)
+          let res = await this._getContentList(this.page)
+          if (res.length === 0) {
+            this.nothingAdd = true
+            console.log('已经到底')
+          }
+          this.contentList.push(...res)
+          this.LowerLoading = false
+          this.$apply()
+          console.log('加载完成')
+        } else if (this.nothingAdd) {
+          console.log('已经没有可以加载的了')
+        }
+      },
       toRecommend() {
         wx.switchTab({url: '/pages/recommend/recommend'})
       },
       couponDetail(id) {
-        this.$navigate('/pages/coupon-detail/coupon-detail?id=' + id)
+        this.$navigate('/pages/coupon-detail/coupon-detail?type=1&id=' + id)
       },
       buySubmit() {
         console.log('购买')
+      },
+      async select(id, index, select) {
+        console.log(id, index, select)
+        let res
+        switch (select) {
+          case 0:
+            res = await mySelect.selectContent(id)
+            if (res.error === 0) {
+              this.contentList[index].selectStatus = 1
+              this.contentList[index].content.favorite_count++
+            } else {
+              console.log('操作失败')
+            }
+            break
+          case 1:
+            res = await mySelect.cancleSelectContent(id)
+            if (res.error === 0) {
+              this.contentList[index].selectStatus = 0
+              this.contentList[index].content.favorite_count--
+            } else {
+              console.log('操作失败')
+            }
+            break
+        }
+        this.$apply()
       }
     }
 
@@ -111,6 +193,11 @@
     async load() {
       const res = await this._getCouponList(1)
       this.couponList = this._computed(res)
+      if (this.couponList.length > 0) {
+        this.nothingBoxShow = false
+      } else {
+        this.nothingBoxShow = true
+      }
       this.$apply()
       this.loaded()
     }
@@ -119,6 +206,9 @@
       return await mySelect.getSelectList(page)
     }
 
+    async _getContentList(page) {
+      return await mySelect.getContentList(page)
+    }
     _computed(arr) {
       return arr.map((item) => {
         return {
@@ -244,6 +334,80 @@
         line-height: 24px
         text-align: center
         color: $color-white
+
+    .mySelect-contentList
+      max-height: 92vh
+
+      .mySelect-contentList-item
+        width: 93.6vw
+        font-size: 0
+        height: 40vw
+        background: $color-highlight-background
+        margin: 10px 3.2vw 0
+
+        .mySelect-contentList-item-contentImg
+          width: 93.6vw
+          height: 29.3vw
+          background: #ccc
+
+        .mySelect-contentList-Msg
+          height: 10.7vw
+          display: flex
+          align-items: center
+          justify-content: space-between
+
+          .mySelect-contentList-Msg-left
+            display: flex
+            align-items: center
+            margin-left: 10px
+
+            .mySelect-contentList-Msg-left-avatarBox
+              display: flex
+
+              .mySelect-contentList-avatarBox-item
+                border: 1px solid $color-white
+                width: 20px
+                height: 20px
+                border-radius: 50%
+                margin-right: -4px
+
+                .mySelect-contentList-avatarBox-img
+                  width: 20px
+                  height: 20px
+                  background: #ccc
+                  border-radius: 50%
+
+            .dot-box
+              display: flex
+              align-items: center
+              margin-left: 5px
+
+              .mySelect-contentList-Msg-left-dot
+                width: 3px
+                height: 3px
+                background: #4A4657
+                border-radius: 50%
+                margin-left: 4px
+
+          .mySelect-contentList-Msg-right
+            height: 10.7vw
+
+            .mySelect-contentList-select
+              display: flex
+              height: 10.7vw
+              align-items: center
+              font-size: $font-size-small
+              margin-right: 5px
+
+            .mySelect-contentList-select-star
+              width: 15px
+              height: 15px
+              margin-right: 3px
+              margin-left: 10px
+
+            .mySelect-contentList-select-red
+              color: $color-text-t
+
 
 
 </style>

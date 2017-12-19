@@ -14,12 +14,39 @@ export default class mySelect extends base {
     return await this.get(url, data)
   }
   /**
-   * 获取单条订单数据
+   * 获取用户收藏内容列表
    * @param token jk_token
    * @returns {Promise.<*>}
    */
-  static async getOrderDetail(id) {
-    const url = `${this.baseUrl}/api/order/operation/${id}`
-    return await this.get(url)
+  static async getContentList(page) {
+    const url = `${this.baseUrl}/api/info/per_content`
+    let data = {
+      page
+    }
+    return await this.get(url, data)
+  }
+  /**
+   * 收藏内容
+   * @param id 内容id
+   * @returns {Promise.<*>}
+   */
+  static async selectContent(id) {
+    const url = `${this.baseUrl}/api/info/store_content`
+    let data = {
+      content_id: id
+    }
+    return await this.get(url, data)
+  }
+  /**
+   * 取消内容收藏
+   * @param id 内容id
+   * @returns {Promise.<*>}
+   */
+  static async cancleSelectContent(id) {
+    const url = `${this.baseUrl}/api/info/destroy_content`
+    let data = {
+      content_id: id
+    }
+    return await this.get(url, data)
   }
 }

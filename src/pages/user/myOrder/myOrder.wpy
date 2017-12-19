@@ -31,7 +31,7 @@
           </view>
           <view class="myOrder-orderList-item-btnBox">
             <view class="myOrder-orderList-item-status">{{orderItemStatus[item.status]}}</view>
-            <view class="myOrder-orderList-item-btn" catchtap="useCoupon({{item.id}},{{item.promotion_id}})">{{orderItemBtnTxt[menuIdx]}}</view>
+            <view class="myOrder-orderList-item-btn" catchtap="useCoupon({{item.id}},{{item.promotion_id}},{{item.promotion_type}})">{{orderItemBtnTxt[menuIdx]}}</view>
           </view>
         </view>
       </view>
@@ -117,7 +117,7 @@
       orderUse(id, status) {
         console.log(id, status)
       },
-      useCoupon(orderId, couponId) {
+      useCoupon(orderId, couponId, type) {
         switch (this.menuIdx) {
           case 0:
             console.log('付款')
@@ -126,13 +126,18 @@
             this.$navigate('/pages/coupon-use/couponUse?id=' + orderId)
             break
           case 2:
-            this.showAppraise = true
             this.$invoke('Appraise', 'showCover')
             this.$broadcast('sendCouponMsg', orderId, couponId)
             break
           case 3:
             console.log('再来一单')
-            this.$navigate('/pages/coupon-detail/coupon-detail?id=' + couponId)
+            let couponType
+            if (type === 1) {
+              couponType = 1
+            } else if (type === 2) {
+              couponType = 2
+            }
+            this.$navigate('/pages/coupon-detail/coupon-detail?id=' + couponId + '&type=' + couponType)
             break
         }
       },

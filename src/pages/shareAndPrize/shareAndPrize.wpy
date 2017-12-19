@@ -1,0 +1,205 @@
+<template>
+  <view class="shareAndPrize">
+    <view class="shareAndPrize-item" wx:for="{{shareList}}" wx:key="{{item}}">
+      <view class="shareAndPrize-item-head">
+        <view class="shareAndPrize-item-head-left">
+          <view class="shareAndPrize-item-head-left-chunk"></view>
+          <text>{{item.type===1?contentArr.coupon.txt:contentArr.content.txt}}</text>
+        </view>
+        <view class="shareAndPrize-item-head-right" @tap="showCover({{item.id}})">
+          <text>活动规则</text>
+          <image src="./image/icon-detail_white.png"></image>
+        </view>
+      </view>
+      <view class="shareAndPrize-item-body">
+        <image src="{{item.type===1?contentArr.coupon.url:contentArr.content.url}}"></image>
+      </view>
+    </view>
+
+    <view class="shareAndPrize-cover" wx:if="{{coverShow}}">
+      <view class="shareAndPrize-rule">
+        <view class="shareAndPrize-rule-head">
+          <view>活动规则</view>
+          <view class="shareAndPrize-rule-head-chunk"></view>
+        </view>
+        <view class="shareAndPrize-rule-name">
+          <text>活动名称: {{shareDetail.name}}</text>
+          <text>活动时间: {{shareDetail.from_date}}-{{shareDetail.to_date}}</text>
+        </view>
+        <view class="shareAndPrize-rule-msg first">
+          <text class="title">中奖说明：</text>
+          <text>1.活动期间内,每人每天一次抽奖机会；</text>
+          <text>2.优惠券线下门店核销使用；</text>
+          <text>3.奖品数量有限,先到先得。</text>
+        </view>
+        <view class="shareAndPrize-rule-msg">
+          <text class="title">奖品说明：</text>
+          <text>1.红包</text>
+          <text>2.优惠券</text>
+        </view>
+        <image src="./image/icon-close_white.png" class="shareAndPrize-rule-close" @tap="closeCover"></image>
+      </view>
+    </view>
+
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import base from 'common/mixins/base'
+  import getShare from '@/api/share'
+
+  export default class ShareAndPrize extends wepy.page {
+    mixins = [base]
+
+    config = {
+      navigationBarTitleText: '分享有礼'
+    }
+
+    data = {
+      contentArr: {
+        coupon: {txt: '优惠券分享有礼', url: './image/pic-share_coupon@2x.png'},
+        content: {txt: '内容分享有礼', url: './image/pic-share_coupon@2x.png'}
+      },
+      coverShow: false,
+      shareList: [],
+      shareDetail: null
+    }
+
+    methods = {
+      async showCover(id) {
+        let res = await getShare.getShareAndPrizeDetail(id)
+        this.shareDetail = res
+        this.coverShow = true
+        this.$apply()
+      },
+      closeCover() {
+        this.coverShow = false
+      }
+    }
+
+    async onLoad() {
+      await this.load()
+    }
+
+    async load() {
+      const res = await getShare.getShareAndPrize()
+      this.shareList = res
+      this.loaded()
+    }
+  }
+</script>
+
+<style lang="stylus">
+  @import "../../common/stylus/variable"
+
+  .shareAndPrize-item
+    margin: 10px 3.2vw
+
+    .shareAndPrize-item-head
+      height: 40px
+      display: flex
+      justify-content: space-between
+      background: $color-main
+      font-size: $font-size-medium
+      align-items: center
+      padding: 0 12px
+      border-bottom: .5px solid #666275
+
+      .shareAndPrize-item-head-left
+        display: flex
+        color: $color-white
+        align-items: center
+
+        .shareAndPrize-item-head-left-chunk
+          width: 5px
+          height: 13px
+          background: $color-highlight-background
+          margin-right: 3px
+
+      .shareAndPrize-item-head-right
+        font-size: $font-size-small
+        color: $color-white
+        height: 100%
+        display: flex
+        align-items: center
+
+        image
+          width: 6px
+          height: 10px
+          margin-left: 3px
+
+    .shareAndPrize-item-body
+      width: 93.6vw
+      height: 43.2vw
+
+      image
+        width: 93.6vw
+        height: 43.2vw
+
+  .shareAndPrize-cover
+    position: fixed
+    z-index: 1000
+    left: 0
+    top: 0
+    height: 100vh
+    width: 100vw
+    background: $color-mask-bgc
+
+    .shareAndPrize-rule
+      position: fixed
+      height: 298px
+      width: 240px
+      margin: auto
+      left: 0
+      top: 0
+      right: 0
+      bottom: 0
+      background: #fff
+      border-radius: 2px
+      padding: 11px 20px
+
+      .shareAndPrize-rule-head
+        font-size: $font-size-medium
+        display: flex
+        flex-direction: column
+        align-items: center
+
+        .shareAndPrize-rule-head-chunk
+          width: 20px
+          height: 4px
+          background: $color-row-line
+          margin-top: 4px
+          margin-bottom: 14px
+
+
+
+      .shareAndPrize-rule-name
+        display: flex
+        flex-direction: column
+        font-size: $font-size-small
+        line-height: 22px
+        margin-bottom: 20px
+
+      .shareAndPrize-rule-msg
+        display: flex
+        flex-direction: column
+        font-size: $font-size-small
+        line-height: 22px
+
+        .title
+          font-size: $font-size-small
+          color: #9b9b9b
+
+      .shareAndPrize-rule-msg.first
+        margin-bottom: 30px
+
+      .shareAndPrize-rule-close
+        width: 23px
+        height: 23px
+        position: fixed
+        bottom: 8vh
+        left: 50%
+        transform: translate(-50%, 0)
+
+</style>
