@@ -70,8 +70,8 @@
         this.phoneTestCover = true
       },
       closeCover() {
-        this.phoneNum = null
-        this.phoneCode = null
+        this.phoneNum = 0
+        this.phoneCode = 0
         this.submitDisabled = true
         this.phoneTestCover = false
       },

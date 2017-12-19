@@ -21,7 +21,7 @@
       <view class="myOrder-orderList" wx:if="{{orderList.length > 0}}">
         <view class="myOrder-orderList-item" wx:for="{{orderList}}" @tap="showDetail({{item.id}},{{menuIdx}})" wx:key="{{item.id}}">
           <view class="myOrder-orderList-item-left">
-            <image class="myOrder-orderList-item-logo" src="{{item.merchant_image}}"></image>
+            <image class="myOrder-orderList-item-logo" src="{{item.promotion.promotion_images[0].image.url}}"></image>
             <view class="myOrder-orderList-item-msg">
               <view class="myOrder-orderList-item-title">{{item.title}}</view>
               <view class="myOrder-orderList-item-count myOrder-orderList-item-detail" wx:if="{{menuIdx===0}}">数量: {{item.count}}</view>
@@ -83,9 +83,9 @@
     methods = {
       async tabChange(idx) {
         this.menuIdx = idx
-        let resList = await this._getOrderList(idx, this.page)
         this.page = 1
         this.nothingAdd = false
+        let resList = await this._getOrderList(idx, this.page)
         this.orderList = resList
         this.$apply()
       },

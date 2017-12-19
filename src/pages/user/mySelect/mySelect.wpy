@@ -20,10 +20,10 @@
         </view>
         <view class="mySelect-couponList-itemMsg">
           <view>
-            <view class="mySelect-couponList-item-title">标题{{item.title}}</view>
+            <view class="mySelect-couponList-item-title">{{item.title}}</view>
             <view class="mySelect-couponList-item-time">有效期至{{item.endAt}}</view>
           </view>
-          <view class="mySelect-couponList-item-time">注意{{item.notAllowTime}}</view>
+          <view class="mySelect-couponList-item-time">{{item.notAllowTime}}</view>
         </view>
         <!--<view class="mySelect-couponList-itemBtn" catchtap="buySubmit">购买</view>-->
       </view>
@@ -31,26 +31,53 @@
 
     <scroll-view scroll-y class="mySelect-contentList" bindscrolltolower="contentLower" wx:if="{{contentList.length > 0}}">
       <view class="mySelect-contentList-item" wx:for="{{contentList}}" wx:key="{{index}}">
-        <image src="{{item.content.image}}" class="mySelect-contentList-item-contentImg"></image>
+        <image src="{{item.content.image.url}}" class="mySelect-contentList-item-contentImg" @tap="contentDetail({{item.content.id}})"></image>
         <view class="mySelect-contentList-Msg">
           <view class="mySelect-contentList-Msg-left">
-            <view class="mySelect-contentList-Msg-left-avatarBox" wx:for="[1,2]">
+            <view class="mySelect-contentList-Msg-left-avatarBox" wx:for="{{item.content.customer_content_favorite}}" wx:key="{{item}}">
               <view class="mySelect-contentList-avatarBox-item">
-                <image class="mySelect-contentList-avatarBox-img"></image>
+                <image class="mySelect-contentList-avatarBox-img" src="{{item.wechat_data.avatarUrl}}"></image>
               </view>
             </view>
-            <view class="dot-box">
+            <view class="dot-box" wx:if="{{item.content.favorite_count>5}}">
               <view wx:for="{{[1,2,3]}}" wx:key="{{item}}" class="mySelect-contentList-Msg-left-dot"></view>
             </view>
           </view>
           <view class="mySelect-contentList-Msg-right">
-            <view class="mySelect-contentList-select" @tap="select({{item.content_id}}, {{index}}, {{item.selectStatus===0?0:1}})">
-              <view class="mySelect-contentList-select-left">
-                <text class="mySelect-contentList-select-red">{{item.content.favorite_count}}</text>人收藏
-              </view>
+            <view class="mySelect-contentList-select" catchtap="select({{item.content.id}}, {{index}}, {{item.selectStatus===0?0:1}})">
               <image src="{{item.selectStatus===0?'./image/icon-collection_1@2x.png':'./image/icon-collection_2@2x.png'}}" class="mySelect-contentList-select-star"></image>
+              <view class="mySelect-contentList-select-left">
+                <text>{{item.content.favorite_count}}</text>
+              </view>
             </view>
           </view>
+        </view>
+      </view>
+    </scroll-view>
+
+    <scroll-view scroll-y class="mySelect-kacList">
+      <view class="mySelect-kacList-item" wx:for="{{kacList}}" wx:key="{{index}}">
+        <view class="mySelect-kacList-item-main" style="background-image: url('./image/icon_couponBc.png'); background-size: 700rpx 200rpx" @tap="couponDetail({{item.id}})">
+          <view class="mySelect-kacList-itemPay">
+            <view><text class="mySelect-kacList-bigMoney">{{item.price}}</text> <text class="mySelect-kacList-midMoney"> 元</text></view>
+            <view>{{item.restriction}}</view>
+          </view>
+          <view class="mySelect-kacList-item-right">
+            <view class="mySelect-kacList-itemMsg">
+              <view>
+                <view class="mySelect-kacList-item-title">{{item.title}}111</view>
+                <view class="mySelect-kacList-item-time">有效期至{{item.endAt}}</view>
+              </view>
+              <view class="mySelect-kacList-item-time">
+                <text>{{item.notAllowTime}}11111</text>
+              </view>
+            </view>
+            <view>541</view>
+          </view>
+          <view class="mySelect-kacList-kacBag">礼包</view>
+        </view>
+        <view class="mySelect-kacList-merchant">
+          212156445
         </view>
       </view>
     </scroll-view>
@@ -71,47 +98,66 @@
     }
 
     data = {
-      tabList: ['优惠券', '内容'],
+      tabList: ['优惠券', '内容', '礼包'],
       menuIdx: 0,
-      emptyImg: ['./image/pic-my-nocoupon.png', './image/pic-my_no_c.png'],
-      emptyMsg: ['您还没有相关优惠券', '您还没有相关收藏'],
+      emptyImg: ['./image/pic-my-nocoupon.png', './image/pic-my_no_c.png', './image/pic-my_no_c.png'],
+      emptyMsg: ['您还没有相关优惠券', '您还没有相关收藏', '您还没有相关收藏'],
       couponList: [],
+      contentList: [],
+      kacList: [],
       LowerLoading: false,
       page: 1,
       nothingAdd: false,
-      contentList: [],
       nothingBoxShow: true
     }
 
     methods = {
       async changeTab(idx) {
         this.menuIdx = idx
-        if (idx === 1) {
-          this.couponList = []
-          this.page = 1
-          this.nothingAdd = false
-          this.LowerLoading = false
-          this.contentList = await this._getContentList(1)
-          if (this.contentList.length > 0) {
-            this.nothingBoxShow = false
-          } else {
-            this.nothingBoxShow = true
-          }
-          this.$apply()
-          return
+        switch (this.menuIdx) {
+          case 0:
+            this.contentList = []
+            this.kacList = []
+            let resList = await this._getCouponList(1)
+            this.page = 1
+            this.nothingAdd = false
+            this.LowerLoading = false
+            this.couponList = this._computed(resList)
+            if (this.couponList.length > 0) {
+              this.nothingBoxShow = false
+            } else {
+              this.nothingBoxShow = true
+            }
+            this.$apply()
+            break
+          case 1:
+            this.couponList = []
+            this.kacList = []
+            this.page = 1
+            this.nothingAdd = false
+            this.LowerLoading = false
+            this.contentList = await this._getContentList(1)
+            if (this.contentList.length > 0) {
+              this.nothingBoxShow = false
+            } else {
+              this.nothingBoxShow = true
+            }
+            this.$apply()
+            break
+          case 2:
+            console.log('礼包收藏')
+            this.couponList = []
+            this.contentList = []
+            this.page = 1
+            this.nothingAdd = false
+            this.LowerLoading = false
+            if (this.kacList.length > 0) {
+              this.nothingBoxShow = false
+            } else {
+              this.nothingBoxShow = true
+            }
+            break
         }
-        this.contentList = []
-        let resList = await this._getCouponList(1)
-        this.page = 1
-        this.nothingAdd = false
-        this.LowerLoading = false
-        this.couponList = this._computed(resList)
-        if (this.couponList.length > 0) {
-          this.nothingBoxShow = false
-        } else {
-          this.nothingBoxShow = true
-        }
-        this.$apply()
       },
       async couponLower() {
         if (!this.LowerLoading && !this.nothingAdd) {
@@ -156,8 +202,9 @@
       couponDetail(id) {
         this.$navigate('/pages/coupon-detail/coupon-detail?type=1&id=' + id)
       },
-      buySubmit() {
-        console.log('购买')
+      contentDetail(id) {
+        console.log(id)
+        this.$navigate('/pages/coupon-detail/coupon-detail?type=1&id=' + id)
       },
       async select(id, index, select) {
         console.log(id, index, select)
@@ -325,16 +372,6 @@
             color: $color-text-d
             line-height: 14px
 
-      .mySelect-couponList-itemBtn
-        width: 65px
-        height: 24px
-        background: $color-button
-        border-radius: 2px
-        font-size: $font-size-small
-        line-height: 24px
-        text-align: center
-        color: $color-white
-
     .mySelect-contentList
       max-height: 92vh
 
@@ -391,6 +428,7 @@
 
           .mySelect-contentList-Msg-right
             height: 10.7vw
+            margin-right: 10px
 
             .mySelect-contentList-select
               display: flex
@@ -402,12 +440,62 @@
             .mySelect-contentList-select-star
               width: 15px
               height: 15px
-              margin-right: 3px
+              margin-right: 5px
               margin-left: 10px
 
-            .mySelect-contentList-select-red
-              color: $color-text-t
 
+    .mySelect-kacList
+      max-height: 92vh
+
+      .mySelect-kacList-item
+        margin: 20rpx 0 0 24rpx
+        width: 700rpx
+
+        .mySelect-kacList-item-main
+          display: flex
+          align-items: center
+          position: relative
+          overflow: hidden
+
+          .mySelect-kacList-midMoney
+            font-size: $font-size-small
+            font-family: PingFangSC-Semibold
+
+          .mySelect-kacList-bigMoney
+            color: #5D5D5D
+            font-size: 40px
+            font-family: Impact
+
+          .mySelect-kacList-itemPay
+            text-align: center
+            width: 200rpx
+            font-size: $font-size-small-s
+
+          .mySelect-kacList-itemMsg
+            display: flex
+            flex-direction: column
+            justify-content: space-between
+            height: 160rpx
+            padding: 20rpx 0 20rpx 25rpx
+
+            .mySelect-kacList-item-title
+              font-family: PingFangSC-Regular
+              font-size: $font-size-medium
+              line-height: 20px
+
+            .mySelect-kacList-item-time
+              font-size: $font-size-small-s
+              color: $color-text-d
+              line-height: 14px
+
+          .mySelect-kacList-kacBag
+            position: absolute
+            right: -18px
+            top: 3px
+            background: $color-yellow
+            font-size: $font-size-small
+            padding: 5px 20px
+            transform: rotate(40deg)
 
 
 </style>
