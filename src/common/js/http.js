@@ -27,7 +27,7 @@ export default class http {
     }
   }
 
-  static async update (url, name, loading = true) {
+  static async update(url, name, loading = true) {
     const resImage = await wepy.chooseImage()
     const token = wepy.getStorageSync('token')
     const param = {

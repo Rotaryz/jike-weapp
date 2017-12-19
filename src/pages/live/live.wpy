@@ -1,0 +1,37 @@
+<template>
+  <view class="liveALL">
+    <LiveVideo></LiveVideo>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import base from 'common/mixins/base'
+  import users from 'common/mixins/users'
+  import LiveVideo from '@/base/live-video/live-video'
+  export default class Live extends wepy.page {
+    mixins = [users, base]
+    config = {
+      navigationBarTitleText: '直播优惠'
+    }
+    components = {
+      LiveVideo: LiveVideo
+    }
+    async onLoad() {
+      await this.load()
+    }
+    async load() {
+      await this.$getUserInfo()
+      this.loaded()
+    }
+    async _getShopCouponList() {
+    }
+  }
+</script>
+
+<style lang="stylus">
+  @import "../../common/stylus/variable"
+  @import "../../common/stylus/mixin"
+  .liveALL
+    height: 100%
+</style>
