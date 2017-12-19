@@ -8,7 +8,7 @@ import 'wepy-async-function'
 import wxUtils from 'common/js/wxUtils'
 
 export default class extends wepy.app {
-  constructor () {
+  constructor() {
     super()
     this.use('requestfix')
     this.use('promisify')
@@ -53,8 +53,9 @@ export default class extends wepy.app {
 
   config = {
     pages: [
-      'pages/live/live',
+      'pages/pay-result/pay-result',
       'pages/recommend/recommend',
+      'pages/live/live',
       'pages/coupon-detail/coupon-detail',
       'pages/content-detail/content-detail',
       'pages/activity/activity',

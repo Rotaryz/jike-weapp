@@ -5,19 +5,19 @@
     </view>
     <view class="content" @tap="handleClick">
       <view class="left">
-        <view class="price"><text class="number">{{coupon.platformPrice}}</text><text class="yuan">元</text></view>
-        <view class="desc" wx:if="{{coupon.type === 'discount'}}">{{coupon.title}}</view>
+        <view class="price"><text class="number">{{coupon.platform_price}}</text><text class="yuan">元</text></view>
+        <view class="desc" wx:if="{{coupon.promotion_type === 'discount'}}">{{coupon.title}}</view>
       </view>
       <view class="right">
         <view class="desc-wrapper">
           <view class="description">
             <view class="top">
-              <view class="name">{{coupon.name}}</view>
-              <view class="valid">有效期至{{coupon.endAt}}</view>
+              <view class="name">{{coupon.title}}</view>
+              <view class="valid">有效期至{{coupon.end_at}}</view>
             </view>
-            <view class="bottom">{{coupon.notAllowTime}}</view>
+            <view class="bottom">{{coupon.not_allow_time}}</view>
           </view>
-          <view class="btn-wrapper" wx:if="{{notBuy === 'yes'}}">
+          <view class="btn-wrapper" wx:if="{{buy === 'yes'}}">
             <view class="btn"><text class="font">抢购</text> <image class="icon" src="./icon-button_right.png"></image></view>
           </view>
         </view>
@@ -37,15 +37,16 @@
     props = {
       coupon: {
         type: Object,
-        default: {}
+        default: {},
+        twoWay: true
       },
       type: {
         type: String,
         default: COUPON_TYPE
       },
-      notBuy: {
+      buy: {
         type: String,
-        default: 'no'
+        default: 'yes'
       }
     }
 

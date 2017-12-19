@@ -1,13 +1,14 @@
+/* eslint-disable camelcase */
 export default class CouponFactory {
-  constructor({id, name, platformPrice, shopPrice, stock, type, endAt, notAllowTime, collect}) {
+  constructor({id, title, platform_price, shop_price, stock, promotion_type, end_at, not_allow_time, collected}) {
     this.id = id
-    this.name = name
-    this.platformPrice = Math.floor(platformPrice)
-    this.shopPrice = Math.floor(shopPrice)
+    this.title = title
+    this.platform_price = Math.floor(platform_price)
+    this.shop_price = Math.floor(shop_price)
     this.stock = stock
-    this.collect = collect
-    this.type = type
-    this.endAt = endAt.split(' ')[0]
-    this.notAllowTime = notAllowTime
+    this.collected = collected
+    this.promotion_type = promotion_type
+    this.end_at = end_at ? end_at.split(' ')[0] : ''
+    this.not_allow_time = not_allow_time
   }
 }

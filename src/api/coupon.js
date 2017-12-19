@@ -44,4 +44,24 @@ export default class Coupon extends base {
     const url = `${this.baseUrl}/api/merchants/gift-bags/${packageId}`
     return await this.get(url)
   }
+
+  /**
+   * 收藏优惠券
+   * @param id 优惠券id
+   * @returns {Promise.<*>}
+   */
+  static async storeCoupon(id) {
+    const url = `${this.baseUrl}/api/info/store_coupons`
+    return await this.get(url, {promotion_id: id})
+  }
+
+  /**
+   * 取消收藏优惠券
+   * @param id 优惠券id
+   * @returns {Promise.<*>}
+   */
+  static async cancelStoreCoupon(id) {
+    const url = `${this.baseUrl}/api/info/destroy_coupons`
+    return await this.get(url, {promotion_id: id})
+  }
 }

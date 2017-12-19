@@ -1,0 +1,121 @@
+<template>
+  <view class="pay-result">
+    <view class="status-wrapper">
+      <view class="emotion">
+        <image src="./pic-good@2x.png" class="full-image"></image>
+      </view>
+      <view class="desc">
+        <view class="price">订单金额: <text class="number">{{total}}</text><text class="yuan">元</text></view>
+        <view class="check-order" @tap="checkOrder">
+          查看订单
+        </view>
+      </view>
+    </view>
+    <view class="recommend">
+      <view class="title">
+        <view class="left-line"></view>
+        <text class="content">推荐</text>
+        <view class="right-line"></view>
+      </view>
+      <view class="coupons-wrapper">
+        <repeat for="{{coupons}}" key="index" index="index" item="item">
+          <coupon :coupon.sync="item" type="1" @handleClick.user="goToCouponDetail"></coupon>
+        </repeat>
+      </view>
+    </view>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import base from 'common/mixins/base'
+  import CouponApi from 'api/coupon'
+  import Coupon from '@/base/coupon/coupon'
+
+  export default class PayResult extends wepy.page {
+    mixins = [base]
+
+    data = {
+      coupons: [],
+      total: ''
+    }
+
+    async onLoad(option) {
+      this.total = option.total
+      await this._getCouponList()
+      this.loaded()
+    }
+
+    async _getCouponList() {
+      const merchantId = wepy.getStorageSync('merchantId')
+      const res = await CouponApi.getShopCouponList(merchantId)
+      let list = res.promotions.data
+      if (list.length < 5) {
+        this.coupons = list
+      } else {
+        this.coupons = list.splice(0, 3)
+      }
+    }
+
+    methods = {
+      checkOrder() {
+        this.$redirect('/pages/user/myOrder/myOrder?idx=1')
+      },
+      goToCouponDetail(type, couponId) {
+        this.$redirect(`/pages/coupon-detail/coupon-detail?type=${type}&id=${couponId}`)
+      }
+    }
+
+    components = {
+      coupon: Coupon
+    }
+  }
+</script>
+
+<style lang="stylus">
+  @import "../../common/stylus/variable"
+  .pay-result
+    .status-wrapper
+      display: flex
+      align-items: center
+      justify-content: center
+      height: 130px
+      background-color: $color-white
+      .emotion
+        width: 67.25px
+        height: 67px
+      .desc
+        margin-left: 15px
+        .price
+          margin-bottom: 9.5px
+          font-size: $font-size-medium-x
+          .number
+            font-family: "PingFangSC-Medium"
+            font-size: $font-size-large
+            color: $color-text-t
+          .yuan
+            font-size: $font-size-small-s
+            color: $color-text-t
+        .check-order
+          display: inline-block
+          padding: 4px 16px
+          border: 1px solid $color-col-line
+          border-radius: 2px
+          font-size: $font-size-small
+    .recommend
+      padding: 0 12px
+      .title
+        position: relative
+        display: flex
+        align-items: center
+        justify-content: center
+        height: 53px
+        line-height: 53px
+        text-align: center
+        font-size: $font-size-medium
+        color: $color-text-d
+        .left-line, .right-line
+          width: 67.5px
+          margin: 0 6.25px
+          border: 1px solid $color-col-line
+</style>

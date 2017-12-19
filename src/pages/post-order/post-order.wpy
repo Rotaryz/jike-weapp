@@ -93,7 +93,8 @@
         })
         if (pay.errMsg === 'requestPayment:ok') {
           const orderId = res.order.orderId
-          console.log(orderId)
+          const total = this.total
+          this.$redirect(`/pages/pay-result/pay-result?orderId=${orderId}&total=${total}`)
         }
       }
     }

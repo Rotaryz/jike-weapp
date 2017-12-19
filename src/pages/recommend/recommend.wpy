@@ -123,19 +123,19 @@
       this.couponList = data.promotions.data.map((item) => {
         return new CouponFactory({
           id: item.id,
-          name: item.title,
-          platformPrice: item.platform_price,
-          type: item.promotion_type,
-          endAt: item.end_at,
-          notAllowTime: item.not_allow_time
+          title: item.title,
+          platform_price: item.platform_price,
+          promotion_type: item.promotion_type,
+          end_at: item.end_at,
+          not_allow_time: item.not_allow_time
         })
       })
       this.giftBags = data.gift_bags.map((item) => {
         return new CouponFactory({
           id: item.id,
-          name: item.title,
-          platformPrice: item.platform_price,
-          endAt: item.sell_end_at
+          title: item.title,
+          platform_price: item.platform_price,
+          end_at: item.sell_end_at
         })
       })
       this.shopImages = data.merchant_data.shop_image

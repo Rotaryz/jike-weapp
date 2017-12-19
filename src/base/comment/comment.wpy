@@ -14,7 +14,7 @@
            @tap="showInput"/>
     <view class="inp_cpm" wx:if="{{showCom}}">
       <input type="text" placeholder="弹幕更容易引起主播的注意哦~" @input="bindTestInput"
-             value="{{content}}" @blur="hideInput" focus="true">
+             value="{{content}}" @blur="hideInput" focus="true"/>
       <view @tap="putContent({{activityId}})">
         <image src="../live/icon-sendout.png"></image>
       </view>
@@ -28,6 +28,7 @@
   import Live from 'api/live'
   import base from 'common/mixins/base'
   import users from 'common/mixins/users'
+
   export default class Comment extends wepy.page {
     mixins = [users, base]
     props = {
@@ -56,7 +57,6 @@
             this.$apply()
           }, 300)
         }
-
       },
       bindTestInput(e) {
         this.content = e.detail.value
@@ -68,10 +68,10 @@
           this.content = ''
           this.comment.push(res[0])
           this.$apply()
-        }else {
+        } else {
           wepy.showModal({
             content: '评论内容不能为空',
-            success: function(res) {
+            success: function (res) {
               if (res.confirm) {
                 console.log('用户点击确定')
               } else if (res.cancel) {

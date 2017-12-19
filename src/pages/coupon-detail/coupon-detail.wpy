@@ -41,7 +41,7 @@
       <view class="header border-bottom-1px">礼包详情</view>
       <view class="promotion-wrapper">
         <repeat for="{{promotions}}" key="index" index="index" item="item">
-          <coupon :coupon.sync="item" :notBuy="notBuy"></coupon>
+          <coupon :coupon.sync="item" :buy="buy"></coupon>
         </repeat>
       </view>
     </view>
@@ -53,7 +53,7 @@
     </view>
     <view class="buy-button-wrapper border-top-1px">
       <view class="button-group">
-        <view class="collect border-right-1px">
+        <view class="collect border-right-1px" @tap="collectToggle">
           <image class="icon" src="./icon-collection_1.png"></image>
           收藏
         </view>
@@ -93,7 +93,9 @@
       coupon: {},
       services: [],
       promotions: [],
-      note: {}
+      note: {},
+      buy: 'no',
+      isFavorite: false
     }
 
     async onLoad(option) {
@@ -106,7 +108,6 @@
       if (this.type === COUPON_TYPE) {
         await this._getCouponDetail()
       } else if (this.type === PACKAGE_TYPE) {
-        this.notBuy = 'yes'
         await this._getPackageDetail()
       }
       this.loaded()
@@ -119,6 +120,7 @@
       this.coupon = data
       this.services = data.detail
       this.note = data.note
+      this.isFavorite = data.is_favorite
     }
 
     async _getPackageDetail() {
@@ -131,16 +133,28 @@
       this.promotions = data.gift_bag_details.map((item) => {
         return new CouponFactory({
           id: item.promotion.id,
-          name: item.promotion.title,
-          platformPrice: item.promotion.platform_price,
-          type: item.promotion.promotion_type,
-          endAt: item.promotion.end_at,
-          notAllowTime: item.promotion.not_allow_time
+          title: item.promotion.title,
+          platform_price: item.promotion.platform_price,
+          promotion_type: item.promotion.promotion_type,
+          end_at: item.promotion.end_at,
+          not_allow_time: item.promotion.not_allow_time
         })
       })
     }
 
     methods = {
+      async collectToggle() {
+        if (this.type === COUPON_TYPE) {
+          if (this.isFavorite) {
+//            取消收藏
+            const res = await CouponApi.cancelStoreCoupon(this.id)
+            console.log(res)
+          } else {
+            const res = await CouponApi.storeCoupon(this.id)
+            console.log(res)
+          }
+        }
+      },
       async getSymbol() {
         const isAuthorise = await this.isAuthorise()
         if (isAuthorise) {

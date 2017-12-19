@@ -128,9 +128,8 @@
   import base from 'common/mixins/base'
   import Comment from '@/base/comment/comment'
   import Order from 'api/order'
-  import PhoneTest from '@/base/phoneTest/phoneTest'
+//  import PhoneTest from '@/base/phoneTest/phoneTest'
   export default class LiveVideo extends wepy.page {
-
     mixins = [users, base]
     data = {
       liveMsg: '',
