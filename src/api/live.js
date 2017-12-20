@@ -14,7 +14,7 @@ export default class Live extends base {
    * @returns {Promise.<*>}
    */
   static async getComment(id) {
-    const url = `${this.baseUrl}/api/activity/live`
+    const url = `${this.baseUrl}/api/activity/live/message`
     const data = {'activity_id': id}
     return await this.get(url, data)
   }

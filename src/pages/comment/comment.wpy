@@ -14,7 +14,7 @@
            @tap="showInput"/>
     <view class="inp_cpm" wx:if="{{showCom}}">
       <input type="text" placeholder="弹幕更容易引起主播的注意哦~" @input="bindTestInput"
-             value="{{content}}" @blur="hideInput" focus="true"/>
+             value="{{content}}" @blur="hideInput" focus="true" />
       <view @tap="putContent({{activityId}})">
         <image src="../live/icon-sendout.png"></image>
       </view>
@@ -111,7 +111,6 @@
         .com_msg
           color: $color-white
     .btn_com
-
       position: absolute
       width: 32px
       height: 32px

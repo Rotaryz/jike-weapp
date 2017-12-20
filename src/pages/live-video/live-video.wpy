@@ -1,6 +1,6 @@
 <template>
   <view class="live-show">
-    <view class="live">
+    <view class="live" wx:if="{{isAuthorises}}">
       <scroll-view class="live_conpon" scroll-y>
         <view class="con-item" wx:for="{{liveMsg.activity_promotion}}"
               wx:key="index"
@@ -19,7 +19,8 @@
       <video class="live_video" autoplay="true"
              src="{{liveMsg.file_url ? liveMsg.file_url : ''}}"
              poster="{{liveMsg.image_url ? liveMsg.image_url : ''}}">
-        <cover-view class="live_conpon" wx:if="{{state}}">
+        <cover-view class="live_conpon" wx:if="{{state}}"
+                    animation="{{animation}}">
           <!--优惠券-->
           <cover-view class="conpon-derail">
             <cover-view class="con-item">
@@ -115,10 +116,9 @@
         </cover-view>
       </video>
     </view>
-    <Comment :comment.sync="comment" :activityId.sync="activityId"></Comment>
+    <Comment :comment.sync="comment" :activityId.sync="activityId"
+             wx:if="{{isAuthorises}}"></Comment>
   </view>
-
-
 </template>
 
 <script>
@@ -126,11 +126,17 @@
   import Live from 'api/live'
   import users from 'common/mixins/users'
   import base from 'common/mixins/base'
-  import Comment from '@/base/comment/comment'
+  import Comment from '../comment/comment'
   import Order from 'api/order'
-//  import PhoneTest from '@/base/phoneTest/phoneTest'
   export default class LiveVideo extends wepy.page {
     mixins = [users, base]
+    props = {
+      isAuthorises: {
+        type: Boolean,
+        default: false
+      }
+    }
+
     data = {
       liveMsg: '',
       state: false,
@@ -140,7 +146,8 @@
       conDes: [],
       title1: '',
       title2: '',
-      promotionId: 0
+      promotionId: 0,
+      animation: null
     }
     components = {
       Comment: Comment
@@ -164,36 +171,31 @@
         this.$apply()
       },
       async postOrder() {
-        const isAuthorise = await this.isAuthorise()
-        if (!isAuthorise) {
-//          console.log(this)
-        } else {
-          const data = {
-            from: 'c_live',
-            promotion_id: this.promotionId,
-            title: this.conDes.title,
-            price: 0.01,
-            total: 0.01,
-            count: 1,
-            openId: wepy.getStorageSync('openId'),
-            activity_id: this.liveMsg.id
-          }
-          const res = await Order.operation(data)
-          console.log(res)
-          const {timestamp, nonceStr, signType, paySign} = res.payInfo
-          const pay = await wepy.requestPayment({
-            timeStamp: timestamp,
-            nonceStr,
-            package: res.payInfo.package,
-            signType,
-            paySign
-          })
+        const data = {
+          from: 'c_live',
+          promotion_id: this.promotionId,
+          title: this.conDes.title,
+          price: 0.01,
+          total: 0.01,
+          count: 1,
+          openId: wepy.getStorageSync('openId'),
+          activity_id: this.liveMsg.id
+        }
+        const res = await Order.operation(data)
+        console.log(res)
+        const {timestamp, nonceStr, signType, paySign} = res.payInfo
+        const pay = await wepy.requestPayment({
+          timeStamp: timestamp,
+          nonceStr,
+          package: res.payInfo.package,
+          signType,
+          paySign
+        })
 
-          if (pay.errMsg === 'requestPayment:ok') {
-            this.showBk = -1
-            this.state = false
-            this.$apply()
-          }
+        if (pay.errMsg === 'requestPayment:ok') {
+          this.showBk = -1
+          this.state = false
+          this.$apply()
         }
       }
     }
@@ -204,8 +206,15 @@
       this.liveMsg = res
       this.comment = data
       this.activityId = res.id
-      this.loaded()
       this.$apply()
+    }
+
+    onShow() {
+      this.animation = wepy.createAnimation({
+        duration: 1000,
+        timingFunction: 'ease'
+      })
+      this.animation.scale(2, 2).rotate(45).step()
     }
   }
 </script>

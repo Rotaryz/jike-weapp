@@ -1,6 +1,7 @@
 <template>
-  <view class="liveALL">
-    <LiveVideo></LiveVideo>
+  <view class="liveALL" @tap="show">
+    <LiveVideo :isAuthorises.sync="isAuthorises"></LiveVideo>
+    <PhoneTest></PhoneTest>
   </view>
 </template>
 
@@ -8,23 +9,44 @@
   import wepy from 'wepy'
   import base from 'common/mixins/base'
   import users from 'common/mixins/users'
-  import LiveVideo from '@/base/live-video/live-video'
+  import LiveVideo from '../live-video/live-video'
+  import PhoneTest from '@/base/phoneTest/phoneTest'
   export default class Live extends wepy.page {
     mixins = [users, base]
+    data = {
+      isAuthorises: true
+    }
     config = {
       navigationBarTitleText: '直播优惠'
     }
     components = {
-      LiveVideo: LiveVideo
+      LiveVideo: LiveVideo,
+      PhoneTest: PhoneTest
     }
+
     async onLoad() {
       await this.load()
     }
     async load() {
+
       await this.$getUserInfo()
+      this.isAuthorises = false
       this.loaded()
+      let isAuthorise = await this.isAuthorise()
+      if (!isAuthorise) {
+        this.$parent.globalData.isAuthorises = false
+        this.$invoke('PhoneTest', 'bindPhone')
+      } else {
+        this.$parent.globalData.isAuthorises = true
+        this.isAuthorises = this.$parent.globalData.isAuthorises
+      }
+      this.$apply()
+      console.log(this.isAuthorises)
     }
-    async _getShopCouponList() {
+    events = {
+      'isPhoneOk': () => {
+        this.isAuthorises = true
+      }
     }
   }
 </script>
