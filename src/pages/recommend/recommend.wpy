@@ -122,7 +122,6 @@
     }
 
     async load() {
-
       await this._getShopCouponList()
       this.loaded()
     }
