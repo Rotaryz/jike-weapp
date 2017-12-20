@@ -177,7 +177,7 @@
         this.menuIdx = 2
         this.page = 1
         this.nothingAdd = false
-        let resList = await this._getOrderList(1, 1)
+        let resList = await this._getOrderList(2, 1)
         this.orderList = resList
         this.$apply()
       }
