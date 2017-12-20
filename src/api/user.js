@@ -31,8 +31,8 @@ export default class User extends base {
    * @returns {Promise.<*>}
    */
   static async getPhoneCode(data) {
-    const url = `${this.baseUrl}/api/info/message_bind`
-    return await this.get(url, data)
+    const url = `${this.baseUrl}/api/info/message-bind`
+    return await this.post(url, data)
   }
   /**
    * 修改手机号码
@@ -47,7 +47,7 @@ export default class User extends base {
    * @returns {Promise.<*>}
    */
   static async updateAvatar(name) {
-    const url = `${this.baseUrl}/api/info/store_image`
+    const url = `${this.baseUrl}/api/info/store-image`
     return await this.updateImg(url, name)
   }
 }

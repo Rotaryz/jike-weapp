@@ -7,7 +7,7 @@ export default class mySelect extends base {
    * @returns {Promise.<*>}
    */
   static async getSelectList(page) {
-    const url = `${this.baseUrl}/api/info/per_coupons`
+    const url = `${this.baseUrl}/api/info/per-coupons`
     let data = {
       page
     }
@@ -19,7 +19,7 @@ export default class mySelect extends base {
    * @returns {Promise.<*>}
    */
   static async getContentList(page) {
-    const url = `${this.baseUrl}/api/info/per_content`
+    const url = `${this.baseUrl}/api/info/per-content`
     let data = {
       page
     }
@@ -31,7 +31,7 @@ export default class mySelect extends base {
    * @returns {Promise.<*>}
    */
   static async selectContent(id) {
-    const url = `${this.baseUrl}/api/info/store_content`
+    const url = `${this.baseUrl}/api/info/store-content`
     let data = {
       content_id: id
     }
@@ -43,7 +43,7 @@ export default class mySelect extends base {
    * @returns {Promise.<*>}
    */
   static async cancleSelectContent(id) {
-    const url = `${this.baseUrl}/api/info/destroy_content`
+    const url = `${this.baseUrl}/api/info/destroy-content`
     let data = {
       content_id: id
     }
