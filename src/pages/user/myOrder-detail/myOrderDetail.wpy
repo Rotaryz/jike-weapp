@@ -3,10 +3,10 @@
     <view class="orderDetail-head">
       <view class="orderDetail-head-detailBox"  @tap="couponDetail">
         <view class="orderDetail-head-left">
-          <image src="{{orderMsg.promotion_image}}" class="orderDetail-head-img"></image>
+          <image src="{{orderMsg.promotion.promotion_images[0].image.url}}" class="orderDetail-head-img"></image>
           <view class="orderDetail-head-msg">
-            <view class="orderDetail-head-msg-title">{{orderMsg.title}}</view>
-            <view class="orderDetail-head-msg-content">{{orderMsg.promotion_subhead}}</view>
+            <view class="orderDetail-head-msg-title">{{orderMsg.promotion.title}}</view>
+            <view class="orderDetail-head-msg-content">{{orderMsg.promotion.subhead}}</view>
             <view class="orderDetail-head-msg-pay">￥<text class="orderDetail-head-msg-payMoney">{{orderMsg.price}}</text></view>
           </view>
         </view>
@@ -24,10 +24,10 @@
     <view class="orderDetail-merchant">
       <view class="orderDetail-merchant-title">商家信息</view>
       <view class="orderDetail-merchant-msgBox">
-        <image src="{{orderMsg.merchant_image}}" class="orderDetail-merchant-logo"></image>
+        <image src="{{orderMsg.merchant_data.logo_image}}" class="orderDetail-merchant-logo"></image>
         <view class="orderDetail-merchant-msg">
-          <view class="orderDetail-merchant-msgName">{{orderMsg.merchant_shop_name}}</view>
-          <view class="orderDetail-merchant-msgWork">{{orderMsg.merchant_describe}}</view>
+          <view class="orderDetail-merchant-msgName">{{orderMsg.merchant_data.name}}</view>
+          <view class="orderDetail-merchant-msgWork">{{orderMsg.merchant_data.describe}}</view>
         </view>
       </view>
       <view class="orderDetail-merchant-detail">
@@ -35,7 +35,7 @@
           <image src="./image/icon-navigation_1.png" class="orderDetail-merchant-detailIcon"></image>
           <text>开始导航</text>
         </view>
-        <view class="orderDetail-merchant-detail-item" @tap="call({{orderMsg.merchant_mobile}})">
+        <view class="orderDetail-merchant-detail-item" @tap="call({{orderMsg.merchant_data.mobile}})">
           <image src="./image/icon-call_1.png" class="orderDetail-merchant-detailIcon"></image>
           <text>打电话</text>
         </view>
@@ -178,7 +178,10 @@
         const res = await getMyOrder.orderRebate(this.orderMsg.id, this.orderMsg.count, this.orderMsg.total, cause)
         console.log(res)
         if (res.status === 'success') {
-          this.$redirect('../myOrder/myOrder?idx=3')
+          this.refundIng = false
+          this.orderMsg = await getMyOrder.getOrderDetail(option.id)
+          this.$apply()
+          this.$navigate('../refund/refund?id=' + this.orderMsg.id)
         } else {
           console.log('退款失败')
         }
@@ -216,7 +219,6 @@
         .orderDetail-head-left
           display: flex
 
-
           .orderDetail-head-img
             width: 120px
             height: 64px
@@ -226,7 +228,6 @@
             margin-right: 9.5px
 
           .orderDetail-head-msg
-            width: 200px
 
             .orderDetail-head-msg-title
               line-height: 20px
@@ -267,7 +268,7 @@
         .orderDetail-head-statusBtn
           width: 58px
           height: 24px
-          border-radius: 4px
+          border-radius: 2px
           line-height: 24px
           text-align: center
           font-size: $font-size-small
@@ -423,10 +424,5 @@
             top: 50%
             transform: translate(-50%, -50%)
             font-size: $font-size-medium
-
-
-
-
-
 
 </style>
