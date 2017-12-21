@@ -182,7 +182,6 @@
           activity_id: this.liveMsg.id
         }
         const res = await Order.operation(data)
-        console.log(res)
         const {timestamp, nonceStr, signType, paySign} = res.payInfo
         const pay = await wepy.requestPayment({
           timeStamp: timestamp,
@@ -209,13 +208,13 @@
       this.$apply()
     }
 
-    onShow() {
-      this.animation = wepy.createAnimation({
-        duration: 1000,
-        timingFunction: 'ease'
-      })
-      this.animation.scale(2, 2).rotate(45).step()
-    }
+//    onShow() {
+//      this.animation = wepy.createAnimation({
+//        duration: 1000,
+//        timingFunction: 'ease'
+//      })
+//      this.animation.scale(2, 2).rotate(45).step()
+//    }
   }
 </script>
 

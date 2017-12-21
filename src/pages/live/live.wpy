@@ -1,5 +1,5 @@
 <template>
-  <view class="liveALL" @tap="show">
+  <view class="liveALL">
     <LiveVideo :isAuthorises.sync="isAuthorises"></LiveVideo>
     <PhoneTest></PhoneTest>
   </view>
@@ -32,13 +32,13 @@
       await this.$getUserInfo()
       this.isAuthorises = false
       this.loaded()
+
       let isAuthorise = await this.isAuthorise()
+      console.log(isAuthorise)
       if (!isAuthorise) {
-        this.$parent.globalData.isAuthorises = false
         this.$invoke('PhoneTest', 'bindPhone')
       } else {
-        this.$parent.globalData.isAuthorises = true
-        this.isAuthorises = this.$parent.globalData.isAuthorises
+        this.isAuthorises = true
       }
       this.$apply()
       console.log(this.isAuthorises)
