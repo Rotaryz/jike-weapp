@@ -15,7 +15,7 @@ export default class User extends base {
    * @returns {Promise.<*>}
    */
   static async getUserInfo(data) {
-    const url = `${this.baseUrl}/api/info/index`
+    const url = `${this.baseUrl}/api/info/personal`
     return await this.get(url, data)
   }
   /**
@@ -23,7 +23,7 @@ export default class User extends base {
    * @returns {Promise.<*>}
    */
   static async updataMsg(data) {
-    const url = `${this.baseUrl}/api/info/update`
+    const url = `${this.baseUrl}/api/info/info-modify`
     return await this.post(url, data)
   }
   /**
@@ -31,15 +31,15 @@ export default class User extends base {
    * @returns {Promise.<*>}
    */
   static async getPhoneCode(data) {
-    const url = `${this.baseUrl}/api/info/message_bind`
-    return await this.get(url, data)
+    const url = `${this.baseUrl}/api/info/send-message`
+    return await this.post(url, data)
   }
   /**
    * 修改手机号码
    * @returns {Promise.<*>}
    */
   static async bindPhone(data) {
-    const url = `${this.baseUrl}/api/info/valida`
+    const url = `${this.baseUrl}/api/info/valida-message`
     return await this.get(url, data)
   }
   /**
@@ -47,7 +47,7 @@ export default class User extends base {
    * @returns {Promise.<*>}
    */
   static async updateAvatar(name) {
-    const url = `${this.baseUrl}/api/info/store_image`
+    const url = `${this.baseUrl}/api/info/image-change`
     return await this.updateImg(url, name)
   }
 }
