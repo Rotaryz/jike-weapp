@@ -68,7 +68,7 @@ export default class myOrder extends base {
    * @returns {Promise.<*>}
    */
   static async setAppraise(data) {
-    const url = `${this.baseUrl}/api/info/store-appraise`
+    const url = `${this.baseUrl}/api/info/appraises`
     return await this.post(url, data)
   }
 }

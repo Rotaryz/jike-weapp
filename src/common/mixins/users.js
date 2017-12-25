@@ -98,6 +98,7 @@ export default class userMixin extends wepy.mixin {
       return
     }
     const res = await this._getSqlUserInfo(token)
+
     let user
     wepy.setStorageSync('customerId', res.customer_id)
     if (res.customer_id === 0) {
@@ -105,7 +106,8 @@ export default class userMixin extends wepy.mixin {
       console.log(user)
     } else {
       if(!res.customer.avatarUrl) {
-        user = Object.assign(res.customer,{avatarUrl:res.avatarUrl})
+        let resData = await this.$getUser()
+        user = Object.assign(res.customer,{avatarUrl:resData.avatarUrl})
       } else {
         user = res.customer
       }

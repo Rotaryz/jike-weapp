@@ -7,7 +7,7 @@ export default class mySelect extends base {
    * @returns {Promise.<*>}
    */
   static async getSelectList(page) {
-    const url = `${this.baseUrl}/api/info/per-coupons`
+    const url = `${this.baseUrl}/api/favorite/promotion`
     let data = {
       page
     }
@@ -19,7 +19,7 @@ export default class mySelect extends base {
    * @returns {Promise.<*>}
    */
   static async getContentList(page) {
-    const url = `${this.baseUrl}/api/info/per-content`
+    const url = `${this.baseUrl}/api/favorite/content`
     let data = {
       page
     }
@@ -31,11 +31,11 @@ export default class mySelect extends base {
    * @returns {Promise.<*>}
    */
   static async selectContent(id) {
-    const url = `${this.baseUrl}/api/info/store-content`
+    const url = `${this.baseUrl}/api/favorite/content`
     let data = {
       content_id: id
     }
-    return await this.get(url, data)
+    return await this.post(url, data)
   }
   /**
    * 取消内容收藏
@@ -43,10 +43,7 @@ export default class mySelect extends base {
    * @returns {Promise.<*>}
    */
   static async cancleSelectContent(id) {
-    const url = `${this.baseUrl}/api/info/destroy-content`
-    let data = {
-      content_id: id
-    }
-    return await this.get(url, data)
+    const url = `${this.baseUrl}/api/favorite/destroy-content/${id}`
+    return await this.delete(url)
   }
 }

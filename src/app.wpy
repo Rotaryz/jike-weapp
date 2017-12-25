@@ -108,7 +108,7 @@ export default class extends wepy.app {
   }
 
   globalData = {
-    baseUrl: 'http://jike-wap-api.majy999.com',
+    baseUrl: 'http://dev.jike-wap-api.jerryf.cn',
     isAuthorise: false,
     user: null,
     orderInfo: {}
