@@ -161,6 +161,7 @@
     events = {
       'isPhoneOk': () => {
         this._getUserInfo()
+        this.isPhone = 1
       }
     }
   }
