@@ -74,7 +74,7 @@ export default class userMixin extends wepy.mixin {
       return token
     }
     const code = await this.$getCode()
-    const wxUser = await wepy.getUserInfo()
+    const wxUser = await wepy.getUserInfo({lang: 'zh_CN'})
     const data = {
       code,
       iv: wxUser.iv,
