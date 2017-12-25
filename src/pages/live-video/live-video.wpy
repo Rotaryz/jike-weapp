@@ -196,25 +196,22 @@
           this.state = false
           this.$apply()
         }
+      },
+      async showMore() {
+        let res = await Live.getLiveMsg()
+        let data = await Live.getComment(res.id)
+        this.liveMsg = res
+        this.comment = data
+        this.activityId = res.id
+        this.$apply()
       }
     }
 
     async onLoad() {
-      let res = await Live.getLiveMsg()
-      let data = await Live.getComment(res.id)
-      this.liveMsg = res
-      this.comment = data
-      this.activityId = res.id
-      this.$apply()
+      if (this.isAuthorises) {
+        this.methods.showMore()
+      }
     }
-
-//    onShow() {
-//      this.animation = wepy.createAnimation({
-//        duration: 1000,
-//        timingFunction: 'ease'
-//      })
-//      this.animation.scale(2, 2).rotate(45).step()
-//    }
   }
 </script>
 

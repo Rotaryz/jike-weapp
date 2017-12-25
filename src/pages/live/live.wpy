@@ -27,6 +27,7 @@
     async onLoad() {
       await this.load()
     }
+
     async load() {
 
       await this.$getUserInfo()
@@ -43,9 +44,11 @@
       this.$apply()
       console.log(this.isAuthorises)
     }
+
     events = {
       'isPhoneOk': () => {
         this.isAuthorises = true
+        this.$invoke('LiveVideo', 'showMore')
       }
     }
   }
