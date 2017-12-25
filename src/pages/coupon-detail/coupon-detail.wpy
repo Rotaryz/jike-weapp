@@ -96,7 +96,8 @@
       promotions: [],
       note: {},
       buy: 'no',
-      isFavorite: false
+      isFavorite: false,
+      promotionMerchantId: 0
     }
 
     async onLoad(option) {
@@ -123,6 +124,7 @@
       this.services = data.detail
       this.note = data.note
       this.isFavorite = data.is_favorite
+      this.promotionMerchantId = data.merchant_id
       this.$apply()
     }
 
@@ -175,6 +177,7 @@
           promotionImage: this.promotionImages[0].image.url,
           promotion_type: this.type,
           promotion_id: this.coupon.id,
+          promotion_merchant_id: this.promotionMerchantId,
           title: this.coupon.title,
           price: this.coupon.platform_price
         }
