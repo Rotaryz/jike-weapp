@@ -73,7 +73,7 @@
         nickName: '加载中...',
         avatarUrl: null
       },
-      isPhone: 0,
+      isPhone: 1,
       apply: 0,
       orderMenu: [
         {
