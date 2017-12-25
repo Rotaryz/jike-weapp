@@ -33,15 +33,11 @@
       this.loaded()
       let isAuthorise = await this.isAuthorise()
       if (!isAuthorise) {
-        console.log('fel')
-        this.$parent.globalData.isAuthorises = false
         this.$invoke('PhoneTest', 'bindPhone')
       } else {
-        this.$parent.globalData.isAuthorises = true
-        this.isAuthorises = this.$parent.globalData.isAuthorises
+        this.isAuthorises = true
       }
       this.$apply()
-      console.log(this.isAuthorises)
     }
     events = {
       'isPhoneOk': () => {
