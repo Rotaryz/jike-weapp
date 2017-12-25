@@ -3,18 +3,18 @@
     <view class="slider-wrapper">
       <slider :list.sync="promotionImages">
         <block slot="content">
-          <block wx:for="{{promotionImages}}" wx:key="unique">
-            <swiper-item>
-              <image src="{{item.image_url.url}}" class="slide-image" width="355" height="150"/>
+          <repeat for="{{promotionImages}}" index="index" key="index" item="item">
+            <swiper-item wx:if="{{item.image}}">
+              <image src="{{item.image.url}}" class="slide-image" width="355" height="150"/>
             </swiper-item>
-          </block>
+          </repeat>
         </block>
       </slider>
     </view>
     <view class="desc-wrapper">
       <view class="description">
         <view class="name">{{coupon.title}}</view>
-        <view class="limit">{{coupon.stock === -1 ? '不限量' : '限量' + coupon.stock +'件'}}</view>
+        <view class="limit">{{coupon.stock === -1 ? '不限量' : '限量' + coupon.stock + '件'}}</view>
         <view class="price-wrapper">
           <view class="price">
             <text class="rmb">¥</text>
@@ -54,7 +54,8 @@
     <view class="buy-button-wrapper border-top-1px">
       <view class="button-group">
         <view class="collect border-right-1px" @tap="collectToggle">
-          <image class="icon" src="./icon-collection_1.png"></image>
+          <image wx:if="{{!isFavorite}}" class="icon" src="./icon-collection_1.png"></image>
+          <image wx:if="{{isFavorite}}" class="icon" src="./icon-collection_2.png"></image>
           收藏
         </view>
         <view class="customer-service">
@@ -115,12 +116,14 @@
 
     async _getCouponDetail() {
       const data = await CouponApi.getShopCouponDetail(this.id || 1)
+      this.promotionImages = data.promotion_images
       data.platform_price = Math.floor(data.platform_price)
       data.shop_price = Math.floor(data.shop_price)
       this.coupon = data
       this.services = data.detail
       this.note = data.note
       this.isFavorite = data.is_favorite
+      this.$apply()
     }
 
     async _getPackageDetail() {
@@ -153,6 +156,7 @@
             const res = await CouponApi.storeCoupon(this.id)
             console.log(res)
           }
+          this._getCouponDetail()
         }
       },
       async getSymbol() {
@@ -168,6 +172,7 @@
           return
         }
         const orderInfo = {
+          promotionImage: this.promotionImages[0].image.url,
           promotion_type: this.type,
           promotion_id: this.coupon.id,
           title: this.coupon.title,

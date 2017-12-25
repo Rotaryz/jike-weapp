@@ -9,9 +9,9 @@
       </swiper>
     </view>
     <view class="dots">
-      <block wx:for="{{list}}" wx:key="unique">
-        <view class="dot{{index == swiperCurrent ? ' active' : ''}}"></view>
-      </block>
+      <repeat for="{{list}}" index="index" key="index" item="item">
+        <view wx:if="{{item.image}}" class="dot{{index == swiperCurrent ? ' active' : ''}}"></view>
+      </repeat>
     </view>
   </view>
 </template>

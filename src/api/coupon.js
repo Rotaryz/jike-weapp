@@ -51,8 +51,8 @@ export default class Coupon extends base {
    * @returns {Promise.<*>}
    */
   static async storeCoupon(id) {
-    const url = `${this.baseUrl}/api/info/store_coupons`
-    return await this.get(url, {promotion_id: id})
+    const url = `${this.baseUrl}/api/favorite/promotion`
+    return await this.post(url, {promotion_id: id})
   }
 
   /**
@@ -61,7 +61,7 @@ export default class Coupon extends base {
    * @returns {Promise.<*>}
    */
   static async cancelStoreCoupon(id) {
-    const url = `${this.baseUrl}/api/info/destroy_coupons`
-    return await this.get(url, {promotion_id: id})
+    const url = `${this.baseUrl}/api/favorite/promotion/${id}`
+    return await this.delete(url)
   }
 }

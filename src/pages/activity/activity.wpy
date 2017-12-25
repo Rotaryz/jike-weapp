@@ -1,13 +1,24 @@
 <template>
-  <web-view src="http://zf.boseca.cn/jike/index.html#/wheel"></web-view>
+  <web-view src="{{webviewUrl}}"></web-view>
 </template>
 
 <script>
   import wepy from 'wepy'
 
   export default class Activity extends wepy.page {
-    onLoad() {
-      console.log('normal')
+    data = {
+      webviewUrl: '',
+      token: wepy.getStorageSync('token'),
+      merchantId: wepy.getStorageSync('merchantId')
+    }
+
+    onLoad(option) {
+      this.type = option.type
+      if (this.type === 'wheel') {
+        this.webviewUrl = `http://zf.boseca.cn/jike/index.html?token=${this.token}&merchantId=${this.merchantId}#/wheel`
+      } else if (this.type === 'sign') {
+        this.webviewUrl = `http://zf.boseca.cn/jike/index.html?token=${this.token}&merchantId=${this.merchantId}#/registration`
+      }
     }
   }
 </script>

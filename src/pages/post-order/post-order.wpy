@@ -1,7 +1,9 @@
 <template>
   <view class="post-order">
     <view class="banner-wrapper">
-      <view class="banner"></view>
+      <view class="banner">
+        <image src="{{orderInfo.promotionImage}}" class="full-image"></image>
+      </view>
     </view>
     <view class="form-wrapper">
       <view class="label-control border-bottom-1px">
@@ -78,7 +80,7 @@
           promotion_id,
           title,
           price,
-          total: 0.01,
+          total: this.total,
           count: this.count,
           openId: wepy.getStorageSync('openId')
         }
