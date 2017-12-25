@@ -6,6 +6,7 @@ export default class userMixin extends wepy.mixin {
   isFunction(item) {
     return typeof item === 'function'
   }
+
   // set Code
   async $setCode() {
     const res = await wepy.login()
@@ -102,10 +103,9 @@ export default class userMixin extends wepy.mixin {
     wepy.setStorageSync('customerId', res.customer_id)
     if (res.customer_id === 0) {
       user = await this.$getUser()
-      console.log(user)
     } else {
-      if(!res.customer.avatarUrl) {
-        user = Object.assign(res.customer,{avatarUrl:res.avatarUrl})
+      if (!res.customer.avatarUrl) {
+        user = Object.assign(res.customer, {avatarUrl: res.avatarUrl})
       } else {
         user = res.customer
       }

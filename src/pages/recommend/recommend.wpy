@@ -16,18 +16,18 @@
         <image class="icon" src="./icon-luckdraw@2x.png"></image>
         <view class="content">大转盘 </view>
       </navigator>
-      <view class="content-wrapper">
+      <navigator url="/pages/shareAndPrize/shareAndPrize" class="content-wrapper">
         <image class="icon" src="./icon-invite@2x.png"></image>
         <view class="content">邀请返现</view>
-      </view>
+      </navigator>
       <view class="content-wrapper">
         <image class="icon" src="./icon-sign@2x.png"></image>
         <view class="content">签到红包</view>
       </view>
-      <view class="content-wrapper">
+      <navigator url="/pages/live/live" class="content-wrapper">
         <image class="icon" src="./icon-live@2x.png"></image>
         <view class="content">直播优惠</view>
-      </view>
+      </navigator>
     </view>
     <view class="tab-container">
       <view class="tab-wrapper">
