@@ -172,6 +172,7 @@
     events = {
       'isPhoneOk': () => {
         this.isPhone = 1
+        this.$apply()
       },
       'appraiseSuccess': async () => {
         this.menuIdx = 2
