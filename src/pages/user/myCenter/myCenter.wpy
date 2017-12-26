@@ -129,7 +129,7 @@
         this.$apply()
       },
       changePhone() {
-        this.$invoke('PhoneTest', 'bindPhone')
+        this.$invoke('PhoneTest', 'bindPhone', 'modify')
       }
     }
 
