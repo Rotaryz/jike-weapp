@@ -102,8 +102,8 @@
     }
 
     data = {
-      btnTxt: ['付款', '申请退款', '评价', '查看详情', '查看详情', '再来一单'],
-      statusTxt: ['待付款', '待使用', '待评价', '退款成功', '退款中', '已完成'],
+      btnTxt: ['付款', '申请退款', '评价', '查看详情', '查看详情', '再来一单', '再来一单'],
+      statusTxt: ['待付款', '待使用', '待评价', '退款中', '退款成功', '已评价', '已关闭'],
       orderMsg: null,
       refundIng: false,
       refundCause: [
@@ -122,6 +122,7 @@
 
     async load(option) {
       this.orderMsg = await getMyOrder.getOrderDetail(option.id)
+      console.log(this.orderMsg)
       this.$apply()
       this.loaded()
     }
@@ -131,7 +132,23 @@
         let num = Number(status)
         switch (num) {
           case 0:
-            console.log('付款')
+            let data = {
+              order_id: id
+            }
+            let res = await getMyOrder.paymentOrder(data)
+            console.log(res)
+            const {timestamp, nonceStr, signType, paySign} = res.pay_info
+            const pay = await wepy.requestPayment({
+              timeStamp: timestamp,
+              nonceStr,
+              package: res.pay_info.package,
+              signType,
+              paySign
+            })
+            if (pay.errMsg === 'requestPayment:ok') {
+              const orderId = res.order.orderId
+              console.log(orderId)
+            }
             break
           case 1:
             this.refundIng = true
@@ -145,10 +162,11 @@
             this.$navigate('../refund/refund?id=' + id)
             break
           case 5:
+          case 6:
             let couponType
-            if (this.orderMsg.promotion_type === 1) {
+            if (this.orderMsg.promotion_type * 1 === 1) {
               couponType = 1
-            } else if (this.orderMsg.promotion_type === 2) {
+            } else if (this.orderMsg.promotion_type * 1 === 2) {
               couponType = 2
             }
             this.$navigate('/pages/coupon-detail/coupon-detail?id=' + this.orderMsg.promotion_id + '&type=' + couponType)
@@ -163,9 +181,9 @@
       couponDetail() {
         let id = this.orderMsg.promotion_id
         let couponType
-        if (this.orderMsg.promotion_type === 1) {
+        if (this.orderMsg.promotion_type * 1 === 1) {
           couponType = 1
-        } else if (this.orderMsg.promotion_type === 2) {
+        } else if (this.orderMsg.promotion_type * 1 === 2) {
           couponType = 2
         }
         this.$navigate('/pages/coupon-detail/coupon-detail?id=' + id + '&type=' + couponType)
@@ -176,7 +194,6 @@
       async refundSubmit() {
         let cause = this.refundCause[this.refundChecked].txt
         const res = await getMyOrder.orderRebate(this.orderMsg.id, this.orderMsg.count, this.orderMsg.total, cause)
-        console.log(res)
         if (res.status === 'success') {
           this.refundIng = false
           this.orderMsg = await getMyOrder.getOrderDetail(option.id)

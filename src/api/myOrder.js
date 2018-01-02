@@ -65,4 +65,13 @@ export default class myOrder extends base {
     const url = `${this.baseUrl}/api/info/appraises`
     return await this.post(url, data)
   }
+  /**
+   * 付款
+   * @param
+   * @returns {Promise.<*>}
+   */
+  static async paymentOrder(data) {
+    const url = `${this.baseUrl}/api/orders/wechat-orders`
+    return await this.post(url, data)
+  }
 }
