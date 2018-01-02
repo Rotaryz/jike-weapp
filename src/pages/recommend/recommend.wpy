@@ -161,6 +161,7 @@
       },
       async goToActivity(type, url) {
 //        if (this.activities[type]) {
+
         const isAuthorise = this.$parent.globalData.isAuthorise
         if (!isAuthorise) {
           this.$invoke('phone-test', 'show')
