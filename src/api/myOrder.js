@@ -31,7 +31,7 @@ export default class myOrder extends base {
   static async orderRebate(id, number, money, cause) {
     const url = `${this.baseUrl}/api/orders/refund`
     let data = {
-      id,
+      order_id: id,
       number,
       cause,
       money
@@ -44,7 +44,7 @@ export default class myOrder extends base {
    * @returns {Promise.<*>}
    */
   static async getRefundDetail(id) {
-    const url = `${this.baseUrl}/api/orders/refund_info/${id}`
+    const url = `${this.baseUrl}/api/orders/refund-info/${id}`
     return await this.get(url)
   }
   /**

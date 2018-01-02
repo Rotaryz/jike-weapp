@@ -196,7 +196,7 @@
         const res = await getMyOrder.orderRebate(this.orderMsg.id, this.orderMsg.count, this.orderMsg.total, cause)
         if (res.status === 'success') {
           this.refundIng = false
-          this.orderMsg = await getMyOrder.getOrderDetail(option.id)
+          this.orderMsg = await getMyOrder.getOrderDetail(this.orderMsg.id)
           this.$apply()
           this.$navigate('../refund/refund?id=' + this.orderMsg.id)
         } else {

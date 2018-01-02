@@ -87,7 +87,7 @@
       },
       withDrawSub() {
         if (this.packetTotal.redpacker_count_monies > 0) {
-          console.log('可以提现,功能暂未开放')
+          this.$navigate('/pages/user/withDraw/withDraw')
         } else {
           console.log('没有可以提现的金额')
         }

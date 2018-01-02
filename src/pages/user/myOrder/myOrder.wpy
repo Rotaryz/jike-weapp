@@ -71,7 +71,7 @@
       menuIdx: 1,
       menuItems: ['待付款', '待使用', '待评价', '退款/售后'],
       noOrderIcon: ['./image/pic-my_nopaid.png', './image/pic-my_noused.png', './image/pic-my_noevaluated.png', './image/pic-my_norefund.png'],
-      orderItemStatus: ['待付款', '', '', '退款完成', '退款中', '已完成'],
+      orderItemStatus: ['待付款', '', '', '退款中', '退款完成', '已评价', '已关闭'],
       orderItemBtnTxt: ['付款', '进店使用', '评价', '再来一单'],
       isPhone: 0,
       LowerLoading: false,

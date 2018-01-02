@@ -27,15 +27,15 @@
             <view class="refund-progress-stepMsg">{{orderMsg.created_at}}</view>
           </view>
           <view class="refund-progress-step2">
-            <view class="{{orderMsg.status >= 1?'refund-progress-stepTitle active':'refund-progress-stepTitle'}}">集客处理中</view>
+            <view class="{{orderMsg.status >= 0?'refund-progress-stepTitle active':'refund-progress-stepTitle'}}">集客处理中</view>
             <view class="refund-progress-stepMsg">您的退款申请已受理，审核时间预计需要1-2天</view>
           </view>
           <view class="refund-progress-step3">
-            <view class="{{orderMsg.status >= 2?'refund-progress-stepTitle active':'refund-progress-stepTitle'}}">微信支付到账处理</view>
+            <view class="{{orderMsg.status >= 1?'refund-progress-stepTitle active':'refund-progress-stepTitle'}}">微信支付到账处理</view>
             <view class="refund-progress-stepMsg">审核通过退款申请已提交给微信支付，微信支付会在1-3天内处理完成</view>
           </view>
           <view class="refund-progress-step4">
-            <view class="{{orderMsg.status >= 3?'refund-progress-stepTitle active':'refund-progress-stepTitle'}}">退款成功</view>
+            <view class="{{orderMsg.status >= 1?'refund-progress-stepTitle active':'refund-progress-stepTitle'}}">退款成功</view>
             <view class="refund-progress-stepMsg">微信支付处理完成后，退款会在3-5天内退回您的微信支付账户</view>
           </view>
         </view>
@@ -58,7 +58,7 @@
     }
 
     data = {
-      refundStatus: ['已提交', '处理中', '微信处理中', '退款成功'],
+      refundStatus: ['处理中', '退款成功'],
       orderMsg: null
     }
 
