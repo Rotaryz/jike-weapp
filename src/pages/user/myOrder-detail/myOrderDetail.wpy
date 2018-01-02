@@ -136,6 +136,7 @@
               order_id: id
             }
             let res = await getMyOrder.paymentOrder(data)
+            this.loaded()
             console.log(res)
             const {timestamp, nonceStr, signType, paySign} = res.pay_info
             const pay = await wepy.requestPayment({
@@ -194,6 +195,7 @@
       async refundSubmit() {
         let cause = this.refundCause[this.refundChecked].txt
         const res = await getMyOrder.orderRebate(this.orderMsg.id, this.orderMsg.count, this.orderMsg.total, cause)
+        this.loaded()
         if (res.status === 'success') {
           this.refundIng = false
           this.orderMsg = await getMyOrder.getOrderDetail(this.orderMsg.id)

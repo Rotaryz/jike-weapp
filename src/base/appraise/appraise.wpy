@@ -129,6 +129,7 @@
         }
         console.log(data)
         let res = await getMyOrder.setAppraise(data)
+        this.loaded()
         console.log(res)
         if (res.status === 'success') {
           this.appraiseSuccess = true

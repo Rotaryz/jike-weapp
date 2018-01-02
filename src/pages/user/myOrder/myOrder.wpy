@@ -88,6 +88,7 @@
         let resList = await this._getOrderList(idx, this.page)
         this.orderList = resList
         this.$apply()
+        this.loaded()
       },
       orderUpper() {
         console.log('刷新')
@@ -105,6 +106,7 @@
           this.orderList.push(...res)
           this.$apply()
           this.LowerLoading = false
+          this.loaded()
           console.log('加载完成')
         } else if (this.nothingAdd) {
           console.log('已经没有可以加载的了')
@@ -121,6 +123,7 @@
               order_id: orderId
             }
             let res = await getMyOrder.paymentOrder(data)
+            this.loaded()
             console.log(res)
             const {timestamp, nonceStr, signType, paySign} = res.pay_info
             const pay = await wepy.requestPayment({

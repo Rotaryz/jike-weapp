@@ -18,7 +18,6 @@ export default class http {
       Tips.loading()
     }
     const res = await wepy.request(param)
-    Tips.loaded()
     if (this.isSuccess(res)) {
       const result = res.data.data ? res.data.data : res.data
       return result
@@ -48,7 +47,6 @@ export default class http {
     }
     const res = await wepy.uploadFile(param)
     const resData = JSON.parse(res.data)
-    Tips.loaded()
     if (res.statusCode === 200 && resData.error === 0) {
       return resData
     } else {

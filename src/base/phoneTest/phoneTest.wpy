@@ -111,7 +111,11 @@
             jk_token: jkToken,
             mobile: self.phoneNum
           }
-          this._getPhoneCode(data)
+          let phoneCode = await this._getPhoneCode(data)
+          if (phoneCode.error !== 0) {
+            console.log('获取验证码失败')
+          }
+          this.loaded()
           this.phoneCodeDisabled = true
           let time = 60
           this.phoneCodeTime = time + 's'
@@ -148,6 +152,7 @@
             }
           }
           let resData = await this._bindPhone(data)
+          this.loaded()
           console.log(resData)
           if (resData.error === 0) {
             self.phoneTestCover = false

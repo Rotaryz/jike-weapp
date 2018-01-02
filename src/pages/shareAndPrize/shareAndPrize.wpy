@@ -69,6 +69,7 @@
     methods = {
       async showCover(id) {
         let res = await getShare.getShareAndPrizeDetail(id)
+        this.loaded()
         this.shareDetail = res
         this.coverShow = true
         this.$apply()
