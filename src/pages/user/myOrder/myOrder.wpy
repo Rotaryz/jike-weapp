@@ -31,7 +31,7 @@
           </view>
           <view class="myOrder-orderList-item-btnBox">
             <view class="myOrder-orderList-item-status">{{orderItemStatus[item.status]}}</view>
-            <view class="myOrder-orderList-item-btn" catchtap="useCoupon({{item.id}},{{item.promotion_id}},{{item.promotion_type}})">{{orderItemBtnTxt[menuIdx]}}</view>
+            <view class="myOrder-orderList-item-btn" catchtap="useCoupon({{item.id}},{{item.promotion.id}},{{item.promotion_type}})">{{orderItemBtnTxt[menuIdx]}}</view>
           </view>
         </view>
       </view>

@@ -6,8 +6,8 @@ export default class myOrder extends base {
    * @param status状态 page页码
    * @returns {Promise.<*>}
    */
-  static async getOrderList(status,page) {
-    const url = `${this.baseUrl}/api/order/operation`
+  static async getOrderList(status, page) {
+    const url = `${this.baseUrl}/api/orders/wechat-orders`
     let data = {
       status,
       page
@@ -20,7 +20,7 @@ export default class myOrder extends base {
    * @returns {Promise.<*>}
    */
   static async getOrderDetail(id) {
-    const url = `${this.baseUrl}/api/order/operation/${id}`
+    const url = `${this.baseUrl}/api/orders/wechat-orders/${id}`
     return await this.get(url)
   }
   /**
@@ -29,12 +29,12 @@ export default class myOrder extends base {
    * @returns {Promise.<*>}
    */
   static async orderRebate(id, number, money, cause) {
-    const url = `${this.baseUrl}/api/order/refund`
+    const url = `${this.baseUrl}/api/orders/refund`
     let data = {
       id,
       number,
       cause,
-      money: 1
+      money
     }
     return await this.post(url, data)
   }
@@ -44,11 +44,8 @@ export default class myOrder extends base {
    * @returns {Promise.<*>}
    */
   static async getRefundDetail(id) {
-    const url = `${this.baseUrl}/api/order/refund_info`
-    let data = {
-      id
-    }
-    return await this.get(url, data)
+    const url = `${this.baseUrl}/api/orders/refund_info/${id}`
+    return await this.get(url)
   }
   /**
    * 查看单条订单优惠券列表
@@ -56,11 +53,8 @@ export default class myOrder extends base {
    * @returns {Promise.<*>}
    */
   static async getOrderCouponList(id) {
-    const url = `${this.baseUrl}/api/order/coupon`
-    let data = {
-      id
-    }
-    return await this.get(url, data)
+    const url = `${this.baseUrl}/api/orders/customer-promotions/${id}`
+    return await this.get(url)
   }
   /**
    * 提交评价
