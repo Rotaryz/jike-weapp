@@ -44,7 +44,7 @@
     events = {
       'isPhoneOk': () => {
         this.isAuthorises = true
-        this.$invoke('LiveVideo', 'showMore')
+        this.$com.LiveVideo.methods.showMore()
       }
     }
   }
