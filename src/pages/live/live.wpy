@@ -33,7 +33,6 @@
       await this.$getUserInfo()
       this.isAuthorises = false
       this.loaded()
-
       let isAuthorise = await this.isAuthorise()
       console.log(isAuthorise)
       if (!isAuthorise) {
@@ -42,13 +41,12 @@
         this.isAuthorises = true
       }
       this.$apply()
-      console.log(this.isAuthorises)
     }
 
     events = {
       'isPhoneOk': () => {
         this.isAuthorises = true
-        this.$invoke('LiveVideo', 'showMore')
+        this.$com.LiveVideo.methods.showMore()
       }
     }
   }
