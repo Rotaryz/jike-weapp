@@ -47,7 +47,6 @@ export default class http {
     }
     const res = await wepy.uploadFile(param)
     const resData = JSON.parse(res.data)
-    Tips.loaded()
     if (res.statusCode === 200 && resData.error === 0) {
       return resData
     } else {

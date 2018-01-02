@@ -7,24 +7,24 @@
 
     <view class="withDraw-inputBox">
       <text class="withDraw-inputBox-txt">￥</text>
-      <input type="digit" bindinput="moneyChange" class="withDraw-inputBox-input" />
+      <input type="digit" bindinput="moneyChange" class="withDraw-inputBox-input" value="{{drawMoney}}"/>
       <image src="./image/icon-my_money_close.png" class="withDraw-inputBox-btn" @tap="clear"></image>
     </view>
     <view class="withDraw-hint">
       <text>提现到微信钱包</text>
-      <text class="withDraw-hint-redTxt">全部提现</text>
+      <text class="withDraw-hint-redTxt" @tap="allIn">全部提现</text>
     </view>
     <view class="withDraw-btn">提现</view>
     <view class="withDraw-time">1-5个工作日到账</view>
 
-    <view class="withDraw-successCover">
+    <view class="withDraw-successCover" wx:if="{{coverShow}}">
       <view class="withDraw-success">
         <image src="./image/pic-my_unlucky.png" class="withDraw-success-img"></image>
         <view class="withDraw-success-top">提现成功</view>
         <view class="withDraw-success-bottom">
           <text class="withDraw-success-bottom-txt">提现金额已经存入您的微信钱包中</text>
           <view class="withDraw-success-bottom-btn">返回</view>
-          <image src="./image/icon-close_white.png" class="withDraw-success-closeBtn"></image>
+          <image src="./image/icon-close_white.png" class="withDraw-success-closeBtn" @tap="closeCover"></image>
         </view>
       </view>
     </view>
@@ -43,7 +43,8 @@
     }
 
     data = {
-
+      drawMoney: '',
+      coverShow: true
     }
 
     methods = {
@@ -51,7 +52,16 @@
         console.log(e.detail)
       },
       clear() {
-        console.log('清空')
+        this.drawMoney = 0
+        this.$apply()
+      },
+      allIn() {
+        this.drawMoney = 100
+        this.$apply()
+      },
+      closeCover() {
+        this.coverShow = false
+        this.$apply()
       }
     }
 

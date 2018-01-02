@@ -127,9 +127,10 @@
         this.userInfo.avatarUrl = res.data
         this.$parent.updateGlobalData('user', Object.assign({}, this.userInfo))
         this.$apply()
+        this.loaded()
       },
       changePhone() {
-        this.$invoke('PhoneTest', 'bindPhone')
+        this.$invoke('PhoneTest', 'bindPhone', 'modify')
       }
     }
 

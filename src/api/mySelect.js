@@ -43,7 +43,7 @@ export default class mySelect extends base {
    * @returns {Promise.<*>}
    */
   static async cancleSelectContent(id) {
-    const url = `${this.baseUrl}/api/favorite/destroy-content/${id}`
+    const url = `${this.baseUrl}/api/favorite/content/${id}`
     return await this.delete(url)
   }
 }

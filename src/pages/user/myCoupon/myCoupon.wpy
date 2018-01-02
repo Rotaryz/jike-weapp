@@ -76,6 +76,7 @@
         this.nothingAdd = false
         this.couponList = this._computed(resList)
         this.$apply()
+        this.loaded()
       },
       async couponLower() {
         if (!this.LowerLoading && !this.nothingAdd) {
@@ -91,6 +92,7 @@
           this.couponList.push(...resArr)
           this.LowerLoading = false
           this.$apply()
+          this.loaded()
           console.log('加载完成')
         } else if (this.nothingAdd) {
           console.log('已经没有可以加载的了')

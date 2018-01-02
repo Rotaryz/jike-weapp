@@ -68,7 +68,7 @@
         {txt: '价格贵', value: '18', checked: false}],
       appraiseChecked: [],
       couponMsg: null,
-      appraise: null,
+      appraise: '',
       appraiseSuccess: false,
       btnDisabled: true
     }
@@ -129,6 +129,7 @@
         }
         console.log(data)
         let res = await getMyOrder.setAppraise(data)
+        this.loaded()
         console.log(res)
         if (res.status === 'success') {
           this.appraiseSuccess = true
@@ -146,6 +147,7 @@
           orderId,
           couponId
         }
+        console.log(this.couponMsg)
         this.$apply()
       }
     }
@@ -185,7 +187,7 @@
       this.appraiseBad = this._clearAppraise(this.appraiseBad)
       this.appraiseChecked = []
       this.couponMsg = null
-      this.appraise = null
+      this.appraise = ''
       this.appraiseSuccess = false
       this.btnDisabled = true
       this.$apply()

@@ -112,7 +112,7 @@
           flex-direction: column
           justify-content: space-between
           height: 160rpx
-          width: 312rpx
+          width: 400rpx
           padding: 20rpx 0 20rpx 25rpx
 
           .couponUse-item-title
@@ -126,28 +126,27 @@
             line-height: 28rpx
 
       .couponUse-coverIn
-        height: 20rpx
+        height: 10px
         background: $color-background
 
       .couponEwm-Msg-body
-        height: 540rpx
+        height: 270px
         display: flex
         flex-direction: column
         align-items: center
         background: $color-highlight-background
+        justify-content: center
 
         .couponEwm-Msg-body-EWM
-          width: 356rpx
-          height: 356rpx
+          width: 177px
+          height: 177px
           border: 1px solid $color-col-line
-          margin: 20rpx 0
-          background: #ccc
 
         .couponEwm-Msg-body-couponNum
-          height: 80rpx
-          width: 356rpx
+          height: 40px
+          width: 179px
           text-align: center
-          line-height: 80rpx
+          line-height: 40px
           font-family: PingFangSC-Medium
           font-size: $font-size-large-xx
 
