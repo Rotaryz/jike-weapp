@@ -43,8 +43,11 @@
 <script>
   import wepy from 'wepy'
   import Order from 'api/order'
+  import base from 'common/mixins/base'
 
   export default class PostOrder extends wepy.page {
+    mixins = [base]
+
     data = {
       orderInfo: {},
       count: 1,
@@ -81,21 +84,20 @@
           promotion_id,
           title,
           price,
-          total: this.total,
-          count: this.count,
-          openId: wepy.getStorageSync('openId')
+          count: this.count
         }
         const res = await Order.operation(data)
-        const {timestamp, nonceStr, signType, paySign} = res.payInfo
+        this.loaded()
+        const {timestamp, nonceStr, signType, paySign} = res.pay_info
         const pay = await wepy.requestPayment({
           timeStamp: timestamp,
           nonceStr,
-          package: res.payInfo.package,
+          package: res.pay_info.package,
           signType,
           paySign
         })
         if (pay.errMsg === 'requestPayment:ok') {
-          const orderId = res.order.orderId
+          const orderId = res.order_id
           const total = this.total
           this.$redirect(`/pages/pay-result/pay-result?orderId=${orderId}&total=${total}`)
         }

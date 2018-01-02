@@ -47,14 +47,15 @@
           </repeat>
         </view>
         <view class="discover-panel" style="display: {{activeTab === '2' ? 'block':''}}">
-          <navigator url="/pages/content-detail/content-detail?id={{item.id}}" class="ticky-wrapper" wx:for="{{contents}}" wx:key="unique">
+          <navigator url="/pages/content-detail/content-detail?id={{item.id}}" class="ticky-wrapper"
+                     wx:for="{{contents}}" wx:key="unique">
             <view class="ticky">
-
+              <image src="{{item.image_url}}" class="full-image"></image>
             </view>
             <view class="collector">
               <view class="avatar-wrapper">
                 <view class="avatar" wx:for="{{item.customer_content_favorite}}" wx:key="unique" wx:for-item="avatar">
-                  <image src="{{avatar.wechat_data.avatarUrl}}" alt="" class="full-image"></image>
+                  <image src="{{avatar.wechat_data.avatar_url}}" alt="" class="full-image"></image>
                 </view>
                 <view class="more" wx:if="{{item.favorite_count > 5}}">
                   <view class="dot"></view>
@@ -64,7 +65,8 @@
               </view>
               <view class="collect">
                 <view class="icon icon-collected">
-                  <image src="./icon-collection_1.png" class="full-image"></image>
+                  <image wx:if="{{!item.is_favorite}}" src="./icon-collection_1.png" class="full-image"></image>
+                  <image wx:if="{{item.is_favorite}}" src="./icon-collection_2.png" class="full-image"></image>
                 </view>
                 <view class="font">{{item.favorite_count}}</view>
               </view>
@@ -87,7 +89,6 @@
   import Toast from '@/base/toast/toast'
   import CouponApi from 'api/coupon'
   import ContentsApi from 'api/contents'
-  import CouponFactory from 'common/js/coupon'
 
   const COUPON_TYPE = 1
   const PACKAGE_TYPE = 2
@@ -107,7 +108,17 @@
       couponList: [],
       giftBags: [],
       activeTab: COUPON_TAB,
-      contents: []
+      contents: [],
+      couponPage: 1,
+      contentPage: 1
+    }
+
+    onReachBottom() {
+      if (this.activeTab === COUPON_TAB) {
+        this._getCouponList()
+      } else if (this.activeTab === DISCOVER_TAB) {
+        this._getMerchantContents()
+      }
     }
 
     async onLoad() {
@@ -123,32 +134,23 @@
 
     async _getShopCouponList() {
       const data = await CouponApi.getShopCouponList(this.merchantId)
-      this.couponList = data.promotions.data.map((item) => {
-        return new CouponFactory({
-          id: item.id,
-          title: item.title,
-          platform_price: item.platform_price,
-          promotion_type: item.promotion_type,
-          end_at: item.end_at,
-          not_allow_time: item.not_allow_time
-        })
-      })
-      this.giftBags = data.gift_bags.map((item) => {
-        return new CouponFactory({
-          id: item.id,
-          title: item.title,
-          platform_price: item.platform_price,
-          end_at: item.sell_end_at
-        })
-      })
+      this.couponList = data.promotions.data
+      this.giftBags = data.gift_bags
       this.activities = data.activities || {}
       this.shopImages = data.merchant_data.shop_image
     }
 
+    async _getCouponList() {
+      const res = await CouponApi.getShopCouponList(this.merchantId, {page: this.couponPage})
+      console.log(res)
+      this.loaded()
+    }
+
     async _getMerchantContents() {
-      const data = await ContentsApi.getMerchantContents()
+      const data = await ContentsApi.getMerchantContents({page: this.contentPage})
       this.contents = data
       this.$apply()
+      this.loaded()
     }
 
     methods = {
@@ -158,16 +160,16 @@
         this.$apply()
       },
       async goToActivity(type, url) {
-        if (this.activities[type]) {
-          const isAuthorise = this.$parent.globalData.isAuthorise
-          if (!isAuthorise) {
-            this.$invoke('phone-test', 'show')
-            return
-          }
-          this.$navigate(url)
-        } else {
-          this.$invoke('toast', 'show', '暂未开放')
+//        if (this.activities[type]) {
+        const isAuthorise = this.$parent.globalData.isAuthorise
+        if (!isAuthorise) {
+          this.$invoke('phone-test', 'show')
+          return
         }
+        this.$navigate(url)
+//        } else {
+//          this.$invoke('toast', 'show', '暂未开放')
+//        }
       },
       async clickTab(index) {
         this.activeTab = index
@@ -392,12 +394,18 @@
           box-sizing: border-box
           padding: 10px 12px
           .ticky-wrapper
+            margin-bottom: 10px
             border-1px()
             background-color: $color-white
             .ticky
+              position: relative
               width: 100%
               height: 0
               padding-top: 23.96011396%
+              image
+                position: absolute
+                top: 0
+                left: 0
             .collector
               display: flex
               align-items: center

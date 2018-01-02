@@ -7,13 +7,7 @@ export default class Order extends base {
    * @returns {Promise.<*>}
    */
   static async operation(data) {
-    const url = `${this.baseUrl}/api/order/operation`
-    console.log(url)
+    const url = `${this.baseUrl}/api/orders/wechat-orders`
     return await this.post(url, data)
   }
-
-  // static async produceOrder(data) {
-  //   const url = `${this.baseUrl}/api/order/pay`
-  //   return await this.get(url, data)
-  // }
 }

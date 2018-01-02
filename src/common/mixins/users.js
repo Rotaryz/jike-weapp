@@ -106,7 +106,7 @@ export default class userMixin extends wepy.mixin {
     } else {
       if (!res.customer.avatarUrl) {
         let resData = await this.$getUser()
-        user = Object.assign(res.customer,{avatarUrl:resData.avatarUrl})
+        user = Object.assign(res.customer, {avatarUrl: resData.avatarUrl})
       } else {
         user = res.customer
       }

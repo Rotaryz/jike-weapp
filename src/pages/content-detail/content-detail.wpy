@@ -44,8 +44,9 @@
       </repeat>
     </view>
     <view class="fix-btn-wrapper">
-      <view class="collect">
-        <image src="./icon-collection1@2x.png" class="full-image"></image>
+      <view class="collect" @tap="storeToggle">
+        <image wx:if="{{!isFavorite}}" src="./icon-collection1@2x.png" class="full-image"></image>
+        <image wx:if="{{isFavorite}}" src="./icon-collection2@2x.png" class="full-image"></image>
       </view>
       <view class="share">
         <image src="./icon-sharepolite@2x.png" class="full-image"></image>
@@ -74,6 +75,7 @@
     data = {
       id: '',
       details: [],
+      isFavorite: false,
       type: {
         image: IMAGE_TYPE,
         text: TEXT_TYPE,
@@ -96,9 +98,21 @@
     async _getContentDetail() {
       const data = await ContentsApi.getContentDetail(this.id)
       this.details = data.content_details
+      this.isFavorite = data.is_favorite
     }
 
     methods = {
+      async storeToggle() {
+        const id = this.id
+        if (this.isFavorite) {
+//        取消收藏
+          await ContentsApi.cancelStoreContent(id)
+        } else {
+          await ContentsApi.storeContent(id)
+        }
+        await this._getContentDetail()
+        this.loaded()
+      },
       handleClick(couponId) {
         this.$navigate(`/pages/coupon-detail/coupon-detail?type=1&id=${couponId}`)
       }

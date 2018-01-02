@@ -28,7 +28,7 @@
         </view>
       </view>
       <view class="share-wrapper">
-        <view class="share-btn">
+        <view class="share-btn" @tap="showShareModal">
           <view class="icon-share-polite">
             <image src="./icon-share_polite.png" class="icon-share-polite"></image>
           </view>
@@ -66,6 +66,23 @@
       <view class="buy-btn" @tap="postOrder">立即购买</view>
     </view>
     <phone-test @isPhoneOk.user="getSymbol"></phone-test>
+    <share :qrcode.sync="qrcode" :detail.sync="coupon" :promotionImages.sync="promotionImages" @sharePunchLine.user="sharePunchLine"></share>
+    <share-modal>
+      <view slot="content" class="base-modal-content">
+        <view class="header-wrapper">
+          <view class="title">现金红包</view>
+          <view class="cash">{{sharePrice}}<text class="yuan">元</text></view>
+        </view>
+        <view class="content">
+          <view class="text">现金已经存放入您的账户</view>
+          <view class="text">可进入个人中心-红包查看详情</view>
+        </view>
+        <view class="btn-wrapper">
+          <!--<view class="share"></view>-->
+          <navigator url="/pages/user/redPacket/redPacket" class="btn">查看红包</navigator>
+        </view>
+      </view>
+    </share-modal>
   </scroll-view>
 </template>
 
@@ -75,11 +92,15 @@
   import base from 'common/mixins/base'
   import Slider from '@/base/slider/slider'
   import CouponApi from 'api/coupon'
+  import Info from 'api/info'
   import Coupon from '@/base/coupon/coupon'
   import CouponFactory from 'common/js/coupon'
   import PhoneTest from '@/base/phoneTest/phoneTest'
   import ServiceDetail from '@/base/service-detail/service-detail'
   import KnowDetail from '@/base/know-detail/know-detail'
+  import Share from '@/base/share/share'
+  import BaseModal from '@/base/base-modal/base-modal'
+  import Shares from 'api/share'
 
   const COUPON_TYPE = 1
   const PACKAGE_TYPE = 2
@@ -90,6 +111,7 @@
     data = {
       type: 0,
       id: '',
+      currentPage: '',
       promotionImages: [],
       coupon: {},
       services: [],
@@ -97,12 +119,34 @@
       note: {},
       buy: 'no',
       isFavorite: false,
-      promotionMerchantId: 0
+      promotionMerchantId: 0,
+      qrcode: '',
+      sharePrice: ''
+    }
+
+    onShareAppMessage(res) {
+      if (res.from === 'button') {
+        // 来自页面内转发按钮
+        console.log(res.target)
+      }
+      return {
+        title: '优惠券',
+        path: this.currentPage,
+        success: async () => {
+          // 转发成功
+          await this._getSharePrize()
+        },
+        fail: (res) => {
+          // 转发失败
+          console.log(res)
+        }
+      }
     }
 
     async onLoad(option) {
       this.type = Math.floor(option.type)
       this.id = option.id
+      this.currentPage = `/pages/coupon-detail/coupon-detail?type=${this.type}&id=${this.id}`
       await this.load()
     }
 
@@ -112,7 +156,26 @@
       } else if (this.type === PACKAGE_TYPE) {
         await this._getPackageDetail()
       }
+      await this._getUserInfo()
+      await this._createQrcode()
       this.loaded()
+    }
+
+    async _getSharePrize() {
+      const res = await Shares.getSharePrize()
+      this.sharePrice = res.price
+      this.$invoke('share-modal', 'show')
+      this.$apply()
+      this.loaded()
+    }
+
+    async _createQrcode() {
+      const res = await Info.createQrode({path: this.currentPage})
+      this.qrcode = res.image_url
+    }
+
+    async _getUserInfo() {
+      await this.$getUserInfo()
     }
 
     async _getCouponDetail() {
@@ -135,6 +198,7 @@
       this.coupon = data
       this.note = data.note
       this.promotionImages = data.gift_bag_images
+      this.isFavorite = data.is_favorite
       this.promotions = data.gift_bag_details.map((item) => {
         return new CouponFactory({
           id: item.promotion.id,
@@ -145,21 +209,35 @@
           not_allow_time: item.promotion.not_allow_time
         })
       })
+      this.$apply()
     }
 
     methods = {
+      showShareModal() {
+        this.$invoke('share', 'show')
+      },
+      async sharePunchLine() {
+        await this._getSharePrize()
+      },
       async collectToggle() {
         if (this.type === COUPON_TYPE) {
           if (this.isFavorite) {
 //            取消收藏
-            const res = await CouponApi.cancelStoreCoupon(this.id)
-            console.log(res)
+            await CouponApi.cancelStoreCoupon(this.id)
           } else {
-            const res = await CouponApi.storeCoupon(this.id)
-            console.log(res)
+            await CouponApi.storeCoupon(this.id)
           }
-          this._getCouponDetail()
+          await this._getCouponDetail()
+        } else {
+          if (this.isFavorite) {
+//            取消收藏
+            await CouponApi.cancelStorePackage(this.id)
+          } else {
+            await CouponApi.storePackage(this.id)
+          }
+          await this._getPackageDetail()
         }
+        this.loaded()
       },
       async getSymbol() {
         const isAuthorise = await this.isAuthorise()
@@ -190,8 +268,10 @@
       'phone-test': PhoneTest,
       'service-detail': ServiceDetail,
       'know-detail': KnowDetail,
-      slider: Slider,
-      coupon: Coupon
+      'slider': Slider,
+      'coupon': Coupon,
+      'share': Share,
+      'share-modal': BaseModal
     }
 
     config = {
@@ -345,4 +425,52 @@
         font-size: $font-size-medium
         color: $color-white
         background-color: $color-button
+    .base-modal-content
+      .header-wrapper
+        height: 124.5px
+        padding-top: 13.5px
+        box-sizing: border-box
+        background-color: $color-prize-bc
+        .title
+          position: relative
+          margin-bottom: 17.5px
+          font-size: $font-size-small
+          color: $color-white
+          text-align: center
+          &:before, &:after
+            content: ''
+            position: absolute
+            top: 4px
+            display: block
+            width: 40px
+            height: 1px
+            border-bottom: 1px solid $color-white
+          &:before
+            left: 58px
+          &:after
+            right: 58px
+        .cash
+          text-align: center
+          font-size: 30px
+          color: $color-yellow
+          .yuan
+            font-size: $font-size-small
+      .content
+        margin-top: 24px
+        text-align: center
+        .text
+          line-height: 17px
+          font-size: $font-size-small
+          color: $color-text-d
+      .btn-wrapper
+        margin-top: 60px
+        padding: 0 20px
+        .btn
+          height: 40px
+          border-radius: 4px
+          line-height: 40px
+          text-align: center
+          font-size: $font-size-small
+          color: $color-white
+          background-color: $color-prize-bc
 </style>

@@ -11,14 +11,13 @@ export default class http {
     }
     const Authorization = wepy.getStorageSync('token')
     if (Authorization) {
-      param.header = Object.assign({}, {Authorization})
+      param.header = Object.assign({}, {Authorization}, {'X-Requested-With': 'XMLHttpRequest'})
     }
     param.header = Object.assign({}, param.header, {'Current-merchant': wepy.getStorageSync('merchantId') || 100000})
     if (loading) {
       Tips.loading()
     }
     const res = await wepy.request(param)
-    Tips.loaded()
     if (this.isSuccess(res)) {
       const result = res.data.data ? res.data.data : res.data
       return result

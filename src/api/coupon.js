@@ -6,9 +6,9 @@ export default class Coupon extends base {
    * @param merchantId 商家Id
    * @returns {Promise.<*>}
    */
-  static async getShopCouponList(merchantId) {
+  static async getShopCouponList(merchantId, data) {
     const url = `${this.baseUrl}/api/merchants/show-merchant/${merchantId}`
-    return await this.get(url)
+    return await this.get(url, data)
   }
 
   /**
@@ -62,6 +62,26 @@ export default class Coupon extends base {
    */
   static async cancelStoreCoupon(id) {
     const url = `${this.baseUrl}/api/favorite/promotion/${id}`
+    return await this.delete(url)
+  }
+
+  /**
+   * 收藏礼包
+   * @param id  礼包Id
+   * @returns {Promise.<*>}
+   */
+  static async storePackage(id) {
+    const url = `${this.baseUrl}/api/favorite/gift`
+    return await this.post(url, {gift_bag_id: id})
+  }
+
+  /**
+   * 取消收藏礼包
+   * @param id
+   * @returns {Promise.<*>}
+   */
+  static async cancelStorePackage(id) {
+    const url = `${this.baseUrl}/api/favorite/gift/${id}`
     return await this.delete(url)
   }
 }
