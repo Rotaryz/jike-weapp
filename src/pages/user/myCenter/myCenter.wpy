@@ -89,6 +89,7 @@
       await this.$getUserInfo()
       this.userInfo = this.$parent.globalData.user
       this.$apply()
+      this.loaded()
     }
 
     methods = {
@@ -121,6 +122,7 @@
         this._updateMsg(data)
         this.userInfo.birth = e.detail.value
         this.$parent.updateGlobalData('user', Object.assign({}, this.userInfo))
+        this.loaded()
         this.$apply()
       },
       async updateAvatarImg() {
