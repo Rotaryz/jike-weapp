@@ -1,6 +1,6 @@
 <template>
   <view class="liveALL">
-    <LiveVideo :isAuthorises.sync="isAuthorises"></LiveVideo>
+    <LiveVideo></LiveVideo>
     <PhoneTest></PhoneTest>
   </view>
 </template>
@@ -13,9 +13,6 @@
   import PhoneTest from '@/base/phoneTest/phoneTest'
   export default class Live extends wepy.page {
     mixins = [users, base]
-    data = {
-      isAuthorises: true
-    }
     config = {
       navigationBarTitleText: '直播优惠'
     }
@@ -30,20 +27,18 @@
 
     async load() {
       await this.$getUserInfo()
-      this.isAuthorises = false
       let isAuthorise = await this.isAuthorise()
       if (!isAuthorise) {
         this.$invoke('PhoneTest', 'bindPhone')
       } else {
-        this.isAuthorises = true
+        this.$com.LiveVideo.showMore()
       }
-      this.loaded()
       this.$apply()
+      this.loaded()
     }
 
     events = {
       'isPhoneOk': () => {
-        this.isAuthorises = true
         this.$com.LiveVideo.showMore()
       }
     }
