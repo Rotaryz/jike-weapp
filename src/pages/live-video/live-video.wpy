@@ -151,7 +151,6 @@
         if (this.showBk === index) {
           this.showBk = -1
           this.state = false
-          console.log('445')
         } else {
           this.showBk = index
           this.state = true
@@ -162,9 +161,11 @@
         this.title2 = this.conDes.title.slice(4)
         this.promotionId = id
         this.conDes.platform_price = (this.conDes.platform_price * 1).toFixed(0)
+        this.loaded()
         this.$apply()
       },
       async postOrder() {
+        let meId = await wepy.getStorageSync('merchantId')
         const data = {
           from: 'c_live',
           promotion_id: this.promotionId,
@@ -172,19 +173,21 @@
           price: 0.01,
           total: 0.01,
           count: 1,
+          promotion_type: 1,
           openId: wepy.getStorageSync('openId'),
-          activity_id: this.liveMsg.id
+          activity_id: this.liveMsg.id,
+          promotion_merchant_id: meId
         }
         const res = await Order.operation(data)
-        const {timestamp, nonceStr, signType, paySign} = res.payInfo
+        this.loaded()
+        const {timestamp, nonceStr, signType, paySign} = res.pay_info
         const pay = await wepy.requestPayment({
           timeStamp: timestamp,
           nonceStr,
-          package: res.payInfo.package,
+          package: res.pay_info.package,
           signType,
           paySign
         })
-
         if (pay.errMsg === 'requestPayment:ok') {
           this.showBk = -1
           this.state = false
@@ -202,10 +205,6 @@
       this.activityId = res.id
       this.loaded()
       this.$apply()
-    }
-
-    async onLoad() {
-//      this.showMore()
     }
   }
 </script>
