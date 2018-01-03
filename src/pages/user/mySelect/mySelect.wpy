@@ -114,10 +114,11 @@
     methods = {
       async changeTab(idx) {
         this.menuIdx = idx
+        this.contentList = []
+        this.kacList = []
+        this.couponList = []
         switch (this.menuIdx) {
           case 0:
-            this.contentList = []
-            this.kacList = []
             let resList = await this._getCouponList(1)
             this.page = 1
             this.nothingAdd = false
@@ -131,8 +132,6 @@
             this.$apply()
             break
           case 1:
-            this.couponList = []
-            this.kacList = []
             this.page = 1
             this.nothingAdd = false
             this.LowerLoading = false
@@ -145,9 +144,6 @@
             this.$apply()
             break
           case 2:
-            console.log('礼包收藏')
-            this.couponList = []
-            this.contentList = []
             this.page = 1
             this.nothingAdd = false
             this.LowerLoading = false

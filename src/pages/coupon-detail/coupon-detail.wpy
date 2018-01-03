@@ -163,10 +163,13 @@
 
     async _getSharePrize() {
       const res = await Shares.getSharePrize()
+      this.loaded()
+      if (res.length === 0) {
+        return
+      }
       this.sharePrice = res.price
       this.$invoke('share-modal', 'show')
       this.$apply()
-      this.loaded()
     }
 
     async _createQrcode() {

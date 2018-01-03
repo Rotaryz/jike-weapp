@@ -66,6 +66,7 @@
     methods = {
       async changeTab(idx) {
         this.menuIdx = idx
+        this.couponList = []
         let resList = await this._getCouponList(this.menuIdx, 1)
         if (this.menuIdx === 0) {
           this.backgroundUrl = './image/icon_couponBc.png'

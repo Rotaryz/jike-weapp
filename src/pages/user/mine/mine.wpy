@@ -126,6 +126,7 @@
 
     async _getUserInfo() {
       await this.$getUserInfo()
+      this.loaded()
       this.userInfo = this.$parent.globalData.user
       let customerId = wx.getStorageSync('customerId')
       if (customerId) {
