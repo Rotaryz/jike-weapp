@@ -137,7 +137,6 @@
             }
             let res = await getMyOrder.paymentOrder(data)
             this.loaded()
-            console.log(res)
             const {timestamp, nonceStr, signType, paySign} = res.pay_info
             const pay = await wepy.requestPayment({
               timeStamp: timestamp,
@@ -147,8 +146,7 @@
               paySign
             })
             if (pay.errMsg === 'requestPayment:ok') {
-              const orderId = res.order.orderId
-              console.log(orderId)
+              this.load(this.orderMsg.id)
             }
             break
           case 1:
@@ -202,7 +200,7 @@
           this.$apply()
           this.$navigate('../refund/refund?id=' + this.orderMsg.id)
         } else {
-          console.log('退款失败')
+          // 退款失败
         }
       },
       closeRefund() {

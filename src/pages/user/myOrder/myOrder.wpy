@@ -92,25 +92,21 @@
         this.loaded()
       },
       orderUpper() {
-        console.log('刷新')
       },
       async orderLower() {
         if (!this.LowerLoading && !this.nothingAdd) {
           this.LowerLoading = true
           this.page++
-          console.log(this.page)
           const res = await this._getOrderList(this.menuIdx, this.page)
           if (res.length === 0) {
             this.nothingAdd = true
-            console.log('已经到底')
           }
           this.orderList.push(...res)
           this.$apply()
           this.LowerLoading = false
           this.loaded()
-          console.log('加载完成')
         } else if (this.nothingAdd) {
-          console.log('已经没有可以加载的了')
+          // 到底
         }
       },
       showDetail(id, status) {
@@ -125,7 +121,6 @@
             }
             let res = await getMyOrder.paymentOrder(data)
             this.loaded()
-            console.log(res)
             const {timestamp, nonceStr, signType, paySign} = res.pay_info
             const pay = await wepy.requestPayment({
               timeStamp: timestamp,
@@ -146,7 +141,6 @@
             this.$broadcast('sendCouponMsg', orderId, couponId)
             break
           case 3:
-            console.log('再来一单')
             let couponType
             if (type * 1 === 1) {
               couponType = 1

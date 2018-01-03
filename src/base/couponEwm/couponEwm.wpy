@@ -56,14 +56,12 @@
 
     events = {
       sendCouponMsg(msg) {
-        console.log(msg)
         this.couponMsg = msg
         this.$apply()
       },
       async getCouponMsg(id) {
         let res = await getMyOrder.getOrderDetail(id)
         this.loaded()
-        console.log(res)
       }
     }
   }

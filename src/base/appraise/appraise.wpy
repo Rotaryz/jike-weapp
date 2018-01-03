@@ -127,16 +127,14 @@
           promotion_id: this.couponMsg.couponId,
           customer_orders_id: this.couponMsg.orderId
         }
-        console.log(data)
         let res = await getMyOrder.setAppraise(data)
         this.loaded()
-        console.log(res)
         if (res.status === 'success') {
           this.appraiseSuccess = true
           this.$emit('appraiseSuccess')
           this.$apply()
         } else {
-          console.log('评价失败')
+
         }
       }
     }
