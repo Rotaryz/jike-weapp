@@ -1,6 +1,6 @@
 <template>
   <view class="live-show">
-    <view class="live" wx:if="{{isAuthorises}}">
+    <view class="live" wx:if="{{show}}">
       <scroll-view class="live_conpon" scroll-y>
         <view class="con-item" wx:for="{{liveMsg.activity_promotion}}"
               wx:key="index"
@@ -117,7 +117,7 @@
       </video>
     </view>
     <Comment :comment.sync="comment" :activityId.sync="activityId"
-             wx:if="{{isAuthorises}}"></Comment>
+             wx:if="{{show}}"></Comment>
   </view>
 </template>
 
@@ -130,14 +130,8 @@
   import Order from 'api/order'
   export default class LiveVideo extends wepy.page {
     mixins = [users, base]
-    props = {
-      isAuthorises: {
-        type: Boolean,
-        default: false
-      }
-    }
-
     data = {
+      show: false,
       liveMsg: '',
       state: false,
       comment: '',
@@ -200,6 +194,7 @@
     }
 
     async showMore() {
+      this.show = true
       let res = await Live.getLiveMsg()
       let data = await Live.getComment(res.id)
       this.liveMsg = res
@@ -210,7 +205,7 @@
     }
 
     async onLoad() {
-      this.showMore()
+//      this.showMore()
     }
   }
 </script>
