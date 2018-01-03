@@ -48,11 +48,12 @@
   /* eslint-disable no-undef */
   import wepy from 'wepy'
   import users from 'common/mixins/users'
+  import base from 'common/mixins/base'
   import user from 'api/user'
   import PhoneTest from '@/base/phoneTest/phoneTest'
 
   export default class MyCenter extends wepy.page {
-    mixins = [users]
+    mixins = [users, base]
 
     config = {
       navigationBarTitleText: '我的',
@@ -105,6 +106,7 @@
         this._updateMsg(data)
         this.userInfo.sex = choiceValue
         this.$parent.updateGlobalData('user', Object.assign({}, this.userInfo))
+        this.loaded()
         this.$apply()
       },
       birthdayChange(e) {

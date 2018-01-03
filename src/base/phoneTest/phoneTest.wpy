@@ -42,10 +42,11 @@
   import wepy from 'wepy'
   import tips from '@/common/js/tips'
   import users from 'common/mixins/users'
+  import base from 'common/mixins/base'
   import user from 'api/user'
 
   export default class PhoneTest extends wepy.component {
-    mixins = [users]
+    mixins = [users, base]
     data = {
       phoneCodeTime: '获取验证码',
       phoneCodeDisabled: false,
