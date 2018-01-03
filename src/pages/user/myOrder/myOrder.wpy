@@ -106,7 +106,7 @@
           this.LowerLoading = false
           this.loaded()
         } else if (this.nothingAdd) {
-          //到底
+          // 到底
         }
       },
       showDetail(id, status) {

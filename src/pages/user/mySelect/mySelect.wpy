@@ -171,7 +171,7 @@
           this.$apply()
           this.loaded()
         } else if (this.nothingAdd) {
-          //到底
+          // 到底
         }
       },
       async contentLower() {
@@ -189,7 +189,7 @@
           this.$apply()
           this.loaded()
         } else if (this.nothingAdd) {
-          //到底
+          // 到底
         }
       },
       toRecommend() {
@@ -211,7 +211,7 @@
               this.contentList[index].selectStatus = 1
               this.contentList[index].content.favorite_count++
             } else {
-              //失败
+              // 失败
             }
             break
           case 1:
@@ -220,7 +220,7 @@
               this.contentList[index].selectStatus = 0
               this.contentList[index].content.favorite_count--
             } else {
-              //失败
+              // 失败
             }
             break
         }
