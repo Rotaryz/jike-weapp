@@ -83,6 +83,7 @@
     methods = {
       async tabChange(idx) {
         this.menuIdx = idx
+        this.orderList = []
         this.page = 1
         this.nothingAdd = false
         let resList = await this._getOrderList(idx, this.page)
@@ -134,8 +135,7 @@
               paySign
             })
             if (pay.errMsg === 'requestPayment:ok') {
-              const orderId = res.order.orderId
-              console.log(orderId)
+              this.load({idx: '0'})
             }
             break
           case 1:
