@@ -81,14 +81,14 @@
           this.$apply()
           this.loaded()
         } else if (this.nothingAdd) {
-          //到底
+          // 到底
         }
       },
       withDrawSub() {
         if (this.packetTotal.redpacker_count_monies > 0) {
           this.$navigate('/pages/user/withDraw/withDraw')
         } else {
-          //金额0
+          // 金额0
         }
       }
     }
