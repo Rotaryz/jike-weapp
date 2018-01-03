@@ -145,7 +145,7 @@
 
     methods = {
       userLogin() {
-        console.log('重新授权')
+
       },
       navToMsgPage(url) {
         if (this.isPhone === 1) {
@@ -155,7 +155,7 @@
         }
       },
       submit(e) {
-        console.log(e)
+
       }
     }
 
