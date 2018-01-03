@@ -196,21 +196,21 @@
           this.state = false
           this.$apply()
         }
-      },
-      async showMore() {
-        let res = await Live.getLiveMsg()
-        let data = await Live.getComment(res.id)
-        this.liveMsg = res
-        this.comment = data
-        this.activityId = res.id
-        this.$apply()
       }
     }
 
+    async showMore() {
+      let res = await Live.getLiveMsg()
+      let data = await Live.getComment(res.id)
+      this.liveMsg = res
+      this.comment = data
+      this.activityId = res.id
+      this.loaded()
+      this.$apply()
+    }
+
     async onLoad() {
-      if (this.isAuthorises) {
-        this.methods.showMore()
-      }
+      this.showMore()
     }
   }
 </script>

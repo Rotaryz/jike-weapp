@@ -31,20 +31,20 @@
     async load() {
       await this.$getUserInfo()
       this.isAuthorises = false
-      this.loaded()
       let isAuthorise = await this.isAuthorise()
       if (!isAuthorise) {
         this.$invoke('PhoneTest', 'bindPhone')
       } else {
         this.isAuthorises = true
       }
+      this.loaded()
       this.$apply()
     }
 
     events = {
       'isPhoneOk': () => {
         this.isAuthorises = true
-        this.$com.LiveVideo.methods.showMore()
+        this.$com.LiveVideo.showMore()
       }
     }
   }
