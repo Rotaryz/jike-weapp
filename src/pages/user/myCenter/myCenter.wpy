@@ -78,7 +78,6 @@
 
     onLoad() {
       this.userInfo = this.$parent.globalData.user
-      console.log(this.userInfo)
     }
 
     async _updateMsg(data) {
@@ -127,7 +126,6 @@
       },
       async updateAvatarImg() {
         const res = await user.updateAvatar('image_id')
-        console.log(res)
         this.userInfo.avatarUrl = res.data
         this.$parent.updateGlobalData('user', Object.assign({}, this.userInfo))
         this.$apply()

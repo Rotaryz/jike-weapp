@@ -83,20 +83,16 @@
         if (!this.LowerLoading && !this.nothingAdd) {
           this.LowerLoading = true
           this.page++
-          console.log(this.page)
           let res = await this._getCouponList(this.menuIdx, this.page)
           if (res.length === 0) {
             this.nothingAdd = true
-            console.log('已经到底')
           }
           let resArr = this._computed(res)
           this.couponList.push(...resArr)
           this.LowerLoading = false
           this.$apply()
           this.loaded()
-          console.log('加载完成')
         } else if (this.nothingAdd) {
-          console.log('已经没有可以加载的了')
         }
       },
       useCoupon(msg) {
