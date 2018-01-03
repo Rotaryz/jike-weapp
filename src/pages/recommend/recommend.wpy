@@ -134,7 +134,7 @@
 
     async _getShopCouponList() {
       const data = await CouponApi.getShopCouponList(this.merchantId)
-      this.couponList = data.promotions.data
+      this.couponList = data.promotions
       this.giftBags = data.gift_bags
       this.activities = data.activities || {}
       this.shopImages = data.merchant_data.shop_image

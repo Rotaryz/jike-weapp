@@ -15,9 +15,9 @@
     onLoad(option) {
       this.type = option.type
       if (this.type === 'wheel') {
-        this.webviewUrl = `http://zf.boseca.cn/jike/index.html?token=${this.token}&merchantId=${this.merchantId}#/wheel`
+        this.webviewUrl = `https://zf.boseca.cn/jike/index.html?token=${this.token}&merchantId=${this.merchantId}#/wheel`
       } else if (this.type === 'sign') {
-        this.webviewUrl = `http://zf.boseca.cn/jike/index.html?token=${this.token}&merchantId=${this.merchantId}#/registration`
+        this.webviewUrl = `https://zf.boseca.cn/jike/index.html?token=${this.token}&merchantId=${this.merchantId}#/registration`
       }
     }
   }
