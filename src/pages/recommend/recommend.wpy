@@ -110,13 +110,15 @@
       activeTab: COUPON_TAB,
       contents: [],
       couponPage: 1,
-      contentPage: 1
+      contentPage: 0,
+      moreCoupon: true,
+      moreContent: true
     }
 
     onReachBottom() {
-      if (this.activeTab === COUPON_TAB) {
+      if (this.activeTab === COUPON_TAB && this.moreCoupon) {
         this._getCouponList()
-      } else if (this.activeTab === DISCOVER_TAB) {
+      } else if (this.activeTab === DISCOVER_TAB && this.moreContent) {
         this._getMerchantContents()
       }
     }
@@ -141,14 +143,25 @@
     }
 
     async _getCouponList() {
+      this.couponPage += 1
       const res = await CouponApi.getShopCouponList(this.merchantId, {page: this.couponPage})
-      console.log(res)
+      if (res.promotions.length === 0) {
+        this.moreCoupon = false
+      } else {
+        this.couponList = [...this.couponList, ...res.promotions]
+      }
+      this.$apply()
       this.loaded()
     }
 
     async _getMerchantContents() {
+      this.contentPage += 1
       const data = await ContentsApi.getMerchantContents({page: this.contentPage})
-      this.contents = data
+      if (data.length === 0) {
+        this.moreContent = false
+      } else {
+        this.contents = [...this.contents, ...data]
+      }
       this.$apply()
       this.loaded()
     }
