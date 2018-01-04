@@ -193,6 +193,7 @@
         this.nothingAdd = false
         let resList = await this._getOrderList(2, 1)
         this.orderList = resList
+        this.loaded()
         this.$apply()
       }
     }
