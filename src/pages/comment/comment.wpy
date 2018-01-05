@@ -9,7 +9,8 @@
         </view>
       </repeat>
     </scroll-view>
-
+    <image class="btn_com btn_com-fi" src="../live/icon-share-zhib.png"
+           @tap="shares"/>
     <image class="btn_com" src="../live/icon- info.png" wx:if="{{!showCom}}"
            @tap="showInput"/>
     <view class="inp_cpm" wx:if="{{showCom}}">
@@ -19,7 +20,8 @@
         <image src="../live/icon-sendout.png"></image>
       </view>
     </view>
-
+    <Share :qrcode.sync="qrcode"
+           :promotionImages.sync="promotionImages"></Share>
   </view>
 </template>
 
@@ -28,23 +30,32 @@
   import Live from 'api/live'
   import base from 'common/mixins/base'
   import users from 'common/mixins/users'
-
+  import Share from '@/base/share/share'
   export default class Comment extends wepy.page {
     mixins = [users, base]
+    components = {
+      Share: Share
+    }
     props = {
       comment: {
         type: Array,
         default: []
       },
       activityId: {
-        typr: Number,
+        type: Number,
         default: 0
+      },
+      videoImages: {
+        type: String,
+        default: ''
       }
     }
     data = {
       showCom: false,
       content: '',
-      ifHide: 0
+      ifHide: 0,
+      qrcode: '',
+      promotionImages: ''
     }
     methods = {
       showInput() {
@@ -81,6 +92,10 @@
           })
         }
         this.loaded()
+      },
+      shares() {
+        this.$invoke('Share', 'show', 'live')
+        this.promotionImages = this.videoImages
       }
     }
   }
@@ -117,6 +132,8 @@
       height: 32px
       bottom: 16.5px
       right: $padding-all
+    .btn_com-fi
+      bottom: 60px
     .inp_cpm
       height: 32px
       padding: 5px $padding-all

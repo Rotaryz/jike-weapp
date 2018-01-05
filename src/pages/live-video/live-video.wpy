@@ -5,9 +5,9 @@
         <view class="con-item" wx:for="{{liveMsg.activity_promotion}}"
               wx:key="index"
               @tap="conponDetail({{item.promotion_id}},{{index}})">
-          <image class="con_bk" src="./pic-play_couponbg.png"
+          <image class="con_bk" src="./pic-r_couponbg1@2x.png"
                  wx:if="{{showBk !== index}}"></image>
-          <image class="con_bk" src="./pic-play_couponbg1.png"
+          <image class="con_bk" src="./pic-r_couponbg2@2x.png"
                  wx:if="{{showBk === index}}"></image>
           <view class="con-title">
             <view></view>
@@ -23,16 +23,17 @@
                     animation="{{animation}}">
           <!--优惠券-->
           <cover-view class="conpon-derail">
-            <cover-view class="con-item">
-              <cover-image class="con_bk"
-                           src="./pic-play_couponbg1.png"></cover-image>
-              <cover-view class="con-title">
-                <cover-view>{{title1}}</cover-view>
-                <cover-view>{{title2}}</cover-view>
-                <cover-view class="monlogo">{{conDes.platform_price}}
-                </cover-view>
-              </cover-view>
+            <cover-view class="close" @tap="hideDetail">
+              <cover-image src="./icon-close_black@2x.png"></cover-image>
             </cover-view>
+            <!--<cover-view class="con-item">-->
+            <!--<cover-view class="con-title">-->
+            <!--<cover-view>{{title1}}</cover-view>-->
+            <!--<cover-view>{{title2}}</cover-view>-->
+            <!--<cover-view class="monlogo">{{conDes.platform_price}}-->
+            <!--</cover-view>-->
+            <!--</cover-view>-->
+            <!--</cover-view>-->
 
             <cover-view class="con-msg">
               <cover-view class="con-header">{{conDes.title}}</cover-view>
@@ -53,12 +54,12 @@
           <!--服务详情-->
           <cover-view class="service-detail">
             <cover-view class="header" @tap="test">服务详情
-              <cover-view class="line"></cover-view>
+              <cover-view class="lines"></cover-view>
             </cover-view>
             <cover-view class="detail-wrapper">
               <cover-view class="item-wrapper" wx:for="{{conDes.detail}}"
                           wx:key="index">
-                <cover-view class="line"></cover-view>
+                <cover-view class="lines"></cover-view>
                 <cover-view class="content left">
                   <cover-view class="circle"></cover-view>
                   <cover-view class="font">{{item.servie}}</cover-view>
@@ -71,7 +72,7 @@
           <!--购买详情-->
           <cover-view class="know-detail">
             <cover-view class="header">购买须知
-              <cover-view class="line"></cover-view>
+              <cover-view class="lines"></cover-view>
             </cover-view>
 
             <cover-view class="detail-wrapper">
@@ -116,7 +117,8 @@
         </cover-view>
       </video>
     </view>
-    <Comment :comment.sync="comment" :activityId.sync="activityId"
+    <Comment :comment.sync="comment" :videoImages.sync="videoImages"
+             :activityId.sync="activityId"
              wx:if="{{show}}"></Comment>
   </view>
 </template>
@@ -141,20 +143,16 @@
       title1: '',
       title2: '',
       promotionId: 0,
-      animation: null
+      animation: null,
+      videoImages: ''
     }
     components = {
       Comment: Comment
     }
     methods = {
       async conponDetail(id, index) {
-        if (this.showBk === index) {
-          this.showBk = -1
-          this.state = false
-        } else {
-          this.showBk = index
-          this.state = true
-        }
+        this.showBk = index
+        this.state = true
         let res = await Live.getConpon(id)
         this.conDes = res
         this.title1 = this.conDes.title.slice(0, 4)
@@ -162,6 +160,11 @@
         this.promotionId = id
         this.conDes.platform_price = (this.conDes.platform_price * 1).toFixed(0)
         this.loaded()
+        this.$apply()
+      },
+      hideDetail() {
+        this.state = false
+        this.showBk = -1
         this.$apply()
       },
       async postOrder() {
@@ -202,6 +205,7 @@
       let data = await Live.getComment(res.id)
       this.liveMsg = res
       this.comment = data
+      this.videoImages = this.liveMsg.image_url
       this.activityId = res.id
       this.loaded()
       this.$apply()
@@ -240,7 +244,7 @@
         top: 0
         background: $color-master-gray
         .money
-          height: 40px
+          height: 10.6vw
           background: #fff
           position: relative
           display: flex
@@ -274,12 +278,25 @@
             text-align right
         .conpon-derail
           display: flex
-          height: 84px
+          height: 22.4vw
           align-items: center
           padding: 0 10px
           font-size: $font-size-small-s
+          position: relative
+          .close
+            z-index: 2000
+            position: absolute
+            width: 10vw
+            height: 10vw
+            top: 0
+            right: 0
+            cover-image
+              height: 2.7vw
+              width: 2.7vw
+              position: absolute
+              right: 12px
+              top: 12px
           .con-item
-
             position: relative
             margin: 0
             .con-title
@@ -310,8 +327,8 @@
               line-height: $font-size-large-m
 
         .btn-buy
-          height: 40px
-          line-height: 40px
+          height: 10.6vw
+          line-height: 10.6vw
           width: 100%
           text-align: center
           background: $color-orange
@@ -361,8 +378,8 @@
     padding-left: 12px
     background-color: $color-white
     .header
-      height: 39px
-      line-height: 39px
+      height: 10vw
+      line-height: 10vw
       font-size: $font-size-medium
       color: $color-text-l
       position: relative
@@ -398,7 +415,7 @@
           &.right
             text-align: right
 
-  .line
+  .lines
     position: absolute
     height: 1px
     width: 100%
@@ -410,8 +427,8 @@
     padding-bottom: 10px
     background-color: $color-white
     .header
-      height: 39px
-      line-height: 39px
+      height: 10vw
+      line-height: 10vw
       font-size: $font-size-medium
       color: $color-text-l
       position: relative
