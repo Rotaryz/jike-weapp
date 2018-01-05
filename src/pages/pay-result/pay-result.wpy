@@ -49,7 +49,7 @@
     async _getCouponList() {
       const merchantId = wepy.getStorageSync('merchantId')
       const res = await CouponApi.getShopCouponList(merchantId)
-      let list = res.promotions.data
+      let list = res.promotions
       if (list.length < 5) {
         this.coupons = list
       } else {

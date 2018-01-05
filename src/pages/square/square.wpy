@@ -1,15 +1,271 @@
 <template>
-  <map id="map" longitude="113.324520" latitude="23.099994" scale="14" controls="{{controls}}" bindcontroltap="controltap" markers="{{markers}}" bindmarkertap="markertap" polyline="{{polyline}}" bindregionchange="regionchange" show-location>
+  <map id="map"
+       longitude="{{longitude}}"
+       latitude="{{latitude}}"
+       controls="{{controls}}"
+       bindcontroltap="controltap"
+       markers="{{markers}}"
+       bindmarkertap="markertap"
+       polyline="{{polyline}}"
+       bindregionchange="regionchange">
+    <cover-view class="shop-modal {{showSlide ? 'show' : ''}}">
+      <cover-view class="modal">
+        <cover-view class="location">
+          <cover-image src="http://jike-file.jerryf.cn/defaults/c-image/square/icon-s_location@2x.png"
+                       mode="scaleToFill" class="icon-location"></cover-image>
+          <cover-view>广东省广州市白云区黄石街道国际单位A3白云科</cover-view>
+        </cover-view>
+        <cover-view class="shop">
+          <cover-view class="top">
+            <cover-view class="desc">
+              <cover-view class="title">国颐堂(白云店)</cover-view>
+              <cover-view class="subhead">养发护发品牌</cover-view>
+            </cover-view>
+            <cover-view class="logo">
+              <cover-image src="http://jike-file.jerryf.cn/defaults/c-image/square/pic-s_shopbg@2x.png"
+                           class="image"></cover-image>
+            </cover-view>
+            <cover-view class="comment">
+              <cover-view class="comment-content">
+                <cover-view class="stars">
+                  <cover-image src="http://jike-file.jerryf.cn/defaults/c-image/square/icon-s_evaluate@2x.png"
+                               class="icon-star"></cover-image>
+                  <cover-image src="http://jike-file.jerryf.cn/defaults/c-image/square/icon-s_evaluate@2x.png"
+                               class="icon-star"></cover-image>
+                  <cover-view>3.8</cover-view>
+                </cover-view>
+                <cover-view class="store">1000人已收藏</cover-view>
+              </cover-view>
+            </cover-view>
+          </cover-view>
+          <cover-view class="bottom">
+            <cover-image class="line"
+                         src="http://jike-file.jerryf.cn/defaults/c-image/square/pic-s_line@2x.png"></cover-image>
+            <cover-view class="item">
+              <cover-image src="http://jike-file.jerryf.cn/defaults/c-image/square/icon-s_distance@2x.png"
+                           class="icon"></cover-image>
+              <cover-view>距离1000米</cover-view>
+            </cover-view>
+            <cover-view class="item">
+              <cover-image src="http://jike-file.jerryf.cn/defaults/c-image/square/icon-s_swalk@2x.png"
+                           class="icon"></cover-image>
+              <cover-view>步行10分钟</cover-view>
+            </cover-view>
+            <cover-view class="item">
+              <cover-image src="http://jike-file.jerryf.cn/defaults/c-image/square/icon-s_navigation@2x.png"
+                           class="icon"></cover-image>
+              <cover-view>开始导航</cover-view>
+            </cover-view>
+            <cover-view class="item">
+              <cover-image src="http://jike-file.jerryf.cn/defaults/c-image/square/icon-s_tel@2x.png"
+                           class="icon"></cover-image>
+              <cover-view>打电话</cover-view>
+            </cover-view>
+          </cover-view>
+        </cover-view>
+        <cover-view class="promotions">
+          <cover-view class="arrow-wrapper">
+            <cover-image class="icon"
+                         src="http://jike-file.jerryf.cn/defaults/c-image/square/icon-s_left1@2x.png"></cover-image>
+          </cover-view>
+          <cover-view class="coupon-wrapper">
+            <cover-view class="coupon" style="width: 100%" wx:for="{{promotions}}" wx:key="{{index}}">
+              <cover-image class="coupon-bg"
+                           src="http://jike-file.jerryf.cn/defaults/c-image/square/pic-coupon_single@2x.png"></cover-image>
+              <cover-view class="coupon-content">
+                <cover-view class="price">
+                  <cover-view class="rmb">¥</cover-view>
+                  <cover-view class="number">{{item.shop_price}}</cover-view>
+                </cover-view>
+                <cover-view class="desc">
+                  <cover-view class="name">{{item.title}}</cover-view>
+                  <cover-view class="border-bottom-1px"></cover-view>
+                  <cover-view class="sub-title">{{item.subhead}}</cover-view>
+                  <cover-view class="valid">有效期:至2018.01.01</cover-view>
+                </cover-view>
+                <cover-view class="btn-wrapper">
+                  <cover-view class="btn border-bottom-1px">立即购买</cover-view>
+                </cover-view>
+              </cover-view>
+            </cover-view>
+          </cover-view>
+          <cover-view class="arrow-wrapper">
+            <cover-image class="icon"
+                         src="http://jike-file.jerryf.cn/defaults/c-image/square/icon-s_right1@2x.png"></cover-image>
+          </cover-view>
+        </cover-view>
+      </cover-view>
+    </cover-view>
   </map>
 </template>
 <script>
   import wepy from 'wepy'
   import users from 'common/mixins/users'
+  import base from 'common/mixins/base'
+  import Merchants from 'api/merchants'
 
   export default class Square extends wepy.page {
-    mixins = [users];
-    config = {
-      navigationBarTitleText: '广场'
+    mixins = [users, base]
+
+    data = {
+      firstUpdate: false,
+      map: false,
+      showSlide: false,
+      location: {},
+      longitude: '',
+      latitude: '',
+      moveLongitude: '',
+      moveLatitude: '',
+      merchants: [],
+      markers: [],
+      polyline: [],
+      controls: [],
+      promotions: []
+    }
+
+    async onLoad() {
+      await this.load()
+      this.loaded()
+    }
+
+    async load() {
+      await this.isAuthorise()
+      await this._newMapContext()
+      await this._setLoaction()
+      await this._setControls()
+      await this._getPlazaMerchants()
+      await this._translateMarkers()
+    }
+
+    async _newMapContext() {
+      this.mapContext = wepy.createMapContext('map')
+    }
+
+    async _setLoaction() {
+      const res = await wepy.getLocation()
+      this.location = {
+        latitude: res.latitude,
+        longitude: res.longitude
+      }
+      const location = [{
+        id: 0,
+        iconPath: './icon-s_sister@2x.png',
+        latitude: res.latitude,
+        longitude: res.longitude,
+        width: 18,
+        height: 27
+      }]
+      this.markers = [...this.markers, ...location]
+      this.$apply()
+    }
+
+    async _setControls() {
+      const res = await wepy.getSystemInfo()
+      let width = res.windowWidth
+      let height = res.windowHeight
+      this.controls.push({
+        id: 1,
+        iconPath: './icon-s_return@2x.png',
+        clickable: true,
+        position: {
+          width: 36,
+          height: 36,
+          left: width - 49,
+          top: height - 103
+        }
+      })
+    }
+
+    async _getPlazaMerchants() {
+      const res = await Merchants.getPlazaMerchants()
+      this.merchants = res
+      res.forEach((item) => {
+        if (item.current_merchant) {
+          this.longitude = item.longitude
+          this.latitude = item.latitude + 0.009
+          this.$apply()
+        }
+      })
+      const markers = res.map((item) => {
+        return {
+          iconPath: './icon-s_baby@2x.png',
+          id: item.id,
+          latitude: item.latitude,
+          longitude: item.longitude,
+          width: res.length === 1 ? 42 : 32,
+          height: res.length === 1 ? 44 : 34,
+          hasActivity: item.has_activity
+        }
+      })
+      this.markers = [...this.markers, ...markers]
+      if (markers.length === 1) {
+        this._setPolyline(markers[0].id)
+        await this._getMerchantDetail(res[0].merchant_id)
+        this.showSlide = true
+      }
+      this.$apply()
+    }
+
+    _setPolyline(id) {
+      const location = this.markers.find((item) => item.id === 0)
+      const target = this.markers.find((item) => item.id === id)
+      this.polyline = [{
+        points: [
+          {
+            latitude: location.latitude,
+            longitude: location.longitude
+          }, {
+            latitude: target.latitude,
+            longitude: target.longitude
+          }
+        ],
+        color: '#706B82AA',
+        width: 2,
+        dottedLine: true
+      }]
+      this.$apply()
+    }
+
+    async _translateMarkers() {
+      this.markers.forEach((item) => {
+        console.log(item)
+      })
+    }
+
+    async _getMerchantDetail(id) {
+      const res = await Merchants.getMerchantsDetail(id)
+      this.promotions = res.promotions
+      this.$apply()
+    }
+
+    methods = {
+      async regionchange(e) {
+        this.mapContext.getCenterLocation({
+          success: (res) => {
+            this.moveLongitude = res.longitude
+            this.moveLatitude = res.latitude
+            if (this.moveLongitude !== this.longitude || this.moveLatitude !== this.latitude) {
+//              this.showSlide = false
+            }
+            this.$apply()
+          }
+        })
+      },
+      controltap(e) {
+        if (e.controlId === 1) {
+          this.latitude = this.moveLatitude
+          this.longitude = this.moveLongitude
+          setTimeout(() => {
+            this.latitude = this.location.latitude
+            this.longitude = this.location.longitude
+            this.$apply()
+          }, 20)
+        }
+      },
+      markertap(e) {
+        console.log(e)
+        this.showSlide = true
+      }
     }
 
     // 分享
@@ -21,30 +277,196 @@
       }
     }
 
-    // 生成新数组
-    buildArr() {
-
-    }
-
-    onLoad() {
+    config = {
+      navigationBarTitleText: '广场'
     }
   }
 
 </script>
 <style lang="stylus">
-  page
-    height: 100%
-    overflow: hidden
+  @import "../../common/stylus/variable.styl"
+  @import "../../common/stylus/mixin.styl"
 
   #map
-    @extend page
     width: 100%
-    .slide-modal
-      position: absolute
-      top: 20px
+    height: 100vh
+    .shop-modal
+      position: fixed
+      top: 0
       left: 0
-      width: 80%
-      height: 100px
-      background-color: #ffffff
-
+      width: 100%
+      padding: 0 10px
+      padding-top: 4.75px
+      box-sizing: border-box
+      transition: all .5s
+      opacity: 0
+      transform: translate3d(0, -100%, 0)
+      &.show
+        transform: translate3d(0, 0, 0)
+        opacity: 1
+      .modal
+        position: relative
+        width: 100%
+        height: 100%
+        border-radius: 4px
+        background-color: $color-white
+        border-1px($color-col-line, 4px)
+        .location
+          display: flex
+          align-items: center
+          height: 30px
+          padding-left: 10px
+          font-size: $font-size-small
+          color: $color-text
+          background: $color-background
+          .icon-location
+            display: flex
+            width: 10px
+            height: 10px
+            margin-right: 3px
+        .shop
+          .top
+            display: flex
+            height: 69.75px
+            .desc
+              flex: 1
+              display: flex
+              flex-direction: column
+              justify-content: center
+              padding-left: 10px
+              color: $color-text
+              .title
+                margin-bottom: 2.5px
+                font-size: $font-size-medium-x
+              .subhead
+                font-size: $font-size-small-s
+            .logo
+              flex: 0 0 70px
+              display: flex
+              align-items: center
+              justify-content: center
+              .image
+                display: flex
+                width: 64px
+                height: 52px
+            .comment
+              flex: .8
+              display: flex
+              flex-direction: column
+              justify-content: center
+              align-items: center
+              .comment-content
+                .stars
+                  display: flex
+                  align-items: center
+                  font-size: $font-size-small-s
+                  .icon-star
+                    display: flex
+                    margin-right: 1.5px
+                    width: 10px
+                    height: 10px
+                .store
+                  margin-top: 8px
+                  font-size: $font-size-small-s
+                  color: $color-text
+          .bottom
+            position: relative
+            display: flex
+            height: 38.25px
+            .line
+              position: absolute
+              top: 0
+              left: 0
+              width: 100%
+              height: 100%
+            .item
+              flex: 1
+              display: flex
+              align-items: center
+              justify-content: center
+              font-size: $font-size-small-s
+              .icon
+                display: flex
+                width: 10px
+                height: 10px
+                margin-right: 1px
+        .promotions
+          display: flex
+          height: 110.5px
+          padding: 10px 0
+          box-sizing: border-box
+          .arrow-wrapper
+            flex: 0 0 20px
+            display: flex
+            align-items: center
+            justify-content: center
+            width: 20px
+            .icon
+              display: flex
+              width: 9.5px
+              height: 10px
+          .coupon-wrapper
+            position: relative
+            flex: 1
+            .coupon
+              flex: 1
+              width: 100%
+              height: 100%
+              .coupon-bg
+                position: absolute
+                top: 0
+                left: 0
+                display: flex
+                width: 100%
+                height: 100%
+              .coupon-content
+                position: absolute
+                top: 0
+                left: 0
+                width: 100%
+                height: 100%
+                display: flex
+                .price
+                  flex: 0 0 88.1px
+                  width: 88.1px
+                  display: flex
+                  align-items: center
+                  justify-content: center
+                  color: $color-orange
+                  .rmb
+                    display: flex
+                    height: 20px
+                    align-items: flex-end
+                    font-size: $font-size-small-s
+                  .number
+                    font-size: 25px
+                .desc
+                  flex: 1
+                  .name
+                    margin-top: 12.35px
+                    margin-bottom: 5.5px
+                    font-size: $font-size-medium
+                  .border-bottom-1px
+                    width: 85.63535911%
+                    height: 1px
+                  .sub-title
+                    margin-top: 9.65px
+                    font-size: $font-size-small-s
+                  .valid
+                    margin-top: .45px
+                    font-size: $font-size-small-s
+                .btn-wrapper
+                  flex: 0 0 25.5873015%
+                  display: flex
+                  align-items: center
+                  justify-content: center
+                  .btn
+                    width: 53px
+                    height: 23.5px
+                    border-radius: 2px
+                    border-1px($color-orange)
+                    font-size: $font-size-small
+                    color: $color-orange
+                    text-align: center
+                    line-height: 23.5px
 </style>

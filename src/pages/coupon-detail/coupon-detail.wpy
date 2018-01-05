@@ -215,6 +215,19 @@
       this.$apply()
     }
 
+    submit() {
+      const orderInfo = {
+        promotionImage: this.promotionImages[0].image.url,
+        promotion_type: this.type,
+        promotion_id: this.coupon.id,
+        promotion_merchant_id: this.promotionMerchantId,
+        title: this.coupon.title,
+        price: this.coupon.platform_price
+      }
+      this.$parent.updateGlobalData('orderInfo', orderInfo)
+      this.$navigate('/pages/post-order/post-order')
+    }
+
     methods = {
       showShareModal() {
         this.$invoke('share', 'show')
@@ -243,27 +256,21 @@
         this.loaded()
       },
       async getSymbol() {
+        console.log(1)
         const isAuthorise = await this.isAuthorise()
+        this.loaded()
         if (isAuthorise) {
-          this.postOrder()
+          await this.submit()
         }
       },
       async postOrder() {
         const isAuthorise = await this.isAuthorise()
+        this.loaded()
         if (!isAuthorise) {
           this.$invoke('phone-test', 'show')
           return
         }
-        const orderInfo = {
-          promotionImage: this.promotionImages[0].image.url,
-          promotion_type: this.type,
-          promotion_id: this.coupon.id,
-          promotion_merchant_id: this.promotionMerchantId,
-          title: this.coupon.title,
-          price: this.coupon.platform_price
-        }
-        this.$parent.updateGlobalData('orderInfo', orderInfo)
-        this.$navigate('/pages/post-order/post-order')
+        this.submit()
       }
     }
 

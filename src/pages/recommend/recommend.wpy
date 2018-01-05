@@ -75,7 +75,7 @@
         </view>
       </view>
     </view>
-    <PhoneTest @isPhoneOk.user="getSymbol"></PhoneTest>
+    <phone-test @isPhoneOk.user="getSymbol"></phone-test>
     <toast></toast>
   </view>
 </template>
@@ -87,6 +87,7 @@
   import Slider from '@/base/slider/slider'
   import Coupon from '@/base/coupon/coupon'
   import Toast from '@/base/toast/toast'
+  import PhoneTest from '@/base/phoneTest/phoneTest'
   import CouponApi from 'api/coupon'
   import ContentsApi from 'api/contents'
 
@@ -173,17 +174,16 @@
         this.$apply()
       },
       async goToActivity(type, url) {
-//        if (this.activities[type]) {
-
-        const isAuthorise = this.$parent.globalData.isAuthorise
-        if (!isAuthorise) {
-          this.$invoke('phone-test', 'show')
-          return
+        if (this.activities[type]) {
+          const isAuthorise = this.$parent.globalData.isAuthorise
+          if (!isAuthorise) {
+            this.$invoke('phone-test', 'show')
+            return
+          }
+          this.$navigate(url)
+        } else {
+          this.$invoke('toast', 'show', '暂未开放')
         }
-        this.$navigate(url)
-//        } else {
-//          this.$invoke('toast', 'show', '暂未开放')
-//        }
       },
       async clickTab(index) {
         this.activeTab = index
@@ -205,7 +205,8 @@
       Slider,
       package: Coupon,
       coupon: Coupon,
-      toast: Toast
+      toast: Toast,
+      'phone-test': PhoneTest
     }
 
     config = {

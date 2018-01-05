@@ -60,7 +60,7 @@
         this.$apply()
       },
       async getCouponMsg(id) {
-        let res = await getMyOrder.getOrderDetail(id)
+        await getMyOrder.getOrderDetail(id)
         this.loaded()
       }
     }
