@@ -134,7 +134,7 @@
             }
             break
           case 1:
-            this.$navigate('/pages/coupon-use/couponUse?id=' + orderId)
+            this.$navigate('/pages/coupon-use/couponUse?id=' + orderId + '&type=order')
             break
           case 2:
             this.$invoke('Appraise', 'showCover')
@@ -168,7 +168,7 @@
         this.menuIdx = 1
       }
       let resList = await this._getOrderList(this.menuIdx, 1)
-      this.orderList.push(...resList)
+      this.orderList = resList
       let customerId = wx.getStorageSync('customerId')
       if (customerId) {
         this.isPhone = 1

@@ -1,0 +1,69 @@
+<template>
+  <view class="error-Msg">
+    <image src="./image/pic-network@2x.png" class="error-img"></image>
+    <view class="error-txt">网络好像不太给力，请稍后再试哦！</view>
+    <view class="error-btn">重新加载</view>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import users from 'common/mixins/users'
+
+  export default class Mine extends wepy.page {
+    mixins = [users]
+
+    config = {
+      navigationBarTitleText: '网络异常'
+    }
+
+    data = {
+
+    }
+
+    onLoad() {
+
+    }
+  }
+</script>
+
+<style lang="stylus">
+  @import "../../common/stylus/variable"
+
+  page
+    width: 100vw
+    height: 100vh
+    background: $color-white
+    position: relative
+
+    .error-Msg
+      position: absolute
+      left: 50%
+      top: 35%
+      transform: translate(-50%, -50%)
+      width: 100%
+      display: flex
+      flex-direction: column
+      align-items: center
+
+      .error-img
+        width: 150px
+        height: 150px
+
+      .error-txt
+        font-size: $font-size-small
+        margin-top: 30px
+
+      .error-btn
+        width: 118px
+        height: 27px
+        border: 1px solid $color-orange
+        border-radius: 2px
+        display: flex
+        align-items: center
+        justify-content: center
+        font-size: $font-size-medium
+        color: $color-text-t
+        margin-top: 11px
+
+</style>

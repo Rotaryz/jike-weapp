@@ -36,6 +36,16 @@ export default class Coupon extends base {
   }
 
   /**
+   * 获取用户优惠券详情
+   * @param id 优惠券id
+   * @returns {Promise.<*>}
+   */
+  static async getUserCouponDetail(id) {
+    const url = `${this.baseUrl}/api/coupons/promotions/${id}`
+    return await this.get(url)
+  }
+
+  /**
    * 获取商家礼包详情
    * @param packageId 礼包id
    * @returns {Promise.<*>}

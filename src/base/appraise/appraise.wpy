@@ -22,7 +22,7 @@
                 <checkbox value="{{item.value}}" checked="{{item.checked}}" hidden="true" />{{item.txt}}
               </label>
             </view>
-            <input type="text" class="appraise-Msg-input" placeholder="其他想说的" placeholder-class="appraise-Msg-input-holder" bindinput="appraiseMsginput" />
+            <input type="text" max-length="200" class="appraise-Msg-input" placeholder="其他想说的" placeholder-class="appraise-Msg-input-holder" bindinput="appraiseMsginput" />
           </view>
         </checkbox-group>
         <view class="appraise-submitBtn {{btnDisabled?'disabled':''}}" @tap="appraiseSubmit">匿名提交</view>
@@ -121,7 +121,7 @@
           return
         }
         let data = {
-          star_level: this.starCount,
+          star_level: this.starCount * 1 + 1,
           detail: this.appraise,
           impression: this.appraiseChecked,
           promotion_id: this.couponMsg.couponId,

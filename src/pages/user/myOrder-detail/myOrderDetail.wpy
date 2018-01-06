@@ -193,10 +193,10 @@
       async refundSubmit() {
         let cause = this.refundCause[this.refundChecked].txt
         const res = await getMyOrder.orderRebate(this.orderMsg.id, this.orderMsg.count, this.orderMsg.total, cause)
-        this.loaded()
         if (res.status === 'success') {
           this.refundIng = false
           this.orderMsg = await getMyOrder.getOrderDetail(this.orderMsg.id)
+          this.loaded()
           this.$apply()
           this.$navigate('../refund/refund?id=' + this.orderMsg.id)
         } else {
