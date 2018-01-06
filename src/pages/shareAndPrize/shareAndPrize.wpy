@@ -8,7 +8,7 @@
         </view>
         <view class="share-main-head-right">
           <view class="share-main-head-right-txt">活动规则</view>
-          <image class="share-main-head-right-arrow" src="./image/icon-s_right1@2x.png"></image>
+          <image class="share-main-head-right-arrow" src="http://jike-file.jerryf.cn/defaults/c-image/mine/icon-s_right1@2x.png"></image>
         </view>
       </view>
 
@@ -18,16 +18,16 @@
           <view class="share-main-item-head-txt">进入优惠券详情页点击“分享有礼”</view>
         </view>
         <view class="share-main-item-body">
-          <image src="./image/pic-r_11@2x.png" class="share-main-item-body-img"></image>
+          <image src="http://jike-file.jerryf.cn/defaults/c-image/mine/pic-r_11@2x.png" class="share-main-item-body-img"></image>
           <view class="share-main-item-body-center">
             <view class="share-main-item-body-txt">分享</view>
             <view class="share-main-item-body-txt">成功后</view>
             <view class="share-main-item-body-dotBog">
               <view class="dot" wx:for="12345678" wx:key="{{item}}"></view>
-              <image class="share-main-item-body-arrow" src="./image/icon-s_right1@2x.png"></image>
+              <image class="share-main-item-body-arrow" src="http://jike-file.jerryf.cn/defaults/c-image/mine/icon-s_right1@2x.png"></image>
             </view>
           </view>
-          <image src="./image/pic-r_12@2x.png" class="share-main-item-body-img"></image>
+          <image src="http://jike-file.jerryf.cn/defaults/c-image/mine/pic-r_12@2x.png" class="share-main-item-body-img"></image>
         </view>
       </view>
 
@@ -37,16 +37,16 @@
           <view class="share-main-item-head-txt">进入发现内容详情页点击“分享有礼”</view>
         </view>
         <view class="share-main-item-body">
-          <image src="./image/pic-r_21.png" class="share-main-item-body-img"></image>
+          <image src="http://jike-file.jerryf.cn/defaults/c-image/mine/pic-r_21.png" class="share-main-item-body-img"></image>
           <view class="share-main-item-body-center">
             <view class="share-main-item-body-txt">分享</view>
             <view class="share-main-item-body-txt">成功后</view>
             <view class="share-main-item-body-dotBog">
               <view class="dot" wx:for="12345678" wx:key="{{item}}"></view>
-              <image class="share-main-item-body-arrow" src="./image/icon-s_right1@2x.png"></image>
+              <image class="share-main-item-body-arrow" src="http://jike-file.jerryf.cn/defaults/c-image/mine/icon-s_right1@2x.png"></image>
             </view>
           </view>
-          <image src="./image/pic-r_22@2x.png" class="share-main-item-body-img"></image>
+          <image src="http://jike-file.jerryf.cn/defaults/c-image/mine/pic-r_22@2x.png" class="share-main-item-body-img"></image>
         </view>
       </view>
     </view>
@@ -72,7 +72,7 @@
           <text>1.红包</text>
           <text>2.优惠券</text>
         </view>
-        <image src="./image/icon-delet@2x.png" class="shareAndPrize-rule-close" @tap="closeCover"></image>
+        <image src="http://jike-file.jerryf.cn/defaults/c-image/mine/icon-delet@2x.png" class="shareAndPrize-rule-close" @tap="closeCover"></image>
       </view>
     </view>
 

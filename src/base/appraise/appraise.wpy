@@ -3,14 +3,14 @@
     <view class="appraise-Msg">
       <view class="appraise-Msg-head">
         <view class="appraise-Msg-closeBtn" @tap="closeCover">
-          <image src="./image/icon-close_win.png" class="appraise-Msg-closeIcon"></image>
+          <image src="http://jike-file.jerryf.cn/defaults/c-image/mine/icon-close_win.png" class="appraise-Msg-closeIcon"></image>
         </view>
         <text>评价</text>
       </view>
       <view class="appraise-Msg-list" wx:if="{{!appraiseSuccess}}">
         <view class="appraise-Msg-list-star">
           <view wx:for="{{[0,1,2,3,4]}}" wx:key="{{item}}" @tap="chioseStar({{index}})">
-            <image src="{{index <= starCount?'./image/icon-evaluate_red.png':'./image/icon-evaluate_gray.png'}}" class="starImg"></image>
+            <image src="{{index <= starCount?'http://jike-file.jerryf.cn/defaults/c-image/mine/icon-evaluate_red.png':'http://jike-file.jerryf.cn/defaults/c-image/mine/icon-evaluate_gray.png'}}" class="starImg"></image>
           </view>
         </view>
 
@@ -28,10 +28,11 @@
         <view class="appraise-submitBtn {{btnDisabled?'disabled':''}}" @tap="appraiseSubmit">匿名提交</view>
       </view>
       <view class="appraise-Msg-success" wx:if="{{appraiseSuccess}}">
-        <image src="./image/pic-good@2x.png" class="appraise-Msg-success-img"></image>
+        <image src="http://jike-file.jerryf.cn/defaults/c-image/mine/pic-good@2x.png" class="appraise-Msg-success-img"></image>
         <text class="appraise-Msg-success-txt">评价成功</text>
       </view>
     </view>
+    <Toast></Toast>
   </view>
 </template>
 
@@ -40,9 +41,14 @@
   import wepy from 'wepy'
   import base from 'common/mixins/base'
   import getMyOrder from '@/api/myOrder'
+  import Toast from '@/base/toast/toast'
 
   export default class appraise extends wepy.component {
     mixins = [base]
+
+    components = {
+      Toast
+    }
 
     data = {
       appraiseCover: false,
@@ -118,6 +124,7 @@
       },
       async appraiseSubmit() {
         if (this.btnDisabled) {
+          this.$invoke('Toast', 'show', '请选择后提交')
           return
         }
         let data = {
@@ -134,7 +141,7 @@
           this.$emit('appraiseSuccess')
           this.$apply()
         } else {
-
+          this.$invoke('Toast', 'show', '评价失败')
         }
       }
     }

@@ -12,7 +12,7 @@
         </view>
 
         <view class="orderDetail-head-detailBtn">
-          <image src="./image/icon-my_Rectangle.png" class="orderDetail-head-detailBtnImg"></image>
+          <image src="http://jike-file.jerryf.cn/defaults/c-image/mine/icon-my_Rectangle.png" class="orderDetail-head-detailBtnImg"></image>
         </view>
       </view>
       <view class="orderDetail-head-status">
@@ -32,11 +32,11 @@
       </view>
       <view class="orderDetail-merchant-detail">
         <view class="orderDetail-merchant-detail-item">
-          <image src="./image/icon-navigation_1.png" class="orderDetail-merchant-detailIcon"></image>
+          <image src="http://jike-file.jerryf.cn/defaults/c-image/mine/icon-navigation_1.png" class="orderDetail-merchant-detailIcon"></image>
           <text>开始导航</text>
         </view>
         <view class="orderDetail-merchant-detail-item" @tap="call({{orderMsg.merchant_data.mobile}})">
-          <image src="./image/icon-call_1.png" class="orderDetail-merchant-detailIcon"></image>
+          <image src="http://jike-file.jerryf.cn/defaults/c-image/mine/icon-call_1.png" class="orderDetail-merchant-detailIcon"></image>
           <text>打电话</text>
         </view>
       </view>
@@ -59,7 +59,7 @@
       <view class="orderDetail-refundCover-Msg">
         <view class="orderDetail-refundCover-Msghead">
           <view class="orderDetail-refundCover-closeBtn" @tap="closeRefund">
-            <image src="./image/icon-close_win.png" class="orderDetail-refundCover-closeIcon"></image>
+            <image src="http://jike-file.jerryf.cn/defaults/c-image/mine/icon-close_win.png" class="orderDetail-refundCover-closeIcon"></image>
           </view>
           <text>选择退款原因</text>
         </view>
@@ -68,7 +68,7 @@
             <view class="orderDetail-refundCover-MsgList-item" wx:for="{{refundCause}}" wx:key="{{index}}">
               <label class="checkbox">
                 <radio value="{{item.value}}" checked="{{item.checked}}" hidden="{{true}}" />{{item.txt}}
-                <image class="checkbox-Icon" src="{{item.value===refundChecked?'./image/icon-selected_green.png':'./image/icon-selected_gray.png'}}"></image>
+                <image class="checkbox-Icon" src="{{item.value===refundChecked?'http://jike-file.jerryf.cn/defaults/c-image/mine/icon-selected_green.png':'http://jike-file.jerryf.cn/defaults/c-image/mine/icon-selected_gray.png'}}"></image>
               </label>
             </view>
           </radio-group>
@@ -80,6 +80,7 @@
     </view>
 
     <Appraise></Appraise>
+    <Toast></Toast>
   </view>
 </template>
 
@@ -89,6 +90,7 @@
   import base from 'common/mixins/base'
   import getMyOrder from '@/api/myOrder'
   import Appraise from '@/base/appraise/appraise'
+  import Toast from '@/base/toast/toast'
 
   export default class MyCoupon extends wepy.page {
     mixins = [base]
@@ -98,7 +100,8 @@
     }
 
     components = {
-      Appraise
+      Appraise,
+      Toast
     }
 
     data = {
@@ -117,12 +120,11 @@
     }
 
     async onLoad(option) {
-      await this.load(option)
+      await this.load(option.id)
     }
 
-    async load(option) {
-      this.orderMsg = await getMyOrder.getOrderDetail(option.id)
-      console.log(this.orderMsg)
+    async load(id) {
+      this.orderMsg = await getMyOrder.getOrderDetail(id)
       this.$apply()
       this.loaded()
     }
@@ -189,6 +191,7 @@
       },
       serviceValChange(e) {
         this.refundChecked = e.detail.value
+        this.$apply()
       },
       async refundSubmit() {
         let cause = this.refundCause[this.refundChecked].txt
@@ -200,7 +203,7 @@
           this.$apply()
           this.$navigate('../refund/refund?id=' + this.orderMsg.id)
         } else {
-          // 退款失败
+          this.$invoke('Toast', 'show', '申请退款失败')
         }
       },
       closeRefund() {

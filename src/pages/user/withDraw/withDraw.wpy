@@ -1,39 +1,42 @@
 <template>
   <view class="withDraw">
     <view class="withDraw-head">
-      <view class="withDraw-headTxt">账户余额<text class="withDraw-head-money">580.00</text></view>
+      <view class="withDraw-headTxt">账户余额<text class="withDraw-head-money">{{packetTotal.remaining}}</text></view>
       <view class="withDraw-headTxt">提现金额</view>
     </view>
 
     <view class="withDraw-inputBox">
       <text class="withDraw-inputBox-txt">￥</text>
       <input type="digit" bindinput="moneyChange" class="withDraw-inputBox-input" value="{{drawMoney}}"/>
-      <image src="./image/icon-my_money_close.png" class="withDraw-inputBox-btn" @tap="clear"></image>
+      <image src="http://jike-file.jerryf.cn/defaults/c-image/mine/icon-my_money_close.png" class="withDraw-inputBox-btn" @tap="clear"></image>
     </view>
     <view class="withDraw-hint">
       <text>提现到微信钱包</text>
       <text class="withDraw-hint-redTxt" @tap="allIn">全部提现</text>
     </view>
-    <view class="withDraw-btn">提现</view>
+    <view class="withDraw-btn {{drawMoney*1===0?'disab':''}}" @tap="submitMoney">提现</view>
     <view class="withDraw-time">1-5个工作日到账</view>
 
     <view class="withDraw-successCover" wx:if="{{coverShow}}">
       <view class="withDraw-success">
-        <image src="./image/pic-my_unlucky.png" class="withDraw-success-img"></image>
+        <image src="http://jike-file.jerryf.cn/defaults/c-image/mine/pic-my_unlucky.png" class="withDraw-success-img"></image>
         <view class="withDraw-success-top">提现成功</view>
         <view class="withDraw-success-bottom">
           <text class="withDraw-success-bottom-txt">提现金额已经存入您的微信钱包中</text>
           <view class="withDraw-success-bottom-btn">返回</view>
-          <image src="./image/icon-close_white.png" class="withDraw-success-closeBtn" @tap="closeCover"></image>
+          <image src="http://jike-file.jerryf.cn/defaults/c-image/mine/icon-close_white.png" class="withDraw-success-closeBtn" @tap="closeCover"></image>
         </view>
       </view>
     </view>
+    <Toast></Toast>
   </view>
 </template>
 
 <script>
   import wepy from 'wepy'
   import base from 'common/mixins/base'
+  import GetRedPacket from 'api/myRedPacket'
+  import Toast from '@/base/toast/toast'
 
   export default class WithDraw extends wepy.page {
     mixins = [base]
@@ -44,24 +47,38 @@
 
     data = {
       drawMoney: '',
-      coverShow: true
+      coverShow: false,
+      packetTotal: ''
+    }
+
+    components = {
+      Toast
     }
 
     methods = {
       moneyChange(e) {
-        console.log(e.detail)
+        this.drawMoney = e.detail.value
       },
       clear() {
         this.drawMoney = 0
         this.$apply()
       },
       allIn() {
-        this.drawMoney = 100
+        this.drawMoney = this.packetTotal.remaining
         this.$apply()
       },
       closeCover() {
         this.coverShow = false
         this.$apply()
+      },
+      submitMoney() {
+        if (this.drawMoney * 1 === 0) {
+          this.$invoke('Toast', 'show', '请输入正确金额')
+          return
+        }
+        if (this.drawMoney > this.packetTotal.remaining) {
+          this.$invoke('Toast', 'show', '账户余额不足')
+        }
       }
     }
 
@@ -70,7 +87,9 @@
     }
 
     async load() {
-      console.log('load')
+      this.packetTotal = await GetRedPacket.getTotalRedpacket()
+      console.log(this.packetTotal)
+      this.loaded()
     }
   }
 </script>
@@ -136,6 +155,9 @@
 
       &:active
         background: $color-button-act
+
+    .withDraw-btn.disab
+        background: $color-button-dis
 
     .withDraw-time
       font-size: $font-size-small-s

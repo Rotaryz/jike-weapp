@@ -7,7 +7,7 @@
     </view>
 
     <view class="myCoupon-nothing" wx:if="{{couponList.length===0}}">
-      <image src="./image/pic-my-nocoupon.png" class="myCoupon-nothing-img"></image>
+      <image src="http://jike-file.jerryf.cn/defaults/c-image/mine/pic-my-nocoupon.png" class="myCoupon-nothing-img"></image>
       <view class="myCoupon-nothing-txt">您还没有相关优惠券</view>
       <view class="myCoupon-nothingBtn" @tap="toRecommend">随便逛逛</view>
     </view>
@@ -15,7 +15,7 @@
     <scroll-view scroll-y class="{{menuIdx===0?'myCoupon-couponList':'myCoupon-couponList-ccc'}}" bindscrolltolower="couponLower" wx:if="{{couponList.length>0}}">
       <view class="myCoupon-couponList-item" wx:for="{{couponList}}" wx:key="{{index}}" @tap="couponDetail({{item.id}}, {{item.type}})">
         <view class="couponList-item-head-container">
-          <image class="coupon-bc" src="./image/pic-couponbg@2x.png"></image>
+          <image class="coupon-bc" src="http://jike-file.jerryf.cn/defaults/c-image/mine/pic-couponbg@2x.png"></image>
           <view class="couponList-item-head-left">
             <view class="couponList-itemPay">
               <view ><text class="couponList-midMoney">￥</text><text class="couponList-bigMoney">{{item.price}}</text></view>
@@ -28,13 +28,15 @@
           </view>
           <view class="couponList-item-head-right">
             <view class="couponList-item-head-right-btn" wx:if="{{menuIdx===0}}" catchtap="useCoupon({{item.id}}, 'coupon')">进店使用</view>
-            <image class="couponList-noItemBtn" wx:if="{{menuIdx===1}}" src="./image/pic-my_already .png"></image>
-            <image class="couponList-noItemBtn" wx:if="{{menuIdx===2}}" src="./image/pic-my_overdue.png"></image>
+            <image class="couponList-noItemBtn" wx:if="{{menuIdx===1}}" src="http://jike-file.jerryf.cn/defaults/c-image/mine/pic-my_already .png"></image>
+            <image class="couponList-noItemBtn" wx:if="{{menuIdx===2}}" src="http://jike-file.jerryf.cn/defaults/c-image/mine/pic-my_overdue.png"></image>
           </view>
-          <image class="exChange-img" src="./image/pic-m_certificate@2x.png"></image>
+          <image class="exChange-img" src="http://jike-file.jerryf.cn/defaults/c-image/mine/pic-m_certificate@2x.png" wx:if="{{item.promotionType==='exchange'}}"></image>
         </view>
       </view>
     </scroll-view>
+
+    <Toast></Toast>
   </view>
 </template>
 
@@ -43,6 +45,7 @@
   import wepy from 'wepy'
   import base from 'common/mixins/base'
   import myCoupon from '@/api/coupon'
+  import Toast from '@/base/toast/toast'
 
   export default class MyCoupon extends wepy.page {
     mixins = [base]
@@ -51,11 +54,14 @@
       navigationBarTitleText: '我的优惠券'
     }
 
+    components = {
+      Toast
+    }
+
     data = {
       tabList: ['未使用', '已使用', '已失效'],
       menuIdx: 0,
       couponList: [],
-      backgroundUrl: './image/icon_couponBc.png',
       page: 1,
       LowerLoading: false,
       nothingAdd: false
@@ -66,11 +72,6 @@
         this.menuIdx = idx
         this.couponList = []
         let resList = await this._getCouponList(this.menuIdx, 1)
-        if (this.menuIdx === 0) {
-          this.backgroundUrl = './image/icon_couponBc.png'
-        } else {
-          this.backgroundUrl = './image/icon_couponBc_gay.png'
-        }
         this.page = 1
         this.nothingAdd = false
         this.couponList = this._computed(resList)
@@ -91,6 +92,7 @@
           this.$apply()
           this.loaded()
         } else if (this.nothingAdd) {
+
         }
       },
       useCoupon(id, type) {
@@ -111,6 +113,10 @@
     }
 
     async onLoad() {
+
+    }
+
+    async onShow() {
       await this.load()
     }
 
@@ -137,7 +143,8 @@
           beautyCode,
           qrcodeUrl: item.qrcode_url,
           id: item.promotion.id,
-          type: item.gift_bag_id
+          type: item.gift_bag_id,
+          promotionType: item.promotion.promotion_type
         }
       })
     }

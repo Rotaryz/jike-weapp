@@ -1,6 +1,6 @@
 <template>
   <view class="error-Msg">
-    <image src="./image/pic-network@2x.png" class="error-img"></image>
+    <image src="http://jike-file.jerryf.cn/defaults/c-image/mine/pic-network@2x.png" class="error-img"></image>
     <view class="error-txt">网络好像不太给力，请稍后再试哦！</view>
     <view class="error-btn">重新加载</view>
   </view>

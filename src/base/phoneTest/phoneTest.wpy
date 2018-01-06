@@ -5,7 +5,7 @@
       <view class="phoneTest-phoneWindow-head">
         <text class="phoneTest-phoneWindow-headTxt">绑定手机号</text>
         <view class="phoneTest-closeBtn" @tap="closeCover">
-          <image class="phoneTest-closeBtn-icon" src="./image/icon-close_win.png"></image>
+          <image class="phoneTest-closeBtn-icon" src="http://jike-file.jerryf.cn/defaults/c-image/mine/icon-close_win.png"></image>
         </view>
       </view>
 
@@ -13,13 +13,13 @@
 
       <view class="phoneTest-list">
         <view class="phoneTest-list-item">
-          <image class="phoneTest-list-item-image" src="./image/icon-m_phone@2x.png"></image>
+          <image class="phoneTest-list-item-image" src="http://jike-file.jerryf.cn/defaults/c-image/mine/icon-m_phone@2x.png"></image>
           <input type="number" placeholder="输入手机号" placeholder-class="phoneTest-list-item-placeh"
                  class="phoneTest-list-item-input" maxlength="11" bindinput="phoneNumIn"/>
         </view>
 
         <view class="phoneTest-list-item">
-          <image class="phoneTest-list-item-image" src="./image/icon-m_code@2x.png"></image>
+          <image class="phoneTest-list-item-image" src="http://jike-file.jerryf.cn/defaults/c-image/mine/icon-m_code@2x.png"></image>
           <view class="phoneTest-list-codeBox">
             <input type="text" placeholder="验证码" placeholder-class="phoneTest-list-item-placeh"
                    class="phoneTest-list-item-input" maxlength="6" bindinput="phoneCodeIn"/>
@@ -120,10 +120,13 @@
             mobile: self.phoneNum
           }
           let phoneCode = await this._getPhoneCode(data)
-          if (phoneCode.error !== 0) {
-
-          }
           this.loaded()
+          if (phoneCode.error !== 0) {
+            this.$invoke('Toast', 'show', '获取验证码失败')
+            this.phoneCodeTime = '获取验证码'
+            this.$apply()
+            return
+          }
           this.phoneCodeDisabled = true
           let time = 60
           this.phoneCodeTime = time + 's'
@@ -167,11 +170,11 @@
             self.phoneTestCover = false
             self.$apply()
             tips.success('手机绑定成功')
-            self.$emit('isPhoneOk')
+            setTimeout(() => {
+              self.$emit('isPhoneOk')
+            }, 500)
           } else {
-            self.phoneTestCover = false
-            self.$apply()
-            tips.fail('绑定失败')
+            this.$invoke('Toast', 'show', '手机绑定失败')
           }
         }
       }

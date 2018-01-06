@@ -2,7 +2,7 @@
   <view class="mine">
     <view class="mine-head">
       <view class="mine-head-avatarBox" @tap="navToMsgPage('/pages/user/myCenter/myCenter')">
-        <image class="mine-head-avatar" src="{{userInfo.avatarUrl}}" style="background-image: url('./image/pic-default.png'); background-size: 48px 48px"></image>
+        <image class="mine-head-avatar" src="{{userInfo.avatarUrl}}" style="background-image: url('http://jike-file.jerryf.cn/defaults/c-image/mine/pic-default.png'); background-size: 48px 48px"></image>
         <view >
           <view class="mine-head-nickName">{{userInfo.nickName}}</view>
           <view class="mine-head-nickName-down">
@@ -10,7 +10,7 @@
           </view>
         </view>
       </view>
-      <image src="./image/icon-my_Rectangle.png" class="mine-headIcon"></image>
+      <image src="http://jike-file.jerryf.cn/defaults/c-image/mine/icon-my_Rectangle.png" class="mine-headIcon"></image>
     </view>
 
     <view class="mine-phoneTestBox" wx:if="{{isPhone===0}}">
@@ -19,15 +19,15 @@
     </view>
 
     <view class="mine-order">
-      <view class="mine-order-head" @tap="navToMsgPage('/pages/user/myOrder/myOrder')">
+      <view class="mine-order-head" @tap="notestToPage('/pages/user/myOrder/myOrder')">
         <view class="mine-order-head-left">
           <view class="red-block"></view>
           <text class="mine-order-headTxt">我的订单</text>
         </view>
-        <image src="./image/icon-my_Rectangle.png" class="mine-order-headIcon"></image>
+        <image src="http://jike-file.jerryf.cn/defaults/c-image/mine/icon-my_Rectangle.png" class="mine-order-headIcon"></image>
       </view>
       <view class="mine-order-menu">
-        <view class="mine-order-menuItem" wx:for="{{orderMenu}}" wx:key="{{item.text}}" @tap="navToMsgPage('/pages/user/myOrder/myOrder?idx={{index}}')">
+        <view class="mine-order-menuItem" wx:for="{{orderMenu}}" wx:key="{{item.text}}" @tap="notestToPage('/pages/user/myOrder/myOrder?idx={{index}}')">
           <image src="{{item.imgUrl}}" class="mine-order-menuItem-image"></image>
           <view class="mine-order-menuItem-txt">{{item.text}}</view>
         </view>
@@ -35,17 +35,17 @@
     </view>
 
     <view class="mine-serve">
-      <view class="mine-serve-Item" wx:for="{{serveMenu}}" wx:key="{{item.text}}" @tap="navToMsgPage({{item.url}})">
+      <view class="mine-serve-Item" wx:for="{{serveMenu}}" wx:key="{{item.text}}" @tap="notestToPage({{item.url}})">
         <view class="mine-serve-Item-left">
           <image src="{{item.imgUrl}}" class="mine-serve-menuItem-image"></image>
           <view class="mine-serve-menuItem-txt">{{item.text}}</view>
         </view>
-        <image src="./image/icon-my_Rectangle.png" class="mine-order-headIcon"></image>
+        <image src="http://jike-file.jerryf.cn/defaults/c-image/mine/icon-my_Rectangle.png" class="mine-order-headIcon"></image>
       </view>
     </view>
 
     <view class="mine-logo">
-      <image class="mine-logo-image" src="./image/logo-jike.png"></image>
+      <image class="mine-logo-image" src="http://jike-file.jerryf.cn/defaults/c-image/mine/logo-jike.png"></image>
       <view class="mine-logo-txt">集客小程序技术支持</view>
     </view>
 
@@ -85,30 +85,30 @@
       apply: 0,
       orderMenu: [
         {
-          imgUrl: './image/icon-m_ppay@2x.png',
+          imgUrl: 'http://jike-file.jerryf.cn/defaults/c-image/mine/icon-m_ppay@2x.png',
           text: '待付款'
         }, {
-          imgUrl: './image/icon-m_used@2x.png',
+          imgUrl: 'http://jike-file.jerryf.cn/defaults/c-image/mine/icon-m_used@2x.png',
           text: '待使用'
         }, {
-          imgUrl: './image/icon-m_evalua@2x.png',
+          imgUrl: 'http://jike-file.jerryf.cn/defaults/c-image/mine/icon-m_evalua@2x.png',
           text: '待评价'
         }, {
-          imgUrl: './image/icon-m_refund@2x.png',
+          imgUrl: 'http://jike-file.jerryf.cn/defaults/c-image/mine/icon-m_refund@2x.png',
           text: '退款/售后'
         }
       ],
       serveMenu: [
         {
-          imgUrl: './image/icon-m_coupon32.png',
+          imgUrl: 'http://jike-file.jerryf.cn/defaults/c-image/mine/icon-m_coupon32.png',
           text: '优惠券',
           url: '/pages/user/myCoupon/myCoupon'
         }, {
-          imgUrl: './image/icon-m_money32@2x.png',
+          imgUrl: 'http://jike-file.jerryf.cn/defaults/c-image/mine/icon-m_money32@2x.png',
           text: '红包',
           url: '/pages/user/redPacket/redPacket'
         }, {
-          imgUrl: './image/icon-m_ collect32.png',
+          imgUrl: 'http://jike-file.jerryf.cn/defaults/c-image/mine/icon-m_ collect32.png',
           text: '收藏',
           url: '/pages/user/mySelect/mySelect'
         }
@@ -154,8 +154,8 @@
           this.$invoke('PhoneTest', 'bindPhone')
         }
       },
-      submit(e) {
-
+      notestToPage(url) {
+        this.$navigate(url)
       }
     }
 

@@ -3,7 +3,7 @@
     <view class="couponUse-item" wx:for="{{couponList}}" wx:key="{{item}}">
       <view class="couponUse-item-head">
         <view class="couponUse-item-head-container">
-          <image class="coupon-bc" src="./image/pic-couponbg@2x.png"></image>
+          <image class="coupon-bc" src="http://jike-file.jerryf.cn/defaults/c-image/mine/pic-couponbg@2x.png"></image>
           <view class="couponUse-item-head-left">
             <view class="couponUse-itemPay">
               <view ><text class="couponUse-midMoney">￥</text><text class="couponUse-bigMoney">{{item.price}}</text></view>
@@ -21,7 +21,7 @@
       </view>
       <view class="couponEwm-Msg-body">
         <image src="{{item.qrcodeUrl}}" class="couponEwm-Msg-body-EWM"></image>
-        <view style="background-image: url('./image/pic-mabg.png'); background-size: 356rpx 80rpx" class="couponEwm-Msg-body-couponNum">{{item.beautyCode}}</view>
+        <view style="background-image: url('http://jike-file.jerryf.cn/defaults/c-image/mine/pic-mabg.png'); background-size: 356rpx 80rpx" class="couponEwm-Msg-body-couponNum">{{item.beautyCode}}</view>
         <view class="couponEwm-Msg-body-txt">该券码用于线下门店核销</view>
       </view>
     </view>
@@ -58,7 +58,6 @@
     }
 
     async load(id, type) {
-      console.log(id, type)
       let resList
       switch (type) {
         case 'coupon':
