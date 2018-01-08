@@ -1,7 +1,7 @@
 <template>
   <view class="phoneTestHint">
     <view class="phoneTest-txtBox">
-      <image src="./image/icon-my_call.png" class="phoneTest-pcPhone"></image>
+      <image src="http://jike-file.jerryf.cn/defaults/c-image/mine/icon-my_call.png" class="phoneTest-pcPhone"></image>
       <text class="phoneTest-txt">绑定手机号，获取更多优惠信息</text>
     </view>
 

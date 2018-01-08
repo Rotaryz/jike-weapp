@@ -1,18 +1,53 @@
 <template>
   <view class="shareAndPrize">
-    <view class="shareAndPrize-item" wx:for="{{shareList}}" wx:key="{{item}}">
-      <view class="shareAndPrize-item-head">
-        <view class="shareAndPrize-item-head-left">
-          <view class="shareAndPrize-item-head-left-chunk"></view>
-          <text>{{item.type===1?contentArr.coupon.txt:contentArr.content.txt}}</text>
+    <view class="share-main">
+      <view class="share-main-head" @tap="showCover">
+        <view class="share-main-head-left">
+          <view class="red-block"></view>
+          <view class="share-main-head-title">分享有礼</view>
         </view>
-        <view class="shareAndPrize-item-head-right" @tap="showCover({{item.id}})">
-          <text>活动规则</text>
-          <image src="./image/icon-detail_white.png"></image>
+        <view class="share-main-head-right">
+          <view class="share-main-head-right-txt">活动规则</view>
+          <image class="share-main-head-right-arrow" src="http://jike-file.jerryf.cn/defaults/c-image/mine/icon-s_right1@2x.png"></image>
         </view>
       </view>
-      <view class="shareAndPrize-item-body">
-        <image src="{{item.type===1?contentArr.coupon.url:contentArr.content.url}}"></image>
+
+      <view class="share-main-item">
+        <view class="share-main-item-head">
+          <view class="share-main-item-head-num">1</view>
+          <view class="share-main-item-head-txt">进入优惠券详情页点击“分享有礼”</view>
+        </view>
+        <view class="share-main-item-body">
+          <image src="http://jike-file.jerryf.cn/defaults/c-image/mine/pic-r_11@2x.png" class="share-main-item-body-img"></image>
+          <view class="share-main-item-body-center">
+            <view class="share-main-item-body-txt">分享</view>
+            <view class="share-main-item-body-txt">成功后</view>
+            <view class="share-main-item-body-dotBog">
+              <view class="dot" wx:for="12345678" wx:key="{{item}}"></view>
+              <image class="share-main-item-body-arrow" src="http://jike-file.jerryf.cn/defaults/c-image/mine/icon-s_right1@2x.png"></image>
+            </view>
+          </view>
+          <image src="http://jike-file.jerryf.cn/defaults/c-image/mine/pic-r_12@2x.png" class="share-main-item-body-img"></image>
+        </view>
+      </view>
+
+      <view class="share-main-item">
+        <view class="share-main-item-head">
+          <view class="share-main-item-head-num">2</view>
+          <view class="share-main-item-head-txt">进入发现内容详情页点击“分享有礼”</view>
+        </view>
+        <view class="share-main-item-body">
+          <image src="http://jike-file.jerryf.cn/defaults/c-image/mine/pic-r_21.png" class="share-main-item-body-img"></image>
+          <view class="share-main-item-body-center">
+            <view class="share-main-item-body-txt">分享</view>
+            <view class="share-main-item-body-txt">成功后</view>
+            <view class="share-main-item-body-dotBog">
+              <view class="dot" wx:for="12345678" wx:key="{{item}}"></view>
+              <image class="share-main-item-body-arrow" src="http://jike-file.jerryf.cn/defaults/c-image/mine/icon-s_right1@2x.png"></image>
+            </view>
+          </view>
+          <image src="http://jike-file.jerryf.cn/defaults/c-image/mine/pic-r_22@2x.png" class="share-main-item-body-img"></image>
+        </view>
       </view>
     </view>
 
@@ -37,7 +72,7 @@
           <text>1.红包</text>
           <text>2.优惠券</text>
         </view>
-        <image src="./image/icon-close_white.png" class="shareAndPrize-rule-close" @tap="closeCover"></image>
+        <image src="http://jike-file.jerryf.cn/defaults/c-image/mine/icon-delet@2x.png" class="shareAndPrize-rule-close" @tap="closeCover"></image>
       </view>
     </view>
 
@@ -57,18 +92,16 @@
     }
 
     data = {
-      contentArr: {
-        coupon: {txt: '优惠券分享有礼', url: './image/pic-share_coupon@2x.png'},
-        content: {txt: '内容分享有礼', url: './image/pic-share_coupon@2x.png'}
-      },
       coverShow: false,
-      shareList: [],
       shareDetail: null
     }
 
     methods = {
-      async showCover(id) {
-        let res = await getShare.getShareAndPrizeDetail(id)
+      async showCover() {
+        let res = await getShare.getShareAndPrizeDetail()
+        if (res.error === 0) {
+          res = {}
+        }
         this.loaded()
         this.shareDetail = res
         this.coverShow = true
@@ -80,13 +113,6 @@
     }
 
     async onLoad() {
-      await this.load()
-    }
-
-    async load() {
-      const res = await getShare.getShareAndPrize()
-      this.shareList = res
-      this.loaded()
     }
   }
 </script>
@@ -94,49 +120,100 @@
 <style lang="stylus">
   @import "../../common/stylus/variable"
 
-  .shareAndPrize-item
-    margin: 10px 3.2vw
+  page
+    background: $color-white
 
-    .shareAndPrize-item-head
-      height: 40px
+  .share-main
+    border-top: .5px solid $color-col-line
+    padding-left: 12px
+
+    .share-main-head
+      height: 36px
       display: flex
       justify-content: space-between
-      background: $color-main
-      font-size: $font-size-medium
       align-items: center
-      padding: 0 12px
-      border-bottom: .5px solid #666275
+      border-bottom: .5px solid $color-col-line
 
-      .shareAndPrize-item-head-left
+      .share-main-head-left
         display: flex
-        color: $color-white
-        align-items: center
 
-        .shareAndPrize-item-head-left-chunk
-          width: 5px
-          height: 13px
-          background: $color-highlight-background
-          margin-right: 3px
+        .red-block
+          width: 3px
+          height: 14px
+          background: $color-orange
+          margin-right: 5px
 
-      .shareAndPrize-item-head-right
-        font-size: $font-size-small
-        color: $color-white
-        height: 100%
+        .share-main-head-title
+          font-size: $font-size-medium
+
+      .share-main-head-right
         display: flex
-        align-items: center
+        padding-right: 12px
 
-        image
-          width: 6px
+        .share-main-head-right-txt
+          font-size: $font-size-small
+
+        .share-main-head-right-arrow
+          width: 10px
           height: 10px
-          margin-left: 3px
 
-    .shareAndPrize-item-body
-      width: 93.6vw
-      height: 43.2vw
+    .share-main-item
 
-      image
-        width: 93.6vw
-        height: 43.2vw
+      .share-main-item-head
+        height: 44px
+        display: flex
+        align-items: center
+
+        .share-main-item-head-num
+          width: 14px
+          height: 14px
+          display: flex
+          border-radius: 50%
+          background: $color-circle
+          color: $color-white
+          font-size: $font-size-small
+          align-items: center
+          justify-content: center
+          margin-right: 5px
+
+        .share-main-item-head-txt
+          font-size: $font-size-small
+
+      .share-main-item-body
+        display: flex
+        align-items: center
+        justify-content: center
+
+        .share-main-item-body-img
+          width: 37.9vw
+          height: 62.5vw
+
+        .share-main-item-body-center
+          display: flex
+          flex-direction: column
+          width: 40px
+          margin: 0 10px
+          align-items: center
+
+          .share-main-item-body-txt
+            font-size: $font-size-small
+            color: $color-main
+            line-height: 16px
+
+          .share-main-item-body-dotBog
+            display: flex
+            align-items: center
+
+            .dot
+              width: 2px
+              height: 2px
+              border-radius: 50%
+              background: $color-circle
+              margin-left: 3px
+
+            .share-main-item-body-arrow
+              width: 10px
+              height: 10px
 
   .shareAndPrize-cover
     position: fixed
@@ -196,8 +273,8 @@
         margin-bottom: 30px
 
       .shareAndPrize-rule-close
-        width: 23px
-        height: 23px
+        width: 26px
+        height: 26px
         position: fixed
         bottom: 8vh
         left: 50%

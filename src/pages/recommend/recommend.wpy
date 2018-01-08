@@ -12,38 +12,42 @@
       </Slider>
     </view>
     <view class="nav-wrapper">
-      <view @tap="goToActivity('lucky_draw','/pages/activity/activity?type=wheel')" class="content-wrapper">
-        <image class="icon" src="./icon-luckdraw@2x.png"></image>
-        <view class="content">大转盘 </view>
+      <view @tap="goToActivity('video_live', '/pages/live/live')" class="content-wrapper">
+        <image class="icon" src="./icon-r_live@2x.png"></image>
+        <view class="content">直播优惠</view>
       </view>
       <view @tap="goToActivity('share', '/pages/shareAndPrize/shareAndPrize')" class="content-wrapper">
-        <image class="icon" src="./icon-invite@2x.png"></image>
-        <view class="content">邀请返现</view>
+        <image class="icon" src="./icon-r_share@2x.png"></image>
+        <view class="content">分享有礼</view>
       </view>
       <view @tap="goToActivity('sign', '/pages/activity/activity?type=sign')" class="content-wrapper">
-        <image class="icon" src="./icon-sign@2x.png"></image>
+        <image class="icon" src="./icon-r_sign@2x.png"></image>
         <view class="content">签到红包</view>
       </view>
-      <view @tap="goToActivity('video_live', '/pages/live/live')" class="content-wrapper">
-        <image class="icon" src="./icon-live@2x.png"></image>
-        <view class="content">直播优惠</view>
+      <view @tap="goToActivity('lucky_draw','/pages/activity/activity?type=wheel')" class="content-wrapper">
+        <image class="icon" src="./icon-turntable@2x.png"></image>
+        <view class="content">大转盘 </view>
       </view>
     </view>
     <view class="tab-container">
       <view class="tab-wrapper">
         <view class="tab-content">
-          <view class="tab-item border-right-1px {{activeTab === '1' ? 'active' : ''}}" @tap="clickTab(1)">优惠券</view>
-          <view class="tab-item {{activeTab === '2' ? 'active' : ''}}" @tap="clickTab(2)">发现</view>
+          <view class="tab-item" @tap="clickTab(1)">
+            <view class="tab-item-txt {{activeTab === '1' ? 'active' : ''}}">优惠券</view>
+          </view>
+          <view class="tab-item" @tap="clickTab(2)">
+            <view class="tab-item-txt {{activeTab === '2' ? 'active' : ''}}">发现</view>
+          </view>
         </view>
         <view class="tab-line {{activeTab === '2' ? 'discover' : ''}}"></view>
       </view>
       <view class="tab-content-wrapper">
         <view class="coupon-panel" style="display: {{activeTab === '1' ? 'block':''}}">
           <repeat for="{{giftBags}}" key="index" index="index" item="item">
-            <package :coupon.sync="item" :type.sync="packageType" @handleClick.user="goToCouponDetail"></package>
+            <package :giftbag.sync="item" @handleClick.user="goToCouponDetail"></package>
           </repeat>
           <repeat for="{{couponList}}" key="index" index="index" item="item">
-            <coupon :coupon.sync="item" :type.sync="couponType" @handleClick.user="goToCouponDetail"></coupon>
+            <coupon :coupon.sync="item" @handleClick.user="goToCouponDetail"></coupon>
           </repeat>
         </view>
         <view class="discover-panel" style="display: {{activeTab === '2' ? 'block':''}}">
@@ -54,8 +58,8 @@
             </view>
             <view class="collector">
               <view class="avatar-wrapper">
-                <view class="avatar" wx:for="{{item.customer_content_favorite}}" wx:key="unique" wx:for-item="avatar">
-                  <image src="{{avatar.wechat_data.avatar_url}}" alt="" class="full-image"></image>
+                <view class="avatar" wx:for="{{item.customer_images}}" wx:key="unique" wx:for-item="avatar">
+                  <image src="{{avatar}}" alt="" class="full-image"></image>
                 </view>
                 <view class="more" wx:if="{{item.favorite_count > 5}}">
                   <view class="dot"></view>
@@ -65,10 +69,13 @@
               </view>
               <view class="collect">
                 <view class="icon icon-collected">
-                  <image wx:if="{{!item.is_favorite}}" src="./icon-collection_1.png" class="full-image"></image>
-                  <image wx:if="{{item.is_favorite}}" src="./icon-collection_2.png" class="full-image"></image>
+                  <image src="http://jike-file.jerryf.cn/defaults/c-image/mine/icon-r_collection@2x.png" class="full-image"></image>
                 </view>
                 <view class="font">{{item.favorite_count}}</view>
+                <view class="icon icon-collected last">
+                  <image src="http://jike-file.jerryf.cn/defaults/c-image/mine/icon-r_share1@2x.png" class="full-image"></image>
+                </view>
+                <view class="font">{{item.share_count}}</view>
               </view>
             </view>
           </navigator>
@@ -90,6 +97,7 @@
   import PhoneTest from '@/base/phoneTest/phoneTest'
   import CouponApi from 'api/coupon'
   import ContentsApi from 'api/contents'
+  import Giftbag from '@/base/giftbag/giftbag'
 
   const COUPON_TYPE = 1
   const PACKAGE_TYPE = 2
@@ -129,6 +137,7 @@
     }
 
     async load() {
+      this.merchantId = this.$parent.globalData.merchantId || wepy.getStorageSync('merchantId')
       const isAuthorise = await this.isAuthorise()
       this.$parent.updateGlobalData('isAuthorise', isAuthorise)
       await this._getShopCouponList()
@@ -175,11 +184,11 @@
       },
       async goToActivity(type, url) {
         if (this.activities[type]) {
-          const isAuthorise = this.$parent.globalData.isAuthorise
-          if (!isAuthorise) {
-            this.$invoke('phone-test', 'show')
-            return
-          }
+//          const isAuthorise = this.$parent.globalData.isAuthorise
+//          if (!isAuthorise) {
+//            this.$invoke('phone-test', 'show')
+//            return
+//          }
           this.$navigate(url)
         } else {
           this.$invoke('toast', 'show', '暂未开放')
@@ -203,7 +212,7 @@
 
     components = {
       Slider,
-      package: Coupon,
+      package: Giftbag,
       coupon: Coupon,
       toast: Toast,
       'phone-test': PhoneTest
@@ -228,32 +237,27 @@
       width: 100%
       height: 0
       padding-top: 40%
-      background-color: #363636
       .slider-content
         position: absolute
         top: 0
         left: 0
         width: 100%
         height: 100%
-        .swiper, .swiper .slide-image
+        overflow: visible !important
+        .swiper
           width: 100%
-          height: 100%
-      .dots
-        position: absolute
-        right: 12px
-        bottom: 10px
-        display: flex
-        justify-content: center
-        .dot
-          width: 5px
-          height: 5px
-          margin: 0 2.5px
-          border-radius: 50%
-          transition: all .6s
-          background: #fff
-          &.active
-            width: 12.5px
-            border-radius: 5px
+          height: 29.3333vw
+          overflow: visible !important
+          padding: 6.7777vw 0
+          swiper-item
+            width: 86.6666vw !important
+            height: 29.3333vw !important
+            margin: 0 10px
+        .slide-image
+          width: 86.6666vw
+          height: 29.3333vw
+          margin: 0 10px
+
     .nav-wrapper
       display: flex
       align-items: center
@@ -264,9 +268,9 @@
         flex: 1
         text-align: center
         .icon
-          width: 32px
-          height: 32px
-          background-size: 32px 32px
+          width: 24px
+          height: 24px
+          background-size: 24px 24px
         .content
           margin-top: 4px
           font-size: $font-size-small
@@ -279,21 +283,19 @@
           background: $color-white
           .tab-item
             flex: 1
-            line-height: 42px
-            text-align: center
-            font-size: $font-size-medium-x
-            transition: all .3s
-            &.active
-              color: $color-text-t
-        .tab-line
-          position: absolute
-          bottom: 0
-          width: 50%
-          height: 2px
-          background-color: $color-theme
-          transition: all .3s
-          &.discover
-            transform: translate3d(100%, 0, 0)
+            display: flex
+            justify-content: center
+            .tab-item-txt
+              font-size: $font-size-medium
+              text-align: center
+              line-height: 42px
+              width: 76px
+              color: $color-text
+              box-sizing: border-box
+              border-bottom: 2px solid $color-white
+              transition: all .3s
+              &.active
+                border-bottom: 2px solid $color-text-t
       .tab-content-wrapper
         display: flex
         width: 100%
@@ -305,104 +307,218 @@
           display: none
           width: 100%
           box-sizing: border-box
-          padding: 10px 12px
           .coupon
+            margin: 10px 12px 0
             position: relative
-            width: 100%
+            padding-bottom: 28.49%
             height: 0
-            margin-bottom: 10px
-            padding-top: 28.409090909%
-            overflow: hidden
-            .coupon-bg
+
+            .couponList-item-head-container
               position: absolute
-              top: 0
               left: 0
-              width: 100%
-              height: 100%
-              .image
-                width: 100%
-                height: 100%
-            .content
-              position: absolute
               top: 0
-              left: 0
+              right: 0
+              bottom: 0
               display: flex
-              width: 100%
-              height: 100%
-              .left
-                flex: 0 0 28%
-                display: flex
-                flex-direction: column
-                justify-content: center
-                width: 28%
+
+              .coupon-bc
+                position: absolute
                 height: 100%
-                color: $color-text-d
-                text-align: center
-                .price
-                  font-size: 0
-                  .number
-                    font-family: Impact
-                    font-size: 40px
-                    line-height: 49px
-                  .yuan
-                    font-size: $font-size-small
-                .desc
-                  font-size: $font-size-small-s
-              .right
-                position: relative
-                flex: 1
-                .desc-wrapper
+                width: 100%
+
+              .couponList-item-head-left
+                width: 74.4%
+                height: 100%
+                display: flex
+                position: absolute
+                left: 0
+
+                .couponList-itemPay
+                  flex: 4
                   display: flex
+                  align-items: center
+                  justify-content: center
+
+                  .couponList-midMoney
+                    font-size: $font-size-small-s
+                    font-family: PingFangSC-Semibold
+                    color: $color-text-t
+
+                  .couponList-bigMoney
+                    color: $color-text-t
+                    font-size: 25px
+                    font-family: PingFangSC-Semibold
+
+                .couponList-itemMsg
+                  flex: 7
+                  display: flex
+                  flex-direction: column
+                  justify-content: center
+
+                  .couponList-item-title
+                    font-family: PingFangSC-Medium
+                    font-size: $font-size-medium
+                    padding-bottom: 6px
+                    border-bottom: .5px solid $color-col-line
+                    margin-bottom: 6px
+
+                  .couponList-item-time
+                    font-size: $font-size-small-s
+                    color: $color-text-d
+                    line-height: 14px
+
+              .couponList-item-head-right
+                position: absolute
+                right: 0
+                width: 25.6%
+                height: 100%
+                display: flex
+                align-items: center
+                justify-content: center
+
+                .couponList-item-head-right-btn
+                  width: 58px
+                  height: 24px
+                  display: flex
+                  align-items: center
+                  justify-content: center
+                  border: 1px solid $color-orange
+                  font-size: $font-size-small
+                  color: $color-text-t
+                  border-radius: 2px
+
+          .giftbag
+            margin: 10px 12px 0
+
+            .mySelect-couponList-item-main
+              position: relative
+              padding-bottom: 28.49%
+              height: 0
+
+              .gift-bag-img
+                position: absolute
+                left: 0
+                top: 0
+                width: 13.75vw
+                height: 14.375vw
+
+              .couponList-item-head-container
+                position: absolute
+                left: 0
+                top: 0
+                right: 0
+                bottom: 0
+                display: flex
+
+                .coupon-bc
+                  position: absolute
                   height: 100%
-                  padding: 0 12px
-                  .description
-                    flex: 1
-                    display: flex
-                    flex-direction: column
-                    justify-content: space-between
-                    padding: 10px 0
-                    .top
-                      .name
-                        line-height: $font-size-large-m
-                        font-size: $font-size-medium
-                        no-wrap()
-                      .valid
-                        font-size: $font-size-small-s
-                    .bottom
-                      font-size: $font-size-small-s
-                  .btn-wrapper
+                  width: 100%
+
+                .couponList-item-head-left
+                  width: 74.4%
+                  height: 100%
+                  display: flex
+                  position: absolute
+                  left: 0
+
+                  .couponList-itemPay
+                    flex: 4
                     display: flex
                     align-items: center
-                    width: 58px
-                    flex: 0 0 58px
-                    .btn
-                      width: 58px
-                      height: 24px
-                      margin: auto
-                      text-align: center
-                      line-height: 24px
-                      font-size: 0
-                      background: $color-button
-                      .font
-                        display: inline-block
-                        vertical-align: middle
-                        margin-right: 3px
-                        font-size: $font-size-small
-                        color: $color-white
-                      .icon
-                        vertical-align: middle
-                        width: 11px
-                        height: 11px
+                    justify-content: center
 
-                .tip-wrapper
+                    .couponList-midMoney
+                      font-size: $font-size-small-s
+                      font-family: PingFangSC-Semibold
+                      color: $color-kac
+
+                    .couponList-bigMoney
+                      color: $color-kac
+                      font-size: 25px
+                      font-family: PingFangSC-Semibold
+
+                  .couponList-itemMsg
+                    flex: 7
+                    display: flex
+                    flex-direction: column
+                    justify-content: center
+
+                    .couponList-item-title
+                      font-family: PingFangSC-Medium
+                      font-size: $font-size-medium
+                      padding-bottom: 6px
+                      border-bottom: .5px solid $color-col-line
+                      margin-bottom: 6px
+
+                    .couponList-item-time
+                      font-size: $font-size-small-s
+                      color: $color-text-d
+                      line-height: 14px
+
+                .couponList-item-head-right
                   position: absolute
-                  top: 3px
-                  right: -18px
-                  display: inline-block
-                  padding: 5px 20px
-                  font-size: $font-size-small
-                  background-color: $color-yellow
-                  transform: rotate(40deg)
+                  right: 0
+                  width: 25.6%
+                  height: 100%
+                  display: flex
+                  align-items: center
+                  justify-content: center
+
+                  .couponList-item-head-right-btn
+                    width: 58px
+                    height: 24px
+                    display: flex
+                    align-items: center
+                    justify-content: center
+                    border: 1px solid $color-kac
+                    font-size: $font-size-small
+                    color: $color-kac
+                    border-radius: 2px
+
+                  .couponList-item-storechange
+                    position: absolute
+                    right: 0
+                    bottom: 0
+                    display: flex
+                    width: 100%
+                    height: 30px
+                    justify-content: center
+                    align-items: center
+
+                    .couponList-item-storechange-txt
+                      font-size: $font-size-small-s
+                      color: $color-text-d
+
+                    .couponList-item-storechange-icon
+                      width: 10px
+                      height: 10px
+                      margin-left: 5px
+
+            .store-avatar
+              background: $color-white
+              border: 1px solid $color-col-line
+              box-sizing: border-box
+              border-top: 0 none
+              display: flex
+              overflow-x: auto
+
+              .store-avatar-box
+                height: 60px
+                display: flex
+                flex-direction: column
+                align-items: center
+                justify-content: center
+
+                .store-avatar-img
+                  width: 33px
+                  height: 33px
+                  border-radius: 50%
+                  margin: 0 15px 5px
+
+                .store-name
+                  font-size: $font-size-small-s
+                  color: #4A4657
         .discover-panel
           display: none
           width: 100%
@@ -455,7 +571,9 @@
                 .icon
                   width: 14px
                   height: 14px
-                  margin-right: 1px
+                  margin-right: 4px
                   image
                     display: block
+                .icon.last
+                  margin-left: 22px
 </style>

@@ -1,23 +1,27 @@
 <template>
   <view class="couponUse">
     <view class="couponUse-item" wx:for="{{couponList}}" wx:key="{{item}}">
-      <view class="couponUse-item-head" style="background-image: url('./image/icon_couponBc.png'); background-size: 700rpx 200rpx">
-        <view class="couponUse-itemPay">
-          <view ><text class="couponUse-midMoney">￥</text><text class="couponUse-bigMoney">{{item.price}}</text></view>
-          <view>{{item.restriction}}</view>
-        </view>
-        <view class="couponUse-itemMsg">
-          <view>
-            <view class="couponUse-item-title">{{item.title}}</view>
-            <view class="couponUse-item-time">有效期至{{item.endAt}}</view>
+      <view class="couponUse-item-head">
+        <view class="couponUse-item-head-container">
+          <image class="coupon-bc" src="http://jike-file.jerryf.cn/defaults/c-image/mine/pic-couponbg@2x.png"></image>
+          <view class="couponUse-item-head-left">
+            <view class="couponUse-itemPay">
+              <view ><text class="couponUse-midMoney">￥</text><text class="couponUse-bigMoney">{{item.price}}</text></view>
+            </view>
+            <view class="couponUse-itemMsg">
+              <view class="couponUse-item-title">{{item.title}}</view>
+              <view class="couponUse-item-time">{{item.notAllowTime}}</view>
+              <view class="couponUse-item-time">有效期至{{item.endAt}}</view>
+            </view>
           </view>
-          <view class="couponUse-item-time">{{item.notAllowTime}}</view>
+          <view class="couponUse-item-head-right">
+            <view class="couponUse-item-head-right-btn">立即购买</view>
+          </view>
         </view>
       </view>
-      <view class="couponUse-coverIn"></view>
       <view class="couponEwm-Msg-body">
         <image src="{{item.qrcodeUrl}}" class="couponEwm-Msg-body-EWM"></image>
-        <view style="background-image: url('./image/pic-mabg.png'); background-size: 356rpx 80rpx" class="couponEwm-Msg-body-couponNum">{{item.beautyCode}}</view>
+        <view style="background-image: url('http://jike-file.jerryf.cn/defaults/c-image/mine/pic-mabg.png'); background-size: 356rpx 80rpx" class="couponEwm-Msg-body-couponNum">{{item.beautyCode}}</view>
         <view class="couponEwm-Msg-body-txt">该券码用于线下门店核销</view>
       </view>
     </view>
@@ -29,6 +33,7 @@
   import wepy from 'wepy'
   import base from 'common/mixins/base'
   import getMyOrder from '@/api/myOrder'
+  import Coupon from '@/api/coupon'
 
   export default class MyCoupon extends wepy.page {
     mixins = [base]
@@ -49,11 +54,19 @@
     }
 
     async onLoad(option) {
-      this.load(option.id)
+      this.load(option.id, option.type)
     }
 
-    async load(id) {
-      let resList = await getMyOrder.getOrderCouponList(id)
+    async load(id, type) {
+      let resList
+      switch (type) {
+        case 'coupon':
+          resList = await Coupon.getUserCouponDetail(id)
+          break
+        case 'order':
+          resList = await getMyOrder.getOrderCouponList(id)
+          break
+      }
       this.couponList = this._computed(resList)
       this.loaded()
     }
@@ -62,7 +75,7 @@
       return arr.map((item) => {
         let beautyCode = item.code.replace(/(\d{4})/g, '$1 ')
         return {
-          price: Math.floor(item.promotion.platform_price),
+          price: item.promotion.shop_price,
           restriction: item.restriction,
           title: item.promotion.title,
           endAt: item.promotion.end_at,
@@ -84,50 +97,86 @@
     background: $color-button
 
     .couponUse-item
-      margin: 20rpx 24rpx
-      width: 700rpx
+      margin: 10px 12px 0
 
       .couponUse-item-head
-        width: 700rpx
-        height: 200rpx
-        display: flex
-        align-items: center
+        position: relative
+        padding-bottom: 28.49%
+        height: 0
 
-        .couponUse-midMoney
-          font-size: $font-size-medium
-          font-family: PingFangSC-Semibold
-
-        .couponUse-bigMoney
-          color: #5D5D5D
-          font-size: 80rpx
-          font-family: Impact
-
-        .couponUse-itemPay
-          text-align: center
-          width: 200rpx
-          font-size: $font-size-small-s
-
-        .couponUse-itemMsg
+        .couponUse-item-head-container
+          position: absolute
+          left: 0
+          top: 0
+          right: 0
+          bottom: 0
           display: flex
-          flex-direction: column
-          justify-content: space-between
-          height: 160rpx
-          width: 400rpx
-          padding: 20rpx 0 20rpx 25rpx
 
-          .couponUse-item-title
-            font-family: PingFangSC-Regular
-            font-size: $font-size-medium
-            line-height: 40rpx
+          .coupon-bc
+            position: absolute
+            height: 100%
+            width: 100%
 
-          .couponUse-item-time
-            font-size: $font-size-small-s
-            color: $color-text-d
-            line-height: 28rpx
+          .couponUse-item-head-left
+            width: 74.4%
+            height: 100%
+            display: flex
+            position: absolute
+            left: 0
 
-      .couponUse-coverIn
-        height: 10px
-        background: $color-background
+            .couponUse-itemPay
+              flex: 4
+              display: flex
+              align-items: center
+              justify-content: center
+
+              .couponUse-midMoney
+                font-size: $font-size-small-s
+                font-family: PingFangSC-Semibold
+                color: $color-text-t
+
+              .couponUse-bigMoney
+                color: $color-text-t
+                font-size: 25px
+                font-family: PingFangSC-Semibold
+
+            .couponUse-itemMsg
+              flex: 7
+              display: flex
+              flex-direction: column
+              justify-content: center
+
+              .couponUse-item-title
+                font-family: PingFangSC-Medium
+                font-size: $font-size-medium
+                padding-bottom: 6px
+                border-bottom: .5px solid $color-col-line
+                margin-bottom: 6px
+
+              .couponUse-item-time
+                font-size: $font-size-small-s
+                color: $color-text-d
+                line-height: 14px
+
+          .couponUse-item-head-right
+            position: absolute
+            right: 0
+            width: 25.6%
+            height: 100%
+            display: flex
+            align-items: center
+            justify-content: center
+
+            .couponUse-item-head-right-btn
+              width: 58px
+              height: 24px
+              display: flex
+              align-items: center
+              justify-content: center
+              border: 1px solid $color-orange
+              font-size: $font-size-small
+              color: $color-text-t
+              border-radius: 2px
 
       .couponEwm-Msg-body
         height: 270px
@@ -154,6 +203,6 @@
           font-size: $font-size-small-s
           color: $color-text-d
           line-height: 14px
-          margin-top: 5px
+          margin-top: 10px
 
 </style>

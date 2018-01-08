@@ -14,11 +14,11 @@
     <view class="refund-progress">
       <view class="refund-progress-title">退款进度</view>
       <view class="refund-progress-msg">
-        <view class="refund-progress-image" style="background-image: url('./image/bc_rebate.png'); background-size: 16px 253px; background-repeat: no-repeat;">
-          <view class="refund-progress-image1" style="background-image: url('./image/pic-red_1.png'); background-size: 16px 49px; background-repeat: no-repeat;" wx:if="{{orderMsg.status >= 0}}"></view>
-          <view class="refund-progress-image2" style="background-image: url('./image/pic-red_2.png'); background-size: 16px 78px; background-repeat: no-repeat;" wx:if="{{orderMsg.status >= 0}}"></view>
-          <view class="refund-progress-image3" style="background-image: url('./image/pic-red_3.png'); background-size: 16px 78px; background-repeat: no-repeat;" wx:if="{{orderMsg.status >= 1}}"></view>
-          <view class="refund-progress-image4" style="background-image: url('./image/pic-red_4.png'); background-size: 16px 48px; background-repeat: no-repeat;" wx:if="{{orderMsg.status >= 1}}"></view>
+        <view class="refund-progress-image" style="background-image: url('http://jike-file.jerryf.cn/defaults/c-image/mine/bc_rebate.png'); background-size: 16px 253px; background-repeat: no-repeat;">
+          <view class="refund-progress-image1" style="background-image: url('http://jike-file.jerryf.cn/defaults/c-image/mine/pic-red_1.png'); background-size: 16px 49px; background-repeat: no-repeat;" wx:if="{{orderMsg.status >= 0}}"></view>
+          <view class="refund-progress-image2" style="background-image: url('http://jike-file.jerryf.cn/defaults/c-image/mine/pic-red_2.png'); background-size: 16px 78px; background-repeat: no-repeat;" wx:if="{{orderMsg.status >= 0}}"></view>
+          <view class="refund-progress-image3" style="background-image: url('http://jike-file.jerryf.cn/defaults/c-image/mine/pic-red_3.png'); background-size: 16px 78px; background-repeat: no-repeat;" wx:if="{{orderMsg.status >= 1}}"></view>
+          <view class="refund-progress-image4" style="background-image: url('http://jike-file.jerryf.cn/defaults/c-image/mine/pic-red_4.png'); background-size: 16px 48px; background-repeat: no-repeat;" wx:if="{{orderMsg.status >= 1}}"></view>
         </view>
         <view class="refund-progress-txt">
           <view class="refund-progress-step1">

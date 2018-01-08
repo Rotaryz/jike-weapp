@@ -71,7 +71,8 @@ export default class extends wepy.app {
       'pages/user/redPacket/redPacket',
       'pages/user/mySelect/mySelect',
       'pages/post-order/post-order',
-      'pages/shareAndPrize/shareAndPrize'
+      'pages/shareAndPrize/shareAndPrize',
+      'pages/net-error/net-error'
     ],
     window: {
       backgroundColor: '#F9F9F9',

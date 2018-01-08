@@ -26,6 +26,18 @@ export default class mySelect extends base {
     return await this.get(url, data)
   }
   /**
+   * 获取用户礼包收藏列表
+   * @param
+   * @returns {Promise.<*>}
+   */
+  static async getKacList(page) {
+    const url = `${this.baseUrl}/api/favorite/gift`
+    let data = {
+      page
+    }
+    return await this.get(url, data)
+  }
+  /**
    * 收藏内容
    * @param id 内容id
    * @returns {Promise.<*>}
