@@ -1,7 +1,9 @@
 <template>
-  <view animation="{{maskAnimation}}" class="share" @tap.stop="hide" wx:if="{{show}}">
+  <view animation="{{maskAnimation}}" class="share" @tap.stop="hide"
+        wx:if="{{show}}">
     <canvas canvas-id="target" class="canvas"></canvas>
-    <view animation="{{modalAnimation}}" class="modal border-top-1px" wx:if="{{show}}">
+    <view animation="{{modalAnimation}}" class="modal border-top-1px"
+          wx:if="{{show}}">
       <view class="content-wrapper">
         <button class="wx" open-type="share">
           <view class="wrapper">
@@ -45,55 +47,92 @@
       modalAnimation: ''
     }
 
-    async _drawCanvas() {
-      const user = this.$parent.$parent.globalData.user
+    async _drawCanvas(type) {
       const ctx = await wepy.createCanvasContext('target')
+//      分享背景
       const bgs = await wepy.downloadFile({url: 'http://jike-file.jerryf.cn/defaults/service-image/pic-sharebg.png'})
-      const manys = await wepy.downloadFile({url: 'http://jike-file.jerryf.cn/defaults/service-image/icon-many.png'})
-      const shares = await wepy.downloadFile({url: 'http://jike-file.jerryf.cn/defaults/service-image/icon-share_prize.png'})
+//      分享卷卷箭头
       const arrows = await wepy.downloadFile({url: 'http://jike-file.jerryf.cn/defaults/service-image/pic-share_arrow.png'})
-      const pics = await wepy.downloadFile({url: this.promotionImages[0].image.url})
+//      小程序码
       const qrcodes = await wepy.downloadFile({url: this.qrcode})
-      const avatars = await wepy.downloadFile({url: user.avatarUrl})
-
-      let pic = pics.tempFilePath
       let qrcode = qrcodes.tempFilePath
       let bg = bgs.tempFilePath
-      let many = manys.tempFilePath
-      let share = shares.tempFilePath
       let arrow = arrows.tempFilePath
-      let avatar = avatars.tempFilePath
       ctx.drawImage(bg, 0, 0, 1500, 1800)
-
-      ctx.drawImage(pic, 110, 62, 1280, 682)
-      ctx.setFontSize(48)
-      ctx.setFillStyle('#464646')
-      ctx.fillText(this.detail.title, 148, 852)
-
-      ctx.setFontSize(40)
-      ctx.setFillStyle('#696671')
-      ctx.fillText(this.detail.stock === -1 ? '不限制' : `限量${this.detail.stock}件`, 150, 930)
-      ctx.setFillStyle('#FF4E00')
-      ctx.fillText('¥', 150, 1078)
-
-      ctx.setFontSize(72)
-      ctx.fillText(this.detail.platform_price, 190, 1078)
-
-      ctx.setFontSize(40)
-      ctx.setFillStyle('#464646')
-      ctx.fillText(`门市价:￥${this.detail.shop_price}`, 328, 1074)
-
-      ctx.drawImage(many, 738, 1045, 32, 30)
-      ctx.fillText(this.detail.collected < 100 ? '100人已购买' : `${this.detail.collected}已购买`, 780, 1074)
-      ctx.drawImage(share, 1131.4, 807.4, 220, 220)
-
-      ctx.setFontSize(48)
-      ctx.drawImage(avatar, 200, 1340, 96, 96)
-      ctx.fillText(user.nickName, 310, 1400)
-      ctx.fillText('邀请你参加活动', 200, 1530)
       ctx.drawImage(arrow, 562, 1432, 300, 100)
       ctx.drawImage(qrcode, 908.6, 1262.6, 380.6, 380.6)
+      if (type === 'live') {
+        const user = this.$parent.$parent.$parent.$parent.globalData.user
+        const avatars = await wepy.downloadFile({url: user.avatarUrl})
+        const pics = await wepy.downloadFile({url: this.promotionImages})
+        let pic = pics.tempFilePath
+        let avatar = avatars.tempFilePath
+        ctx.drawImage(avatar, 200, 1340, 96, 96)
+        ctx.drawImage(pic, 110, 62, 1280, 852)
+        let arr = [{
+          name: '望方',
+          content: '迫不及待的下了单'
+        }, {
+          name: '李芳',
+          content: '对本次直播拍照留念！'
+        }, {
+          name: '璐璐',
+          content: '商品非常棒，很划算'
+        }]
+        for (var i = 0; i < 3; i++) {
+          let height = 920 + (i + 1) * 70
+          ctx.setFillStyle('#EF705D')
+          ctx.setFontSize(40)
+          ctx.fillText(`${arr[i].name}:`, 150, height)
+          ctx.setFillStyle('#464646')
+          ctx.setFontSize(40)
+          ctx.fillText(arr[i].content, 250, height)
+        }
 
+        ctx.setFontSize(48)
+        ctx.setFillStyle('#464646')
+        ctx.fillText(user.nickName, 310, 1400)
+        ctx.fillText('邀请你参加活动', 200, 1530)
+
+        ctx.setFillStyle('#464646')
+        ctx.setFontSize(40)
+        ctx.fillText('国颐堂', 370, 1700)
+      } else {
+        const manys = await wepy.downloadFile({url: 'http://jike-file.jerryf.cn/defaults/service-image/icon-many.png'})
+        const shares = await wepy.downloadFile({url: 'http://jike-file.jerryf.cn/defaults/service-image/icon-share_prize.png'})
+        const pics = await wepy.downloadFile({url: this.promotionImages[0].image.url})
+        const user = this.$parent.$parent.globalData.user
+        const avatars = await wepy.downloadFile({url: user.avatarUrl})
+        let pic = pics.tempFilePath
+        let many = manys.tempFilePath
+        let share = shares.tempFilePath
+        let avatar = avatars.tempFilePath
+        ctx.drawImage(pic, 110, 62, 1280, 682)
+        ctx.setFontSize(48)
+        ctx.setFillStyle('#464646')
+        ctx.fillText(this.detail.title, 148, 852)
+        ctx.setFontSize(40)
+        ctx.setFillStyle('#696671')
+        ctx.fillText(this.detail.stock === -1 ? '不限制' : `限量${this.detail.stock}件`, 150, 930)
+        ctx.setFillStyle('#FF4E00')
+        ctx.fillText('¥', 150, 1078)
+
+        ctx.setFontSize(72)
+        ctx.fillText(this.detail.platform_price, 190, 1078)
+
+        ctx.setFontSize(40)
+        ctx.setFillStyle('#464646')
+        ctx.fillText(`门市价:￥${this.detail.shop_price}`, 328, 1074)
+
+        ctx.drawImage(many, 738, 1045, 32, 30)
+        ctx.fillText(this.detail.collected < 100 ? '100人已购买' : `${this.detail.collected}已购买`, 780, 1074)
+        ctx.drawImage(share, 1131.4, 807.4, 220, 220)
+
+        ctx.setFontSize(48)
+        ctx.drawImage(avatar, 200, 1340, 96, 96)
+        ctx.fillText(user.nickName, 310, 1400)
+        ctx.fillText('邀请你参加活动', 200, 1530)
+      }
       ctx.draw()
     }
 
@@ -138,8 +177,8 @@
           this.$apply()
         }, 200)
       },
-      show() {
-        this._drawCanvas()
+      show(type) {
+        this._drawCanvas(type)
         let modalAnimation = wepy.createAnimation({
           duration: 200,
           timingFunction: 'linear',
