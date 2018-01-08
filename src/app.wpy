@@ -53,9 +53,9 @@ export default class extends wepy.app {
 
   config = {
     pages: [
+      'pages/recommend/recommend',
       'pages/live/live',
       'pages/square/square',
-      'pages/recommend/recommend',
       'pages/pay-result/pay-result',
       'pages/coupon-detail/coupon-detail',
       'pages/user/refund/refund',

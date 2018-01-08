@@ -1,18 +1,21 @@
 <template>
   <view class="live-show">
-    <view class="live" wx:if="{{show}}">
+    <view class="live" wx:if="{{show}}" @tap="hideComment">
       <scroll-view class="live_conpon" scroll-y>
         <view class="con-item" wx:for="{{liveMsg.activity_promotion}}"
               wx:key="index"
               @tap="conponDetail({{item.promotion_id}},{{index}})">
-          <image class="con_bk" src="./pic-r_couponbg1@2x.png"
+          <text class="arrows" wx:if="{{showBk === index}}"></text>
+          <image class="con_bk"
+                 src="http://jike-file.jerryf.cn/defaults/c-image/live/pic-r_couponbg1@2x.png"
                  wx:if="{{showBk !== index}}"></image>
-          <image class="con_bk" src="./pic-r_couponbg2@2x.png"
+          <image class="con_bk"
+                 src="http://jike-file.jerryf.cn/defaults/c-image/live/pic-r_couponbg2@2x.png"
                  wx:if="{{showBk === index}}"></image>
           <view class="con-title">
             <view></view>
-            <view>{{item.promotion_title}}</view>
             <view class="monlogo">{{item.promotion_platform_price}}</view>
+            <view>{{item.promotion_title}}</view>
           </view>
         </view>
       </scroll-view>
@@ -24,7 +27,8 @@
           <!--优惠券-->
           <cover-view class="conpon-derail">
             <cover-view class="close" @tap="hideDetail">
-              <cover-image src="./icon-close_black@2x.png"></cover-image>
+              <cover-image
+                src="http://jike-file.jerryf.cn/defaults/c-image/live/icon-close_black@2x.png"></cover-image>
             </cover-view>
             <!--<cover-view class="con-item">-->
             <!--<cover-view class="con-title">-->
@@ -44,7 +48,9 @@
           <!--优惠券价格-->
           <cover-view class="money">
             <cover-view class="money-init">
-              <cover-view class="money-detail">{{conDes.platform_price}}
+              <cover-view class="money-detail">
+                <cover-view class="money-ico">￥</cover-view>
+                {{conDes.platform_price}}
               </cover-view>
               <cover-view class="money-init-s">门市价:￥{{conDes.shop_price}}
               </cover-view>
@@ -117,7 +123,7 @@
         </cover-view>
       </video>
     </view>
-    <Comment :comment.sync="comment" :videoImages.sync="videoImages"
+    <Comment :videoImages.sync="videoImages"
              :activityId.sync="activityId"
              wx:if="{{show}}"></Comment>
   </view>
@@ -150,6 +156,9 @@
       Comment: Comment
     }
     methods = {
+      hideComment() {
+        this.$invoke('Comment', 'hideInput')
+      },
       async conponDetail(id, index) {
         this.showBk = index
         this.state = true
@@ -202,14 +211,14 @@
     async showMore() {
       this.show = true
       let res = await Live.getLiveMsg()
-      let data = await Live.getComment(res.id)
       this.liveMsg = res
-      this.comment = data
       this.videoImages = this.liveMsg.image_url
       this.activityId = res.id
       this.loaded()
+      this.$com.Comment.showComment()
       this.$apply()
     }
+
   }
 </script>
 
@@ -230,7 +239,7 @@
     display: flex
     height: 75.6%
     .live_conpon
-      flex: 2.54
+      width: 95px
       height: 100%
     .live_video
       flex: 7.46
@@ -244,38 +253,40 @@
         top: 0
         background: $color-master-gray
         .money
+          box-sizing: border-box
           height: 10.6vw
           background: #fff
           position: relative
-          display: flex
-          align-items: center
-          padding: 0 7.5px 0 11.5px
           font-size: $font-size-small-s
-          margin-bottom: 10px
           color: #3F3F3F
-          cover-view
-            flex: 1
+          padding-left: 8.5px
           .money-init
-            flex: 2
-            cover-view
-              display: inline
+            display: flex
             .money-detail
-              margin-right: 6px
+              min-width: 45px
+              display: flex
+              text-align: center
               font-size: $font-size-large-xx
               color: $color-orange
               position: relative
-              padding-left: 4px
-              &:before
+              line-height: 1
+              margin-top: 2.6vw
+              .money-ico
+                line-height: 1
+                text-indent: 0
                 position: absolute
-                content: '￥'
                 color: $color-orange
-                left: 0px
+                left: -2px
                 font-size: $font-size-small-s
-                bottom: 2px
+                bottom: 0.8vw
             .money-init-s
-              transform: translateY(-10px)
+              min-width: 70px
+              display: flex
+              margin-top: 5vw
           .buy-count
-            text-align right
+            position: absolute
+            col-center()
+            right: 12px
         .conpon-derail
           display: flex
           height: 22.4vw
@@ -284,10 +295,10 @@
           font-size: $font-size-small-s
           position: relative
           .close
-            z-index: 2000
+            z-index: 10000
             position: absolute
-            width: 10vw
-            height: 10vw
+            width: 28vw
+            height: 15vw
             top: 0
             right: 0
             cover-image
@@ -306,7 +317,7 @@
               .con-title-s
                 width: 50px
                 white-space: wrap
-              .monlogo:before
+              .monlogo::before
                 left: -6px
           .con-msg
             height: 60px
@@ -342,38 +353,54 @@
     width: 70px
     position: relative
     margin: 10px auto 0
-    .con_bk
+
+    .arrows
+      height: 0px
+      border: 8px solid $color-white
+      border-left: 8px solid transparent
+      border-top: 8px solid transparent
+      border-bottom: 8px solid transparent
       position: absolute
-      width: 100%
-      height: 100%
-      row-center()
-    .con-title
-      position: absolute
-      z-index: 10
-      font-size: $font-size-small-s
-      color: #5D5D5D
-      width: 100%
-      view
-        padding-bottom: 4px
-        padding-left: 16px
-        &:first-child
-          padding-top: 4px
-      .monlogo
-        font-size: $font-size-large-xx
+      col-center()
+      right: -12.5px
+
+  .con_bk
+    position: absolute
+    width: 100%
+    height: 100%
+    row-center()
+
+  .con-title
+    position: absolute
+    z-index: 10
+    font-size: $font-size-small-s
+    color: #5D5D5D
+    width: 100%
+    view
+      padding-bottom: 4px
+      padding-left: 16px
+      width: ($font-size-small-s* 4)
+      line-height: 11px
+      &:first-child
+        padding-top: 4px
+    .monlogo
+      font-size: $font-size-large
+      color: $color-text
+      position: relative
+      line-height: 5vw
+      text-indent: 5px
+      font-family: 'PingFangSC-Medium'
+      &::before
+        content: '￥'
         color: #5D5D5D
-        position: relative
-        text-indent: 5px
-        font-family: $font-family-m
-        &:before
-          content: '￥'
-          color: #5D5D5D
-          font-size: $font-size-small-s
-          position: absolute
-          top: 3px
-          left: 9px
+        font-size: $font-size-small-s
+        position: absolute
+        bottom: 1px
+        left: 9px
 
   //优惠券详情
   .service-detail
+    margin-top: 10px
     margin-bottom: 10px
     padding-left: 12px
     background-color: $color-white

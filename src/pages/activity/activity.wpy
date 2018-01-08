@@ -4,20 +4,42 @@
 
 <script>
   import wepy from 'wepy'
-
+  import users from 'common/mixins/users'
   export default class Activity extends wepy.page {
+    mixins = [users]
     data = {
       webviewUrl: '',
       token: wepy.getStorageSync('token'),
       merchantId: wepy.getStorageSync('merchantId')
     }
 
-    onLoad(option) {
-      this.type = option.type
+    onShareAppMessage(res) {
+      let title = ''
       if (this.type === 'wheel') {
-        this.webviewUrl = `https://ftbx.majy999.com/index.html?token=${this.token}&merchantId=${this.merchantId}#/wheel`
+        title = '大转盘'
       } else if (this.type === 'sign') {
-        this.webviewUrl = `https://ftbx.majy999.com/index.html?token=${this.token}&merchantId=${this.merchantId}#/registration`
+        title = '签到红包'
+      }
+      return {
+        title: title,
+        path: `/pages/activity/activity?type=${this.type}&merchantId=${this.merchantId}`,
+        success: async () => {
+          // 转发成功
+        },
+        fail: (res) => {
+          // 转发失败
+          console.log(res)
+        }
+      }
+    }
+
+    async onLoad(option) {
+      this.type = option.type
+      let isAuthorise = await this.isAuthorise()
+      if (this.type === 'wheel') {
+        this.webviewUrl = `https://ftbx.majy999.com/index.html?token=${this.token}&merchantId=${this.merchantId}&isBinding=${isAuthorise ? '1' : '0'}#/wheel`
+      } else if (this.type === 'sign') {
+        this.webviewUrl = `https://ftbx.majy999.com/index.html?token=${this.token}&merchantId=${this.merchantId}&isBinding=${isAuthorise ? '1' : '0'}#/registration`
       }
     }
   }

@@ -1,7 +1,8 @@
 <template>
   <view class="comall">
     <view class="shade"></view>
-    <scroll-view scroll-y="true" scroll-into-view="item{{comment.length-1}}">
+    <scroll-view scroll-y="true" scroll-into-view="item{{comment.length-1}}"
+                 @tap.stop="hideInput" style="height: {{height}}">
       <repeat for="{{comment}}" key="index" index="index" item="item">
         <view class="com_item" id="item{{index}}">
           <text class="com_name">{{item.customer_name}}：</text>
@@ -9,15 +10,20 @@
         </view>
       </repeat>
     </scroll-view>
-    <image class="btn_com btn_com-fi" src="../live/icon-share-zhib.png"
+    <image class="btn_com btn_com-fi"
+           src="http://jike-file.jerryf.cn/defaults/c-image/live/icon-share-zhib.png"
            @tap="shares"/>
-    <image class="btn_com" src="../live/icon- info.png" wx:if="{{!showCom}}"
+    <image class="btn_com"
+           src="http://jike-file.jerryf.cn/defaults/c-image/live/icon- info.png"
+           wx:if="{{!showCom}}"
            @tap="showInput"/>
     <view class="inp_cpm" wx:if="{{showCom}}">
       <input type="text" placeholder="弹幕更容易引起主播的注意哦~" @input="bindTestInput"
-             value="{{content}}" @blur="hideInput" focus="true"/>
-      <view @tap="putContent({{activityId}})">
-        <image src="../live/icon-sendout.png"></image>
+             value="{{content}}" focus="true"
+             bindconfirm="putContent({{activityId}})"/>
+      <view @tap.default="putContent({{activityId}})">
+        <image
+          src="http://jike-file.jerryf.cn/defaults/c-image/live/icon-sendout.png"></image>
       </view>
     </view>
     <Share :qrcode.sync="qrcode"
@@ -31,6 +37,7 @@
   import base from 'common/mixins/base'
   import users from 'common/mixins/users'
   import Share from '@/base/share/share'
+  import Info from 'api/info'
   export default class Comment extends wepy.page {
     mixins = [users, base]
     components = {
@@ -55,19 +62,42 @@
       content: '',
       ifHide: 0,
       qrcode: '',
-      promotionImages: ''
+      promotionImages: '',
+      height: '84%'
     }
+
+    async _createQrcode() {
+      const res = await Info.createQrode({path: this.currentPage})
+      this.qrcode = res.image_url
+      this.$apply()
+      console.log(this.qrcode)
+    }
+
+    async showComment(id) {
+      let res = await Live.getComment(id)
+      this.comment = res
+      this.loaded()
+      this.$apply()
+    }
+
+    async onLoad() {
+      this._createQrcode()
+    }
+
     methods = {
       showInput() {
-        this.showCom = true
+        setTimeout(() => {
+          this.showCom = true
+          this.height = '66%'
+          this.$apply()
+        }, 100)
       },
       hideInput() {
-        if (this.ifHide === 0) {
-          setTimeout(() => {
-            this.showCom = false
-            this.$apply()
-          }, 300)
-        }
+        setTimeout(() => {
+          this.showCom = false
+          this.height = '84%'
+          this.$apply()
+        }, 300)
       },
       bindTestInput(e) {
         this.content = e.detail.value
@@ -95,6 +125,10 @@
       },
       shares() {
         this.$invoke('Share', 'show', 'live')
+        setTimeout(() => {
+          this.showCom = false
+          this.$apply()
+        }, 300)
         this.promotionImages = this.videoImages
       }
     }
@@ -117,7 +151,6 @@
       background: linear-gradient(rgba(112, 107, 130, 1) 40%, rgba(112, 107,
       130, 0) 100%)
     scroll-view
-      height: 66%
       .com_item
         font-size: $font-size-small
         padding: $font-size-medium 0 0 $padding-all
