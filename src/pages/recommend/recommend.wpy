@@ -40,10 +40,10 @@
       <view class="tab-content-wrapper">
         <view class="coupon-panel" style="display: {{activeTab === '1' ? 'block':''}}">
           <repeat for="{{giftBags}}" key="index" index="index" item="item">
-            <package :coupon.sync="item" :type.sync="packageType" @handleClick.user="goToCouponDetail"></package>
+            <package :giftbag.sync="item" @handleClick.user="goToCouponDetail"></package>
           </repeat>
           <repeat for="{{couponList}}" key="index" index="index" item="item">
-            <coupon :coupon.sync="item" :type.sync="couponType" @handleClick.user="goToCouponDetail"></coupon>
+            <coupon :coupon.sync="item" @handleClick.user="goToCouponDetail"></coupon>
           </repeat>
         </view>
         <view class="discover-panel" style="display: {{activeTab === '2' ? 'block':''}}">
@@ -89,6 +89,7 @@
   import Toast from '@/base/toast/toast'
   import CouponApi from 'api/coupon'
   import ContentsApi from 'api/contents'
+  import Giftbag from '@/base/giftbag/giftbag'
 
   const COUPON_TYPE = 1
   const PACKAGE_TYPE = 2
@@ -203,7 +204,7 @@
 
     components = {
       Slider,
-      package: Coupon,
+      package: Giftbag,
       coupon: Coupon,
       toast: Toast
     }
@@ -304,104 +305,218 @@
           display: none
           width: 100%
           box-sizing: border-box
-          padding: 10px 12px
           .coupon
+            margin: 10px 12px 0
             position: relative
-            width: 100%
+            padding-bottom: 28%
             height: 0
-            margin-bottom: 10px
-            padding-top: 28.409090909%
-            overflow: hidden
-            .coupon-bg
+
+            .couponList-item-head-container
               position: absolute
-              top: 0
               left: 0
-              width: 100%
-              height: 100%
-              .image
-                width: 100%
-                height: 100%
-            .content
-              position: absolute
               top: 0
-              left: 0
+              right: 0
+              bottom: 0
               display: flex
-              width: 100%
-              height: 100%
-              .left
-                flex: 0 0 28%
-                display: flex
-                flex-direction: column
-                justify-content: center
-                width: 28%
+
+              .coupon-bc
+                position: absolute
                 height: 100%
-                color: $color-text-d
-                text-align: center
-                .price
-                  font-size: 0
-                  .number
-                    font-family: Impact
-                    font-size: 40px
-                    line-height: 49px
-                  .yuan
-                    font-size: $font-size-small
-                .desc
-                  font-size: $font-size-small-s
-              .right
-                position: relative
-                flex: 1
-                .desc-wrapper
+                width: 100%
+
+              .couponList-item-head-left
+                width: 74.4%
+                height: 100%
+                display: flex
+                position: absolute
+                left: 0
+
+                .couponList-itemPay
+                  flex: 4
                   display: flex
+                  align-items: center
+                  justify-content: center
+
+                  .couponList-midMoney
+                    font-size: $font-size-small-s
+                    font-family: PingFangSC-Semibold
+                    color: $color-text-t
+
+                  .couponList-bigMoney
+                    color: $color-text-t
+                    font-size: 25px
+                    font-family: PingFangSC-Semibold
+
+                .couponList-itemMsg
+                  flex: 7
+                  display: flex
+                  flex-direction: column
+                  justify-content: center
+
+                  .couponList-item-title
+                    font-family: PingFangSC-Medium
+                    font-size: $font-size-medium
+                    padding-bottom: 6px
+                    border-bottom: .5px solid $color-col-line
+                    margin-bottom: 6px
+
+                  .couponList-item-time
+                    font-size: $font-size-small-s
+                    color: $color-text-d
+                    line-height: 14px
+
+              .couponList-item-head-right
+                position: absolute
+                right: 0
+                width: 25.6%
+                height: 100%
+                display: flex
+                align-items: center
+                justify-content: center
+
+                .couponList-item-head-right-btn
+                  width: 58px
+                  height: 24px
+                  display: flex
+                  align-items: center
+                  justify-content: center
+                  border: 1px solid $color-orange
+                  font-size: $font-size-small
+                  color: $color-text-t
+                  border-radius: 2px
+
+          .giftbag
+            margin: 10px 12px 0
+
+            .mySelect-couponList-item-main
+              position: relative
+              padding-bottom: 28%
+              height: 0
+
+              .gift-bag-img
+                position: absolute
+                left: 0
+                top: 0
+                width: 13.75vw
+                height: 14.375vw
+
+              .couponList-item-head-container
+                position: absolute
+                left: 0
+                top: 0
+                right: 0
+                bottom: 0
+                display: flex
+
+                .coupon-bc
+                  position: absolute
                   height: 100%
-                  padding: 0 12px
-                  .description
-                    flex: 1
-                    display: flex
-                    flex-direction: column
-                    justify-content: space-between
-                    padding: 10px 0
-                    .top
-                      .name
-                        line-height: $font-size-large-m
-                        font-size: $font-size-medium
-                        no-wrap()
-                      .valid
-                        font-size: $font-size-small-s
-                    .bottom
-                      font-size: $font-size-small-s
-                  .btn-wrapper
+                  width: 100%
+
+                .couponList-item-head-left
+                  width: 74.4%
+                  height: 100%
+                  display: flex
+                  position: absolute
+                  left: 0
+
+                  .couponList-itemPay
+                    flex: 4
                     display: flex
                     align-items: center
-                    width: 58px
-                    flex: 0 0 58px
-                    .btn
-                      width: 58px
-                      height: 24px
-                      margin: auto
-                      text-align: center
-                      line-height: 24px
-                      font-size: 0
-                      background: $color-button
-                      .font
-                        display: inline-block
-                        vertical-align: middle
-                        margin-right: 3px
-                        font-size: $font-size-small
-                        color: $color-white
-                      .icon
-                        vertical-align: middle
-                        width: 11px
-                        height: 11px
+                    justify-content: center
 
-                .tip-wrapper
+                    .couponList-midMoney
+                      font-size: $font-size-small-s
+                      font-family: PingFangSC-Semibold
+                      color: $color-kac
+
+                    .couponList-bigMoney
+                      color: $color-kac
+                      font-size: 25px
+                      font-family: PingFangSC-Semibold
+
+                  .couponList-itemMsg
+                    flex: 7
+                    display: flex
+                    flex-direction: column
+                    justify-content: center
+
+                    .couponList-item-title
+                      font-family: PingFangSC-Medium
+                      font-size: $font-size-medium
+                      padding-bottom: 6px
+                      border-bottom: .5px solid $color-col-line
+                      margin-bottom: 6px
+
+                    .couponList-item-time
+                      font-size: $font-size-small-s
+                      color: $color-text-d
+                      line-height: 14px
+
+                .couponList-item-head-right
                   position: absolute
-                  top: 3px
-                  right: -18px
-                  display: inline-block
-                  padding: 5px 20px
-                  font-size: $font-size-small
-                  background-color: $color-yellow
-                  transform: rotate(40deg)
+                  right: 0
+                  width: 25.6%
+                  height: 100%
+                  display: flex
+                  align-items: center
+                  justify-content: center
+
+                  .couponList-item-head-right-btn
+                    width: 58px
+                    height: 24px
+                    display: flex
+                    align-items: center
+                    justify-content: center
+                    border: 1px solid $color-kac
+                    font-size: $font-size-small
+                    color: $color-kac
+                    border-radius: 2px
+
+                  .couponList-item-storechange
+                    position: absolute
+                    right: 0
+                    bottom: 0
+                    display: flex
+                    width: 100%
+                    height: 30px
+                    justify-content: center
+                    align-items: center
+
+                    .couponList-item-storechange-txt
+                      font-size: $font-size-small-s
+                      color: $color-text-d
+
+                    .couponList-item-storechange-icon
+                      width: 10px
+                      height: 10px
+                      margin-left: 5px
+
+            .store-avatar
+              background: $color-white
+              border: 1px solid $color-col-line
+              box-sizing: border-box
+              border-top: 0 none
+              display: flex
+              overflow-x: auto
+
+              .store-avatar-box
+                height: 60px
+                display: flex
+                flex-direction: column
+                align-items: center
+                justify-content: center
+
+                .store-avatar-img
+                  width: 33px
+                  height: 33px
+                  border-radius: 50%
+                  margin: 0 15px 5px
+
+                .store-name
+                  font-size: $font-size-small-s
+                  color: #4A4657
         .discover-panel
           display: none
           width: 100%

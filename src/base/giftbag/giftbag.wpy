@@ -1,0 +1,199 @@
+<template>
+  <view class="giftbag">
+    <view class="mySelect-couponList-item-main" @tap="handleClick">
+      <view class="couponList-item-head-container">
+        <image class="coupon-bc" src="http://jike-file.jerryf.cn/defaults/c-image/mine/pic-couponbg@2x.png"></image>
+        <view class="couponList-item-head-left">
+          <view class="couponList-itemPay">
+            <view ><text class="couponList-midMoney">￥</text><text class="couponList-bigMoney">{{giftbag.platform_price}}</text></view>
+          </view>
+          <view class="couponList-itemMsg">
+            <view class="couponList-item-title">{{giftbag.title}}</view>
+            <view class="couponList-item-time">有效期至{{giftbag.end_at ? giftbag.end_at : giftbag.sell_end_at}}</view>
+          </view>
+        </view>
+        <view class="couponList-item-head-right">
+          <view class="couponList-item-head-right-btn">立即购买</view>
+          <view class="couponList-item-storechange" @tap.stop="showStore">
+            <view class="couponList-item-storechange-txt">支持店铺</view>
+            <image src="{{giftbag.checked?'http://jike-file.jerryf.cn/defaults/c-image/mine/icon-r_shrink@2x.png':'http://jike-file.jerryf.cn/defaults/c-image/mine/icon-r_open@2x.png'}}" class="couponList-item-storechange-icon"></image>
+          </view>
+        </view>
+      </view>
+      <image class="gift-bag-img" src="http://jike-file.jerryf.cn/defaults/c-image/mine/pic-r_package@2x.png"></image>
+    </view>
+
+    <view class="store-avatar" wx:if="{{giftbag.checked}}">
+      <view class="store-avatar-box" wx:for="{{giftbag.gift_bag_details}}" wx:key="{{item}}">
+        <image class="store-avatar-img" src="{{item.merchant_data.logo_image}}"></image>
+        <view class="store-name">{{item.merchant_data.shop_name}}</view>
+      </view>
+    </view>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+
+  export default class Giftbag extends wepy.component {
+    props = {
+      giftbag: {
+        type: Object,
+        default: {},
+        twoWay: true
+      },
+      buy: {
+        type: String,
+        default: 'yes'
+      }
+    }
+
+    methods = {
+      handleClick() {
+        this.$emit('handleClick', 2, this.giftbag.id)
+      },
+      showStore() {
+        this.giftbag.checked = this.giftbag.checked ? '' : 1
+        this.$apply()
+      }
+    }
+  }
+</script>
+
+<style lang="stylus">
+  @import "../../common/stylus/variable"
+
+  .giftbag
+    margin: 10px 12px 0
+
+    .mySelect-couponList-item-main
+      position: relative
+      padding-bottom: 28%
+      height: 0
+
+      .gift-bag-img
+        position: absolute
+        left: 0
+        top: 0
+        width: 13.75vw
+        height: 14.375vw
+
+      .couponList-item-head-container
+        position: absolute
+        left: 0
+        top: 0
+        right: 0
+        bottom: 0
+        display: flex
+
+        .coupon-bc
+          position: absolute
+          height: 100%
+          width: 100%
+
+        .couponList-item-head-left
+          width: 74.4%
+          height: 100%
+          display: flex
+          position: absolute
+          left: 0
+
+          .couponList-itemPay
+            flex: 4
+            display: flex
+            align-items: center
+            justify-content: center
+
+            .couponList-midMoney
+              font-size: $font-size-small-s
+              font-family: PingFangSC-Semibold
+              color: $color-kac
+
+            .couponList-bigMoney
+              color: $color-kac
+              font-size: 25px
+              font-family: PingFangSC-Semibold
+
+          .couponList-itemMsg
+            flex: 7
+            display: flex
+            flex-direction: column
+            justify-content: center
+
+            .couponList-item-title
+              font-family: PingFangSC-Medium
+              font-size: $font-size-medium
+              padding-bottom: 6px
+              border-bottom: .5px solid $color-col-line
+              margin-bottom: 6px
+
+            .couponList-item-time
+              font-size: $font-size-small-s
+              color: $color-text-d
+              line-height: 14px
+
+        .couponList-item-head-right
+          position: absolute
+          right: 0
+          width: 25.6%
+          height: 100%
+          display: flex
+          align-items: center
+          justify-content: center
+
+          .couponList-item-head-right-btn
+            width: 58px
+            height: 24px
+            display: flex
+            align-items: center
+            justify-content: center
+            border: 1px solid $color-kac
+            font-size: $font-size-small
+            color: $color-kac
+            border-radius: 2px
+
+          .couponList-item-storechange
+            position: absolute
+            right: 0
+            bottom: 0
+            display: flex
+            width: 100%
+            height: 30px
+            justify-content: center
+            align-items: center
+
+            .couponList-item-storechange-txt
+              font-size: $font-size-small-s
+              color: $color-text-d
+
+            .couponList-item-storechange-icon
+              width: 10px
+              height: 10px
+              margin-left: 5px
+
+    .store-avatar
+      background: $color-white
+      border: 1px solid $color-col-line
+      box-sizing: border-box
+      border-top: 0 none
+      display: flex
+      overflow-x: auto
+
+      .store-avatar-box
+        height: 60px
+        display: flex
+        flex-direction: column
+        align-items: center
+        justify-content: center
+
+        .store-avatar-img
+          width: 33px
+          height: 33px
+          border-radius: 50%
+          margin: 0 15px 5px
+
+        .store-name
+          font-size: $font-size-small-s
+          color: #4A4657
+
+</style>

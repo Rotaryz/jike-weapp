@@ -1,27 +1,23 @@
 <template>
   <view class="coupon">
-    <view class="coupon-bg">
-      <image class="image" src="./pic-coupon_bg@2x.png" mode="scaleToFill"></image>
-    </view>
-    <view class="content" @tap="handleClick">
-      <view class="left">
-        <view class="price"><text class="number">{{coupon.platform_price}}</text><text class="yuan">元</text></view>
-        <view class="desc" wx:if="{{coupon.promotion_type === 'discount'}}">{{coupon.title}}</view>
-      </view>
-      <view class="right">
-        <view class="desc-wrapper">
-          <view class="description">
-            <view class="top">
-              <view class="name">{{coupon.title}}</view>
-              <view class="valid">有效期至{{coupon.end_at ? coupon.end_at : coupon.sell_end_at}}</view>
-            </view>
-            <view class="bottom">{{coupon.not_allow_time}}</view>
-          </view>
-          <view class="btn-wrapper" wx:if="{{buy === 'yes'}}">
-            <view class="btn"><text class="font">抢购</text> <image class="icon" src="./icon-button_right.png"></image></view>
-          </view>
+    <view class="couponList-item-head-container" @tap="handleClick">
+      <image class="coupon-bc" src="http://jike-file.jerryf.cn/defaults/c-image/mine/pic-couponbg@2x.png"></image>
+      <view class="couponList-item-head-left">
+        <view class="couponList-itemPay">
+          <view ><text class="couponList-midMoney">￥</text><text class="couponList-bigMoney">{{coupon.platform_price}}</text></view>
         </view>
-        <view class="tip-wrapper" wx:if="{{type === packageType}}">礼包</view>
+        <view class="couponList-itemMsg">
+          <view class="couponList-item-title">{{coupon.title}}</view>
+          <view class="couponList-item-time">{{coupon.not_allow_time}}</view>
+          <view class="couponList-item-time">有效期至{{coupon.end_at ? coupon.end_at : coupon.sell_end_at}}</view>
+        </view>
+      </view>
+      <view class="couponList-item-head-right">
+        <view class="couponList-item-head-right-btn" wx:if="{{avatar==='no'}}">立即购买</view>
+        <view class="shopMsg" wx:if="{{avatar!=='no'}}">
+          <image src="{{coupon.shop_logo}}" class="shopLogo"></image>
+          <view class="shopName">{{coupon.shop_name}}</view>
+        </view>
       </view>
     </view>
   </view>
@@ -30,9 +26,6 @@
 <script>
   import wepy from 'wepy'
 
-  const COUPON_TYPE = 1
-  const PACKAGE_TYPE = 2
-
   export default class Coupon extends wepy.component {
     props = {
       coupon: {
@@ -40,24 +33,19 @@
         default: {},
         twoWay: true
       },
-      type: {
-        type: String,
-        default: COUPON_TYPE
-      },
       buy: {
         type: String,
         default: 'yes'
+      },
+      avatar: {
+        type: String,
+        default: 'no'
       }
-    }
-
-    data = {
-      couponType: COUPON_TYPE,
-      packageType: PACKAGE_TYPE
     }
 
     methods = {
       handleClick() {
-        this.$emit('handleClick', this.type, this.coupon.id)
+        this.$emit('handleClick', 1, this.coupon.id)
       }
     }
   }
@@ -65,101 +53,99 @@
 
 <style lang="stylus">
   @import "../../common/stylus/variable"
-  .coupon
-    position: relative
-    width: 100%
-    height: 0
-    margin-bottom: 10px
-    padding-top: 28.409090909%
-    overflow: hidden
-    .coupon-bg
-      position: absolute
-      top: 0
-      left: 0
-      width: 100%
-      height: 100%
-      .image
-        width: 100%
-        height: 100%
-    .content
-      position: absolute
-      top: 0
-      left: 0
-      display: flex
-      width: 100%
-      height: 100%
-      .left
-        flex: 0 0 28%
-        display: flex
-        flex-direction: column
-        justify-content: center
-        width: 28%
-        height: 100%
-        color: $color-text-d
-        text-align: center
-        .price
-          font-size: 0
-          .number
-            font-family: Impact
-            font-size: 40px
-            line-height: 49px
-          .yuan
-            font-size: $font-size-small
-        .desc
-          font-size: $font-size-small-s
-      .right
-        position: relative
-        flex: 1
-        .desc-wrapper
-          display: flex
-          height: 100%
-          padding: 0 12px
-          .description
-            flex: 1
-            display: flex
-            flex-direction: column
-            justify-content: space-between
-            padding: 10px 0
-            .top
-              .name
-                line-height: $font-size-large-m
-                font-size: $font-size-medium
-                no-wrap()
-              .valid
-                font-size: $font-size-small-s
-            .bottom
-              font-size: $font-size-small-s
-          .btn-wrapper
-            display: flex
-            align-items: center
-            width: 58px
-            flex: 0 0 58px
-            .btn
-              width: 58px
-              height: 24px
-              margin: auto
-              text-align: center
-              line-height: 24px
-              font-size: 0
-              background: $color-button
-              .font
-                display: inline-block
-                vertical-align: middle
-                margin-right: 3px
-                font-size: $font-size-small
-                color: $color-white
-              .icon
-                vertical-align: middle
-                width: 11px
-                height: 11px
 
-        .tip-wrapper
-          position: absolute
-          top: 3px
-          right: -18px
-          display: inline-block
-          padding: 5px 20px
+  .coupon
+    margin: 10px 12px 0
+    position: relative
+    padding-bottom: 28%
+    height: 0
+
+    .couponList-item-head-container
+      position: absolute
+      left: 0
+      top: 0
+      right: 0
+      bottom: 0
+      display: flex
+
+      .coupon-bc
+        position: absolute
+        height: 100%
+        width: 100%
+
+      .couponList-item-head-left
+        width: 74.4%
+        height: 100%
+        display: flex
+        position: absolute
+        left: 0
+
+        .couponList-itemPay
+          flex: 4
+          display: flex
+          align-items: center
+          justify-content: center
+
+          .couponList-midMoney
+            font-size: $font-size-small-s
+            font-family: PingFangSC-Semibold
+            color: $color-text-t
+
+          .couponList-bigMoney
+            color: $color-text-t
+            font-size: 25px
+            font-family: PingFangSC-Semibold
+
+        .couponList-itemMsg
+          flex: 7
+          display: flex
+          flex-direction: column
+          justify-content: center
+
+          .couponList-item-title
+            font-family: PingFangSC-Medium
+            font-size: $font-size-medium
+            padding-bottom: 6px
+            border-bottom: .5px solid $color-col-line
+            margin-bottom: 6px
+
+          .couponList-item-time
+            font-size: $font-size-small-s
+            color: $color-text-d
+            line-height: 14px
+
+      .couponList-item-head-right
+        position: absolute
+        right: 0
+        width: 25.6%
+        height: 100%
+        display: flex
+        align-items: center
+        justify-content: center
+
+        .couponList-item-head-right-btn
+          width: 58px
+          height: 24px
+          display: flex
+          align-items: center
+          justify-content: center
+          border: 1px solid $color-orange
           font-size: $font-size-small
-          background-color: $color-yellow
-          transform: rotate(40deg)
+          color: $color-text-t
+          border-radius: 2px
+
+        .shopMsg
+          display: flex
+          flex-direction: column
+          align-items: center
+
+          .shopLogo
+            width: 32px
+            height: 32px
+            border-radius: 50%
+            margin-bottom: 5px
+
+          .shopName
+            font-size: $font-size-small
+            color: $color-text
 </style>

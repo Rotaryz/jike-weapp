@@ -19,7 +19,7 @@
       </view>
       <view class="coupons-wrapper">
         <repeat for="{{coupons}}" key="index" index="index" item="item">
-          <coupon :coupon.sync="item" type="1" @handleClick.user="goToCouponDetail"></coupon>
+          <coupon :coupon.sync="item" @handleClick.user="goToCouponDetail"></coupon>
         </repeat>
       </view>
     </view>

@@ -41,7 +41,7 @@
       <view class="header border-bottom-1px">礼包详情</view>
       <view class="promotion-wrapper">
         <repeat for="{{promotions}}" key="index" index="index" item="item">
-          <coupon :coupon.sync="item" :buy="buy"></coupon>
+          <coupon :coupon.sync="item" :buy="buy" :avatar="yes"></coupon>
         </repeat>
       </view>
     </view>
@@ -209,7 +209,9 @@
           platform_price: item.promotion.platform_price,
           promotion_type: item.promotion.promotion_type,
           end_at: item.promotion.end_at,
-          not_allow_time: item.promotion.not_allow_time
+          not_allow_time: item.promotion.not_allow_time,
+          shop_logo: item.merchant_data.logo_image,
+          shop_name: item.merchant_data.shop_name
         })
       })
       this.$apply()
