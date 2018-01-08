@@ -72,6 +72,9 @@
         this.menuIdx = idx
         this.couponList = []
         let resList = await this._getCouponList(this.menuIdx, 1)
+        if (resList.error === 0) {
+          resList = []
+        }
         this.page = 1
         this.nothingAdd = false
         this.couponList = this._computed(resList)
@@ -83,6 +86,9 @@
           this.LowerLoading = true
           this.page++
           let res = await this._getCouponList(this.menuIdx, this.page)
+          if (res.error === 0) {
+            res = []
+          }
           if (res.length === 0) {
             this.nothingAdd = true
           }
@@ -122,6 +128,9 @@
 
     async load() {
       let resList = await this._getCouponList(this.menuIdx, 1)
+      if (resList.error === 0) {
+        resList = []
+      }
       this.couponList = this._computed(resList)
       this.loaded()
     }

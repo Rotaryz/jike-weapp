@@ -57,7 +57,7 @@
   .coupon
     margin: 10px 12px 0
     position: relative
-    padding-bottom: 28%
+    padding-bottom: 28.49%
     height: 0
 
     .couponList-item-head-container
@@ -105,9 +105,9 @@
           .couponList-item-title
             font-family: PingFangSC-Medium
             font-size: $font-size-medium
-            padding-bottom: 6px
+            padding-bottom: 10px
             border-bottom: .5px solid $color-col-line
-            margin-bottom: 6px
+            margin-bottom: 10px
 
           .couponList-item-time
             font-size: $font-size-small-s

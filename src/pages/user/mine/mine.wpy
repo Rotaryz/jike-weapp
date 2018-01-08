@@ -1,46 +1,54 @@
 <template>
   <view class="mine">
-    <view class="mine-head">
-      <view class="mine-head-avatarBox" @tap="navToMsgPage('/pages/user/myCenter/myCenter')">
-        <image class="mine-head-avatar" src="{{userInfo.avatarUrl}}" style="background-image: url('http://jike-file.jerryf.cn/defaults/c-image/mine/pic-default.png'); background-size: 48px 48px"></image>
-        <view >
-          <view class="mine-head-nickName">{{userInfo.nickName}}</view>
-          <view class="mine-head-nickName-down">
-            编辑个人资料 >
+    <view class="mine-main">
+      <view class="mine-head">
+        <view class="mine-head-avatarBox" @tap="navToMsgPage('/pages/user/myCenter/myCenter')">
+          <image class="mine-head-avatar" src="{{userInfo.avatarUrl}}" style="background-image: url('http://jike-file.jerryf.cn/defaults/c-image/mine/pic-default.png'); background-size: 48px 48px"></image>
+          <view >
+            <view class="mine-head-nickName">{{userInfo.nickName}}</view>
+            <view class="mine-head-nickName-down">
+              编辑个人资料 >
+            </view>
+          </view>
+        </view>
+        <image src="http://jike-file.jerryf.cn/defaults/c-image/mine/icon-my_Rectangle.png" class="mine-headIcon"></image>
+      </view>
+
+      <view class="mine-phoneTestBox" wx:if="{{isPhone===0}}">
+        <PhoneTestHint></PhoneTestHint>
+        <PhoneTest></PhoneTest>
+      </view>
+
+      <view class="mine-order">
+        <view class="mine-order-head" @tap="notestToPage('/pages/user/myOrder/myOrder')">
+          <view class="mine-order-head-left">
+            <view class="red-block"></view>
+            <text class="mine-order-headTxt">我的订单</text>
+          </view>
+          <view class="mine-order-head-right">
+            <view class="red-dot" wx:if="{{tips.order}}"></view>
+            <image src="http://jike-file.jerryf.cn/defaults/c-image/mine/icon-my_Rectangle.png" class="mine-order-headIcon"></image>
+          </view>
+        </view>
+        <view class="mine-order-menu">
+          <view class="mine-order-menuItem" wx:for="{{orderMenu}}" wx:key="{{item.text}}" @tap="notestToPage('/pages/user/myOrder/myOrder?idx={{index}}')">
+            <image src="{{item.imgUrl}}" class="mine-order-menuItem-image"></image>
+            <view class="mine-order-menuItem-txt">{{item.text}}</view>
           </view>
         </view>
       </view>
-      <image src="http://jike-file.jerryf.cn/defaults/c-image/mine/icon-my_Rectangle.png" class="mine-headIcon"></image>
-    </view>
 
-    <view class="mine-phoneTestBox" wx:if="{{isPhone===0}}">
-      <PhoneTestHint></PhoneTestHint>
-      <PhoneTest></PhoneTest>
-    </view>
-
-    <view class="mine-order">
-      <view class="mine-order-head" @tap="notestToPage('/pages/user/myOrder/myOrder')">
-        <view class="mine-order-head-left">
-          <view class="red-block"></view>
-          <text class="mine-order-headTxt">我的订单</text>
+      <view class="mine-serve">
+        <view class="mine-serve-Item" wx:for="{{serveMenu}}" wx:key="{{item.text}}" @tap="notestToPage({{item.url}})">
+          <view class="mine-serve-Item-left">
+            <image src="{{item.imgUrl}}" class="mine-serve-menuItem-image"></image>
+            <view class="mine-serve-menuItem-txt">{{item.text}}</view>
+          </view>
+          <view class="mine-serve-Item-right">
+            <view class="red-dot" wx:if="{{false}}"></view>
+            <image src="http://jike-file.jerryf.cn/defaults/c-image/mine/icon-my_Rectangle.png" class="mine-order-headIcon"></image>
+          </view>
         </view>
-        <image src="http://jike-file.jerryf.cn/defaults/c-image/mine/icon-my_Rectangle.png" class="mine-order-headIcon"></image>
-      </view>
-      <view class="mine-order-menu">
-        <view class="mine-order-menuItem" wx:for="{{orderMenu}}" wx:key="{{item.text}}" @tap="notestToPage('/pages/user/myOrder/myOrder?idx={{index}}')">
-          <image src="{{item.imgUrl}}" class="mine-order-menuItem-image"></image>
-          <view class="mine-order-menuItem-txt">{{item.text}}</view>
-        </view>
-      </view>
-    </view>
-
-    <view class="mine-serve">
-      <view class="mine-serve-Item" wx:for="{{serveMenu}}" wx:key="{{item.text}}" @tap="notestToPage({{item.url}})">
-        <view class="mine-serve-Item-left">
-          <image src="{{item.imgUrl}}" class="mine-serve-menuItem-image"></image>
-          <view class="mine-serve-menuItem-txt">{{item.text}}</view>
-        </view>
-        <image src="http://jike-file.jerryf.cn/defaults/c-image/mine/icon-my_Rectangle.png" class="mine-order-headIcon"></image>
       </view>
     </view>
 
@@ -112,11 +120,16 @@
           text: '收藏',
           url: '/pages/user/mySelect/mySelect'
         }
-      ]
+      ],
+      tips: null
     }
 
     async onLoad() {
       this.load()
+    }
+
+    onShow() {
+      this.tips = wx.getStorageSync('tips')
     }
 
     async load() {
@@ -149,12 +162,14 @@
       },
       navToMsgPage(url) {
         if (this.isPhone === 1) {
+          wepy.setStorageSync('tips', {order: false})
           this.$navigate(url)
         } else {
           this.$invoke('PhoneTest', 'bindPhone')
         }
       },
       notestToPage(url) {
+        wepy.setStorageSync('tips', {order: false})
         this.$navigate(url)
       }
     }
@@ -179,6 +194,16 @@
     height: 100%
     background: $color-background
     font-family: PingFangSC-Light
+
+    .red-dot
+      width: 5px
+      height: 5px
+      background: $color-orange
+      border-radius: 50%
+      margin-right: 10px
+
+    .mine-main
+      min-height: 87vh
 
     .mine-cover
       position: absolute
@@ -264,9 +289,13 @@
             background: $color-text-t
             margin-right: 5px
 
-        .mine-order-headIcon
-          width: 6px
-          height: 10px
+        .mine-order-head-right
+          display: flex
+          align-items: center
+
+          .mine-order-headIcon
+            width: 6px
+            height: 10px
 
       .mine-order-menu
         display: flex
@@ -315,19 +344,20 @@
             font-size: $font-size-small
             color: $color-text
 
-        .mine-order-headIcon
-          width: 6px
-          height: 10px
+        .mine-serve-Item-right
+          display: flex
+          align-items: center
+
+          .mine-order-headIcon
+            width: 6px
+            height: 10px
 
       view:last-child
         border-bottom: 0 none
 
     .mine-logo
       text-align: center
-      position: absolute
-      left: 0
-      right: 0
-      bottom: 20px
+      margin-top: 3vh
 
       .mine-logo-image
         width: 33px

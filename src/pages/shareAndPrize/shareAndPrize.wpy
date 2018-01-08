@@ -99,6 +99,9 @@
     methods = {
       async showCover() {
         let res = await getShare.getShareAndPrizeDetail()
+        if (res.error === 0) {
+          res = {}
+        }
         this.loaded()
         this.shareDetail = res
         this.coverShow = true

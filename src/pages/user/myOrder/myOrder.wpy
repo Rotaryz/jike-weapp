@@ -87,6 +87,9 @@
         this.page = 1
         this.nothingAdd = false
         let resList = await this._getOrderList(idx, this.page)
+        if (resList.error === 0) {
+          resList = []
+        }
         this.orderList = resList
         this.$apply()
         this.loaded()
@@ -131,6 +134,7 @@
             })
             if (pay.errMsg === 'requestPayment:ok') {
               this.load({idx: '0'})
+              wepy.setStorageSync('tips', {order: true})
             }
             break
           case 1:
@@ -172,6 +176,9 @@
         this.menuIdx = 1
       }
       let resList = await this._getOrderList(this.menuIdx, 1)
+      if (resList.error === 0) {
+        resList = []
+      }
       this.orderList = resList
       let customerId = wx.getStorageSync('customerId')
       if (customerId) {

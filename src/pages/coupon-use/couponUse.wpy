@@ -101,7 +101,7 @@
 
       .couponUse-item-head
         position: relative
-        padding-bottom: 28%
+        padding-bottom: 28.49%
         height: 0
 
         .couponUse-item-head-container

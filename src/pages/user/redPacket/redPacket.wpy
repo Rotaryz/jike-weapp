@@ -16,7 +16,7 @@
         </view>
       </view>
 
-      <view class="myRedPacket-withDraw {{packetTotal.redpacker_count_monies>0?'':'disabled'}}" @tap="withDrawSub">提现</view>
+      <view class="myRedPacket-withDraw" @tap="withDrawSub">提现</view>
     </view>
 
     <scroll-view scroll-y class="myRedPacket-list" wx:if="{{packetList.length>0}}" bindscrolltolower="redPacketLower">
@@ -78,6 +78,9 @@
           this.page++
           console.log(this.page)
           let res = await this._getRedPacketList(this.page)
+          if (res.error === 0) {
+            res = []
+          }
           if (res.length === 0) {
             this.nothingAdd = true
           }
@@ -100,8 +103,17 @@
 
     async load() {
       this.packetTotal = await GetRedPacket.getTotalRedpacket()
+      if (this.packetTotal.error === 0) {
+        this.packetTotal = {
+          redpacker_count_monies: '0.00',
+          redpacker_count: '0'
+        }
+      }
       this.packetTotalNum = this._computed(this.packetTotal.redpacker_count_monies)
       this.packetList = await this._getRedPacketList(1)
+      if (this.packetList.error === 0) {
+        this.packetList = []
+      }
       this.$apply()
       this.loaded()
     }

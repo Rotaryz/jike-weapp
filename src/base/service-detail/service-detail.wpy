@@ -1,11 +1,14 @@
 <template>
   <view class="service-detail">
-    <view class="header border-bottom-1px" @tap="test">服务详情</view>
+    <view class="header border-bottom-1px" @tap="test">
+      <view class="red-block"></view>
+      服务详情
+    </view>
     <view class="detail-wrapper">
       <repeat for="{{services}}" key="index" index="index" item="item">
         <view class="item-wrapper border-bottom-1px">
           <view class="content left">
-            <text class="circe"></text>
+            <text class="circle"></text>
             <text class="font">{{item.servie}}</text>
           </view>
           <view class="content middle">{{item.number}}次</view>
@@ -40,7 +43,15 @@
       height: 39px
       line-height: 39px
       font-size: $font-size-medium
-      color: $color-text-l
+      color: $color-master
+      display: flex
+      align-items: center
+      border-bottom: .5px solid $color-col-line
+      .red-block
+        width: 2px
+        height: 14px
+        background: $color-orange
+        margin-right: 8px
     .detail-wrapper
       .item-wrapper
         display: flex

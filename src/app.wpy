@@ -53,6 +53,7 @@ export default class extends wepy.app {
 
   config = {
     pages: [
+      'pages/square/square',
       'pages/recommend/recommend',
       'pages/live/live',
       'pages/pay-result/pay-result',
@@ -70,7 +71,6 @@ export default class extends wepy.app {
       'pages/user/redPacket/redPacket',
       'pages/user/mySelect/mySelect',
       'pages/post-order/post-order',
-      'pages/square/square',
       'pages/shareAndPrize/shareAndPrize',
       'pages/net-error/net-error'
     ],

@@ -137,6 +137,9 @@
         switch (this.menuIdx) {
           case 0:
             let resList = await this._getCouponList(1)
+            if (resList.error === 0) {
+              resList = []
+            }
             this.page = 1
             this.nothingAdd = false
             this.LowerLoading = false
@@ -153,6 +156,9 @@
             this.nothingAdd = false
             this.LowerLoading = false
             this.contentList = await this._getContentList(1)
+            if (this.contentList.error === 0) {
+              this.contentList = []
+            }
             if (this.contentList.length > 0) {
               this.nothingBoxShow = false
             } else {
@@ -165,6 +171,9 @@
             this.nothingAdd = false
             this.LowerLoading = false
             this.kacList = await mySelect.getKacList(1)
+            if (this.kacList.error === 0) {
+              this.kacList = []
+            }
             if (this.kacList.length > 0) {
               this.nothingBoxShow = false
             } else {
@@ -275,7 +284,10 @@
     }
 
     async load() {
-      const res = await this._getCouponList(1)
+      let res = await this._getCouponList(1)
+      if (res.error === 0) {
+        res = []
+      }
       this.couponList = this._computed(res)
       if (this.couponList.length > 0) {
         this.nothingBoxShow = false
@@ -391,7 +403,7 @@
       .mySelect-couponList-item
         margin: 10px 12px 0
         position: relative
-        padding-bottom: 28%
+        padding-bottom: 28.49%
         height: 0
 
         .couponList-item-head-container
@@ -552,7 +564,7 @@
 
         .mySelect-couponList-item-main
           position: relative
-          padding-bottom: 28%
+          padding-bottom: 28.49%
           height: 0
 
           .gift-bag-img

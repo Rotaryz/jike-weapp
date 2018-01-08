@@ -31,7 +31,7 @@
         </view>
       </view>
       <view class="orderDetail-merchant-detail">
-        <view class="orderDetail-merchant-detail-item">
+        <view class="orderDetail-merchant-detail-item" @tap="GPSbegin">
           <image src="http://jike-file.jerryf.cn/defaults/c-image/mine/icon-navigation_1.png" class="orderDetail-merchant-detailIcon"></image>
           <text>开始导航</text>
         </view>
@@ -149,6 +149,7 @@
             })
             if (pay.errMsg === 'requestPayment:ok') {
               this.load(this.orderMsg.id)
+              wepy.setStorageSync('tips', {order: true})
             }
             break
           case 1:
@@ -208,6 +209,13 @@
       },
       closeRefund() {
         this.refundIng = false
+      },
+      GPSbegin() {
+        let data = {
+          longitude: this.orderMsg.merchant_data.longitude,
+          latitude: this.orderMsg.merchant_data.latitude
+        }
+        wepy.openLocation(data)
       }
     }
 
