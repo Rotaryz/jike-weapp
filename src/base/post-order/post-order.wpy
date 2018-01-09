@@ -99,34 +99,34 @@
         this.total = this.count * this.orderInfo.price
       },
       async postOrder() {
-//        const {promotion_merchant_id, promotion_type, promotion_id, title, price} = this.orderInfo
-//        const data = {
-//          promotion_merchant_id,
-//          promotion_type,
-//          promotion_id,
-//          title,
-//          price,
-//          count: this.count
-//        }
-//        const res = await Order.operation(data)
-//        this.loaded()
-//        const {timestamp, nonceStr, signType, paySign} = res.pay_info
-//        const pay = await wepy.requestPayment({
-//          timeStamp: timestamp,
-//          nonceStr,
-//          package: res.pay_info.package,
-//          signType,
-//          paySign
-//        })
-//        if (pay.errMsg === 'requestPayment:ok') {
-//          let tips = wepy.getStorageSync('tips')
-//          tips.order = true
-//          wepy.setStorageSync('tips', tips)
-//          const orderId = res.order_id
-//          const total = this.total
-//          const status = 'success'
-//          this.$parent.$navigate(`/pages/pay-result/pay-result?orderId=${orderId}&total=${total}&status=${status}`)
-//        }
+        const {promotion_merchant_id, promotion_type, promotion_id, title, price} = this.orderInfo
+        const data = {
+          promotion_merchant_id,
+          promotion_type,
+          promotion_id,
+          title,
+          price,
+          count: this.count
+        }
+        const res = await Order.operation(data)
+        this.loaded()
+        const {timestamp, nonceStr, signType, paySign} = res.pay_info
+        const pay = await wepy.requestPayment({
+          timeStamp: timestamp,
+          nonceStr,
+          package: res.pay_info.package,
+          signType,
+          paySign
+        })
+        if (pay.errMsg === 'requestPayment:ok') {
+          let tips = wepy.getStorageSync('tips')
+          tips.order = true
+          wepy.setStorageSync('tips', tips)
+          const orderId = res.order_id
+          const total = this.total
+          const status = 'success'
+          this.$parent.$navigate(`/pages/pay-result/pay-result?orderId=${orderId}&total=${total}&status=${status}`)
+        }
         this._hide()
       },
       hide() {
