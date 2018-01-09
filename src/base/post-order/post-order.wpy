@@ -56,6 +56,7 @@
       maskAnimation: '',
       modalAnimation: '',
       count: 1,
+      stock: 0,
       total: 0
     }
 
@@ -95,14 +96,20 @@
         this.total = this.count * this.orderInfo.price
       },
       addCount() {
-        this.count += 1
+        if (this.stock !== -1) {
+          if (this.count < this.stock - 1) {
+            this.count += 1
+          }
+        } else {
+          this.count += 1
+        }
         this.total = this.count * this.orderInfo.price
       },
       async postOrder() {
         /* eslint-disable no-undef */
-        const {promotion_merchant_id, promotion_type, promotion_id, title, price} = this.orderInfo
+        const {current_merchant, promotion_type, promotion_id, title, price} = this.orderInfo
         const data = {
-          promotion_merchant_id,
+          current_merchant,
           promotion_type,
           promotion_id,
           title,
@@ -143,6 +150,7 @@
       },
       show() {
         this.total = this.count * this.orderInfo.price
+        this.stock = this.orderInfo.stock
         let modalAnimation = wepy.createAnimation({
           duration: 200,
           timingFunction: 'linear',

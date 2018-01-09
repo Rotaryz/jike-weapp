@@ -9,8 +9,8 @@
     mixins = [users]
     data = {
       webviewUrl: '',
-      token: wepy.getStorageSync('token'),
-      merchantId: wepy.getStorageSync('merchantId')
+      token: '',
+      merchantId: ''
     }
 
     onShareAppMessage(res) {
@@ -37,6 +37,7 @@
       this.type = option.type
       let isAuthorise = await this.isAuthorise()
       const token = wepy.getStorageSync('token')
+      this.merchantId = this.$parent.globalData.merchantId || wepy.getStorageSync('merchantId')
       if (this.type === 'wheel') {
         this.webviewUrl = `https://ftbx.majy999.com/index.html?token=${token}&merchantId=${this.merchantId}&isBinding=${isAuthorise ? '1' : '0'}#/wheel`
       } else if (this.type === 'sign') {

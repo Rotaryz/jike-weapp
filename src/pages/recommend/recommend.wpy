@@ -19,17 +19,17 @@
           <image class="icon" src="http://jike-file.jerryf.cn/defaults/c-image/recommend/icon-r_live@2x.png"></image>
           <view class="content">直播优惠</view>
         </button>
-        <button form-type="goToActivity('share', '/pages/shareAndPrize/shareAndPrize')" type="default" size="mini"
+        <button form-type="submit" @tap="goToActivity('share', '/pages/shareAndPrize/shareAndPrize')" type="default" size="mini"
                 class="content-wrapper">
           <image class="icon" src="http://jike-file.jerryf.cn/defaults/c-image/recommend/icon-r_share@2x.png"></image>
           <view class="content">分享有礼</view>
         </button>
-        <button form-type="goToActivity('sign', '/pages/activity/activity?type=sign')" type="default" size="mini"
+        <button form-type="submit" @tap="goToActivity('sign', '/pages/activity/activity?type=sign')" type="default" size="mini"
                 class="content-wrapper">
           <image class="icon" src="http://jike-file.jerryf.cn/defaults/c-image/recommend/icon-r_sign@2x.png"></image>
           <view class="content">签到红包</view>
         </button>
-        <button form-type="goToActivity('lucky_draw','/pages/activity/activity?type=wheel')" type="default" size="mini"
+        <button form-type="submit" @tap="goToActivity('lucky_draw','/pages/activity/activity?type=wheel')" type="default" size="mini"
                 class="content-wrapper">
           <image class="icon" src="http://jike-file.jerryf.cn/defaults/c-image/recommend/icon-turntable@2x.png"></image>
           <view class="content">大转盘 </view>
@@ -225,16 +225,16 @@
         this.collectFormIds(formId)
       },
       async goToActivity(type, url) {
-//        if (this.activities[type]) {
-//          const isAuthorise = this.$parent.globalData.isAuthorise
-//          if (!isAuthorise) {
-//            this.$invoke('phone-test', 'show')
-//            return
-//          }
-//          this.$navigate(url)
-//        } else {
-//          this.$invoke('toast', 'show', '暂未开放')
-//        }
+        if (this.activities[type]) {
+          const isAuthorise = this.$parent.globalData.isAuthorise
+          if (!isAuthorise) {
+            this.$invoke('phone-test', 'show')
+            return
+          }
+          this.$navigate(url)
+        } else {
+          this.$invoke('toast', 'show', '暂未开放')
+        }
       },
       async clickTab(index) {
         this.activeTab = index

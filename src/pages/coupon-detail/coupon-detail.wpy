@@ -122,7 +122,7 @@
       note: {},
       buy: 'no',
       isFavorite: false,
-      promotionMerchantId: 0,
+      currentMerchant: 0,
       qrcode: '',
       sharePrice: '',
       orderInfo: {}
@@ -162,7 +162,7 @@
       }
       await this._getUserInfo()
       await this._createQrcode()
-      this.promotionMerchantId = this.$parent.globalData.merchantId || wepy.getStorageSync('merchantId')
+      this.currentMerchant = this.$parent.globalData.merchantId || wepy.getStorageSync('merchantId')
       this.loaded()
     }
 
@@ -229,9 +229,10 @@
         promotionImage: this.promotionImages[0].image.url,
         promotion_type: this.type,
         promotion_id: this.coupon.id,
-        promotion_merchant_id: this.promotionMerchantId,
+        current_merchant: this.currentMerchant,
         title: this.coupon.title,
-        price: this.coupon.platform_price
+        price: this.coupon.platform_price,
+        stock: this.coupon.stock
       }
       this.$apply()
       this.$invoke('post-order', 'show')

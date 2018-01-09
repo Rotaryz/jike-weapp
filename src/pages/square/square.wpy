@@ -87,7 +87,7 @@
                                    src="http://jike-file.jerryf.cn/defaults/c-image/square/pic-s_activity@2x.png"></cover-image>
                     </cover-view>
                     <cover-view class="word">
-                      {{item.activity}}活动开启
+                      {{item.activity}}活动开启中
                     </cover-view>
                   </cover-view>
                   <cover-view class="item-wrapper">
@@ -296,7 +296,7 @@
       let tips = []
       for (let key in activities) {
         if (activities[key]) {
-          tips.push({activity: key})
+          tips.push({activity: this._translateActivityKey(key)})
         }
       }
       tips.forEach((item, index) => {
@@ -310,6 +310,21 @@
         tips.push(tips[0])
       }
       this.tips = tips
+    }
+
+    _translateActivityKey(key) {
+      switch (key) {
+        case 'lucky_draw':
+          return '幸运大转盘'
+        case 'sign':
+          return '签到红包'
+        case 'video_live':
+          return '直播优惠'
+        case 'share':
+          return '分享有礼'
+        default:
+          return ''
+      }
     }
 
     _caculateDistance() {
