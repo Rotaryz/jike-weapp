@@ -38,6 +38,7 @@
       let isAuthorise = await this.isAuthorise()
       if (this.type === 'wheel') {
         this.webviewUrl = `https://ftbx.majy999.com/index.html?token=${this.token}&merchantId=${this.merchantId}&isBinding=${isAuthorise ? '1' : '0'}#/wheel`
+        console.log(this.webviewUrl)
       } else if (this.type === 'sign') {
         this.webviewUrl = `https://ftbx.majy999.com/index.html?token=${this.token}&merchantId=${this.merchantId}&isBinding=${isAuthorise ? '1' : '0'}#/registration`
       }

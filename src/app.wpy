@@ -57,9 +57,9 @@ export default class extends wepy.app {
 
   config = {
     pages: [
+      'pages/live/live',
       'pages/square/square',
       'pages/recommend/recommend',
-      'pages/live/live',
       'pages/pay-result/pay-result',
       'pages/coupon-detail/coupon-detail',
       'pages/content-detail/content-detail',
@@ -114,7 +114,7 @@ export default class extends wepy.app {
   }
 
   globalData = {
-    baseUrl: 'http://dev.jike-wap-api.jerryf.cn',
+    baseUrl: 'https://dev.jike-wap-api.jerryf.cn',
     isAuthorise: false,
     user: null,
     orderInfo: {}

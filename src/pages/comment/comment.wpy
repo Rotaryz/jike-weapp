@@ -68,19 +68,18 @@
       qrcode: '',
       promotionImages: '',
       shop: '',
-      height: '84%'
+      height: '80%'
     }
 
     async _createQrcode() {
       const res = await Info.createQrode({path: this.currentPage})
       this.qrcode = res.image_url
       this.$apply()
-      console.log(this.qrcode)
     }
 
     async showComment(id) {
       let res = await Live.getComment(id)
-      this.comment = res
+      this.comment = res.reverse()
       this.loaded()
       this.$apply()
     }
@@ -100,7 +99,7 @@
       hideInput() {
         setTimeout(() => {
           this.showCom = false
-          this.height = '84%'
+          this.height = '80%'
           this.$apply()
         }, 300)
       },
