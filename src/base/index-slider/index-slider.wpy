@@ -1,15 +1,15 @@
 <template>
   <view class="slider" wx:if="{{list.length}}">
     <view class="slider-content">
-      <view class="slider-content-ul" style="transition:{{transition}}; transform: translateX({{translateX}}px)"
+      <view class="slider-content-ul" style="transition:{{transition}}; transform: translateX({{list.length===1?0:translateX}}px)"
             bindtouchstart="touchBegin" bindtouchmove="touching" bindtouchend="touchEnd" animation="{{animationData}}">
-        <view class="slider-item">
+        <view class="slider-item" wx:if="{{list.length!==1}}">
           <image src="{{list[list.length-1].image.url}}" class="slider-item-img"></image>
         </view>
         <view class="slider-item" wx:for="{{list}}" wx:key="{{item}}">
           <image src="{{item.image.url}}" class="slider-item-img"></image>
         </view>
-        <view class="slider-item">
+        <view class="slider-item" wx:if="{{list.length!==1}}">
           <image src="{{list[0].image.url}}" class="slider-item-img"></image>
         </view>
       </view>
@@ -73,12 +73,6 @@
       touchEnd(e) {
         this.endClient = e.changedTouches[0].clientX
         let delta = this.endClient - this.beginClient
-        if (this.maxLength === 3) {
-          this.transition = 'all .3s'
-          this.translateX = this.casualTranslateX
-          this.$apply()
-          return
-        }
         if (delta < -100) {
           this.transition = 'all .3s'
           this.translateX = this.casualTranslateX + this.baseTranslateX * -1
