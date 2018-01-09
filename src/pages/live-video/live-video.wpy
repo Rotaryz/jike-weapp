@@ -200,7 +200,8 @@
         this.$apply()
       },
       async postOrder() {
-        let meId = this.$parent.globalData.merchantId || wepy.getStorageSync('merchantId')
+        let meId = this.$parent.$parent.globalData.merchantId || await
+            wepy.getStorageSync('merchantId')
         const data = {
           from: 'c_live',
           promotion_id: this.promotionId,
@@ -239,13 +240,12 @@
       this.shopName = ''
       this.activityId = res.id
       this.loaded()
-      this.$com.Comment.showComment()
+      this.$com.Comment.showComment(res.id)
       this.$apply()
     }
 
     async onLoad() {
       let res = await wepy.getSystemInfo()
-      console.log(res.windowWidth)
       this.width = res.windowWidth - 95
       this.$apply()
     }
@@ -497,7 +497,7 @@
         color: $color-text-l
         position: relative
       .detail-wrapper
-        padding: 7.5px 0 8vw
+        padding: 7.5px 0 4vw
         box-sizing: border-box
         height: 34.4vw
         .item-wrapper
