@@ -9,6 +9,7 @@
           </view>
           <view class="couponList-itemMsg">
             <view class="couponList-item-title">{{giftbag.title}}</view>
+            <view class="underline"></view>
             <view class="couponList-item-time">有效期至{{giftbag.end_at ? giftbag.end_at : giftbag.sell_end_at}}</view>
           </view>
         </view>
@@ -124,8 +125,11 @@
               font-family: PingFangSC-Medium
               font-size: $font-size-medium
               padding-bottom: 10px
-              border-bottom: .5px solid $color-col-line
-              margin-bottom: 10px
+
+            .underline
+              width: 90%
+              height: 10px
+              border-top: .5px solid $color-col-line
 
             .couponList-item-time
               font-size: $font-size-small-s

@@ -22,6 +22,7 @@
             </view>
             <view class="couponList-itemMsg">
               <view class="couponList-item-title">{{item.title}}</view>
+              <view class="underline"></view>
               <view class="couponList-item-time">{{item.notAllowTime}}</view>
               <view class="couponList-item-time">有效期至{{item.endAt}}</view>
             </view>
@@ -76,6 +77,7 @@
               </view>
               <view class="couponList-itemMsg">
                 <view class="couponList-item-title">{{item.gift_bag.title}}</view>
+                <view class="underline"></view>
                 <view class="couponList-item-time">有效期至{{item.gift_bag.sell_end_at}}</view>
               </view>
             </view>
@@ -206,7 +208,6 @@
           this.LowerLoading = true
           this.page++
           let res = await this._getContentList(this.page)
-
           if (res.length === 0) {
             this.nothingAdd = true
           }
@@ -282,21 +283,50 @@
       }
     }
 
-    async onLoad() {
+    async onShow() {
       await this.load()
     }
 
     async load() {
-      let res = await this._getCouponList(1)
-      if (res.error === 0) {
-        res = []
+      switch (this.menuIdx * 1) {
+        case 0:
+          let res = await this._getCouponList(1)
+          if (res.error === 0) {
+            res = []
+          }
+          this.couponList = this._computed(res)
+          if (this.couponList.length > 0) {
+            this.nothingBoxShow = false
+          } else {
+            this.nothingBoxShow = true
+          }
+          break
+        case 1:
+          let res1 = await this._getContentList(1)
+          if (res1.error === 0) {
+            res1 = []
+          }
+          this.contentList = res1
+          if (this.contentList.length > 0) {
+            this.nothingBoxShow = false
+          } else {
+            this.nothingBoxShow = true
+          }
+          break
+        case 2:
+          let res2 = await mySelect.getKacList(1)
+          if (res2.error === 0) {
+            res2 = []
+          }
+          this.kacList = res2
+          if (this.kacList.length > 0) {
+            this.nothingBoxShow = false
+          } else {
+            this.nothingBoxShow = true
+          }
+          break
       }
-      this.couponList = this._computed(res)
-      if (this.couponList.length > 0) {
-        this.nothingBoxShow = false
-      } else {
-        this.nothingBoxShow = true
-      }
+
       this.$apply()
       this.loaded()
     }
@@ -454,9 +484,12 @@
               .couponList-item-title
                 font-family: PingFangSC-Medium
                 font-size: $font-size-medium
-                padding-bottom: 6px
-                border-bottom: .5px solid $color-col-line
-                margin-bottom: 6px
+                padding-bottom: 10px
+
+              .underline
+                width: 90%
+                height: 10px
+                border-top: .5px solid $color-col-line
 
               .couponList-item-time
                 font-size: $font-size-small-s
@@ -621,9 +654,12 @@
                 .couponList-item-title
                   font-family: PingFangSC-Medium
                   font-size: $font-size-medium
-                  padding-bottom: 6px
-                  border-bottom: .5px solid $color-col-line
-                  margin-bottom: 6px
+                  padding-bottom: 10px
+
+                .underline
+                  width: 90%
+                  height: 10px
+                  border-top: .5px solid $color-col-line
 
                 .couponList-item-time
                   font-size: $font-size-small-s
