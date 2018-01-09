@@ -162,6 +162,7 @@
       }
       await this._getUserInfo()
       await this._createQrcode()
+      this.promotionMerchantId = this.$parent.globalData.merchantId || wepy.getStorageSync('merchantId')
       this.loaded()
     }
 
@@ -195,7 +196,6 @@
       this.services = data.detail
       this.note = data.note
       this.isFavorite = data.is_favorite
-      this.promotionMerchantId = data.merchant_id
       this.$apply()
     }
 

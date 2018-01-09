@@ -32,7 +32,7 @@
     </view>
     <view class="tab-container">
       <view class="tab-wrapper">
-        <view class="tab-content">
+        <view class="tab-content border-bottom-1px">
           <view class="tab-item" @tap="clickTab(1)">
             <view class="tab-item-txt {{activeTab === '1' ? 'active' : ''}}">优惠券</view>
           </view>
@@ -133,12 +133,13 @@
       }
     }
 
-    async onLoad() {
+    async onShow() {
       await this.load()
     }
 
     async load() {
       this.merchantId = this.$parent.globalData.merchantId || wepy.getStorageSync('merchantId')
+      console.log(this.$parent.globalData)
       const isAuthorise = await this.isAuthorise()
       this.$parent.updateGlobalData('isAuthorise', isAuthorise)
       await this._getShopCouponList()
@@ -167,7 +168,13 @@
 
     async _getMerchantContents() {
       this.contentPage += 1
-      const data = await ContentsApi.getMerchantContents({page: this.contentPage})
+      const params = {
+        page: this.contentPage
+      }
+      if (this.$parent.globalData.merchantId) {
+        params.current_merchant = this.$parent.globalData.merchantId
+      }
+      const data = await ContentsApi.getMerchantContents(params)
       if (data.length === 0) {
         this.moreContent = false
       } else {
@@ -263,7 +270,6 @@
             .slider-item-img
               width: 86.6666vw
               height: 29.3333vw
-
     .nav-wrapper
       display: flex
       align-items: center

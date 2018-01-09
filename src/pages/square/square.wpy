@@ -367,7 +367,7 @@
     methods = {
       switchRecommend() {
         const merchantId = this.currentMerchant.merchant_id
-        this.$parent.updateGlobalData('merchanId', merchantId)
+        this.$parent.updateGlobalData('merchantId', merchantId)
         wepy.switchTab({url: '/pages/recommend/recommend'})
       },
       async tapMap(e) {
