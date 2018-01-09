@@ -99,6 +99,7 @@
         this.total = this.count * this.orderInfo.price
       },
       async postOrder() {
+        /* eslint-disable no-undef */
         const {promotion_merchant_id, promotion_type, promotion_id, title, price} = this.orderInfo
         const data = {
           promotion_merchant_id,

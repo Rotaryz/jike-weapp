@@ -14,7 +14,7 @@ export default class Tips {
   static success(title, duration = 500) {
     wx.showToast({
       title: title,
-      image: '../image/icon-global_success@2x.png',
+      image: '/common/image/icon-global_success@2x.png',
       mask: true,
       duration: duration
     })
@@ -107,7 +107,7 @@ export default class Tips {
   static error(title, onHide) {
     wx.showToast({
       title: title,
-      image: '../image/icon-global_failure@2x.png',
+      image: '/common/image/icon-global_failure@2x.png',
       mask: true,
       duration: 500
     })

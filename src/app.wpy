@@ -22,6 +22,13 @@ export default class extends wepy.app {
     wepy.setStorageSync('merchantId', option.query.merchantId || 100000)
     // 校验SDK
     wxUtils.checkSDK()
+    const storageDate = wepy.getStorageSync('collectDate')
+    const date = new Date()
+    const collectDate = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate()
+    if (storageDate !== collectDate) {
+      wepy.setStorageSync('collectDate', collectDate)
+      wepy.setStorageSync('collectLength', 0)
+    }
   }
 
   isObject(item) {

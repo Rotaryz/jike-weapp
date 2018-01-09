@@ -73,13 +73,14 @@ export default class http {
     const error = {}
     error.statusCode = res.statusCode
     const wxData = res.data
-    const serverData = wxData.data
-    if (serverData) {
-      error.serverCode = wxData.code
-      error.message = serverData.message
-      error.serverData = serverData
+    if (wxData) {
+      error.error = wxData.error
+      error.message = wxData.message
+      error.serverData = wxData
+      Tips.error(wxData.message)
+    } else {
+      Tips.loaded()
     }
-    Tips.loaded()
     return error
   }
 

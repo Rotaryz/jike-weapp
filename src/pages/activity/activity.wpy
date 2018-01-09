@@ -36,10 +36,11 @@
     async onLoad(option) {
       this.type = option.type
       let isAuthorise = await this.isAuthorise()
+      const token = wepy.getStorageSync('token')
       if (this.type === 'wheel') {
-        this.webviewUrl = `https://ftbx.majy999.com/index.html?token=${this.token}&merchantId=${this.merchantId}&isBinding=${isAuthorise ? '1' : '0'}#/wheel`
+        this.webviewUrl = `https://ftbx.majy999.com/index.html?token=${token}&merchantId=${this.merchantId}&isBinding=${isAuthorise ? '1' : '0'}#/wheel`
       } else if (this.type === 'sign') {
-        this.webviewUrl = `https://ftbx.majy999.com/index.html?token=${this.token}&merchantId=${this.merchantId}&isBinding=${isAuthorise ? '1' : '0'}#/registration`
+        this.webviewUrl = `https://ftbx.majy999.com/index.html?token=${token}&merchantId=${this.merchantId}&isBinding=${isAuthorise ? '1' : '0'}#/registration`
       }
       this.$apply()
     }
