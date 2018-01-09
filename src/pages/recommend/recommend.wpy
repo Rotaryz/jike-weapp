@@ -150,7 +150,7 @@
       this.couponList = data.promotions
       this.giftBags = data.gift_bags
       this.activities = data.activities || {}
-      this.shopImages = data.merchant_data.shop_image
+      this.shopImages = this.checkPropety(data.merchant_data.shop_image)
     }
 
     async _getCouponList() {
@@ -175,6 +175,12 @@
       }
       this.$apply()
       this.loaded()
+    }
+
+    _checkPropety(arr) {
+      return arr.filter((item) => {
+        return item.image.url
+      })
     }
 
     methods = {

@@ -73,6 +73,12 @@
       touchEnd(e) {
         this.endClient = e.changedTouches[0].clientX
         let delta = this.endClient - this.beginClient
+        if (this.maxLength === 3) {
+          this.transition = 'all .3s'
+          this.translateX = this.casualTranslateX
+          this.$apply()
+          return
+        }
         if (delta < -100) {
           this.transition = 'all .3s'
           this.translateX = this.casualTranslateX + this.baseTranslateX * -1
