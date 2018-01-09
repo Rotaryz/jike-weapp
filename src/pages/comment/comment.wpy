@@ -27,7 +27,7 @@
       </view>
     </view>
     <Share :qrcode.sync="qrcode"
-           :promotionImages.sync="promotionImages"></Share>
+           :promotionImages.sync="promotionImages" :shop.sync="shop"></Share>
   </view>
 </template>
 
@@ -55,6 +55,10 @@
       videoImages: {
         type: String,
         default: ''
+      },
+      shopName: {
+        type: String,
+        default: ''
       }
     }
     data = {
@@ -63,6 +67,7 @@
       ifHide: 0,
       qrcode: '',
       promotionImages: '',
+      shop: '',
       height: '84%'
     }
 
@@ -130,6 +135,7 @@
           this.$apply()
         }, 300)
         this.promotionImages = this.videoImages
+        this.shop = this.shopName
       }
     }
   }
