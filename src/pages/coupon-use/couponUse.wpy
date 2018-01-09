@@ -6,17 +6,20 @@
           <image class="coupon-bc" src="http://jike-file.jerryf.cn/defaults/c-image/mine/pic-couponbg@2x.png"></image>
           <view class="couponUse-item-head-left">
             <view class="couponUse-itemPay">
-              <view ><text class="couponUse-midMoney">￥</text><text class="couponUse-bigMoney">{{item.price}}</text></view>
+              <image src="{{item.image_url}}" class="promotion-image" wx:if="{{item.type==='exchange'}}"></image>
+              <view wx:if="{{item.type!=='exchange'}}"><text class="couponUse-midMoney">￥</text><text class="couponUse-bigMoney">{{item.price}}</text></view>
             </view>
             <view class="couponUse-itemMsg">
               <view class="couponUse-item-title">{{item.title}}</view>
+              <view class="underline"></view>
               <view class="couponUse-item-time">{{item.notAllowTime}}</view>
               <view class="couponUse-item-time">有效期至{{item.endAt}}</view>
             </view>
           </view>
           <view class="couponUse-item-head-right">
-            <view class="couponUse-item-head-right-btn">立即购买</view>
+            <view class="couponUse-item-head-right-btn">核销</view>
           </view>
+          <image class="exChange-img" src="http://jike-file.jerryf.cn/defaults/c-image/mine/pic-m_certificate@2x.png" wx:if="{{item.type==='exchange'}}"></image>
         </view>
       </view>
       <view class="couponEwm-Msg-body">
@@ -61,6 +64,7 @@
       let resList
       switch (type) {
         case 'coupon':
+        case 'exchange':
           resList = await Coupon.getUserCouponDetail(id)
           break
         case 'order':
@@ -82,8 +86,10 @@
           notAllowTime: item.promotion.not_allow_time,
           code: item.code,
           beautyCode,
+          type: item.promotion.promotion_type,
           qrcodeUrl: item.qrcode_url,
-          id: item.promotion_id
+          id: item.promotion_id,
+          image_url: item.promotion.image_url || ''
         }
       })
     }
@@ -130,6 +136,11 @@
               align-items: center
               justify-content: center
 
+              .promotion-image
+                width: 56px
+                height: 28px
+                border-radius: 2px
+
               .couponUse-midMoney
                 font-size: $font-size-small-s
                 font-family: PingFangSC-Semibold
@@ -149,9 +160,11 @@
               .couponUse-item-title
                 font-family: PingFangSC-Medium
                 font-size: $font-size-medium
-                padding-bottom: 6px
-                border-bottom: .5px solid $color-col-line
-                margin-bottom: 6px
+                padding-bottom: 10px
+              .underline
+                width: 90%
+                height: 10px
+                border-top: .5px solid $color-col-line
 
               .couponUse-item-time
                 font-size: $font-size-small-s
@@ -168,15 +181,15 @@
             justify-content: center
 
             .couponUse-item-head-right-btn
-              width: 58px
-              height: 24px
-              display: flex
-              align-items: center
-              justify-content: center
-              border: 1px solid $color-orange
-              font-size: $font-size-small
-              color: $color-text-t
-              border-radius: 2px
+              font-size: $font-size-medium
+              color: $color-text
+
+          .exChange-img
+            position: absolute
+            left: 0
+            top: 0
+            width: 44.5px
+            height: 46.5px
 
       .couponEwm-Msg-body
         height: 270px

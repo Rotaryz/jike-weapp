@@ -13,21 +13,23 @@
     </view>
 
     <scroll-view scroll-y class="{{menuIdx===0?'myCoupon-couponList':'myCoupon-couponList-ccc'}}" bindscrolltolower="couponLower" wx:if="{{couponList.length>0}}">
-      <view class="myCoupon-couponList-item" wx:for="{{couponList}}" wx:key="{{index}}" @tap="couponDetail({{item.id}}, {{item.type}})">
+      <view class="myCoupon-couponList-item" wx:for="{{couponList}}" wx:key="{{index}}" @tap="couponDetail({{item.id}},{{item.promotionType}},{{item.codeId}})">
         <view class="couponList-item-head-container">
           <image class="coupon-bc" src="http://jike-file.jerryf.cn/defaults/c-image/mine/pic-couponbg@2x.png"></image>
           <view class="couponList-item-head-left">
             <view class="couponList-itemPay">
-              <view ><text class="couponList-midMoney">￥</text><text class="couponList-bigMoney">{{item.price?item.price:''}}</text></view>
+              <image src="{{}}" class="promotion-image" wx:if="{{item.promotionType==='exchange'}}"></image>
+              <view wx:if="{{item.promotionType!=='exchange'}}"><text class="couponList-midMoney">￥</text><text class="couponList-bigMoney">{{item.price?item.price:''}}</text></view>
             </view>
             <view class="couponList-itemMsg">
               <view class="couponList-item-title">{{item.title}}</view>
+              <view class="underline"></view>
               <view class="couponList-item-time">{{item.notAllowTime}}</view>
               <view class="couponList-item-time">有效期至{{item.endAt}}</view>
             </view>
           </view>
           <view class="couponList-item-head-right">
-            <view class="couponList-item-head-right-btn" wx:if="{{menuIdx===0}}" catchtap="useCoupon({{item.id}}, 'coupon')">进店使用</view>
+            <view class="couponList-item-head-right-btn" wx:if="{{menuIdx===0}}" catchtap="useCoupon({{item.codeId}}, 'coupon')">进店使用</view>
             <image class="couponList-noItemBtn" wx:if="{{menuIdx===1}}" src="http://jike-file.jerryf.cn/defaults/c-image/mine/pic-my_already .png"></image>
             <image class="couponList-noItemBtn" wx:if="{{menuIdx===2}}" src="http://jike-file.jerryf.cn/defaults/c-image/mine/pic-my_overdue.png"></image>
           </view>
@@ -107,13 +109,13 @@
       toRecommend() {
         wx.switchTab({url: '/pages/recommend/recommend'})
       },
-      couponDetail(id, type) {
+      couponDetail(id, type, codeId) {
         if (this.menuIdx === 0) {
-          if (!type || typeof (type) !== 'string') {
-            this.$navigate('/pages/coupon-detail/coupon-detail?type=1&id=' + id)
-          } else {
-            this.$navigate('/pages/coupon-detail/coupon-detail?type=2&id=' + type)
+          if (type === 'exchange') {
+            this.$navigate('/pages/coupon-use/couponUse?type=' + type + '&id=' + codeId)
+            return
           }
+          this.$navigate('/pages/coupon-detail/coupon-detail?type=1&id=' + id)
         }
       }
     }
@@ -152,8 +154,10 @@
           beautyCode,
           qrcodeUrl: item.qrcode_url,
           id: item.promotion.id,
+          codeId: item.id,
           type: item.gift_bag_id,
-          promotionType: item.promotion.promotion_type
+          promotionType: item.promotion.promotion_type,
+          imageUrl: item.promotion.promotion_img || ''
         }
       })
     }
@@ -263,6 +267,11 @@
             align-items: center
             justify-content: center
 
+            .promotion-image
+              width: 56px
+              height: 28px
+              border-radius: 2px
+
             .couponList-midMoney
               font-size: $font-size-small-s
               font-family: PingFangSC-Semibold
@@ -282,9 +291,12 @@
             .couponList-item-title
               font-family: PingFangSC-Medium
               font-size: $font-size-medium
-              padding-bottom: 6px
-              border-bottom: .5px solid $color-col-line
-              margin-bottom: 6px
+              padding-bottom: 10px
+
+            .underline
+              width: 90%
+              height: 10px
+              border-top: .5px solid $color-col-line
 
             .couponList-item-time
               font-size: $font-size-small-s
@@ -380,10 +392,12 @@
             .couponList-item-title
               font-family: PingFangSC-Medium
               font-size: $font-size-medium
-              padding-bottom: 6px
-              border-bottom: .5px solid $color-col-line
-              margin-bottom: 6px
+              padding-bottom: 10px
               color: #DBDBDB
+            .underline
+              width: 90%
+              height: 10px
+              border-top: .5px solid $color-col-line
 
             .couponList-item-time
               font-size: $font-size-small-s

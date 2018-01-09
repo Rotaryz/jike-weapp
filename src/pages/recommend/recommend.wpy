@@ -405,9 +405,12 @@
                   .couponList-item-title
                     font-family: PingFangSC-Medium
                     font-size: $font-size-medium
-                    padding-bottom: 6px
-                    border-bottom: .5px solid $color-col-line
-                    margin-bottom: 6px
+                    padding-bottom: 10px
+
+                  .underline
+                    width: 90%
+                    height: 10px
+                    border-top: .5px solid $color-col-line
 
                   .couponList-item-time
                     font-size: $font-size-small-s
@@ -494,9 +497,12 @@
                     .couponList-item-title
                       font-family: PingFangSC-Medium
                       font-size: $font-size-medium
-                      padding-bottom: 6px
-                      border-bottom: .5px solid $color-col-line
-                      margin-bottom: 6px
+                      padding-bottom: 10px
+
+                    .underline
+                      width: 90%
+                      height: 10px
+                      border-top: .5px solid $color-col-line
 
                     .couponList-item-time
                       font-size: $font-size-small-s

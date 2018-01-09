@@ -172,7 +172,7 @@
 
     async load(option) {
       this.userInfo = this.$parent.globalData.user
-      if (option.idx) {
+      if (option.idx || option.idx === 0) {
         this.menuIdx = Number(option.idx)
       } else {
         this.menuIdx = 1

@@ -15,7 +15,7 @@
     </view>
     <view class="withDraw-hint">
       <text>提现到微信钱包</text>
-      <text class="withDraw-hint-redTxt" @tap="allIn">全部提现</text>
+      <view class="withDraw-hint-redTxt" @tap="allIn">全部提现</view>
     </view>
     <view class="withDraw-btn {{drawMoney*1===0?'disab':''}}" @tap="submitMoney">提现</view>
     <view class="withDraw-time">1-5个工作日到账</view>
@@ -85,7 +85,9 @@
         }
         if (this.drawMoney > this.packetTotal.remaining) {
           this.$invoke('Toast', 'show', '账户余额不足')
+          return
         }
+        this.$invoke('Toast', 'show', '功能暂未开放')
       }
     }
 
@@ -127,7 +129,7 @@
     .withDraw-inputBox
       display: flex
       align-items: center
-      padding-bottom: 10px
+      padding-bottom: 6px
       border-bottom: 1px solid $color-row-line
       justify-content: space-between
 
@@ -139,7 +141,7 @@
           font-size: $font-size-medium-x
 
         .withDraw-inputBox-input
-          width: 250px
+          width: 200px
           margin-left: 10px
           font-family: PingFangSC-Medium
           font-size: $font-size-large-xx
@@ -148,7 +150,7 @@
       .withDraw-inputBox-btn
         width: 10px
         height: 10px
-        margin-right: 10px
+        margin: 10px
 
     .withDraw-hint
       display: flex
@@ -158,6 +160,8 @@
       font-size: $font-size-small-s
 
       .withDraw-hint-redTxt
+        height: 43px
+        line-height: 43px
         color: $color-text-t
 
     .withDraw-btn
