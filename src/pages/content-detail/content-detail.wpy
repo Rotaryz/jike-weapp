@@ -28,13 +28,13 @@
     </view>
     <view class="fix-btn-wrapper">
       <view class="collect" @tap="storeToggle">
-        <image wx:if="{{!isFavorite}}" src="./icon-collection1@2x.png" class="full-image"></image>
-        <image wx:if="{{isFavorite}}" src="./icon-collection2@2x.png" class="full-image"></image>
+        <image wx:if="{{!isFavorite}}" src="http://jike-file.jerryf.cn/defaults/c-image/recommend/icon-collection1@2x.png" class="full-image"></image>
+        <image wx:if="{{isFavorite}}" src="http://jike-file.jerryf.cn/defaults/c-image/recommend/icon-collection2@2x.png" class="full-image"></image>
       </view>
       <view class="share">
-        <image src="./icon-sharepolite@2x.png" class="full-image"></image>
+        <image src="http://jike-file.jerryf.cn/defaults/c-image/recommend/icon-sharepolite@2x.png" class="full-image"></image>
         <view class="red">
-          <image src="./pic-openmoney@2x.png" class="full-image"></image>
+          <image src="http://jike-file.jerryf.cn/defaults/c-image/recommend/pic-openmoney@2x.png" class="full-image"></image>
         </view>
       </view>
     </view>

@@ -5,7 +5,7 @@
         <slot name="content"></slot>
       </view>
       <view class="close-wrapper" @tap.stop="close">
-        <image src="./icon-close_white.png" class="full-image"></image>
+        <image src="http://jike-file.jerryf.cn/defaults/c-image/recommend/icon-delet@2x.png" class="full-image"></image>
       </view>
     </view>
   </view>

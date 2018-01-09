@@ -7,12 +7,12 @@
       <view class="content-wrapper">
         <button class="wx" open-type="share">
           <view class="wrapper">
-            <image src="./icon-wx@2x.png"></image>
+            <image src="http://jike-file.jerryf.cn/defaults/c-image/recommend/icon-wx@2x.png"></image>
             <view class="text">微信好友</view>
           </view>
         </button>
         <view class="line" @tap="generatePicture">
-          <image src="./icon-pyq@2x.png"></image>
+          <image src="http://jike-file.jerryf.cn/defaults/c-image/recommend/icon-pyq@2x.png"></image>
           <view class="text">微信朋友圈</view>
         </view>
       </view>
