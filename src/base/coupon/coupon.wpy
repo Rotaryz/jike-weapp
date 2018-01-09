@@ -1,10 +1,11 @@
 <template>
   <view class="coupon">
-    <view class="couponList-item-head-container" @tap="handleClick">
+    <view class="couponList-item-head-container" @tap="handleClick({{coupon.id}})">
       <image class="coupon-bc" src="http://jike-file.jerryf.cn/defaults/c-image/mine/pic-couponbg@2x.png"></image>
       <view class="couponList-item-head-left">
+        <view class="border-line" wx:if="{{border!=='no'}}"></view>
         <view class="couponList-itemPay">
-          <view ><text class="couponList-midMoney">￥</text><text class="couponList-bigMoney">{{coupon.platform_price}}</text></view>
+          <view><text class="couponList-midMoney">￥</text><text class="couponList-bigMoney">{{coupon.platform_price}}</text></view>
         </view>
         <view class="couponList-itemMsg">
           <view class="couponList-item-title">{{coupon.title}}</view>
@@ -40,12 +41,16 @@
       avatar: {
         type: String,
         default: 'no'
+      },
+      border: {
+        type: String,
+        default: 'no'
       }
     }
 
     methods = {
-      handleClick() {
-        this.$emit('handleClick', 1, this.coupon.id)
+      handleClick(id) {
+        this.$emit('handleClick', 1, id)
       }
     }
   }
@@ -79,6 +84,15 @@
         display: flex
         position: absolute
         left: 0
+
+        .border-line
+          width: 3.35px
+          height: 100%
+          position: absolute
+          left: 0
+          top: 0px
+          background: $color-orange
+          border-radius: 2px 0 0 2px
 
         .couponList-itemPay
           flex: 4

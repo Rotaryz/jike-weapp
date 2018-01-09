@@ -6,7 +6,7 @@
       </view>
     </view>
 
-    <view class="myOrder-phoneTestBox" wx:if="{{isPhone===1}}">
+    <view class="myOrder-phoneTestBox" wx:if="{{isPhone===0}}">
       <PhoneTestHint></PhoneTestHint>
       <PhoneTest></PhoneTest>
     </view>
@@ -162,9 +162,11 @@
 
     async onLoad(option) {
       this.menuIdx = option.idx
+      this.$apply()
     }
 
     async onShow() {
+      wepy.setStorageSync('tips', {order: false})
       this.load({idx: this.menuIdx})
     }
 

@@ -162,14 +162,12 @@
       },
       navToMsgPage(url) {
         if (this.isPhone === 1) {
-          wepy.setStorageSync('tips', {order: false})
           this.$navigate(url)
         } else {
           this.$invoke('PhoneTest', 'bindPhone')
         }
       },
       notestToPage(url) {
-        wepy.setStorageSync('tips', {order: false})
         this.$navigate(url)
       }
     }

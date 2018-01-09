@@ -319,15 +319,15 @@
           position: absolute
           left: 0
           top: 0
-          width: 13.75vw
-          height: 14.375vw
+          width: 44.5px
+          height: 46.5px
 
 
   .myCoupon-couponList-ccc
     max-height: 92vh
     color: $color-text-n
     filter: grayscale(100%)
-    filter: gray;
+    filter: gray
 
     .myCoupon-couponList-item
       margin: 10px 12px 0
