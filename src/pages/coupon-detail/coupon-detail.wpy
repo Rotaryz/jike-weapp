@@ -184,6 +184,7 @@
 
     async _getCouponDetail() {
       const data = await CouponApi.getShopCouponDetail(this.id)
+      wepy.setNavigationBarTitle({title: data.title})
       this.promotionImages = data.promotion_images
       data.platform_price = Math.floor(data.platform_price)
       data.shop_price = Math.floor(data.shop_price)
@@ -197,6 +198,7 @@
 
     async _getPackageDetail() {
       const data = await CouponApi.getPackageDetail(this.id)
+      wepy.setNavigationBarTitle({title: data.title})
       data.platform_price = Math.floor(data.platform_price)
       data.shop_price = Math.floor(data.shop_price)
       this.coupon = data

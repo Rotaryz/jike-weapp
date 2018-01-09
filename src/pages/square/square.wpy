@@ -33,12 +33,12 @@
             </cover-view>
             <cover-view class="comment">
               <cover-view class="comment-content">
-                <cover-view class="stars" wx:if="{{currentMerchant.star_level !== '0.0'}}">
+                <cover-view class="stars">
                   <repeat for="{{stars}}" index="{{index}}" key="{{index}}">
                     <cover-image src="http://jike-file.jerryf.cn/defaults/c-image/square/icon-s_evaluate@2x.png"
                                  class="icon-star"></cover-image>
                   </repeat>
-                  <cover-view>{{currentMerchant.star_level}}</cover-view>
+                  <cover-view>{{currentMerchant.star_level !== '0.0' ? currentMerchant.star_level : '5.0'}}</cover-view>
                 </cover-view>
                 <cover-view class="store">{{currentMerchant.favorite_count}}人已收藏</cover-view>
               </cover-view>
@@ -281,7 +281,8 @@
       const res = await Merchants.getMerchantsDetail(id)
       this.currentMerchant = res
       this.promotions = res.promotions
-      this.stars = new Array(Math.floor(res.star_level))
+      const starLevel = res.star_level === '0.0' ? 5 : res.star_level
+      this.stars = new Array(Math.floor(starLevel))
       this.$apply()
       this.loaded()
       this._setTips()
@@ -402,7 +403,7 @@
       },
       markertap(e) {
         let markerId = e.markerId
-        if (this.activeMarkerId === markerId) {
+        if (this.activeMarkerId === markerId && this.showSlide) {
           return
         }
         this.activeMarkerId = markerId
@@ -504,36 +505,39 @@
               .title
                 margin-bottom: 2.5px
                 font-size: $font-size-medium-x
+                overflow: hidden
+                text-overflow: ellipsis
+                white-space: nowrap
               .subhead
                 font-size: $font-size-small-s
             .logo-wrapper
               position: relative
-              flex: 0 0 70px
+              flex: 0 0 65px
               display: flex
               align-items: center
               justify-content: center
               .image
                 display: flex
-                width: 64px
+                width: 65px
                 height: 52px
               .industry
                 position: absolute
-                top: 11.5px
+                top: 13.5px
+                left: 24.5px
                 display: flex
-                width: 15px
-                height: 15px
-                margin-left: -1px
+                width: 12px
+                height: 12px
                 border-radius: 50%
               .logo
                 position: absolute
-                bottom: 9.68px
-                right: 4.2967px
+                bottom: 11.25px
+                right: 3px
                 display: flex
-                width: 27px
-                height: 27px
+                width: 24px
+                height: 24px
                 border-radius: 100%
             .comment
-              flex: .8
+              flex: 1
               display: flex
               flex-direction: column
               justify-content: center

@@ -1,0 +1,77 @@
+<template>
+  <view animation="{{maskAnimation}}" class="post-order" @tap.stop="hide"
+        wx:if="{{show}}">
+    <canvas canvas-id="target" class="canvas"></canvas>
+    <view animation="{{modalAnimation}}" class="modal border-top-1px"
+          wx:if="{{show}}">
+    </view>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+
+  export default class PostOrder extends wepy.component {
+    data = {
+      show: false,
+      maskAnimation: '',
+      modalAnimation: ''
+    }
+
+    methods = {
+      hide() {
+        let modalAnimation = wepy.createAnimation({
+          duration: 200,
+          timingFunction: 'linear',
+          delay: 0
+        })
+        let maskAnimation = wepy.createAnimation({
+          duration: 200,
+          timingFunction: 'linear',
+          delay: 0
+        })
+        maskAnimation.opacity(0).step()
+        modalAnimation.translateY(114).step()
+        this.maskAnimation = maskAnimation.export()
+        this.modalAnimation = modalAnimation.export()
+        setTimeout(() => {
+          maskAnimation.opacity(1).step()
+          modalAnimation.translateY(0).step()
+          this.maskAnimation = maskAnimation.export()
+          this.modalAnimation = modalAnimation.export()
+          this.show = false
+          this.$apply()
+        }, 200)
+      },
+      show() {
+        let modalAnimation = wepy.createAnimation({
+          duration: 200,
+          timingFunction: 'linear',
+          delay: 0
+        })
+        let maskAnimation = wepy.createAnimation({
+          duration: 200,
+          timingFunction: 'linear',
+          delay: 0
+        })
+        maskAnimation.opacity(0).step()
+        modalAnimation.translateY(114).step()
+        this.maskAnimation = maskAnimation.export()
+        this.modalAnimation = modalAnimation.export()
+        this.show = true
+        setTimeout(() => {
+          maskAnimation.opacity(1).step()
+          modalAnimation.translateY(0).step()
+          this.maskAnimation = maskAnimation.export()
+          this.modalAnimation = modalAnimation.export()
+          this.$apply()
+        }, 200)
+      }
+    }
+  }
+</script>
+
+<style lang="stylus">
+  @import '../../common/stylus/variable'
+  @import '../../common/stylus/mixin'
+</style>
