@@ -51,14 +51,14 @@ export default class extends wepy.app {
       this.globalData[name] = obj
     }
     this.$apply && this.$apply()
-    console.info(`[${obj ? 'UPDATE' : 'GET'} GlobalData ${name}]:`, this.globalData[name])
+//    console.info(`[${obj ? 'UPDATE' : 'GET'} GlobalData ${name}]:`, this.globalData[name])
     return this.globalData[name]
   }
 
   config = {
     pages: [
-      'pages/live/live',
       'pages/square/square',
+      'pages/live/live',
       'pages/recommend/recommend',
       'pages/pay-result/pay-result',
       'pages/coupon-detail/coupon-detail',
