@@ -80,7 +80,7 @@
               </view>
             </view>
             <view class="couponList-item-head-right">
-              <view class="couponList-item-head-right-btn" @tap.stop="kacDetail({{item.gift_bag_id}})">立即购买</view>
+              <view class="couponList-item-head-right-btn">立即购买</view>
               <view class="couponList-item-storechange" @tap.stop="showStore({{index}})">
                 <view class="couponList-item-storechange-txt">支持店铺</view>
                 <image src="{{item.checked?'http://jike-file.jerryf.cn/defaults/c-image/mine/icon-r_shrink@2x.png':'http://jike-file.jerryf.cn/defaults/c-image/mine/icon-r_open@2x.png'}}" class="couponList-item-storechange-icon"></image>
@@ -240,6 +240,9 @@
       },
       couponDetail(id) {
         this.$navigate('/pages/coupon-detail/coupon-detail?type=1&id=' + id)
+      },
+      kacDetail(id) {
+        this.$navigate('/pages/coupon-detail/coupon-detail?type=2&id=' + id)
       },
       contentDetail(id) {
         this.$navigate('/pages/content-detail/content-detail?id=' + id)
