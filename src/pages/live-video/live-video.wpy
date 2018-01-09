@@ -21,110 +21,111 @@
       </scroll-view>
       <video class="live_video" autoplay="true"
              src="{{liveMsg.file_url ? liveMsg.file_url : ''}}"
-             poster="{{liveMsg.image_url ? liveMsg.image_url : ''}}">
-        <cover-view class="live_conpon" wx:if="{{state}}"
-                    animation="{{animation}}">
-          <!--优惠券-->
-          <cover-view class="conpon-derail">
-            <cover-view class="close" @tap="hideDetail">
-              <cover-image
-                src="http://jike-file.jerryf.cn/defaults/c-image/live/icon-close_black@2x.png"></cover-image>
-            </cover-view>
-            <!--<cover-view class="con-item">-->
-            <!--<cover-view class="con-title">-->
-            <!--<cover-view>{{title1}}</cover-view>-->
-            <!--<cover-view>{{title2}}</cover-view>-->
-            <!--<cover-view class="monlogo">{{conDes.platform_price}}-->
-            <!--</cover-view>-->
-            <!--</cover-view>-->
-            <!--</cover-view>-->
-
-            <cover-view class="con-msg">
-              <cover-view class="con-header">{{conDes.title}}</cover-view>
-              <cover-view>{{conDes.not_allow_time}}</cover-view>
-              <cover-view>有效期至{{conDes.sell_end_at}}</cover-view>
-            </cover-view>
-          </cover-view>
-          <!--优惠券价格-->
-          <cover-view class="money">
-            <cover-view class="money-init">
-              <cover-view class="money-detail">
-                <cover-view class="money-ico">￥</cover-view>
-                {{conDes.platform_price}}
-              </cover-view>
-              <cover-view class="money-init-s">门市价:￥{{conDes.shop_price}}
-              </cover-view>
-            </cover-view>
-            <cover-view class="buy-count">100人已购买</cover-view>
-          </cover-view>
-          <!--服务详情-->
-          <cover-view class="service-detail">
-            <cover-view class="header" @tap="test">服务详情
-              <cover-view class="lines"></cover-view>
-            </cover-view>
-            <cover-view class="detail-wrapper">
-              <cover-view class="item-wrapper" wx:for="{{conDes.detail}}"
-                          wx:key="index">
-                <cover-view class="lines"></cover-view>
-                <cover-view class="content left">
-                  <cover-view class="circle"></cover-view>
-                  <cover-view class="font">{{item.servie}}</cover-view>
-                </cover-view>
-                <cover-view class="content middle">{{item.number}}次</cover-view>
-                <cover-view class="content right">￥{{item.price}}</cover-view>
-              </cover-view>
-            </cover-view>
-          </cover-view>
-          <!--购买详情-->
-          <cover-view class="know-detail">
-            <cover-view class="header">购买须知
-              <cover-view class="lines"></cover-view>
-            </cover-view>
-
-            <cover-view class="detail-wrapper">
-              <cover-view class="item-wrapper">
-                <cover-view class="title ">
-                  是否需要预约：
-                </cover-view>
-                <cover-view class="content">
-                  <cover-view
-                    class="circle "></cover-view>
-                  <cover-view class="value">
-                    {{conDes.note.need_subscribe === '0' ? '需要预约' : '不需要预约'}}
-                  </cover-view>
-                </cover-view>
-              </cover-view>
-              <cover-view class="item-wrapper">
-                <cover-view class="title ">
-                  单人购买上限：
-                </cover-view>
-                <cover-view class="content">
-                  <cover-view class="circle"></cover-view>
-                  <cover-view class="value">
-                    {{conDes.note.buy_upper_limit === '-1' ? '无上限' :
-                    conDes.note.buy_upper_limit + '人'}}
-                  </cover-view>
-                </cover-view>
-              </cover-view>
-              <cover-view class="item-wrapper">
-                <cover-view class="title ">使用人数：
-                </cover-view>
-                <cover-view class="content">
-                  <cover-view class="circle"></cover-view>
-                  <cover-view class="value">
-                    {{conDes.note.can_use_number === '-1' ? '不限人数' :
-                    conDes.note.can_use_number + '人'}}
-                  </cover-view>
-                </cover-view>
-              </cover-view>
-            </cover-view>
-          </cover-view>
-          <cover-view class="btn-buy" @tap="postOrder">点击购买</cover-view>
-        </cover-view>
+             poster="{{liveMsg.image_url ? liveMsg.image_url : ''}}"
+             style="transform: translate3d({{moveWay}},{{transition}},0)"
+             loop="true">
       </video>
+      <view class="live_conpons" wx:if="{{state}}"
+            animation="{{animation}}" style="width:{{width}}px">
+        <!--优惠券-->
+        <view class="conpon-derail">
+          <view class="close" @tap="hideDetail">
+            <image
+              src="http://jike-file.jerryf.cn/defaults/c-image/live/icon-close_black@2x.png"></image>
+          </view>
+          <!--<view class="con-item">-->
+          <!--<view class="con-title">-->
+          <!--<view>{{title1}}</view>-->
+          <!--<view>{{title2}}</view>-->
+          <!--<view class="monlogo">{{conDes.platform_price}}-->
+          <!--</view>-->
+          <!--</view>-->
+          <!--</view>-->
+
+          <view class="con-msg">
+            <view class="con-header">{{conDes.title}}</view>
+            <view>{{conDes.not_allow_time}}</view>
+            <view>有效期至{{conDes.sell_end_at}}</view>
+          </view>
+        </view>
+        <!--优惠券价格-->
+        <view class="money">
+          <view class="money-init">
+            <view class="money-detail">
+              <view class="money-ico">￥</view>
+              {{conDes.platform_price}}
+            </view>
+            <view class="money-init-s">门市价:￥{{conDes.shop_price}}
+            </view>
+          </view>
+          <view class="buy-count">100人已购买</view>
+        </view>
+        <!--服务详情-->
+        <view class="service-detail">
+          <view class="header" @tap="test">服务详情
+            <view class="lines"></view>
+          </view>
+          <view class="detail-wrapper">
+            <view class="item-wrapper" wx:for="{{conDes.detail}}"
+                  wx:key="index">
+              <view class="lines"></view>
+              <view class="content left">
+                <view class="circle"></view>
+                <view class="font">{{item.servie}}</view>
+              </view>
+              <view class="content middle">{{item.number}}次</view>
+              <view class="content right">￥{{item.price}}</view>
+            </view>
+          </view>
+        </view>
+        <!--购买详情-->
+        <view class="know-detail">
+          <view class="header">购买须知
+            <view class="lines"></view>
+          </view>
+
+          <scroll-view scroll-y class="detail-wrapper">
+            <view class="item-wrapper">
+              <view class="title ">
+                有效期：
+              </view>
+              <view class="content">
+                <view class="circle"></view>
+                <view class="value">
+                  {{conDes.sell_start_at + ' 至 ' + conDes.sell_end_at}}
+                </view>
+              </view>
+            </view>
+            <view class="item-wrapper">
+              <view class="title ">
+                是否需要预约：
+              </view>
+              <view class="content">
+                <view
+                  class="circle "></view>
+                <view class="value">
+                  {{conDes.note.need_subscribe === '0' ? '需要预约' : '不需要预约'}}
+                </view>
+              </view>
+            </view>
+            <view class="item-wrapper">
+              <view class="title ">使用人数：
+              </view>
+              <view class="content">
+                <view class="circle"></view>
+                <view class="value">
+                  {{conDes.note.can_use_number === -1 ? '不限人数' :
+                  '每张券最多' + conDes.note.can_use_number + '人'}}
+                </view>
+              </view>
+            </view>
+          </scroll-view>
+        </view>
+        <view class="btn-buy" @tap="postOrder">点击购买</view>
+      </view>
     </view>
     <Comment :videoImages.sync="videoImages"
-             :activityId.sync="activityId"
+             :activityId.sync="activityId" :shopName.sync="shopName"
              wx:if="{{show}}"></Comment>
   </view>
 </template>
@@ -150,7 +151,12 @@
       title2: '',
       promotionId: 0,
       animation: null,
-      videoImages: ''
+      videoImages: '',
+      shopName: '',
+      sendNum: -1,
+      moveWay: 0,
+      transition: 0,
+      width: 0
     }
     components = {
       Comment: Comment
@@ -160,8 +166,22 @@
         this.$invoke('Comment', 'hideInput')
       },
       async conponDetail(id, index) {
-        this.showBk = index
-        this.state = true
+        if (this.sendNum === index) {
+          this.state = !this.state
+        } else {
+          this.state = true
+        }
+        this.sendNum = index
+        if (this.state) {
+          this.showBk = index
+          this.moveWay = '300%'
+          this.transition = '300%'
+        } else {
+          this.showBk = -1
+          this.moveWay = '0%'
+          this.transition = '0%'
+        }
+//        this.state = !this.state
         let res = await Live.getConpon(id)
         this.conDes = res
         this.title1 = this.conDes.title.slice(0, 4)
@@ -174,10 +194,13 @@
       hideDetail() {
         this.state = false
         this.showBk = -1
+        this.moveWay = '0%'
+        this.transition = '0%'
+        this.transition = 1
         this.$apply()
       },
       async postOrder() {
-        let meId = await wepy.getStorageSync('merchantId')
+        let meId = this.$parent.globalData.merchantId || wepy.getStorageSync('merchantId')
         const data = {
           from: 'c_live',
           promotion_id: this.promotionId,
@@ -213,12 +236,19 @@
       let res = await Live.getLiveMsg()
       this.liveMsg = res
       this.videoImages = this.liveMsg.image_url
+      this.shopName = ''
       this.activityId = res.id
       this.loaded()
       this.$com.Comment.showComment()
       this.$apply()
     }
 
+    async onLoad() {
+      let res = await wepy.getSystemInfo()
+      console.log(res.windowWidth)
+      this.width = res.windowWidth - 95
+      this.$apply()
+    }
   }
 </script>
 
@@ -230,6 +260,10 @@
     width: 0
     height: 0
     color: transparent
+
+  .live-show
+    width: 100vw
+    overflow-x: hidden
 
   page, .live-show
     background-color: $color-master
@@ -245,115 +279,13 @@
       flex: 7.46
       height: 100%
       position: relative
-      .live_conpon
-        position: absolute
-        width: 100%
-        height: 100%
-        z-index: 10000
-        top: 0
-        background: $color-master-gray
-        .money
-          box-sizing: border-box
-          height: 10.6vw
-          background: #fff
-          position: relative
-          font-size: $font-size-small-s
-          color: #3F3F3F
-          padding-left: 8.5px
-          .money-init
-            display: flex
-            .money-detail
-              min-width: 45px
-              display: flex
-              text-align: center
-              font-size: $font-size-large-xx
-              color: $color-orange
-              position: relative
-              line-height: 1
-              margin-top: 2.6vw
-              .money-ico
-                line-height: 1
-                text-indent: 0
-                position: absolute
-                color: $color-orange
-                left: -2px
-                font-size: $font-size-small-s
-                bottom: 0.8vw
-            .money-init-s
-              min-width: 70px
-              display: flex
-              margin-top: 5vw
-          .buy-count
-            position: absolute
-            col-center()
-            right: 12px
-        .conpon-derail
-          display: flex
-          height: 22.4vw
-          align-items: center
-          padding: 0 10px
-          font-size: $font-size-small-s
-          position: relative
-          .close
-            z-index: 10000
-            position: absolute
-            width: 28vw
-            height: 15vw
-            top: 0
-            right: 0
-            cover-image
-              height: 2.7vw
-              width: 2.7vw
-              position: absolute
-              right: 12px
-              top: 12px
-          .con-item
-            position: relative
-            margin: 0
-            .con-title
-              padding-left: 16px
-              width: 100%
-              margin-top: 4px
-              .con-title-s
-                width: 50px
-                white-space: wrap
-              .monlogo::before
-                left: -6px
-          .con-msg
-            height: 60px
-            flex: 8
-            margin-left: 10px
-            position: relative
-            cover-view
-              color: #696671
-              line-height: $font-size-medium
-              &:last-child
-                position: absolute
-                bottom: 0
-                width: 100%
-            .con-header
-              font-size: $font-size-medium
-              color: #5d5d5d
-              font-family: $font-family-regular
-              line-height: $font-size-large-m
 
-        .btn-buy
-          height: 10.6vw
-          line-height: 10.6vw
-          width: 100%
-          text-align: center
-          background: $color-orange
-          color: $color-white
-          font-size: $font-size-medium
-          position: absolute
-          bottom: -1px
-
+  /*优惠券小图*/
   .con-item
     height: 60px
     width: 70px
     position: relative
     margin: 10px auto 0
-
     .arrows
       height: 0px
       border: 8px solid $color-white
@@ -398,34 +330,186 @@
         bottom: 1px
         left: 9px
 
-  //优惠券详情
-  .service-detail
-    margin-top: 10px
-    margin-bottom: 10px
-    padding-left: 12px
-    background-color: $color-white
-    .header
-      height: 10vw
-      line-height: 10vw
-      font-size: $font-size-medium
-      color: $color-text-l
+  .live
+    .live_conpons
+      /*width: 74.6%*/
+      height: 100%
       position: relative
-
-    .detail-wrapper
-      .item-wrapper
-        display: flex
-        align-items: center
-        height: 28px
-        padding-right: 12px
+      font-family: 'PingFangSC-Light'
+      /*position: absolute*/
+      /*top: 0*/
+      /*left: 95px*/
+      background: $color-master-gray
+      .money
+        box-sizing: border-box
+        height: 10.6vw
+        background: #fff
         position: relative
-        &:last-child
-          border-none()
-        .content
-          flex: 1
-          color: $color-text-dd
-          font-size: $font-size-small
-          &.left
-            text-align: left
+        font-size: $font-size-small-s
+        color: #3F3F3F
+        padding-left: 8.5px
+        .money-init
+          display: flex
+          .money-detail
+            min-width: 45px
+            display: flex
+            text-align: center
+            font-size: $font-size-large-xx
+            color: $color-orange
+            position: relative
+            line-height: 1
+            margin-top: 2.6vw
+            .money-ico
+              line-height: 1
+              text-indent: 0
+              position: absolute
+              color: $color-orange
+              left: -4px
+              font-size: $font-size-small-s
+              bottom: 0.8vw
+          .money-init-s
+            min-width: 70px
+            display: flex
+            margin-top: 5vw
+        .buy-count
+          position: absolute
+          col-center()
+          right: 12px
+      .conpon-derail
+        display: flex
+        height: 22.4vw
+        align-items: center
+        padding: 0 10px
+        font-size: $font-size-small-s
+        position: relative
+        .close
+          z-index: 10000
+          position: absolute
+          width: 100%
+          height: 100%
+          top: 0
+          right: 0
+          image
+            height: 2.7vw
+            width: 2.7vw
+            position: absolute
+            right: 12px
+            top: 12px
+        .con-item
+          position: relative
+          margin: 0
+          .con-title
+            padding-left: 16px
+            width: 100%
+            margin-top: 4px
+            .con-title-s
+              width: 50px
+              white-space: wrap
+            .monlogo::before
+              left: -6px
+        .con-msg
+          height: 60px
+          flex: 8
+          margin-left: 10px
+          position: relative
+          view
+            color: #696671
+            line-height: $font-size-medium
+            &:last-child
+              position: absolute
+              bottom: 0
+              width: 100%
+          .con-header
+            font-size: $font-size-medium
+            color: #5d5d5d
+            font-family: $font-family-regular
+            line-height: $font-size-large-m
+
+      .btn-buy
+        height: 10.6vw
+        line-height: 10.6vw
+        width: 100%
+        text-align: center
+        background: $color-orange
+        color: $color-white
+        font-size: $font-size-medium
+        position: absolute
+        bottom: 0px
+
+  //优惠券详情
+    .service-detail
+      margin-top: 10px
+      margin-bottom: 10px
+      padding-left: 12px
+      background-color: $color-white
+      .header
+        height: 10vw
+        line-height: 10vw
+        font-size: $font-size-medium
+        color: $color-text-l
+        position: relative
+
+      .detail-wrapper
+        .item-wrapper
+          display: flex
+          align-items: center
+          height: 28px
+          padding-right: 12px
+          position: relative
+          &:last-child
+            border-none()
+          .content
+            flex: 1
+            color: $color-text-dd
+            font-size: $font-size-small
+            &.left
+              text-align: left
+              .circle
+                display: inline-block
+                vertical-align: middle
+                width: 4.5px
+                height: 4.5px
+                margin-right: 5.25px
+                border-radius: 50%
+                background-color: $color-circle
+              .font
+                display: inline-block
+                vertical-align: middle
+            &.middle
+              text-align: center
+            &.right
+              text-align: right
+
+    .lines
+      position: absolute
+      height: 1px
+      width: 100%
+      background: $color-row-line
+      bottom: 0
+
+    .know-detail
+      padding-left: 12px
+      padding-bottom: 10px
+      background-color: $color-white
+      .header
+        padding: 3vw 0
+        font-size: $font-size-medium
+        color: $color-text-l
+        position: relative
+      .detail-wrapper
+        padding: 7.5px 0 8vw
+        box-sizing: border-box
+        height: 34.4vw
+        .item-wrapper
+          margin-bottom: 2.4vw
+          &:last-child
+            margin-bottom: 0
+          .title
+            font-size: $font-size-small
+            color: #464646
+            line-height: 16.5px
+          .content
+            font-size: 0
             .circle
               display: inline-block
               vertical-align: middle
@@ -434,57 +518,12 @@
               margin-right: 5.25px
               border-radius: 50%
               background-color: $color-circle
-            .font
+            .circle_s
+              margin-top: 11px
+            .value
               display: inline-block
               vertical-align: middle
-          &.middle
-            text-align: center
-          &.right
-            text-align: right
-
-  .lines
-    position: absolute
-    height: 1px
-    width: 100%
-    background: $color-row-line
-    bottom: 0
-
-  .know-detail
-    padding-left: 12px
-    padding-bottom: 10px
-    background-color: $color-white
-    .header
-      height: 10vw
-      line-height: 10vw
-      font-size: $font-size-medium
-      color: $color-text-l
-      position: relative
-    .detail-wrapper
-      padding: 7.5px 0
-      .item-wrapper
-        margin-bottom: 13px
-        &:last-child
-          margin-bottom: 0
-        .title
-          margin-bottom: 8.5px
-          font-size: $font-size-small
-          color: $color-text
-        .content
-          font-size: 0
-          .circle
-            display: inline-block
-            vertical-align: middle
-            width: 4.5px
-            height: 4.5px
-            margin-right: 5.25px
-            border-radius: 50%
-            background-color: $color-circle
-          .circle_s
-            margin-top: 11px
-          .value
-            display: inline-block
-            vertical-align: middle
-            font-size: $font-size-small
+              font-size: $font-size-small
 
   /*display: none*/
 </style>

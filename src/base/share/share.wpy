@@ -51,7 +51,7 @@
       const ctx = await wepy.createCanvasContext('target')
 //      分享背景
       const bgs = await wepy.downloadFile({url: 'http://jike-file.jerryf.cn/defaults/service-image/pic-sharebg.png'})
-//      分享卷卷箭头
+//      分享券卷箭头
       const arrows = await wepy.downloadFile({url: 'http://jike-file.jerryf.cn/defaults/service-image/pic-share_arrow.png'})
 //      小程序码
       const qrcodes = await wepy.downloadFile({url: this.qrcode})
