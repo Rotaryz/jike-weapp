@@ -8,11 +8,11 @@
         <slot name="content"></slot>
       </swiper>
     </view>
-    <!--<view class="dots">-->
-      <!--<repeat for="{{list}}" index="index" key="index" item="item">-->
-        <!--<view wx:if="{{item.image}}" class="dot{{index == swiperCurrent ? ' active' : ''}}"></view>-->
-      <!--</repeat>-->
-    <!--</view>-->
+    <view class="dots">
+      <repeat for="{{list}}" index="index" key="index" item="item">
+        <view wx:if="{{item.image}}" class="dot{{index == swiperCurrent ? ' active' : ''}}"></view>
+      </repeat>
+    </view>
   </view>
 </template>
 
@@ -32,7 +32,7 @@
       autoplay: false,
       interval: 5000,
       duration: 1000,
-      swiperCurrent: 1,
+      swiperCurrent: 0,
       circular: true
     }
 
@@ -54,22 +54,9 @@
       left: 0
       width: 100%
       height: 100%
-      overflow: visible !important
-      display: flex
-      align-items: center
-      justify-content: center
-      .swiper
+      .swiper, .slide-image
         width: 100%
-        height: 29.3333vw
-        overflow: visible !important
-        swiper-item
-          width: 86.6666vw !important
-          height: 29.3333vw !important
-          margin: 0 10px
-      .slide-image
-        width: 86.6666vw
-        height: 29.3333vw
-        margin: 0 10px
+        height: 100%
     .dots
       position: absolute
       right: 12px

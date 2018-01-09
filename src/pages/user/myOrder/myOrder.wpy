@@ -162,9 +162,11 @@
 
     async onLoad(option) {
       this.menuIdx = option.idx
+      this.$apply()
     }
 
     async onShow() {
+      wepy.setStorageSync('tips', {order: false})
       this.load({idx: this.menuIdx})
     }
 

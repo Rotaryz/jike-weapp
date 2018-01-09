@@ -112,11 +112,11 @@
       refundCause: [
         {value: '0', txt: '买多了/买错了'},
         {value: '1', txt: '商家说可以现金/刷卡付款来享受折扣'},
-        {value: '2', txt: '计划有变没时间消费', checked: true},
+        {value: '2', txt: '计划有变没时间消费'},
         {value: '3', txt: '预约不到'},
         {value: '4', txt: '评价不好'},
         {value: '5', txt: '后悔了不想要了'}],
-      refundChecked: '2'
+      refundChecked: ''
     }
 
     async onLoad(option) {
@@ -195,6 +195,10 @@
         this.$apply()
       },
       async refundSubmit() {
+        if (!this.refundChecked) {
+          this.$invoke('Toast', 'show', '请选择退款原因')
+          return
+        }
         let cause = this.refundCause[this.refundChecked].txt
         const res = await getMyOrder.orderRebate(this.orderMsg.id, this.orderMsg.count, this.orderMsg.total, cause)
         if (res.status === 'success') {

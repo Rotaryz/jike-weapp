@@ -6,8 +6,11 @@
     </view>
 
     <view class="withDraw-inputBox">
-      <text class="withDraw-inputBox-txt">￥</text>
-      <input type="digit" bindinput="moneyChange" class="withDraw-inputBox-input" value="{{drawMoney}}"/>
+      <view class="withDraw-inputBo-left">
+        <text class="withDraw-inputBox-txt">￥</text>
+        <input type="digit" bindinput="moneyChange" class="withDraw-inputBox-input" value="{{drawMoney}}"/>
+      </view>
+
       <image src="http://jike-file.jerryf.cn/defaults/c-image/mine/icon-my_money_close.png" class="withDraw-inputBox-btn" @tap="clear"></image>
     </view>
     <view class="withDraw-hint">
@@ -60,7 +63,7 @@
         this.drawMoney = e.detail.value
       },
       clear() {
-        this.drawMoney = 0
+        this.drawMoney = ''
         this.$apply()
       },
       allIn() {
@@ -122,16 +125,21 @@
       align-items: center
       padding-bottom: 10px
       border-bottom: 1px solid $color-row-line
+      justify-content: space-between
 
-      .withDraw-inputBox-txt
-        font-size: $font-size-medium-x
+      .withDraw-inputBo-left
+        display: flex
+        align-items: center
 
-      .withDraw-inputBox-input
-        width: 300px
-        margin-left: 10px
-        font-family: PingFangSC-Medium
-        font-size: $font-size-large-xx
-        color: $color-text-t
+        .withDraw-inputBox-txt
+          font-size: $font-size-medium-x
+
+        .withDraw-inputBox-input
+          width: 250px
+          margin-left: 10px
+          font-family: PingFangSC-Medium
+          font-size: $font-size-large-xx
+          color: $color-text-t
 
       .withDraw-inputBox-btn
         width: 10px

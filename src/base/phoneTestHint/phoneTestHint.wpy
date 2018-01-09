@@ -1,11 +1,10 @@
 <template>
   <view class="phoneTestHint">
     <view class="phoneTest-txtBox">
-      <image src="http://jike-file.jerryf.cn/defaults/c-image/mine/icon-my_call.png" class="phoneTest-pcPhone"></image>
-      <text class="phoneTest-txt">绑定手机号，获取更多优惠信息</text>
+      <text class="phoneTest-txt">绑定手机号，获取更多优惠信息，</text>
     </view>
 
-    <view class="phoneTest-btn" @tap="bindPhone">绑定手机</view>
+    <view class="phoneTest-btn" @tap="bindPhone">请绑定手机</view>
   </view>
 </template>
 
@@ -36,9 +35,8 @@
     background: $color-highlight-background
     flex-direction: row
     align-items: center
-    justify-content: space-between
     padding: 0 12px
-    font-size: $font-size-medium
+    font-size: $font-size-small
 
     .phoneTest-txtBox
       display: flex
@@ -54,15 +52,10 @@
         color: $color-text
 
     .phoneTest-btn
-      width: 60px
       font-size: $font-size-small
+      text-decoration: underline
       color: $color-text-t
-      border: 1px solid $color-text-t
-      border-radius: 2px
       text-align: center
       line-height: 24px
 
-      &:active
-        background: $color-text-t
-        color: $color-white
 </style>
