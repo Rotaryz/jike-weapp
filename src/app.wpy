@@ -15,6 +15,10 @@ export default class extends wepy.app {
   }
 
   onLaunch(option) {
+    const tips = wepy.getStorageSync('tips')
+    if (!tips) {
+      wepy.setStorageSync('tips', {order: false})
+    }
     wepy.setStorageSync('merchantId', option.query.merchantId || 100000)
     // 校验SDK
     wxUtils.checkSDK()
@@ -53,11 +57,17 @@ export default class extends wepy.app {
 
   config = {
     pages: [
-      'pages/live/live',
-      'pages/recommend/recommend',
       'pages/square/square',
+      'pages/recommend/recommend',
+      'pages/live/live',
       'pages/pay-result/pay-result',
       'pages/coupon-detail/coupon-detail',
+      'pages/content-detail/content-detail',
+      'pages/activity/activity',
+      'pages/user/mine/mine',
+      'pages/user/myCenter/myCenter',
+      'pages/user/myOrder/myOrder',
+      'pages/user/myOrder-detail/myOrderDetail',
       'pages/user/refund/refund',
       'pages/user/myCoupon/myCoupon',
       'pages/user/withDraw/withDraw',
@@ -65,13 +75,8 @@ export default class extends wepy.app {
       'pages/user/redPacket/redPacket',
       'pages/user/mySelect/mySelect',
       'pages/post-order/post-order',
-      'pages/content-detail/content-detail',
-      'pages/activity/activity',
-      'pages/user/mine/mine',
-      'pages/user/myCenter/myCenter',
-      'pages/user/myOrder/myOrder',
-      'pages/user/myOrder-detail/myOrderDetail',
-      'pages/shareAndPrize/shareAndPrize'
+      'pages/shareAndPrize/shareAndPrize',
+      'pages/net-error/net-error'
     ],
     window: {
       backgroundColor: '#F9F9F9',

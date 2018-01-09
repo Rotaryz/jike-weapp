@@ -5,7 +5,7 @@
         <image model="aspectFill"
                src="{{userInfo.avatarUrl}}"
                class="myCenter-head-avatar"
-               style="background-image: url('./image/pic-default.png'); background-size: 48px 48px"></image>
+               style="background-image: url('http://jike-file.jerryf.cn/defaults/c-image/mine/pic-default.png'); background-size: 48px 48px"></image>
         <view class="myCenter-head-txt">点击修改头像</view>
       </view>
     </view>
@@ -41,6 +41,7 @@
         </view>
       </view>
     </view>
+    <Toast></Toast>
   </view>
 </template>
 
@@ -51,6 +52,8 @@
   import base from 'common/mixins/base'
   import user from 'api/user'
   import PhoneTest from '@/base/phoneTest/phoneTest'
+  import Tips from '@/common/js/tips'
+  import Toast from '@/base/toast/toast'
 
   export default class MyCenter extends wepy.page {
     mixins = [users, base]
@@ -62,7 +65,8 @@
     }
 
     components = {
-      PhoneTest
+      PhoneTest,
+      Toast
     }
 
     data = {
@@ -81,14 +85,21 @@
     }
 
     async _updateMsg(data) {
-      await user.updataMsg(data)
+      let res = await user.updataMsg(data)
+      this.loaded()
+      if (res.error === 0) {
+        Tips.success('修改成功')
+        return true
+      } else {
+        this.$invoke('Toast', 'show', '修改失败')
+        return false
+      }
     }
 
     async _updataUser() {
       await this.$getUserInfo()
       this.userInfo = this.$parent.globalData.user
       this.$apply()
-      this.loaded()
     }
 
     methods = {
@@ -98,38 +109,42 @@
         if (choiceValue === Number(self.userInfo.sex)) {
           return
         }
-        let token = wx.getStorageSync('token')
         let data = {
-          jk_token: token,
           sex: choiceValue
         }
-        this._updateMsg(data)
+        if (!this._updateMsg(data)) {
+          return
+        }
         this.userInfo.sex = choiceValue
         this.$parent.updateGlobalData('user', Object.assign({}, this.userInfo))
-        this.loaded()
         this.$apply()
       },
       birthdayChange(e) {
         if (e.detail.value === this.userInfo.birth) {
           return
         }
-        let token = wx.getStorageSync('token')
         let data = {
-          jk_token: token,
           birth: e.detail.value
         }
-        this._updateMsg(data)
+        if (!this._updateMsg(data)) {
+          return
+        }
         this.userInfo.birth = e.detail.value
         this.$parent.updateGlobalData('user', Object.assign({}, this.userInfo))
-        this.loaded()
         this.$apply()
       },
       async updateAvatarImg() {
         const res = await user.updateAvatar('image_id')
+        this.loaded()
+        if (res.error === 0) {
+          Tips.success('修改成功')
+        } else {
+          this.$invoke('Toast', 'show', '修改失败')
+          return false
+        }
         this.userInfo.avatarUrl = res.data
         this.$parent.updateGlobalData('user', Object.assign({}, this.userInfo))
         this.$apply()
-        this.loaded()
       },
       changePhone() {
         this.$invoke('PhoneTest', 'bindPhone', 'modify')

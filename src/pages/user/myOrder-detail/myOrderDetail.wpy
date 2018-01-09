@@ -12,7 +12,7 @@
         </view>
 
         <view class="orderDetail-head-detailBtn">
-          <image src="./image/icon-my_Rectangle.png" class="orderDetail-head-detailBtnImg"></image>
+          <image src="http://jike-file.jerryf.cn/defaults/c-image/mine/icon-my_Rectangle.png" class="orderDetail-head-detailBtnImg"></image>
         </view>
       </view>
       <view class="orderDetail-head-status">
@@ -31,12 +31,12 @@
         </view>
       </view>
       <view class="orderDetail-merchant-detail">
-        <view class="orderDetail-merchant-detail-item">
-          <image src="./image/icon-navigation_1.png" class="orderDetail-merchant-detailIcon"></image>
+        <view class="orderDetail-merchant-detail-item" @tap="GPSbegin">
+          <image src="http://jike-file.jerryf.cn/defaults/c-image/mine/icon-navigation_1.png" class="orderDetail-merchant-detailIcon"></image>
           <text>开始导航</text>
         </view>
         <view class="orderDetail-merchant-detail-item" @tap="call({{orderMsg.merchant_data.mobile}})">
-          <image src="./image/icon-call_1.png" class="orderDetail-merchant-detailIcon"></image>
+          <image src="http://jike-file.jerryf.cn/defaults/c-image/mine/icon-call_1.png" class="orderDetail-merchant-detailIcon"></image>
           <text>打电话</text>
         </view>
       </view>
@@ -59,7 +59,7 @@
       <view class="orderDetail-refundCover-Msg">
         <view class="orderDetail-refundCover-Msghead">
           <view class="orderDetail-refundCover-closeBtn" @tap="closeRefund">
-            <image src="./image/icon-close_win.png" class="orderDetail-refundCover-closeIcon"></image>
+            <image src="http://jike-file.jerryf.cn/defaults/c-image/mine/icon-close_win.png" class="orderDetail-refundCover-closeIcon"></image>
           </view>
           <text>选择退款原因</text>
         </view>
@@ -68,7 +68,7 @@
             <view class="orderDetail-refundCover-MsgList-item" wx:for="{{refundCause}}" wx:key="{{index}}">
               <label class="checkbox">
                 <radio value="{{item.value}}" checked="{{item.checked}}" hidden="{{true}}" />{{item.txt}}
-                <image class="checkbox-Icon" src="{{item.value===refundChecked?'./image/icon-selected_green.png':'./image/icon-selected_gray.png'}}"></image>
+                <image class="checkbox-Icon" src="{{item.value===refundChecked?'http://jike-file.jerryf.cn/defaults/c-image/mine/icon-selected_green.png':'http://jike-file.jerryf.cn/defaults/c-image/mine/icon-selected_gray.png'}}"></image>
               </label>
             </view>
           </radio-group>
@@ -80,6 +80,7 @@
     </view>
 
     <Appraise></Appraise>
+    <Toast></Toast>
   </view>
 </template>
 
@@ -89,6 +90,7 @@
   import base from 'common/mixins/base'
   import getMyOrder from '@/api/myOrder'
   import Appraise from '@/base/appraise/appraise'
+  import Toast from '@/base/toast/toast'
 
   export default class MyCoupon extends wepy.page {
     mixins = [base]
@@ -98,7 +100,8 @@
     }
 
     components = {
-      Appraise
+      Appraise,
+      Toast
     }
 
     data = {
@@ -109,20 +112,19 @@
       refundCause: [
         {value: '0', txt: '买多了/买错了'},
         {value: '1', txt: '商家说可以现金/刷卡付款来享受折扣'},
-        {value: '2', txt: '计划有变没时间消费', checked: true},
+        {value: '2', txt: '计划有变没时间消费'},
         {value: '3', txt: '预约不到'},
         {value: '4', txt: '评价不好'},
         {value: '5', txt: '后悔了不想要了'}],
-      refundChecked: '2'
+      refundChecked: ''
     }
 
     async onLoad(option) {
-      await this.load(option)
+      await this.load(option.id)
     }
 
-    async load(option) {
-      this.orderMsg = await getMyOrder.getOrderDetail(option.id)
-      console.log(this.orderMsg)
+    async load(id) {
+      this.orderMsg = await getMyOrder.getOrderDetail(id)
       this.$apply()
       this.loaded()
     }
@@ -147,6 +149,7 @@
             })
             if (pay.errMsg === 'requestPayment:ok') {
               this.load(this.orderMsg.id)
+              wepy.setStorageSync('tips', {order: true})
             }
             break
           case 1:
@@ -189,22 +192,36 @@
       },
       serviceValChange(e) {
         this.refundChecked = e.detail.value
+        this.$apply()
       },
       async refundSubmit() {
+        if (!this.refundChecked) {
+          this.$invoke('Toast', 'show', '请选择退款原因')
+          return
+        }
         let cause = this.refundCause[this.refundChecked].txt
         const res = await getMyOrder.orderRebate(this.orderMsg.id, this.orderMsg.count, this.orderMsg.total, cause)
-        this.loaded()
         if (res.status === 'success') {
           this.refundIng = false
           this.orderMsg = await getMyOrder.getOrderDetail(this.orderMsg.id)
+          this.loaded()
           this.$apply()
           this.$navigate('../refund/refund?id=' + this.orderMsg.id)
         } else {
-          // 退款失败
+          this.$invoke('Toast', 'show', '申请退款失败')
         }
       },
       closeRefund() {
         this.refundIng = false
+        this.refundChecked = ''
+        this.$apply()
+      },
+      GPSbegin() {
+        let data = {
+          longitude: this.orderMsg.merchant_data.longitude,
+          latitude: this.orderMsg.merchant_data.latitude
+        }
+        wepy.openLocation(data)
       }
     }
 

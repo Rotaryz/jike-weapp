@@ -13,25 +13,29 @@
     </view>
 
     <scroll-view scroll-y class="mySelect-couponList" bindscrolltolower="couponLower" wx:if="{{couponList.length>0}}">
-      <view class="mySelect-couponList-item" style="background-image: url('./image/icon_couponBc.png'); background-size: 700rpx 200rpx" wx:for="{{couponList}}" wx:key="{{index}}" @tap="couponDetail({{item.id}})">
-        <view class="mySelect-couponList-itemPay">
-          <view><text class="mySelect-midMoney">￥</text><text class="mySelect-bigMoney">{{item.price}}</text></view>
-          <view>{{item.restriction}}</view>
-        </view>
-        <view class="mySelect-couponList-itemMsg">
-          <view>
-            <view class="mySelect-couponList-item-title">{{item.title}}</view>
-            <view class="mySelect-couponList-item-time">有效期至{{item.endAt}}</view>
+      <view class="mySelect-couponList-item" wx:for="{{couponList}}" wx:key="{{index}}" @tap="couponDetail({{item.id}})">
+        <view class="couponList-item-head-container">
+          <image class="coupon-bc" src="http://jike-file.jerryf.cn/defaults/c-image/mine/pic-couponbg@2x.png"></image>
+          <view class="couponList-item-head-left">
+            <view class="couponList-itemPay">
+              <view ><text class="couponList-midMoney">￥</text><text class="couponList-bigMoney">{{item.price}}</text></view>
+            </view>
+            <view class="couponList-itemMsg">
+              <view class="couponList-item-title">{{item.title}}</view>
+              <view class="couponList-item-time">{{item.notAllowTime}}</view>
+              <view class="couponList-item-time">有效期至{{item.endAt}}</view>
+            </view>
           </view>
-          <view class="mySelect-couponList-item-time">{{item.notAllowTime}}</view>
+          <view class="couponList-item-head-right">
+            <view class="couponList-item-head-right-btn">立即购买</view>
+          </view>
         </view>
-        <!--<view class="mySelect-couponList-itemBtn" catchtap="buySubmit">购买</view>-->
       </view>
     </scroll-view>
 
     <scroll-view scroll-y class="mySelect-contentList" bindscrolltolower="contentLower" wx:if="{{contentList.length > 0}}">
-      <view class="mySelect-contentList-item" wx:for="{{contentList}}" wx:key="{{index}}">
-        <image src="{{item.content.image.url}}" class="mySelect-contentList-item-contentImg" @tap="contentDetail({{item.content.id}})"></image>
+      <view class="mySelect-contentList-item" wx:for="{{contentList}}" wx:key="{{index}}" @tap="contentDetail({{item.content.id}})">
+        <image src="{{item.content.image.url}}" class="mySelect-contentList-item-contentImg"></image>
         <view class="mySelect-contentList-Msg">
           <view class="mySelect-contentList-Msg-left">
             <view class="mySelect-contentList-Msg-left-avatarBox" wx:for="{{item.content.customer_content_favorite}}" wx:key="{{item}}">
@@ -44,8 +48,14 @@
             </view>
           </view>
           <view class="mySelect-contentList-Msg-right">
-            <view class="mySelect-contentList-select" catchtap="select({{item.content.id}}, {{index}}, {{item.selectStatus===0?0:1}})">
-              <image src="{{item.selectStatus===0?'./image/icon-collection_1@2x.png':'./image/icon-collection_2@2x.png'}}" class="mySelect-contentList-select-star"></image>
+            <view class="mySelect-contentList-select">
+              <image src="http://jike-file.jerryf.cn/defaults/c-image/mine/icon-r_collection@2x.png" class="mySelect-contentList-select-star"></image>
+              <view class="mySelect-contentList-select-left">
+                <text>{{item.content.favorite_count}}</text>
+              </view>
+            </view>
+            <view class="mySelect-contentList-select">
+              <image src="http://jike-file.jerryf.cn/defaults/c-image/mine/icon-r_share1@2x.png" class="mySelect-contentList-select-star"></image>
               <view class="mySelect-contentList-select-left">
                 <text>{{item.content.favorite_count}}</text>
               </view>
@@ -55,29 +65,36 @@
       </view>
     </scroll-view>
 
-    <scroll-view scroll-y class="mySelect-kacList">
-      <view class="mySelect-kacList-item" wx:for="{{kacList}}" wx:key="{{index}}">
-        <view class="mySelect-kacList-item-main" style="background-image: url('./image/icon_couponBc.png'); background-size: 700rpx 200rpx" @tap="couponDetail({{item.id}})">
-          <view class="mySelect-kacList-itemPay">
-            <view><text class="mySelect-kacList-bigMoney">{{item.price}}</text> <text class="mySelect-kacList-midMoney"> 元</text></view>
-            <view>{{item.restriction}}</view>
-          </view>
-          <view class="mySelect-kacList-item-right">
-            <view class="mySelect-kacList-itemMsg">
-              <view>
-                <view class="mySelect-kacList-item-title">{{item.title}}111</view>
-                <view class="mySelect-kacList-item-time">有效期至{{item.endAt}}</view>
+    <scroll-view scroll-y class="mySelect-kacList" bindscrolltolower="kacLower" wx:if="{{kacList.length > 0}}">
+      <view class="mySelect-couponList-item" wx:for="{{kacList}}" wx:key="{{index}}">
+        <view class="mySelect-couponList-item-main" @tap="kacDetail({{item.gift_bag_id}})">
+          <view class="couponList-item-head-container">
+            <image class="coupon-bc" src="http://jike-file.jerryf.cn/defaults/c-image/mine/pic-couponbg@2x.png"></image>
+            <view class="couponList-item-head-left">
+              <view class="couponList-itemPay">
+                <view ><text class="couponList-midMoney">￥</text><text class="couponList-bigMoney">{{item.gift_bag.shop_price}}</text></view>
               </view>
-              <view class="mySelect-kacList-item-time">
-                <text>{{item.notAllowTime}}11111</text>
+              <view class="couponList-itemMsg">
+                <view class="couponList-item-title">{{item.gift_bag.title}}</view>
+                <view class="couponList-item-time">有效期至{{item.gift_bag.sell_end_at}}</view>
               </view>
             </view>
-            <view>541</view>
+            <view class="couponList-item-head-right">
+              <view class="couponList-item-head-right-btn">立即购买</view>
+              <view class="couponList-item-storechange" @tap.stop="showStore({{index}})">
+                <view class="couponList-item-storechange-txt">支持店铺</view>
+                <image src="{{item.checked?'http://jike-file.jerryf.cn/defaults/c-image/mine/icon-r_shrink@2x.png':'http://jike-file.jerryf.cn/defaults/c-image/mine/icon-r_open@2x.png'}}" class="couponList-item-storechange-icon"></image>
+              </view>
+            </view>
           </view>
-          <view class="mySelect-kacList-kacBag">礼包</view>
+          <image class="gift-bag-img" src="http://jike-file.jerryf.cn/defaults/c-image/mine/pic-r_package@2x.png"></image>
         </view>
-        <view class="mySelect-kacList-merchant">
-          212156445
+
+        <view class="store-avatar {{item.checked?'':'hide'}}">
+          <view class="store-avatar-box" wx:for="{{item.gift_bag.gift_bag_detail}}" wx:key="{{item}}">
+            <image class="store-avatar-img" src="{{item.merchant_data.logo_image}}"></image>
+            <view class="store-name">{{item.merchant_data.shop_name}}</view>
+          </view>
         </view>
       </view>
     </scroll-view>
@@ -100,7 +117,7 @@
     data = {
       tabList: ['优惠券', '内容', '礼包'],
       menuIdx: 0,
-      emptyImg: ['./image/pic-my-nocoupon.png', './image/pic-my_no_c.png', './image/pic-my_no_c.png'],
+      emptyImg: ['http://jike-file.jerryf.cn/defaults/c-image/mine/pic-my-nocoupon.png', 'http://jike-file.jerryf.cn/defaults/c-image/mine/pic-my_no_c.png', 'http://jike-file.jerryf.cn/defaults/c-image/mine/pic-my_no_c.png'],
       emptyMsg: ['您还没有相关优惠券', '您还没有相关收藏', '您还没有相关收藏'],
       couponList: [],
       contentList: [],
@@ -120,6 +137,9 @@
         switch (this.menuIdx) {
           case 0:
             let resList = await this._getCouponList(1)
+            if (resList.error === 0) {
+              resList = []
+            }
             this.page = 1
             this.nothingAdd = false
             this.LowerLoading = false
@@ -136,6 +156,9 @@
             this.nothingAdd = false
             this.LowerLoading = false
             this.contentList = await this._getContentList(1)
+            if (this.contentList.error === 0) {
+              this.contentList = []
+            }
             if (this.contentList.length > 0) {
               this.nothingBoxShow = false
             } else {
@@ -147,6 +170,10 @@
             this.page = 1
             this.nothingAdd = false
             this.LowerLoading = false
+            this.kacList = await mySelect.getKacList(1)
+            if (this.kacList.error === 0) {
+              this.kacList = []
+            }
             if (this.kacList.length > 0) {
               this.nothingBoxShow = false
             } else {
@@ -178,8 +205,24 @@
         if (!this.LowerLoading && !this.nothingAdd) {
           this.LowerLoading = true
           this.page++
-          console.log(this.page)
           let res = await this._getContentList(this.page)
+
+          if (res.length === 0) {
+            this.nothingAdd = true
+          }
+          this.contentList.push(...res)
+          this.LowerLoading = false
+          this.$apply()
+          this.loaded()
+        } else if (this.nothingAdd) {
+          // 到底
+        }
+      },
+      async kacLower() {
+        if (!this.LowerLoading && !this.nothingAdd) {
+          this.LowerLoading = true
+          this.page++
+          let res = await mySelect.getKacList(this.page)
 
           if (res.length === 0) {
             this.nothingAdd = true
@@ -197,6 +240,9 @@
       },
       couponDetail(id) {
         this.$navigate('/pages/coupon-detail/coupon-detail?type=1&id=' + id)
+      },
+      kacDetail(id) {
+        this.$navigate('/pages/coupon-detail/coupon-detail?type=2&id=' + id)
       },
       contentDetail(id) {
         this.$navigate('/pages/content-detail/content-detail?id=' + id)
@@ -226,6 +272,13 @@
         }
         this.$apply()
         this.loaded()
+      },
+      showStore(idx) {
+        this._checked(this.kacList, idx)
+        this.$apply()
+      },
+      toDetail(id) {
+        this.$navigate('/pages/coupon-detail/coupon-detail?type=2&id=' + id)
       }
     }
 
@@ -234,7 +287,10 @@
     }
 
     async load() {
-      const res = await this._getCouponList(1)
+      let res = await this._getCouponList(1)
+      if (res.error === 0) {
+        res = []
+      }
       this.couponList = this._computed(res)
       if (this.couponList.length > 0) {
         this.nothingBoxShow = false
@@ -255,12 +311,20 @@
     _computed(arr) {
       return arr.map((item) => {
         return {
-          price: Math.floor(item.promotion.platform_price),
+          price: Math.floor(item.promotion.shop_price),
           restriction: item.promotion.restriction,
           title: item.promotion.title,
           endAt: item.promotion.end_at,
           notAllowTime: item.promotion.not_allow_time,
           id: item.promotion_id
+        }
+      })
+    }
+
+    _checked(arr, idx) {
+      arr.forEach((item, index) => {
+        if (idx * 1 === index * 1) {
+          item.checked = item.checked ? '' : '1'
         }
       })
     }
@@ -340,34 +404,84 @@
       max-height: 92vh
 
       .mySelect-couponList-item
-        margin: 20rpx 0 0 24rpx
-        width: 700rpx
-        height: 200rpx
-        display: flex
-        align-items: center
+        margin: 10px 12px 0
+        position: relative
+        padding-bottom: 28.49%
+        height: 0
 
-        .mySelect-couponList-itemPay
-          text-align: center
-          width: 200rpx
-          font-size: $font-size-small-s
-
-        .mySelect-couponList-itemMsg
+        .couponList-item-head-container
+          position: absolute
+          left: 0
+          top: 0
+          right: 0
+          bottom: 0
           display: flex
-          flex-direction: column
-          justify-content: space-between
-          height: 160rpx
-          padding: 20rpx 0 20rpx 25rpx
 
-          .mySelect-couponList-item-title
-            font-family: PingFangSC-Regular
-            font-size: $font-size-medium
-            line-height: 20px
+          .coupon-bc
+            position: absolute
+            height: 100%
+            width: 100%
 
-          .mySelect-couponList-item-time
-            font-size: $font-size-small-s
-            color: $color-text-d
-            line-height: 14px
+          .couponList-item-head-left
+            width: 74.4%
+            height: 100%
+            display: flex
+            position: absolute
+            left: 0
 
+            .couponList-itemPay
+              flex: 4
+              display: flex
+              align-items: center
+              justify-content: center
+
+              .couponList-midMoney
+                font-size: $font-size-small-s
+                font-family: PingFangSC-Semibold
+                color: $color-text-t
+
+              .couponList-bigMoney
+                color: $color-text-t
+                font-size: 25px
+                font-family: PingFangSC-Semibold
+
+            .couponList-itemMsg
+              flex: 7
+              display: flex
+              flex-direction: column
+              justify-content: center
+
+              .couponList-item-title
+                font-family: PingFangSC-Medium
+                font-size: $font-size-medium
+                padding-bottom: 6px
+                border-bottom: .5px solid $color-col-line
+                margin-bottom: 6px
+
+              .couponList-item-time
+                font-size: $font-size-small-s
+                color: $color-text-d
+                line-height: 14px
+
+          .couponList-item-head-right
+            position: absolute
+            right: 0
+            width: 25.6%
+            height: 100%
+            display: flex
+            align-items: center
+            justify-content: center
+
+            .couponList-item-head-right-btn
+              width: 58px
+              height: 24px
+              display: flex
+              align-items: center
+              justify-content: center
+              border: 1px solid $color-orange
+              font-size: $font-size-small
+              color: $color-text-t
+              border-radius: 2px
     .mySelect-contentList
       max-height: 92vh
 
@@ -425,6 +539,8 @@
           .mySelect-contentList-Msg-right
             height: 10.7vw
             margin-right: 10px
+            display: flex
+            align-items: center
 
             .mySelect-contentList-select
               display: flex
@@ -439,59 +555,149 @@
               margin-right: 5px
               margin-left: 10px
 
+            .mySelect-contentList-select-left
+              font-size: $font-size-small-s
+              color: #b1b1b1
 
     .mySelect-kacList
       max-height: 92vh
 
-      .mySelect-kacList-item
-        margin: 20rpx 0 0 24rpx
-        width: 700rpx
+      .mySelect-couponList-item
+        margin: 10px 12px 0
 
-        .mySelect-kacList-item-main
-          display: flex
-          align-items: center
+        .mySelect-couponList-item-main
           position: relative
-          overflow: hidden
+          padding-bottom: 28.49%
+          height: 0
 
-          .mySelect-kacList-midMoney
-            font-size: $font-size-small
-            font-family: PingFangSC-Semibold
+          .gift-bag-img
+            position: absolute
+            left: 0
+            top: 0
+            width: 41.5px
+            height: 43.5px
+          .couponList-item-head-container
+            position: absolute
+            left: 0
+            top: 0
+            right: 0
+            bottom: 0
+            display: flex
 
-          .mySelect-kacList-bigMoney
-            color: #5D5D5D
-            font-size: 40px
-            font-family: Impact
+            .coupon-bc
+              position: absolute
+              height: 100%
+              width: 100%
 
-          .mySelect-kacList-itemPay
-            text-align: center
-            width: 200rpx
-            font-size: $font-size-small-s
+            .couponList-item-head-left
+              width: 74.4%
+              height: 100%
+              display: flex
+              position: absolute
+              left: 0
 
-          .mySelect-kacList-itemMsg
+              .couponList-itemPay
+                flex: 4
+                display: flex
+                align-items: center
+                justify-content: center
+
+                .couponList-midMoney
+                  font-size: $font-size-small-s
+                  font-family: PingFangSC-Semibold
+                  color: $color-kac
+
+                .couponList-bigMoney
+                  color: $color-kac
+                  font-size: 25px
+                  font-family: PingFangSC-Semibold
+
+              .couponList-itemMsg
+                flex: 7
+                display: flex
+                flex-direction: column
+                justify-content: center
+
+                .couponList-item-title
+                  font-family: PingFangSC-Medium
+                  font-size: $font-size-medium
+                  padding-bottom: 6px
+                  border-bottom: .5px solid $color-col-line
+                  margin-bottom: 6px
+
+                .couponList-item-time
+                  font-size: $font-size-small-s
+                  color: $color-text-d
+                  line-height: 14px
+
+            .couponList-item-head-right
+              position: absolute
+              right: 0
+              width: 25.6%
+              height: 100%
+              display: flex
+              align-items: center
+              justify-content: center
+
+              .couponList-item-head-right-btn
+                width: 58px
+                height: 24px
+                display: flex
+                align-items: center
+                justify-content: center
+                border: 1px solid $color-kac
+                font-size: $font-size-small
+                color: $color-kac
+                border-radius: 2px
+
+              .couponList-item-storechange
+                position: absolute
+                right: 0
+                bottom: 0
+                display: flex
+                width: 100%
+                height: 30px
+                justify-content: center
+                align-items: center
+
+                .couponList-item-storechange-txt
+                  font-size: $font-size-small-s
+                  color: $color-text-d
+
+                .couponList-item-storechange-icon
+                  width: 10px
+                  height: 10px
+                  margin-left: 5px
+
+        .store-avatar
+          background: $color-white
+          border: 1px solid $color-col-line
+          box-sizing: border-box
+          border-top: 0 none
+          display: flex
+          overflow-x: auto
+          overflow-y: hidden
+          height: 62px
+          transition: all .3s
+
+          .store-avatar-box
+            height: 60px
             display: flex
             flex-direction: column
-            justify-content: space-between
-            height: 160rpx
-            padding: 20rpx 0 20rpx 25rpx
+            align-items: center
+            justify-content: center
 
-            .mySelect-kacList-item-title
-              font-family: PingFangSC-Regular
-              font-size: $font-size-medium
-              line-height: 20px
+            .store-avatar-img
+              width: 33px
+              height: 33px
+              border-radius: 50%
+              margin: 0 15px 5px
 
-            .mySelect-kacList-item-time
+            .store-name
               font-size: $font-size-small-s
-              color: $color-text-d
-              line-height: 14px
+              color: #4A4657
 
-          .mySelect-kacList-kacBag
-            position: absolute
-            right: -18px
-            top: 3px
-            background: $color-yellow
-            font-size: $font-size-small
-            padding: 5px 20px
-            transform: rotate(40deg)
-
+        .store-avatar.hide
+          height: 0
 
 </style>

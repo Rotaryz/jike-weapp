@@ -1,15 +1,435 @@
 <template>
-  <map id="map" longitude="113.324520" latitude="23.099994" scale="14" controls="{{controls}}" bindcontroltap="controltap" markers="{{markers}}" bindmarkertap="markertap" polyline="{{polyline}}" bindregionchange="regionchange" show-location>
+  <map id="map"
+       longitude="{{longitude}}"
+       latitude="{{latitude}}"
+       controls="{{controls}}"
+       bindcontroltap="controltap"
+       markers="{{markers}}"
+       bindmarkertap="markertap"
+       polyline="{{polyline}}"
+       include-points="{{includePoints}}"
+       bindtap="tapMap"
+       bindregionchange="regionchange">
+    <cover-view class="shop-modal {{showSlide ? 'show' : ''}}">
+      <cover-view class="modal">
+        <cover-view class="location">
+          <cover-image src="http://jike-file.jerryf.cn/defaults/c-image/square/icon-s_location@2x.png"
+                       mode="scaleToFill" class="icon-location"></cover-image>
+          <cover-view class="content">{{currentMerchant.particular_address}}</cover-view>
+        </cover-view>
+        <cover-view class="shop">
+          <cover-view class="top" @tap="switchRecommend">
+            <cover-view class="desc">
+              <cover-view class="title">{{currentMerchant.shop_name}}</cover-view>
+              <cover-view class="subhead">{{currentMerchant.describe}}</cover-view>
+            </cover-view>
+            <cover-view class="logo-wrapper">
+              <cover-image src="http://jike-file.jerryf.cn/defaults/c-image/square/pic-s_shopbg@2x.png"
+                           class="image"></cover-image>
+              <cover-image wx:if="{{currentMerchant.code_name}}" class="industry"
+                           src="http://jike-file.jerryf.cn/defaults/c-image/square/icon-s_{{currentMerchant.code_name}}@2x.png"></cover-image>
+              <cover-image wx:if="{{currentMerchant.logo_image}}" src="{{currentMerchant.logo_image}}"
+                           class="logo"></cover-image>
+            </cover-view>
+            <cover-view class="comment">
+              <cover-view class="comment-content">
+                <cover-view class="stars">
+                  <repeat for="{{stars}}" index="{{index}}" key="{{index}}">
+                    <cover-image src="http://jike-file.jerryf.cn/defaults/c-image/square/icon-s_evaluate@2x.png"
+                                 class="icon-star"></cover-image>
+                  </repeat>
+                  <cover-view>{{currentMerchant.star_level !== '0.0' ? currentMerchant.star_level : '5.0'}}</cover-view>
+                </cover-view>
+                <cover-view class="store">{{currentMerchant.favorite_count}}人已收藏</cover-view>
+              </cover-view>
+            </cover-view>
+          </cover-view>
+          <cover-view class="bottom">
+            <cover-image class="line"
+                         src="http://jike-file.jerryf.cn/defaults/c-image/square/pic-s_line@2x.png"></cover-image>
+            <cover-view class="content-wrapper">
+              <cover-view class="item">
+                <cover-image src="http://jike-file.jerryf.cn/defaults/c-image/square/icon-s_distance@2x.png"
+                             class="icon"></cover-image>
+                <cover-view class="content">距离{{distance}}米</cover-view>
+              </cover-view>
+              <cover-view class="item">
+                <cover-image src="http://jike-file.jerryf.cn/defaults/c-image/square/icon-s_swalk@2x.png"
+                             class="icon"></cover-image>
+                <cover-view class="content">步行{{duration}}分钟</cover-view>
+              </cover-view>
+              <cover-view class="item" @tap="openLocation">
+                <cover-image src="http://jike-file.jerryf.cn/defaults/c-image/square/icon-s_navigation@2x.png"
+                             class="icon"></cover-image>
+                <cover-view class="content">开始导航</cover-view>
+              </cover-view>
+              <cover-view class="item" @tap="makePhoneCall">
+                <cover-image src="http://jike-file.jerryf.cn/defaults/c-image/square/icon-s_tel@2x.png"
+                             class="icon"></cover-image>
+                <cover-view class="content">打电话</cover-view>
+              </cover-view>
+            </cover-view>
+          </cover-view>
+        </cover-view>
+        <cover-view class="tip-wrapper" @tap="switchRecommend">
+          <cover-view class="hot-wrapper">
+            <cover-image class="hot"
+                         src="http://jike-file.jerryf.cn/defaults/c-image/square/pic-s_hot@2x.png"></cover-image>
+          </cover-view>
+          <cover-view class="tips">
+            <cover-view class="box"
+                        style="height: {{scrollHeight}}px;transition: {{transition}};transform: translateY(-{{translateY}}px)">
+              <repeat for="{{tips}}" key="index" index="index" item="item">
+                <cover-view class="tip">
+                  <cover-view class="item-wrapper">
+                    <cover-view class="icon-wrapper">
+                      <cover-image class="icon"
+                                   src="http://jike-file.jerryf.cn/defaults/c-image/square/pic-s_activity@2x.png"></cover-image>
+                    </cover-view>
+                    <cover-view class="word">
+                      {{item.activity}}活动开启
+                    </cover-view>
+                  </cover-view>
+                  <cover-view class="item-wrapper">
+                    <cover-view class="icon-wrapper">
+                      <cover-image class="icon"
+                                   src="http://jike-file.jerryf.cn/defaults/c-image/square/pic-s_coupon@2x.png"></cover-image>
+                    </cover-view>
+                    <cover-view class="word">
+                      {{item.title}}正在疯抢中
+                    </cover-view>
+                  </cover-view>
+                </cover-view>
+              </repeat>
+            </cover-view>
+          </cover-view>
+        </cover-view>
+      </cover-view>
+    </cover-view>
   </map>
 </template>
 <script>
   import wepy from 'wepy'
   import users from 'common/mixins/users'
+  import base from 'common/mixins/base'
+  import Merchants from 'api/merchants'
+  import QQMap from 'common/libs/qqmap-jssdk'
 
   export default class Square extends wepy.page {
-    mixins = [users];
-    config = {
-      navigationBarTitleText: '广场'
+    mixins = [users, base]
+
+    data = {
+      firstUpdate: false,
+      map: false,
+      showSlide: false,
+      location: {},
+      longitude: '',
+      latitude: '',
+      moveLongitude: '',
+      moveLatitude: '',
+      merchants: [],
+      currentMerchant: {},
+      stars: [],
+      distance: '',
+      duration: '',
+      markers: [],
+      polyline: [],
+      controls: [],
+      includePoints: [],
+      promotions: [],
+      bigMarkerIndex: 0,
+      activeMarkerId: '',
+      tips: [],
+      scrollHeight: 60,
+      translateY: 0,
+      transition: 'all .5s'
+    }
+
+    async onLoad() {
+      this._newMap()
+      await this.load()
+      this.loaded()
+    }
+
+    onShow() {
+//      console.log('show')
+    }
+
+    _newMap() {
+      this.qqmapsdk = new QQMap({
+        key: 'WPABZ-ZVD6P-RJJD5-VSCIN-BBADV-FMFJX'
+      })
+    }
+
+    async load() {
+      await this.isAuthorise()
+      await this._newMapContext()
+      await this._setLoaction()
+      await this._setControls()
+      await this._getPlazaMerchants()
+      await this._translateMarkers()
+    }
+
+    async _newMapContext() {
+      this.mapContext = wepy.createMapContext('map')
+    }
+
+    async _setLoaction() {
+      const res = await wepy.getLocation()
+      this.location = {
+        latitude: res.latitude,
+        longitude: res.longitude
+      }
+      const location = [{
+        id: 0,
+        iconPath: './icon-s_sister@2x.png',
+        latitude: res.latitude,
+        longitude: res.longitude,
+        width: 18,
+        height: 27
+      }]
+      this.markers = [...this.markers, ...location]
+      this.$apply()
+    }
+
+    async _setControls() {
+      const res = await wepy.getSystemInfo()
+      let width = res.windowWidth
+      let height = res.windowHeight
+      this.controls.push({
+        id: 1,
+        iconPath: './icon-s_return@2x.png',
+        clickable: true,
+        position: {
+          width: 36,
+          height: 36,
+          left: width - 49,
+          top: height - 103
+        }
+      })
+    }
+
+    async _getPlazaMerchants() {
+      const res = await Merchants.getPlazaMerchants()
+      this.merchants = res
+      res.forEach((item) => {
+        if (item.current_merchant) {
+          this.longitude = item.longitude
+          this.latitude = item.latitude + 0.009
+          this.$apply()
+        }
+      })
+      const markers = res.map((item) => {
+        return {
+          iconPath: `./icon-s_${item.industry.code_name}@2x.png`,
+          id: item.id,
+          latitude: item.latitude,
+          longitude: item.longitude,
+          width: 32,
+          height: 34,
+          hasActivity: item.has_activity
+        }
+      })
+      this.markers = [...this.markers, ...markers]
+      this._setIncludePoints(this.markers)
+      if (markers.length === 1) {
+        this.bigMarkerIndex = 1
+        this._setPolyline(markers[0].id)
+        this._scaleMarker(1)
+        await this._getMerchantDetail(res[0].merchant_id)
+        setTimeout(() => {
+          this.showSlide = true
+          this.$apply()
+        }, 3000)
+      }
+      this._setIncludePoints([])
+      this.$apply()
+    }
+
+    _setIncludePoints(points) {
+      this.includePoints = points
+      this.$apply()
+    }
+
+    _setPolyline(id) {
+      const location = this.markers.find((item) => item.id === 0)
+      const target = this.markers.find((item) => item.id === id)
+      this.polyline = [{
+        points: [
+          {
+            latitude: location.latitude,
+            longitude: location.longitude
+          }, {
+            latitude: target.latitude,
+            longitude: target.longitude
+          }
+        ],
+        color: '#706B82AA',
+        width: 2,
+        dottedLine: true
+      }]
+      this.$apply()
+    }
+
+    async _translateMarkers() {
+      this.markers.forEach((item) => {
+//        console.log(item)
+      })
+    }
+
+    async _getMerchantDetail(id) {
+      const res = await Merchants.getMerchantsDetail(id)
+      this.currentMerchant = res
+      this.promotions = res.promotions
+      const starLevel = res.star_level === '0.0' ? 5 : res.star_level
+      this.stars = new Array(Math.floor(starLevel))
+      this.$apply()
+      this.loaded()
+      this._setTips()
+      this._caculateDistance()
+      this._setTipInterval()
+    }
+
+    _setTips() {
+      const activities = this.currentMerchant.activities
+      const promotions = this.promotions
+      let tips = []
+      for (let key in activities) {
+        if (activities[key]) {
+          tips.push({activity: key})
+        }
+      }
+      tips.forEach((item, index) => {
+        let init = {title: '初始优惠券'}
+        if (promotions[index]) {
+          init = promotions[index]
+        }
+        item = Object.assign(item, init)
+      })
+      if (tips.length) {
+        tips.push(tips[0])
+      }
+      this.tips = tips
+    }
+
+    _caculateDistance() {
+      this.qqmapsdk.calculateDistance({
+        mode: 'driving',
+        from: this.location,
+        to: [{
+          longitude: this.currentMerchant.longitude,
+          latitude: this.currentMerchant.latitude
+        }],
+        success: (res) => {
+          const result = res.result.elements[0]
+          this.distance = Math.floor(result.distance)
+          this.duration = Math.floor(result.duration / 60)
+          this.$apply()
+        }
+      })
+    }
+
+    _scaleMarker(type) {
+      const index = this.bigMarkerIndex
+      if (index === 0) {
+        return
+      }
+      this.markers[index].width = type === 1 ? 42 : 32
+      this.markers[index].height = type === 1 ? 44 : 34
+      this.$apply()
+    }
+
+    _setTipInterval() {
+      const tipsLength = this.tips.length
+      this.scrollHeight = 60 * tipsLength
+      this.tipTimer = setInterval(() => {
+        this.transition = 'all .5s'
+        this.translateY += 60
+        if (this.translateY / 60 === tipsLength - 1) {
+          this.tipTimeOuter = setTimeout(() => {
+            this.transition = ''
+            this.translateY = 0
+            this.$apply()
+          }, 500)
+        }
+        this.$apply()
+      }, 3000)
+    }
+
+    clearData() {
+      this.tipTimer && clearInterval(this.tipTimer)
+      this.tipTimeOuter && clearTimeout(this.tipTimeOuter)
+      this._scaleMarker(0)
+      this._setPolyline(0)
+      this.$apply()
+    }
+
+    methods = {
+      switchRecommend() {
+        const merchantId = this.currentMerchant.merchant_id
+        this.$parent.updateGlobalData('merchantId', merchantId)
+        wepy.switchTab({url: '/pages/recommend/recommend'})
+      },
+      async tapMap(e) {
+        if (!this.showSlide) {
+          return
+        }
+        this.clearData()
+        this.showSlide = false
+      },
+      async regionchange(e) {
+        this.mapContext.getCenterLocation({
+          success: (res) => {
+            this.moveLongitude = res.longitude
+            this.moveLatitude = res.latitude
+            if ((this.moveLongitude !== this.longitude || this.moveLatitude !== this.latitude) && this.showSlide) {
+              this.clearData()
+              this.showSlide = false
+            }
+            this.$apply()
+          }
+        })
+      },
+      controltap(e) {
+        if (e.controlId === 1) {
+          this.latitude = this.moveLatitude
+          this.longitude = this.moveLongitude
+          setTimeout(() => {
+            this.latitude = this.location.latitude
+            this.longitude = this.location.longitude
+            this.$apply()
+          }, 20)
+        }
+      },
+      markertap(e) {
+        let markerId = e.markerId
+        if (this.activeMarkerId === markerId && this.showSlide) {
+          return
+        }
+        this.activeMarkerId = markerId
+        this.clearData()
+        if (markerId === 0) {
+          return
+        }
+        let currentMerchant = this.merchants.find((item) => item.id === markerId)
+        this._getMerchantDetail(currentMerchant.merchant_id)
+        this._setPolyline(markerId)
+        this.bigMarkerIndex = this.markers.findIndex((item) => item.id === markerId)
+        this._scaleMarker(1)
+        this.showSlide = true
+        this.translateY = 0
+      },
+      makePhoneCall() {
+        const phone = this.currentMerchant.mobile
+        wepy.makePhoneCall({phoneNumber: phone})
+      },
+      openLocation() {
+        wepy.openLocation({
+          latitude: this.currentMerchant.latitude,
+          longitude: this.currentMerchant.longitude,
+          scale: 28
+        })
+      }
     }
 
     // 分享
@@ -21,30 +441,195 @@
       }
     }
 
-    // 生成新数组
-    buildArr() {
-
-    }
-
-    onLoad() {
+    config = {
+      navigationBarTitleText: '广场'
     }
   }
 
 </script>
 <style lang="stylus">
-  page
-    height: 100%
-    overflow: hidden
+  @import "../../common/stylus/variable.styl"
+  @import "../../common/stylus/mixin.styl"
 
   #map
-    @extend page
     width: 100%
-    .slide-modal
-      position: absolute
-      top: 20px
+    height: 100vh
+    .shop-modal
+      position: fixed
+      top: 0
       left: 0
-      width: 80%
-      height: 100px
-      background-color: #ffffff
-
+      width: 100%
+      padding: 0 10px
+      padding-top: 4.75px
+      box-sizing: border-box
+      transition: all .5s
+      opacity: 0
+      transform: translate3d(0, -100%, 0)
+      &.show
+        transform: translate3d(0, 0, 0)
+        opacity: 1
+      .modal
+        position: relative
+        width: 100%
+        height: 100%
+        border-radius: 4px
+        background-color: $color-white
+        border-1px($color-col-line, 4px)
+        .location
+          display: flex
+          align-items: center
+          height: 30px
+          padding-left: 10px
+          font-size: $font-size-small
+          color: $color-text
+          background: $color-background
+          .icon-location
+            display: flex
+            width: 10px
+            height: 10px
+            margin-right: 3px
+          .content
+            display: flex
+            flex: 1
+        .shop
+          .top
+            display: flex
+            height: 69.75px
+            .desc
+              flex: 1
+              display: flex
+              flex-direction: column
+              justify-content: center
+              padding-left: 10px
+              color: $color-text
+              .title
+                margin-bottom: 2.5px
+                font-size: $font-size-medium-x
+                overflow: hidden
+                text-overflow: ellipsis
+                white-space: nowrap
+              .subhead
+                font-size: $font-size-small-s
+            .logo-wrapper
+              position: relative
+              flex: 0 0 65px
+              display: flex
+              align-items: center
+              justify-content: center
+              .image
+                display: flex
+                width: 65px
+                height: 52px
+              .industry
+                position: absolute
+                top: 13.5px
+                left: 24.5px
+                display: flex
+                width: 12px
+                height: 12px
+                border-radius: 50%
+              .logo
+                position: absolute
+                bottom: 11.25px
+                right: 3px
+                display: flex
+                width: 24px
+                height: 24px
+                border-radius: 100%
+            .comment
+              flex: 1
+              display: flex
+              flex-direction: column
+              justify-content: center
+              align-items: center
+              .comment-content
+                .stars
+                  display: flex
+                  align-items: center
+                  font-size: $font-size-small-s
+                  .icon-star
+                    display: flex
+                    margin-right: 1.5px
+                    width: 10px
+                    height: 10px
+                .store
+                  margin-top: 8px
+                  font-size: $font-size-small-s
+                  color: $color-text
+          .bottom
+            position: relative
+            height: 38.25px
+            .line
+              position: absolute
+              top: 0
+              left: 0
+              width: 100%
+              height: 100%
+            .content-wrapper
+              position: absolute
+              top: 0
+              left: 0
+              display: flex
+              width: 100%
+              height: 100%
+              .item
+                flex: 1
+                display: flex
+                align-items: center
+                justify-content: center
+                box-sizing: border-box
+                font-size: $font-size-small-s
+                &:nth-child(4) .icon
+                  padding-left: 20px
+                .icon
+                  display: flex
+                  width: 10px
+                  height: 10px
+                  margin-right: 1px
+                .content
+                  width: 60px
+                  display: flex
+    .tip-wrapper
+      display: flex
+      height: 60px
+      padding-left: 10px
+      .hot-wrapper
+        flex: 0 0 50px
+        width: 50px
+        display: flex
+        align-items: center
+        justify-content: center
+        .hot
+          display: flex
+          width: 50px
+          height: 41px
+      .tips
+        flex: 1
+        height: 60px
+        padding-left: 10px
+        .box
+          transform: translateY(0px)
+          .tip
+            display: flex
+            flex-direction: column
+            justify-content: center
+            height: 60px
+            .item-wrapper
+              display: flex
+              align-items: center
+              &:first-child
+                margin-bottom: 7px
+              .icon-wrapper
+                flex: 0 0 30px
+                width: 30px
+                .icon
+                  display: flex
+                  width: 30px
+                  height: 14px
+              .word
+                flex: 1
+                display: flex
+                margin-left: 5px
+                font-size: $font-size-small
+                color: $color-text
 </style>

@@ -16,13 +16,13 @@
         </view>
       </view>
 
-      <view class="myRedPacket-withDraw {{packetTotal.redpacker_count_monies>0?'':'disabled'}}" @tap="withDrawSub">提现</view>
+      <view class="myRedPacket-withDraw" @tap="withDrawSub">提现</view>
     </view>
 
     <scroll-view scroll-y class="myRedPacket-list" wx:if="{{packetList.length>0}}" bindscrolltolower="redPacketLower">
       <view class="myRedPacket-list-item" wx:for="{{packetList}}" wx:key="{{index}}">
         <view class="myRedPacket-list-item-left">
-          <image src="./image/icon-my_money.png" class="myRedPacket-list-item-image"></image>
+          <image src="http://jike-file.jerryf.cn/defaults/c-image/mine/icon-my_money.png" class="myRedPacket-list-item-image"></image>
           <view class="myRedPacket-list-item-msg">
             <view class="myRedPacket-list-item-msg-title">{{item.activity_name}}</view>
             <view class="myRedPacket-list-item-msg-time">{{item.created_at}}</view>
@@ -34,10 +34,10 @@
     </scroll-view>
 
     <view class="myRedPacket-noList" wx:if="{{packetList.length===0}}">
-      <image src="./image/pic-my-money.png" class="myRedPacket-noList-img"></image>
+      <image src="http://jike-file.jerryf.cn/defaults/c-image/mine/pic-my-money.png" class="myRedPacket-noList-img"></image>
       <view class="myRedPacket-noList-txt">您还没有红包</view>
     </view>
-
+    <Toast></Toast>
   </view>
 </template>
 
@@ -46,6 +46,7 @@
   import wepy from 'wepy'
   import base from 'common/mixins/base'
   import GetRedPacket from 'api/myRedPacket'
+  import Toast from '@/base/toast/toast'
 
   export default class RedPacket extends wepy.page {
     mixins = [base]
@@ -55,6 +56,10 @@
       navigationBarBackgroundColor: '#fff',
       navigationBarTextStyle: 'black',
       backgroundColor: '#F9F9F9'
+    }
+
+    components = {
+      Toast
     }
 
     data = {
@@ -73,6 +78,9 @@
           this.page++
           console.log(this.page)
           let res = await this._getRedPacketList(this.page)
+          if (res.error === 0) {
+            res = []
+          }
           if (res.length === 0) {
             this.nothingAdd = true
           }
@@ -85,11 +93,7 @@
         }
       },
       withDrawSub() {
-        if (this.packetTotal.redpacker_count_monies > 0) {
-          this.$navigate('/pages/user/withDraw/withDraw')
-        } else {
-          // 金额0
-        }
+        this.$navigate('/pages/user/withDraw/withDraw')
       }
     }
 
@@ -99,8 +103,17 @@
 
     async load() {
       this.packetTotal = await GetRedPacket.getTotalRedpacket()
+      if (this.packetTotal.error === 0) {
+        this.packetTotal = {
+          redpacker_count_monies: '0.00',
+          redpacker_count: '0'
+        }
+      }
       this.packetTotalNum = this._computed(this.packetTotal.redpacker_count_monies)
       this.packetList = await this._getRedPacketList(1)
+      if (this.packetList.error === 0) {
+        this.packetList = []
+      }
       this.$apply()
       this.loaded()
     }

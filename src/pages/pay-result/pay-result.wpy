@@ -1,14 +1,14 @@
 <template>
   <view class="pay-result">
-    <view class="status-wrapper">
-      <view class="emotion">
-        <image src="./pic-good@2x.png" class="full-image"></image>
+    <view class="status-wrapper border-bottom-1px">
+      <view class="icon-pay">
+        <image src="{{icon}}" class="full-image"></image>
       </view>
       <view class="desc">
         <view class="price">订单金额: <text class="number">{{total}}</text><text class="yuan">元</text></view>
-        <view class="check-order" @tap="checkOrder">
-          查看订单
-        </view>
+      </view>
+      <view class="check-order" @tap="checkOrder">
+        查看订单
       </view>
     </view>
     <view class="recommend">
@@ -19,7 +19,7 @@
       </view>
       <view class="coupons-wrapper">
         <repeat for="{{coupons}}" key="index" index="index" item="item">
-          <coupon :coupon.sync="item" type="1" @handleClick.user="goToCouponDetail"></coupon>
+          <coupon :coupon.sync="item" @handleClick.user="goToCouponDetail"></coupon>
         </repeat>
       </view>
     </view>
@@ -37,11 +37,20 @@
 
     data = {
       coupons: [],
-      total: ''
+      total: '',
+      icon: ''
     }
 
     async onLoad(option) {
       this.total = option.total
+      const status = option.status
+      if (status === 'success') {
+        wepy.setNavigationBarTitle({title: '支付成功'})
+        this.icon = 'http://jike-file.jerryf.cn/defaults/c-image/recommend/icon-success@2x.png'
+      } else {
+        wepy.setNavigationBarTitle({title: '支付失败'})
+        this.icon = 'http://jike-file.jerryf.cn/defaults/c-image/recommend/icon-fail@2x.png'
+      }
       await this._getCouponList()
       this.loaded()
     }
@@ -49,7 +58,7 @@
     async _getCouponList() {
       const merchantId = wepy.getStorageSync('merchantId')
       const res = await CouponApi.getShopCouponList(merchantId)
-      let list = res.promotions.data
+      let list = res.promotions
       if (list.length < 5) {
         this.coupons = list
       } else {
@@ -74,36 +83,41 @@
 
 <style lang="stylus">
   @import "../../common/stylus/variable"
+  @import "../../common/stylus/mixin"
+
   .pay-result
     .status-wrapper
       display: flex
+      flex-direction: column
       align-items: center
       justify-content: center
-      height: 130px
+      height: 191px
       background-color: $color-white
-      .emotion
-        width: 67.25px
-        height: 67px
-      .desc
-        margin-left: 15px
-        .price
-          margin-bottom: 9.5px
-          font-size: $font-size-medium-x
-          .number
-            font-family: "PingFangSC-Medium"
-            font-size: $font-size-large
-            color: $color-text-t
-          .yuan
-            font-size: $font-size-small-s
-            color: $color-text-t
-        .check-order
-          display: inline-block
-          padding: 4px 16px
-          border: 1px solid $color-col-line
-          border-radius: 2px
-          font-size: $font-size-small
+      .icon-pay
+        width: 64px
+        height: 64px
+        margin-bottom: 7.5px
+      .price
+        margin-bottom: 30px
+        font-size: $font-size-medium-x
+        .number
+          font-family: "PingFangSC-Medium"
+          font-size: $font-size-large
+          color: $color-text-t
+        .yuan
+          font-size: $font-size-small-s
+          color: $color-text-t
+      .check-order
+        width: 150px
+        height: 28px
+        line-height: 28px
+        border-1px()
+        border-radius: 2px
+        text-align: center
+        font-size: $font-size-medium
+        color: $color-text-d
     .recommend
-      padding: 0 12px
+
       .title
         position: relative
         display: flex
@@ -114,6 +128,7 @@
         text-align: center
         font-size: $font-size-medium
         color: $color-text-d
+        margin: 0 12px
         .left-line, .right-line
           width: 67.5px
           margin: 0 6.25px

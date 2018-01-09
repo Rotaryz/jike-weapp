@@ -1,5 +1,13 @@
 <template>
   <view class="content-detail">
+    <view class="picture-wrapper">
+      <image src="{{contents.image_url}}" class="full-image"></image>
+    </view>
+    <view class="line-title">
+      <view class="title-content">
+        · {{contents.title}} ·
+      </view>
+    </view>
     <view>
       <repeat for="{{details}}" key="index" index="index" item="item">
         <view class="content-wrapper">
@@ -13,32 +21,7 @@
             <video src="{{item.detail.url}}"></video>
           </view>
           <view class="content coupon-wrapper" wx:if="{{item.type === type.coupon}}">
-            <view class="coupon">
-              <view class="coupon-bg">
-                <image class="image" src="./pic-coupon_bg@2x.png" mode="scaleToFill"></image>
-              </view>
-              <view class="content" @tap="handleClick({{item.detail.id}})">
-                <view class="left">
-                  <view class="price"><text class="number">{{item.detail.platform_price}}</text><text class="yuan">元</text></view>
-                  <view class="desc" wx:if="{{item.detail.promotion_type === 'discount'}}">{{item.detail.title}}</view>
-                </view>
-                <view class="right">
-                  <view class="desc-wrapper">
-                    <view class="description">
-                      <view class="top">
-                        <view class="name">{{item.detail.title}}</view>
-                        <view class="valid">有效期至{{item.detail.end_at}}</view>
-                      </view>
-                      <view class="bottom">{{item.detail.not_allow_time}}</view>
-                    </view>
-                    <view class="btn-wrapper">
-                      <view class="btn"><text class="font">抢购</text> <image class="icon" src="./icon-button_right.png"></image></view>
-                    </view>
-                  </view>
-                  <!--<view class="tip-wrapper" wx:if="{{type === packageType}}">礼包</view>-->
-                </view>
-              </view>
-            </view>
+            <coupon :coupon.sync="item.detail" :buy="buy" :border="yes"></coupon>
           </view>
         </view>
       </repeat>
@@ -74,6 +57,7 @@
 
     data = {
       id: '',
+      contents: {},
       details: [],
       isFavorite: false,
       type: {
@@ -97,6 +81,8 @@
 
     async _getContentDetail() {
       const data = await ContentsApi.getContentDetail(this.id)
+      wepy.setNavigationBarTitle({title: data.title})
+      this.contents = data
       this.details = data.content_details
       this.isFavorite = data.is_favorite
     }
@@ -112,10 +98,17 @@
         }
         await this._getContentDetail()
         this.loaded()
-      },
-      handleClick(couponId) {
-        this.$navigate(`/pages/coupon-detail/coupon-detail?type=1&id=${couponId}`)
       }
+    }
+
+    events = {
+      handleClick(type, couponId) {
+        this.$navigate(`/pages/coupon-detail/coupon-detail?type=${type}&id=${couponId}`)
+      }
+    }
+
+    config = {
+      navigationBarTitleText: '内容详情'
     }
 
     components = {
@@ -132,10 +125,32 @@
     width: 100%
     min-height: 100vh
     background-color: $color-white
+    .picture-wrapper
+      width: 100%
+      height: 53.33333333vw
+      margin-bottom: 40px
+    .line-title
+      margin-bottom: 30px
+      text-align: center
+      .title-content
+        position: relative
+        display: inline-block
+        font-size: $font-size-large
+        &:before, &:after
+          position: absolute
+          top: 7px
+          content: ''
+          width: 69px
+          height: 1px
+          border-bottom: 1px solid #cccccc
+        &:before
+          left: -75px
+        &:after
+          right: -75px
     .content-wrapper
-      border-bottom: 10px solid $color-background
+      margin-bottom: 40px
       &:last-child
-        border: none
+        margin-bottom: 0
       .content
         &.image-wrapper
           position: relative
@@ -148,8 +163,8 @@
             left: 0
         &.text-wrapper
           padding: 5px 12px
-          line-height: 20px
-          font-size: $font-size-small
+          line-height: 23px
+          font-size: $font-size-medium
           color: $color-text-d
           background-color: $color-white
         &.video-wrapper
@@ -164,95 +179,8 @@
             width: 100%
             height: 100%
         &.coupon-wrapper
-          padding: 10px 12px
           background-color: $color-white
-          .coupon
-            position: relative
-            width: 100%
-            height: 0
-            margin-bottom: 10px
-            padding-top: 28.409090909%
-            overflow: hidden
-            .coupon-bg
-              position: absolute
-              top: 0
-              left: 0
-              width: 100%
-              height: 100%
-              .image
-                width: 100%
-                height: 100%
-            .content
-              position: absolute
-              top: 0
-              left: 0
-              display: flex
-              width: 100%
-              height: 100%
-              .left
-                flex: 0 0 28%
-                display: flex
-                flex-direction: column
-                justify-content: center
-                width: 28%
-                height: 100%
-                color: $color-text-d
-                text-align: center
-                .price
-                  font-size: 0
-                  .number
-                    font-family: Impact
-                    font-size: 40px
-                    line-height: 49px
-                  .yuan
-                    font-size: $font-size-small
-                .desc
-                  font-size: $font-size-small-s
-              .right
-                position: relative
-                flex: 1
-                .desc-wrapper
-                  display: flex
-                  height: 100%
-                  padding: 0 12px
-                  .description
-                    flex: 1
-                    display: flex
-                    flex-direction: column
-                    justify-content: space-between
-                    padding: 10px 0
-                    .top
-                      .name
-                        line-height: $font-size-large-m
-                        font-size: $font-size-medium
-                        no-wrap()
-                      .valid
-                        font-size: $font-size-small-s
-                    .bottom
-                      font-size: $font-size-small-s
-                  .btn-wrapper
-                    display: flex
-                    align-items: center
-                    width: 58px
-                    flex: 0 0 58px
-                    .btn
-                      width: 58px
-                      height: 24px
-                      margin: auto
-                      text-align: center
-                      line-height: 24px
-                      font-size: 0
-                      background: $color-button
-                      .font
-                        display: inline-block
-                        vertical-align: middle
-                        margin-right: 3px
-                        font-size: $font-size-small
-                        color: $color-white
-                      .icon
-                        vertical-align: middle
-                        width: 11px
-                        height: 11px
+          padding-bottom: 20px
     .fix-btn-wrapper
       position: fixed
       right: 12px

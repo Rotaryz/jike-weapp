@@ -79,6 +79,7 @@ export default class http {
       error.message = serverData.message
       error.serverData = serverData
     }
+    Tips.loaded()
     return error
   }
 
