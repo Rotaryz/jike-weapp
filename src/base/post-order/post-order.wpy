@@ -1,49 +1,139 @@
 <template>
   <view animation="{{maskAnimation}}" class="post-order" @tap.stop="hide"
         wx:if="{{show}}">
-    <canvas canvas-id="target" class="canvas"></canvas>
     <view animation="{{modalAnimation}}" class="modal border-top-1px"
-          wx:if="{{show}}">
+          wx:if="{{show}}" @tap.stop="">
+      <view class="form-wrapper border-bottom-1px">
+        <view class="label-control border-bottom-1px">
+          <view class="label">{{orderInfo.title}}</view>
+          <view class="content">{{orderInfo.price}}元</view>
+        </view>
+        <view class="label-control border-bottom-1px">
+          <view class="label">数量</view>
+          <view class="content">
+            <view class="number-control">
+              <view class="desc" @tap.stop="descCount">-</view>
+              <view class="number">{{count}}</view>
+              <view class="add" @tap.stop="addCount">+</view>
+            </view>
+          </view>
+        </view>
+        <view class="label-control">
+          <view class="label">小计</view>
+          <view class="content">{{total}}元</view>
+        </view>
+      </view>
+      <view class="price-wrapper border-top-1px border-bottom-1px">
+        <view class="content">
+          <view class="label">订单总价</view>
+          <view class="price">
+            <text class="number">{{total}}</text>
+            <text class="yuan">元</text>
+          </view>
+        </view>
+      </view>
+      <view class="post-btn" @tap.stop="postOrder">
+        提交订单
+      </view>
     </view>
   </view>
 </template>
 
 <script>
   import wepy from 'wepy'
+  import Order from 'api/order'
+  import base from 'common/mixins/base'
 
   export default class PostOrder extends wepy.component {
+    mixins = [base]
+
+    props = {
+      orderInfo: Object
+    }
+
     data = {
       show: false,
       maskAnimation: '',
-      modalAnimation: ''
+      modalAnimation: '',
+      count: 1,
+      total: 0
+    }
+
+    _hide() {
+      let modalAnimation = wepy.createAnimation({
+        duration: 200,
+        timingFunction: 'linear',
+        delay: 0
+      })
+      let maskAnimation = wepy.createAnimation({
+        duration: 200,
+        timingFunction: 'linear',
+        delay: 0
+      })
+      maskAnimation.opacity(0).step()
+      modalAnimation.translateY(403).step()
+      this.maskAnimation = maskAnimation.export()
+      this.modalAnimation = modalAnimation.export()
+      this.$apply()
+      setTimeout(() => {
+        maskAnimation.opacity(1).step()
+        modalAnimation.translateY(0).step()
+        this.maskAnimation = maskAnimation.export()
+        this.modalAnimation = modalAnimation.export()
+        this.show = false
+        this.$apply()
+      }, 200)
     }
 
     methods = {
+      descCount() {
+        if (this.count <= 1) {
+          this.count = 1
+        } else {
+          this.count -= 1
+        }
+        this.total = this.count * this.orderInfo.price
+      },
+      addCount() {
+        this.count += 1
+        this.total = this.count * this.orderInfo.price
+      },
+      async postOrder() {
+//        const {promotion_merchant_id, promotion_type, promotion_id, title, price} = this.orderInfo
+//        const data = {
+//          promotion_merchant_id,
+//          promotion_type,
+//          promotion_id,
+//          title,
+//          price,
+//          count: this.count
+//        }
+//        const res = await Order.operation(data)
+//        this.loaded()
+//        const {timestamp, nonceStr, signType, paySign} = res.pay_info
+//        const pay = await wepy.requestPayment({
+//          timeStamp: timestamp,
+//          nonceStr,
+//          package: res.pay_info.package,
+//          signType,
+//          paySign
+//        })
+//        if (pay.errMsg === 'requestPayment:ok') {
+//          let tips = wepy.getStorageSync('tips')
+//          tips.order = true
+//          wepy.setStorageSync('tips', tips)
+//          const orderId = res.order_id
+//          const total = this.total
+//          const status = 'success'
+//          this.$parent.$navigate(`/pages/pay-result/pay-result?orderId=${orderId}&total=${total}&status=${status}`)
+//        }
+        this._hide()
+      },
       hide() {
-        let modalAnimation = wepy.createAnimation({
-          duration: 200,
-          timingFunction: 'linear',
-          delay: 0
-        })
-        let maskAnimation = wepy.createAnimation({
-          duration: 200,
-          timingFunction: 'linear',
-          delay: 0
-        })
-        maskAnimation.opacity(0).step()
-        modalAnimation.translateY(114).step()
-        this.maskAnimation = maskAnimation.export()
-        this.modalAnimation = modalAnimation.export()
-        setTimeout(() => {
-          maskAnimation.opacity(1).step()
-          modalAnimation.translateY(0).step()
-          this.maskAnimation = maskAnimation.export()
-          this.modalAnimation = modalAnimation.export()
-          this.show = false
-          this.$apply()
-        }, 200)
+        this._hide()
       },
       show() {
+        this.total = this.count * this.orderInfo.price
         let modalAnimation = wepy.createAnimation({
           duration: 200,
           timingFunction: 'linear',
@@ -55,7 +145,7 @@
           delay: 0
         })
         maskAnimation.opacity(0).step()
-        modalAnimation.translateY(114).step()
+        modalAnimation.translateY(403).step()
         this.maskAnimation = maskAnimation.export()
         this.modalAnimation = modalAnimation.export()
         this.show = true
@@ -74,4 +164,93 @@
 <style lang="stylus">
   @import '../../common/stylus/variable'
   @import '../../common/stylus/mixin'
+
+  .post-order
+    position: fixed
+    top: 0
+    left: 0
+    width: 100%
+    height: 100%
+    overflow: hidden
+    z-index: 1000
+    background-color: $color-mask-bgc
+    .modal
+      position: fixed
+      top: 53.333333vw
+      bottom: 0
+      left: 0
+      width: 100%
+      overflow: hidden
+      z-index: 2000
+      background: $color-background
+      .form-wrapper
+        background: $color-white
+        margin-bottom: 10px
+        padding-left: 12px
+        .label-control
+          display: flex
+          align-items: center
+          justify-content: space-between
+          height: 39px
+          padding-right: 12px
+          .label
+            font-size: $font-size-medium
+          .content
+            font-size: $font-size-medium
+            color: $color-text-t
+            .number-control
+              display: flex
+              height: 22px
+              .desc
+                width: 22px
+                height: 22px
+                text-align: center
+                line-height: 22px
+                border-1px($color-col-line, 2px)
+                color: $color-button
+              .number
+                width: 48px
+                height: 22px
+                margin: 0 2.5px
+                text-align: center
+                line-height: 22px
+                border-1px($color-col-line, 2px)
+                color: $color-text
+              .add
+                width: 22px
+                height: 22px
+                text-align: center
+                line-height: 22px
+                border-radius: 2px
+                border-1px($color-button, 2px)
+                color: $color-white
+                background-color: $color-button
+      .price-wrapper
+        padding-left: 12px
+        background-color: $color-white
+        .content
+          display: flex
+          align-items: center
+          justify-content: space-between
+          height: 42px
+          padding-right: 12px
+          .label
+            font-size: $font-size-medium
+          .price
+            color: $color-text-t
+            .number
+              font-size: $font-size-large
+            .yuan
+              font-size: $font-size-small-s
+      .post-btn
+        position: fixed
+        bottom: 0
+        left: 0
+        width: 100%
+        height: 44px
+        line-height: 44px
+        text-align: center
+        font-size: $font-size-medium
+        color: $color-white
+        background-color: $color-button
 </style>

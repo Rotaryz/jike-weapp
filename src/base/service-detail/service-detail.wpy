@@ -46,7 +46,6 @@
       color: $color-master
       display: flex
       align-items: center
-      border-bottom: .5px solid $color-col-line
       .red-block
         width: 2px
         height: 14px

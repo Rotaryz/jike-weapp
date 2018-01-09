@@ -84,6 +84,7 @@
         </view>
       </view>
     </share-modal>
+    <post-order :orderInfo.sync="orderInfo"></post-order>
   </scroll-view>
 </template>
 
@@ -102,6 +103,7 @@
   import Share from '@/base/share/share'
   import BaseModal from '@/base/base-modal/base-modal'
   import Shares from 'api/share'
+  import PostOrder from '@/base/post-order/post-order'
 
   const COUPON_TYPE = 1
   const PACKAGE_TYPE = 2
@@ -122,7 +124,8 @@
       isFavorite: false,
       promotionMerchantId: 0,
       qrcode: '',
-      sharePrice: ''
+      sharePrice: '',
+      orderInfo: {}
     }
 
     onShareAppMessage(res) {
@@ -221,7 +224,8 @@
     }
 
     submit() {
-      const orderInfo = {
+      wepy.pageScrollTo({scrollTop: 0})
+      this.orderInfo = {
         promotionImage: this.promotionImages[0].image.url,
         promotion_type: this.type,
         promotion_id: this.coupon.id,
@@ -229,8 +233,8 @@
         title: this.coupon.title,
         price: this.coupon.platform_price
       }
-      this.$parent.updateGlobalData('orderInfo', orderInfo)
-      this.$navigate('/pages/post-order/post-order')
+      this.$apply()
+      this.$invoke('post-order', 'show')
     }
 
     async collectToggle() {
@@ -294,7 +298,8 @@
       'slider': Slider,
       'coupon': Coupon,
       'share': Share,
-      'share-modal': BaseModal
+      'share-modal': BaseModal,
+      'post-order': PostOrder
     }
 
     config = {

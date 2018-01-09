@@ -1,14 +1,14 @@
 <template>
   <view class="pay-result">
-    <view class="status-wrapper">
-      <view class="emotion">
-        <image src="./pic-good@2x.png" class="full-image"></image>
+    <view class="status-wrapper border-bottom-1px">
+      <view class="icon-pay">
+        <image src="./icon-pay@2x.png" class="full-image"></image>
       </view>
       <view class="desc">
         <view class="price">订单金额: <text class="number">{{total}}</text><text class="yuan">元</text></view>
-        <view class="check-order" @tap="checkOrder">
-          查看订单
-        </view>
+      </view>
+      <view class="check-order" @tap="checkOrder">
+        查看订单
       </view>
     </view>
     <view class="recommend">
@@ -42,6 +42,12 @@
 
     async onLoad(option) {
       this.total = option.total
+      this.status = option.status
+      if (this.status === 'success') {
+        wepy.setNavigationBarTitle({title: '支付成功'})
+      } else {
+        wepy.setNavigationBarTitle({title: '支付失败'})
+      }
       await this._getCouponList()
       this.loaded()
     }
@@ -74,34 +80,39 @@
 
 <style lang="stylus">
   @import "../../common/stylus/variable"
+  @import "../../common/stylus/mixin"
+
   .pay-result
     .status-wrapper
       display: flex
+      flex-direction: column
       align-items: center
       justify-content: center
-      height: 130px
+      height: 191px
       background-color: $color-white
-      .emotion
-        width: 67.25px
-        height: 67px
-      .desc
-        margin-left: 15px
-        .price
-          margin-bottom: 9.5px
-          font-size: $font-size-medium-x
-          .number
-            font-family: "PingFangSC-Medium"
-            font-size: $font-size-large
-            color: $color-text-t
-          .yuan
-            font-size: $font-size-small-s
-            color: $color-text-t
-        .check-order
-          display: inline-block
-          padding: 4px 16px
-          border: 1px solid $color-col-line
-          border-radius: 2px
-          font-size: $font-size-small
+      .icon-pay
+        width: 64px
+        height: 64px
+        margin-bottom: 7.5px
+      .price
+        margin-bottom: 30px
+        font-size: $font-size-medium-x
+        .number
+          font-family: "PingFangSC-Medium"
+          font-size: $font-size-large
+          color: $color-text-t
+        .yuan
+          font-size: $font-size-small-s
+          color: $color-text-t
+      .check-order
+        width: 150px
+        height: 28px
+        line-height: 28px
+        border-1px()
+        border-radius: 2px
+        text-align: center
+        font-size: $font-size-medium
+        color: $color-text-d
     .recommend
 
       .title
