@@ -22,15 +22,15 @@
           </view>
           <view class="origin-price">门市价:￥{{coupon.shop_price}}</view>
           <view class="buy-number">
-            <image class="icon" src="./icon-many.png"></image>
+            <image class="icon" src="http://jike-file.jerryf.cn/defaults/c-image/recommend/icon-many.png"></image>
             <text class="font">{{coupon.collected}}人已购买</text>
           </view>
         </view>
       </view>
       <view class="share-wrapper">
         <view class="share-btn" @tap="showShareModal">
-          <image src="./pic-r_share3@2x.png" class="share-img" wx:if="{{!coupon.activity_share}}"></image>
-          <image src="./pic-r_share2@2x.png" class="share-img" wx:if="{{coupon.activity_share}}"></image>
+          <image src="http://jike-file.jerryf.cn/defaults/c-image/recommend/pic-r_share3@2x.png" class="share-img" wx:if="{{!coupon.activity_share}}"></image>
+          <image src="http://jike-file.jerryf.cn/defaults/c-image/recommend/pic-r_share2@2x.png" class="share-img" wx:if="{{coupon.activity_share}}"></image>
           <view class="share-txt" wx:if="{{coupon.activity_share}}">分享有礼</view>
         </view>
       </view>
@@ -55,12 +55,12 @@
     <view class="buy-button-wrapper border-top-1px">
       <view class="button-group">
         <view class="collect border-right-1px" @tap="postOrder('collect')">
-          <image wx:if="{{!isFavorite}}" class="icon" src="./icon-collection_1.png"></image>
-          <image wx:if="{{isFavorite}}" class="icon" src="./icon-collection_2.png"></image>
+          <image wx:if="{{!isFavorite}}" class="icon" src="http://jike-file.jerryf.cn/defaults/c-image/recommend/icon-collection_1.png"></image>
+          <image wx:if="{{isFavorite}}" class="icon" src="http://jike-file.jerryf.cn/defaults/c-image/recommend/icon-collection_2.png"></image>
           收藏
         </view>
         <view class="customer-service">
-          <image class="icon" src="./icon-my_service.png"></image>
+          <image class="icon" src="http://jike-file.jerryf.cn/defaults/c-image/recommend/icon-my_service.png"></image>
           客服
         </view>
       </view>
