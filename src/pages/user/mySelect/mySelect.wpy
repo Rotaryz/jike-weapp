@@ -90,7 +90,7 @@
           <image class="gift-bag-img" src="http://jike-file.jerryf.cn/defaults/c-image/mine/pic-r_package@2x.png"></image>
         </view>
 
-        <view class="store-avatar" wx:if="{{item.checked}}">
+        <view class="store-avatar {{item.checked?'':'hide'}}">
           <view class="store-avatar-box" wx:for="{{item.gift_bag.gift_bag_detail}}" wx:key="{{item}}">
             <image class="store-avatar-img" src="{{item.merchant_data.logo_image}}"></image>
             <view class="store-name">{{item.merchant_data.shop_name}}</view>
@@ -673,6 +673,9 @@
           border-top: 0 none
           display: flex
           overflow-x: auto
+          overflow-y: hidden
+          height: 62px
+          transition: all .3s
 
           .store-avatar-box
             height: 60px
@@ -690,5 +693,8 @@
             .store-name
               font-size: $font-size-small-s
               color: #4A4657
+
+        .store-avatar.hide
+          height: 0
 
 </style>
