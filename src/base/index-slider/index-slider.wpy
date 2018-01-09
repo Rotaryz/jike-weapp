@@ -1,0 +1,137 @@
+<template>
+  <view class="slider" wx:if="{{list.length}}">
+    <view class="slider-content">
+      <view class="slider-content-ul" style="transition:{{transition}}; transform: translateX({{translateX}}px)"
+            bindtouchstart="touchBegin" bindtouchmove="touching" bindtouchend="touchEnd" animation="{{animationData}}">
+        <view class="slider-item">
+          <image src="{{list[list.length-1].image.url}}" class="slider-item-img"></image>
+        </view>
+        <view class="slider-item" wx:for="{{list}}" wx:key="{{item}}">
+          <image src="{{item.image.url}}" class="slider-item-img"></image>
+        </view>
+        <view class="slider-item">
+          <image src="{{list[0].image.url}}" class="slider-item-img"></image>
+        </view>
+      </view>
+    </view>
+  </view>
+</template>
+
+<script>
+  /* eslint-disable no-undef */
+  import wepy from 'wepy'
+
+  export default class Slider extends wepy.component {
+    props = {
+      list: {
+        type: Array,
+        default: []
+      }
+    }
+
+    data = {
+      indicatorDots: false,
+      autoplay: false,
+      interval: 5000,
+      duration: 1000,
+      swiperCurrent: 1,
+      circular: true,
+      beginClient: 0,
+      endClient: 0,
+      animationData: '',
+      animation: '',
+      translateX: '',
+      transition: '',
+      beginX: '',
+      index: 1,
+      maxLength: 0,
+      baseTranslateX: '',
+      casualTranslateX: ''
+    }
+
+    async onLoad() {
+      let res = await wepy.getSystemInfo()
+      let maxWidth = res.screenWidth
+      this.translateX = -0.893332 * maxWidth * this.index
+      this.baseTranslateX = 0.893332 * maxWidth
+      this.$apply()
+    }
+
+    methods = {
+      changeVal(e) {
+        this.swiperCurrent = e.detail.current
+      },
+      touchBegin(e) {
+        if (!this.maxLength) {
+          this.maxLength = this.list.length + 2
+        }
+        this.beginClient = e.changedTouches[0].clientX
+        this.casualTranslateX = this.translateX
+        this.transition = ''
+        this.$apply()
+      },
+      touchEnd(e) {
+        this.endClient = e.changedTouches[0].clientX
+        let delta = this.endClient - this.beginClient
+        if (delta < -100) {
+          this.transition = 'all .3s'
+          this.translateX = this.casualTranslateX + this.baseTranslateX * -1
+          this.index = this.index + 1
+          if (this.index === this.maxLength - 1) {
+            setTimeout(() => {
+              this.transition = ''
+              this.index = 1
+              this.translateX = this.baseTranslateX * -1
+              this.$apply()
+            }, 300)
+          }
+          this.$apply()
+        } else if (delta > 100) {
+          this.transition = 'all .3s'
+          this.translateX = this.casualTranslateX + this.baseTranslateX
+          this.index = this.index - 1
+          if (this.index === 0) {
+            setTimeout(() => {
+              this.transition = ''
+              this.index = this.maxLength - 2
+              this.translateX = this.baseTranslateX * -1 * (this.maxLength - 2)
+              this.$apply()
+            }, 300)
+          }
+          this.$apply()
+        } else {
+          this.transition = 'all .3s'
+          this.translateX = this.casualTranslateX
+          this.$apply()
+        }
+      },
+      touching(e) {
+        let targetX = e.changedTouches[0].clientX
+        this.translateX = this.casualTranslateX + (targetX - this.beginClient)
+      }
+    }
+  }
+</script>
+
+<style lang="stylus">
+  .slider
+    width: 100%
+    height: 100%
+    .slider-content
+      position: absolute
+      width: 86.6666vw
+      height: 29.3333vw
+      top: 50%
+      left: 50%
+      transform: translate(-50%, -50%)
+      .slider-content-ul
+        display: flex
+        .slider-item
+          width: 86.6666vw
+          height: 29.3333vw
+          margin-right: 2.6666vw
+          .slider-item-img
+            width: 86.6666vw
+            height: 29.3333vw
+
+</style>

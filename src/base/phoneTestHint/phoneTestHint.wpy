@@ -56,8 +56,9 @@
     .phoneTest-btn
       width: 60px
       font-size: $font-size-small
+      text-decoration: underline
       color: $color-text-t
-      border: 1px solid $color-text-t
+      border: 1px solid transparent
       border-radius: 2px
       text-align: center
       line-height: 24px
