@@ -2,7 +2,7 @@
   <view class="pay-result">
     <view class="status-wrapper border-bottom-1px">
       <view class="icon-pay">
-        <image src="./icon-pay@2x.png" class="full-image"></image>
+        <image src="{{icon}}" class="full-image"></image>
       </view>
       <view class="desc">
         <view class="price">订单金额: <text class="number">{{total}}</text><text class="yuan">元</text></view>
@@ -37,16 +37,19 @@
 
     data = {
       coupons: [],
-      total: ''
+      total: '',
+      icon: ''
     }
 
     async onLoad(option) {
       this.total = option.total
-      this.status = option.status
-      if (this.status === 'success') {
+      const status = option.status
+      if (status === 'success') {
         wepy.setNavigationBarTitle({title: '支付成功'})
+        this.icon = 'http://jike-file.jerryf.cn/defaults/c-image/recommend/icon-success@2x.png'
       } else {
         wepy.setNavigationBarTitle({title: '支付失败'})
+        this.icon = 'http://jike-file.jerryf.cn/defaults/c-image/recommend/icon-fail@2x.png'
       }
       await this._getCouponList()
       this.loaded()

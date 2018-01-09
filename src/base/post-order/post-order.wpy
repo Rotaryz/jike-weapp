@@ -111,23 +111,31 @@
         const res = await Order.operation(data)
         this.loaded()
         const {timestamp, nonceStr, signType, paySign} = res.pay_info
-        const pay = await wepy.requestPayment({
+        wx.requestPayment({
           timeStamp: timestamp,
           nonceStr,
           package: res.pay_info.package,
           signType,
-          paySign
+          paySign,
+          success: () => {
+            let tips = wepy.getStorageSync('tips')
+            tips.order = true
+            wepy.setStorageSync('tips', tips)
+            const orderId = res.order_id
+            const total = this.total
+            const status = 'success'
+            this.$parent.$navigate(`/pages/pay-result/pay-result?orderId=${orderId}&total=${total}&status=${status}`)
+          },
+          fail: () => {
+            const orderId = res.order_id
+            const total = this.total
+            const status = 'fail'
+            this.$parent.$navigate(`/pages/pay-result/pay-result?orderId=${orderId}&total=${total}&status=${status}`)
+          },
+          complete: () => {
+            this._hide()
+          }
         })
-        if (pay.errMsg === 'requestPayment:ok') {
-          let tips = wepy.getStorageSync('tips')
-          tips.order = true
-          wepy.setStorageSync('tips', tips)
-          const orderId = res.order_id
-          const total = this.total
-          const status = 'success'
-          this.$parent.$navigate(`/pages/pay-result/pay-result?orderId=${orderId}&total=${total}&status=${status}`)
-        }
-        this._hide()
       },
       hide() {
         this._hide()
