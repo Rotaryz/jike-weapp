@@ -85,7 +85,9 @@
         }
         if (this.drawMoney > this.packetTotal.remaining) {
           this.$invoke('Toast', 'show', '账户余额不足')
+          return
         }
+        this.$invoke('Toast', 'show', '功能暂未开放')
       }
     }
 

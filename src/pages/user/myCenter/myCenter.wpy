@@ -27,7 +27,7 @@
       <view class="myCenter-msgList-item myCenter-msgList-gender">
         <view class="myCenter-msgList-item-title">性别</view>
         <view class="myCenter-msgList-item-msg">
-          <picker bindchange="genderChange" value="{{userInfo.sex}}" range="{{genderSelect}}">
+          <picker bindchange="genderChange" value="{{userInfo.sex*1 - 1}}" range="{{genderSelect}}">
             <view>{{genders[userInfo.sex]}}</view>
           </picker>
         </view>
@@ -185,6 +185,7 @@
           height: 48px
           border-radius: 50%
           margin: 7px
+          border:2px solid $color-col-line
 
         .myCenter-head-txt
           color: $color-text

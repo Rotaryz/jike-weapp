@@ -192,6 +192,7 @@
         flex-direction: column
         align-items: center
         justify-content: center
+        overflow: hidden
 
         .store-avatar-img
           width: 33px
