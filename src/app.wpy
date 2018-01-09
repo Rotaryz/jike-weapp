@@ -15,11 +15,11 @@ export default class extends wepy.app {
   }
 
   onLaunch(option) {
-    const tips = {
-      order: false
+    const tips = wepy.getStorageSync('tips')
+    if (!tips) {
+      wepy.setStorageSync('tips', {order: false})
     }
     wepy.setStorageSync('merchantId', option.query.merchantId || 100000)
-    wepy.setStorageSync('tips', tips)
     // 校验SDK
     wxUtils.checkSDK()
   }
