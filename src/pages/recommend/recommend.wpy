@@ -151,7 +151,7 @@
       this.couponList = data.promotions
       this.giftBags = data.gift_bags
       this.activities = data.activities || {}
-      this.shopImages = data.merchant_data.shop_image
+      this.shopImages = this._checkPropety(data.merchant_data.shop_image)
     }
 
     async _getCouponList() {
@@ -182,6 +182,12 @@
       }
       this.$apply()
       this.loaded()
+    }
+
+    _checkPropety(arr) {
+      return arr.filter((item) => {
+        return item.image.url
+      })
     }
 
     methods = {
@@ -506,30 +512,6 @@
                       height: 10px
                       margin-left: 5px
 
-            .store-avatar
-              background: $color-white
-              border: 1px solid $color-col-line
-              box-sizing: border-box
-              border-top: 0 none
-              display: flex
-              overflow-x: auto
-
-              .store-avatar-box
-                height: 60px
-                display: flex
-                flex-direction: column
-                align-items: center
-                justify-content: center
-
-                .store-avatar-img
-                  width: 33px
-                  height: 33px
-                  border-radius: 50%
-                  margin: 0 15px 5px
-
-                .store-name
-                  font-size: $font-size-small-s
-                  color: #4A4657
         .discover-panel
           display: none
           width: 100%

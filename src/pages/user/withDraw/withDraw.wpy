@@ -75,6 +75,10 @@
         this.$apply()
       },
       submitMoney() {
+        if (this.packetTotal.remaining * 1 === 0) {
+          this.$invoke('Toast', 'show', '没有可提现余额')
+          return
+        }
         if (this.drawMoney * 1 === 0) {
           this.$invoke('Toast', 'show', '请输入正确金额')
           return

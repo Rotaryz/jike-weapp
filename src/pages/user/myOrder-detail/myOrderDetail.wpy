@@ -213,6 +213,8 @@
       },
       closeRefund() {
         this.refundIng = false
+        this.refundChecked = ''
+        this.$apply()
       },
       GPSbegin() {
         let data = {
