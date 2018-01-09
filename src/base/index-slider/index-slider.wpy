@@ -3,13 +3,13 @@
     <view class="slider-content">
       <view class="slider-content-ul" style="transition:{{transition}}; transform: translateX({{translateX}}px)"
             bindtouchstart="touchBegin" bindtouchmove="touching" bindtouchend="touchEnd" animation="{{animationData}}">
-        <view class="slider-item">
+        <view class="slider-item" wx:if="{{list.length!==1}}">
           <image src="{{list[list.length-1].image.url}}" class="slider-item-img"></image>
         </view>
         <view class="slider-item" wx:for="{{list}}" wx:key="{{item}}">
           <image src="{{item.image.url}}" class="slider-item-img"></image>
         </view>
-        <view class="slider-item">
+        <view class="slider-item" wx:if="{{list.length!==1}}">
           <image src="{{list[0].image.url}}" class="slider-item-img"></image>
         </view>
       </view>
