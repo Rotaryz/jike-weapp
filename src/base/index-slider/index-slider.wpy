@@ -46,7 +46,8 @@
       index: 1,
       maxLength: 0,
       baseTranslateX: '',
-      casualTranslateX: ''
+      casualTranslateX: '',
+      moveing: false
     }
 
     async onLoad() {
@@ -62,6 +63,9 @@
         this.swiperCurrent = e.detail.current
       },
       touchBegin(e) {
+        if (this.moveing) {
+          return
+        }
         if (!this.maxLength) {
           this.maxLength = this.list.length + 2
         }
@@ -71,12 +75,16 @@
         this.$apply()
       },
       touchEnd(e) {
+        this.moveing = true
         this.endClient = e.changedTouches[0].clientX
         let delta = this.endClient - this.beginClient
         if (delta < -100) {
           this.transition = 'all .3s'
           this.translateX = this.casualTranslateX + this.baseTranslateX * -1
           this.index = this.index + 1
+          setTimeout(() => {
+            this.moveing = false
+          }, 300)
           if (this.index === this.maxLength - 1) {
             setTimeout(() => {
               this.transition = ''
@@ -90,6 +98,9 @@
           this.transition = 'all .3s'
           this.translateX = this.casualTranslateX + this.baseTranslateX
           this.index = this.index - 1
+          setTimeout(() => {
+            this.moveing = false
+          }, 300)
           if (this.index === 0) {
             setTimeout(() => {
               this.transition = ''
@@ -102,10 +113,16 @@
         } else {
           this.transition = 'all .3s'
           this.translateX = this.casualTranslateX
+          setTimeout(() => {
+            this.moveing = false
+          }, 300)
           this.$apply()
         }
       },
       touching(e) {
+        if (this.moveing) {
+          return
+        }
         let targetX = e.changedTouches[0].clientX
         this.translateX = this.casualTranslateX + (targetX - this.beginClient)
       }

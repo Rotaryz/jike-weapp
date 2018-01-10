@@ -46,6 +46,10 @@
       buy: {
         type: String,
         default: 'yes'
+      },
+      index: {
+        type: String,
+        default: ''
       }
     }
 
@@ -54,8 +58,7 @@
         this.$emit('handleClick', 2, this.giftbag.id)
       },
       showStore() {
-        this.giftbag.checked = this.giftbag.checked ? '' : 1
-        this.$apply()
+        this.$emit('showStore', this.index)
       }
     }
   }
@@ -206,5 +209,6 @@
 
     .store-avatar.hide
       height: 0
+      border: 0 none
 
 </style>
