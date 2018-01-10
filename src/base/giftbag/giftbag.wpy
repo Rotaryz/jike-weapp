@@ -180,7 +180,7 @@
 
     .store-avatar
       background: $color-white
-      border: 1px solid $color-col-line
+      border: 0.5px solid $color-col-line
       box-sizing: border-box
       border-top: 0 none
       display: flex
@@ -209,6 +209,5 @@
 
     .store-avatar.hide
       height: 0
-      border: 0 none
 
 </style>
