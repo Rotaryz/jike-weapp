@@ -18,7 +18,7 @@
           <image class="coupon-bc" src="http://jike-file.jerryf.cn/defaults/c-image/mine/pic-couponbg@2x.png"></image>
           <view class="couponList-item-head-left">
             <view class="couponList-itemPay">
-              <image src="{{}}" class="promotion-image" wx:if="{{item.promotionType==='exchange'}}"></image>
+              <image src="{{item.imageUrl}}" class="promotion-image" wx:if="{{item.promotionType==='exchange'}}"></image>
               <view wx:if="{{item.promotionType!=='exchange'}}"><text class="couponList-midMoney">￥</text><text class="couponList-bigMoney">{{item.price?item.price:''}}</text></view>
             </view>
             <view class="couponList-itemMsg">
