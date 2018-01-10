@@ -96,7 +96,7 @@
                                    src="http://jike-file.jerryf.cn/defaults/c-image/square/pic-s_coupon@2x.png"></cover-image>
                     </cover-view>
                     <cover-view class="word">
-                      {{item.title}}正在疯抢中
+                      {{item.title ? item.title + '正在疯抢中' : '您的优惠券正在路上'}}
                     </cover-view>
                   </cover-view>
                 </cover-view>
@@ -300,7 +300,7 @@
         }
       }
       tips.forEach((item, index) => {
-        let init = {title: '初始优惠券'}
+        let init = {title: ''}
         if (promotions[index]) {
           init = promotions[index]
         }
