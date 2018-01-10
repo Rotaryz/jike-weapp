@@ -5,8 +5,9 @@
 <script>
   import wepy from 'wepy'
   import users from 'common/mixins/users'
+  import base from 'common/mixins/base'
   export default class Activity extends wepy.page {
-    mixins = [users]
+    mixins = [users, base]
     data = {
       webviewUrl: '',
       token: '',
@@ -36,6 +37,7 @@
     async onLoad(option) {
       this.type = option.type
       let isAuthorise = await this.isAuthorise()
+      this.loaded()
       const token = wepy.getStorageSync('token')
       this.merchantId = this.$parent.globalData.merchantId || wepy.getStorageSync('merchantId')
       if (this.type === 'wheel') {
