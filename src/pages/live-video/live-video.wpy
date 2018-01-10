@@ -212,7 +212,7 @@
           promotion_type: 1,
           openId: wepy.getStorageSync('openId'),
           activity_id: this.liveMsg.id,
-          promotion_merchant_id: meId
+          current_merchant: meId
         }
         const res = await Order.operation(data)
         this.loaded()
