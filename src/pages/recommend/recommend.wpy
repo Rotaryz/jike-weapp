@@ -257,6 +257,14 @@
       return Math.floor(number)
     }
 
+    watch = {
+      merchantId() {
+        this.activeTab = COUPON_TAB
+        this.contents = []
+        this.$apply()
+      }
+    }
+
     components = {
       Slider,
       package: Giftbag,

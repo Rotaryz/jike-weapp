@@ -35,11 +35,19 @@ export default class User extends base {
     return await this.post(url, data)
   }
   /**
-   * 修改手机号码
+   * 绑定手机号码
    * @returns {Promise.<*>}
    */
   static async bindPhone(data) {
-    const url = `${this.baseUrl}/api/info/valida-message`
+    const url = `${this.baseUrl}/api/info/bind-mobile`
+    return await this.get(url, data)
+  }
+  /**
+   * 修改手机号码
+   * @returns {Promise.<*>}
+   */
+  static async changePhone(data) {
+    const url = `${this.baseUrl}/api/info/update-bind-mobile`
     return await this.get(url, data)
   }
   /**

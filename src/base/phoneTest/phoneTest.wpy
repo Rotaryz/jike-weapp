@@ -75,6 +75,10 @@
       return await user.bindPhone(data)
     }
 
+    async _changePhone(data) {
+      return await user.changePhone(data)
+    }
+
     methods = {
       bindPhone(type) {
         if (typeof (type) === 'string') {
@@ -151,30 +155,29 @@
         let reg = /^1[3|4|5|7|8][0-9]{9}$/
         let self = this
         if (this.phoneNum && reg.test(self.phoneNum) && this.phoneCode && this.phoneCode.length === 6) {
-          let data
-          if (this.modify) {
-            data = {
-              mobile: self.phoneNum,
-              code: self.phoneCode,
-              is_modify: 1
-            }
-          } else {
-            data = {
-              mobile: self.phoneNum,
-              code: self.phoneCode
-            }
+          let tipsMsg, resData
+          let data = {
+            mobile: self.phoneNum,
+            code: self.phoneCode
           }
-          let resData = await this._bindPhone(data)
+          if (this.modify) {
+            console.log('231564')
+            tipsMsg = '手机修改'
+            resData = await this._changePhone(data)
+          } else {
+            tipsMsg = '手机绑定'
+            resData = await this._bindPhone(data)
+          }
           this.loaded()
           if (resData.error === 0) {
             self.phoneTestCover = false
             self.$apply()
-            tips.success('手机绑定成功')
+            tips.success(tipsMsg + '成功')
             setTimeout(() => {
               self.$emit('isPhoneOk')
             }, 500)
           } else {
-            this.$invoke('Toast', 'show', '手机绑定失败')
+            this.$invoke('Toast', 'show', tipsMsg + '失败')
           }
         }
       }

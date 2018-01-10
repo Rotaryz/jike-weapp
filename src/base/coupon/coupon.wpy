@@ -166,4 +166,9 @@
           .shopName
             font-size: $font-size-small
             color: $color-text
+            width: 60px
+            text-align: center
+            overflow: hidden
+            text-overflow: ellipsis
+            white-space: nowrap
 </style>

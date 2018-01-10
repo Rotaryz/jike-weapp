@@ -219,7 +219,9 @@
       GPSbegin() {
         let data = {
           longitude: this.orderMsg.merchant_data.longitude,
-          latitude: this.orderMsg.merchant_data.latitude
+          latitude: this.orderMsg.merchant_data.latitude,
+          address: this.orderMsg.merchant_data.particular_address,
+          name: this.orderMsg.merchant_data.name
         }
         wepy.openLocation(data)
       }

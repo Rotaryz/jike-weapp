@@ -206,6 +206,11 @@
         .store-name
           font-size: $font-size-small-s
           color: #4A4657
+          width: 60px
+          text-align: center
+          overflow: hidden
+          text-overflow: ellipsis
+          white-space: nowrap
 
     .store-avatar.hide
       height: 0

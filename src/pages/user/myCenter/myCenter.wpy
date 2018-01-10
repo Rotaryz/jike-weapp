@@ -112,6 +112,7 @@
       this.birth = this.userInfo.birth
       this.phone = this.userInfo.mobile
       this.gender = this.userInfo.sex
+      this.loaded()
       this.$apply()
     }
 

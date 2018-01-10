@@ -109,11 +109,13 @@
           redpacker_count: '0'
         }
       }
+      console.log(this.packetTotal)
       this.packetTotalNum = this._computed(this.packetTotal.redpacker_count_monies)
       this.packetList = await this._getRedPacketList(1)
       if (this.packetList.error === 0) {
         this.packetList = []
       }
+      console.log(this.packetList)
       this.$apply()
       this.loaded()
     }
