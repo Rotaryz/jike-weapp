@@ -67,7 +67,6 @@ export default class extends wepy.app {
       'pages/square/square',
       'pages/live/live',
       'pages/recommend/recommend',
-      'pages/live/live',
       'pages/pay-result/pay-result',
       'pages/coupon-detail/coupon-detail',
       'pages/content-detail/content-detail',

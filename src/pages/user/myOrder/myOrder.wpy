@@ -12,7 +12,7 @@
     </view>
 
     <scroll-view scroll-y class="myOrder-orderBox" bindscrolltolower="orderLower">
-      <view class="myOrder-noOrderMsg" wx:if="{{orderList.length===0}}">
+      <view class="myOrder-noOrderMsg" wx:if="{{noOrder}}">
         <image src="{{noOrderIcon[menuIdx]}}" wx:if="noOrder" class="myOrder-noOrderMsg-Img"></image>
         <view class="myOrder-noOrderMsg-txt">您还没有相关订单</view>
         <view class="myOrder-noOrderBtn" @tap="toRecommend">随便逛逛</view>
@@ -77,13 +77,15 @@
       LowerLoading: false,
       orderList: [],
       page: 1,
-      nothingAdd: false
+      nothingAdd: false,
+      noOrder: false
     }
 
     methods = {
       async tabChange(idx) {
         this.menuIdx = idx
         this.orderList = []
+        this.noOrder = false
         this.page = 1
         this.nothingAdd = false
         let resList = await this._getOrderList(idx, this.page)
@@ -91,6 +93,7 @@
           resList = []
         }
         this.orderList = resList
+        this.noOrder = this.orderList.length === 0 ? 1 : false
         this.$apply()
         this.loaded()
       },
@@ -182,6 +185,7 @@
         resList = []
       }
       this.orderList = resList
+      this.noOrder = this.orderList.length === 0 ? 1 : false
       let customerId = wx.getStorageSync('customerId')
       if (customerId) {
         this.isPhone = 1

@@ -736,5 +736,6 @@
 
         .store-avatar.hide
           height: 0
+          border: 0 none
 
 </style>

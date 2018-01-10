@@ -1,15 +1,9 @@
 <template>
   <view class="recommend" ref="recommend">
     <view class="slider-wrapper">
-      <Slider :list.sync="shopImages">
-        <block slot="content">
-          <block wx:for="{{shopImages}}" wx:key="unique">
-            <swiper-item>
-              <image src="{{item.image.url}}" class="slide-image" width="355" height="150"/>
-            </swiper-item>
-          </block>
-        </block>
-      </Slider>
+      <repeat>
+        <Slider :list.sync="shopImages"></Slider>
+      </repeat>
       <image src="http://jike-file.jerryf.cn/defaults/c-image/recommend/pic-r_shadow@2x.png" class="underImage"></image>
     </view>
     <form bindsubmit="submit" report-submit='true'>
@@ -67,7 +61,7 @@
       <view class="tab-content-wrapper">
         <view class="coupon-panel" style="display: {{activeTab === '1' ? 'block':''}}">
           <repeat for="{{giftBags}}" key="index" index="index" item="item">
-            <package :giftbag.sync="item" @handleClick.user="goToCouponDetail"></package>
+            <package :giftbag.sync="item" @handleClick.user="goToCouponDetail" @showStore.user="showStoreList" :index="index"></package>
           </repeat>
           <repeat for="{{couponList}}" key="index" index="index" item="item">
             <coupon :coupon.sync="item" @handleClick.user="goToCouponDetail"></coupon>
@@ -163,7 +157,6 @@
 
     async load() {
       this.merchantId = this.$parent.globalData.merchantId || wepy.getStorageSync('merchantId')
-      console.log(this.$parent.globalData)
       const isAuthorise = await this.isAuthorise()
       this.$parent.updateGlobalData('isAuthorise', isAuthorise)
       await this._getShopCouponList()
@@ -172,10 +165,11 @@
 
     async _getShopCouponList() {
       const data = await CouponApi.getShopCouponList(this.merchantId)
+      this.shopImages = this._checkPropety(data.merchant_data.shop_image)
       this.couponList = data.promotions
       this.giftBags = data.gift_bags
       this.activities = data.activities || {}
-      this.shopImages = this._checkPropety(data.merchant_data.shop_image)
+      this.$apply()
     }
 
     async _getCouponList() {
@@ -214,6 +208,14 @@
       })
     }
 
+    _checked(arr, idx) {
+      arr.forEach((item, index) => {
+        if (idx * 1 === index * 1) {
+          item.checked = item.checked ? '' : '1'
+        }
+      })
+    }
+
     methods = {
       async getSymbol() {
         const isAuthorise = await this.isAuthorise()
@@ -244,11 +246,14 @@
       },
       async goToCouponDetail(type, couponId) {
         this.$navigate(`/pages/coupon-detail/coupon-detail?type=${type}&id=${couponId}`)
+      },
+      showStoreList(idx) {
+        this._checked(this.giftBags, idx)
+        this.$apply()
       }
     }
 
     mathFloorNumber(number) {
-      console.log(number)
       return Math.floor(number)
     }
 
