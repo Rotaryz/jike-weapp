@@ -442,7 +442,9 @@
         wepy.openLocation({
           latitude: this.currentMerchant.latitude,
           longitude: this.currentMerchant.longitude,
-          scale: 28
+          scale: 28,
+          name: this.currentMerchant.shop_name,
+          address: this.currentMerchant.particular_address
         })
       }
     }
