@@ -57,7 +57,7 @@
       .error-btn
         width: 118px
         height: 27px
-        border: 1px solid $color-orange
+        border: 1px solid $color-col-line
         border-radius: 2px
         display: flex
         align-items: center

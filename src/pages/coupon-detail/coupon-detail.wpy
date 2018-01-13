@@ -29,8 +29,8 @@
       </view>
       <view class="share-wrapper">
         <view class="share-btn" @tap="showShareModal">
-          <image src="http://jike-file.jerryf.cn/defaults/c-image/recommend/pic-r_share3@2x.png" class="share-img" wx:if="{{!coupon.activity_share}}"></image>
-          <image src="http://jike-file.jerryf.cn/defaults/c-image/recommend/pic-r_share2@2x.png" class="share-img" wx:if="{{coupon.activity_share}}"></image>
+          <image src="http://jike-file.jerryf.cn/defaults/c-image/recommend/pic-r_share5@2x.png" class="share-img" wx:if="{{!coupon.activity_share}}"></image>
+          <image src="http://jike-file.jerryf.cn/defaults/c-image/recommend/pic-r_share4@2x.png" class="share-img" wx:if="{{coupon.activity_share}}"></image>
           <view class="share-txt" wx:if="{{coupon.activity_share}}">分享有礼</view>
         </view>
       </view>
@@ -55,12 +55,12 @@
     <view class="buy-button-wrapper border-top-1px">
       <view class="button-group">
         <view class="collect border-right-1px" @tap="postOrder('collect')">
-          <image wx:if="{{!isFavorite}}" class="icon" src="http://jike-file.jerryf.cn/defaults/c-image/recommend/icon-collection_1.png"></image>
-          <image wx:if="{{isFavorite}}" class="icon" src="http://jike-file.jerryf.cn/defaults/c-image/recommend/icon-collection_2.png"></image>
+          <image wx:if="{{!isFavorite}}" class="icon" src="http://jike-file.jerryf.cn/defaults/c-image/recommend/icon-r_collect32@2x.png"></image>
+          <image wx:if="{{isFavorite}}" class="icon" src="http://jike-file.jerryf.cn/defaults/c-image/recommend/icon-r_collection32@2x.png"></image>
           收藏
         </view>
         <view class="customer-service">
-          <image class="icon" src="http://jike-file.jerryf.cn/defaults/c-image/recommend/icon-my_service.png"></image>
+          <image class="icon" src="http://jike-file.jerryf.cn/defaults/c-image/recommend/icon-r_service32@2x.png"></image>
           客服
         </view>
       </view>
@@ -410,7 +410,7 @@
           width: 2px
           height: 14px
           background: $color-orange
-          margin-right: 8px
+          margin-right: 5px
     .buy-button-wrapper
       position: fixed
       bottom: 0
@@ -430,8 +430,8 @@
           align-items: center
           justify-content: center
           .icon
-            width: 15px
-            height: 14px
+            width: 16px
+            height: 16px
             margin-bottom: 3px
         .customer-service
           flex: 1

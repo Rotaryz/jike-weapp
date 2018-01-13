@@ -79,7 +79,7 @@
       return arr.map((item) => {
         let beautyCode = item.code.replace(/(\d{4})/g, '$1 ')
         return {
-          price: item.promotion.shop_price,
+          price: item.promotion.platform_price,
           restriction: item.restriction,
           title: item.promotion.title,
           endAt: item.promotion.end_at,

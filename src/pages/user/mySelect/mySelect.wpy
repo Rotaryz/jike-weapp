@@ -73,7 +73,7 @@
             <image class="coupon-bc" src="http://jike-file.jerryf.cn/defaults/c-image/mine/pic-couponbg@2x.png"></image>
             <view class="couponList-item-head-left">
               <view class="couponList-itemPay">
-                <view ><text class="couponList-midMoney">￥</text><text class="couponList-bigMoney">{{item.gift_bag.shop_price}}</text></view>
+                <view ><text class="couponList-midMoney">￥</text><text class="couponList-bigMoney">{{item.gift_bag.platform_price}}</text></view>
               </view>
               <view class="couponList-itemMsg">
                 <view class="couponList-item-title">{{item.gift_bag.title}}</view>
@@ -341,7 +341,7 @@
     _computed(arr) {
       return arr.map((item) => {
         return {
-          price: Math.floor(item.promotion.shop_price),
+          price: Math.floor(item.promotion.platform_price),
           restriction: item.promotion.restriction,
           title: item.promotion.title,
           endAt: item.promotion.end_at,

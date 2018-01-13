@@ -26,7 +26,8 @@
             <text class="mine-order-headTxt">我的订单</text>
           </view>
           <view class="mine-order-head-right">
-            <view class="red-dot" wx:if="{{tips.order}}"></view>
+            <view class="red-dot" wx:if="{{false}}"></view>
+            <view class="mine-order-head-right-txt">查看所有订单</view>
             <image src="http://jike-file.jerryf.cn/defaults/c-image/mine/icon-my_Rectangle.png" class="mine-order-headIcon"></image>
           </view>
         </view>
@@ -53,8 +54,8 @@
     </view>
 
     <view class="mine-logo">
-      <image class="mine-logo-image" src="http://jike-file.jerryf.cn/defaults/c-image/mine/logo-jike.png"></image>
-      <view class="mine-logo-txt">集客小程序技术支持</view>
+      <image class="mine-logo-image" src="http://jike-file.jerryf.cn/defaults/c-image/mine/pic-logo_zanbo@2x.png"></image>
+      <view class="mine-logo-txt">赞播提供技术支持</view>
     </view>
 
     <view class="mine-cover" @tap="userLogin" wx-if="{{false}}"></view>
@@ -291,6 +292,11 @@
           display: flex
           align-items: center
 
+          .mine-order-head-right-txt
+            font-size: $font-size-small
+            color: #9b9b9b
+            margin-right: 5px
+
           .mine-order-headIcon
             width: 6px
             height: 10px
@@ -358,11 +364,12 @@
       margin-top: 3vh
 
       .mine-logo-image
-        width: 33px
-        height: 30px
+        width: 47.5px
+        height: 17.5px
+        margin-bottom: 3px
 
       .mine-logo-txt
         font-size: $font-size-small-s
-        color: #DADADA
+        color: #c8c8c8
 
 </style>

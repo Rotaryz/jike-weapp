@@ -61,7 +61,7 @@
       <view class="tab-content-wrapper">
         <view class="coupon-panel" style="display: {{activeTab === '1' ? 'block':''}}">
           <repeat for="{{giftBags}}" key="index" index="index" item="item">
-            <package :giftbag.sync="item" @handleClick.user="goToCouponDetail" @showStore.user="showStoreList" :index="index"></package>
+            <package :giftbag.sync="item" @handleClick.user="goToCouponDetail" :index="index"></package>
           </repeat>
           <repeat for="{{couponList}}" key="index" index="index" item="item">
             <coupon :coupon.sync="item" @handleClick.user="goToCouponDetail"></coupon>
@@ -153,6 +153,11 @@
 
     async onShow() {
       await this.load()
+      this.$invoke('Slider', 'init', this.shopImages.length)
+    }
+
+    onHide() {
+      this.$invoke('Slider', 'stop')
     }
 
     async load() {
@@ -208,14 +213,6 @@
       })
     }
 
-    _checked(arr, idx) {
-      arr.forEach((item, index) => {
-        if (idx * 1 === index * 1) {
-          item.checked = item.checked ? '' : '1'
-        }
-      })
-    }
-
     methods = {
 //      async getSymbol() {
 //        const isAuthorise = await this.isAuthorise()
@@ -246,10 +243,6 @@
       },
       async goToCouponDetail(type, couponId) {
         this.$navigate(`/pages/coupon-detail/coupon-detail?type=${type}&id=${couponId}`)
-      },
-      showStoreList(idx) {
-        this._checked(this.giftBags, idx)
-        this.$apply()
       }
     }
 

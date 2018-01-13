@@ -47,7 +47,8 @@
       maxLength: 0,
       baseTranslateX: '',
       casualTranslateX: '',
-      moveing: false
+      moveing: false,
+      timer: null
     }
 
     async onLoad() {
@@ -58,11 +59,41 @@
       this.$apply()
     }
 
+    _autoPlayMove() {
+      this.index ++
+      this.transition = 'all .3s'
+      this.translateX = this.index * this.baseTranslateX * -1
+      if (this.index === this.maxLength - 1) {
+        setTimeout(() => {
+          this.transition = ''
+          this.index = 1
+          this.translateX = this.baseTranslateX * -1
+          this.$apply()
+        }, 300)
+      }
+      this.$apply()
+    }
+
+    _autoPlay() {
+      this.timer = setInterval(() => {
+        this._autoPlayMove()
+      }, 3000)
+    }
+
     methods = {
+      init(num) {
+        this.maxLength = num * 1 + 2
+        this._autoPlay()
+        this.$apply()
+      },
+      stop() {
+        clearInterval(this.timer)
+      },
       changeVal(e) {
         this.swiperCurrent = e.detail.current
       },
       touchBegin(e) {
+        clearInterval(this.timer)
         if (this.moveing) {
           return
         }
@@ -80,8 +111,8 @@
         let delta = this.endClient - this.beginClient
         if (delta < -100) {
           this.transition = 'all .3s'
-          this.translateX = this.casualTranslateX + this.baseTranslateX * -1
           this.index = this.index + 1
+          this.translateX = this.index * this.baseTranslateX * -1
           setTimeout(() => {
             this.moveing = false
           }, 300)
@@ -96,8 +127,8 @@
           this.$apply()
         } else if (delta > 100) {
           this.transition = 'all .3s'
-          this.translateX = this.casualTranslateX + this.baseTranslateX
           this.index = this.index - 1
+          this.translateX = this.index * this.baseTranslateX * -1
           setTimeout(() => {
             this.moveing = false
           }, 300)
@@ -105,21 +136,24 @@
             setTimeout(() => {
               this.transition = ''
               this.index = this.maxLength - 2
-              this.translateX = this.baseTranslateX * -1 * (this.maxLength - 2)
+              this.translateX = this.baseTranslateX * -1 * this.index
               this.$apply()
             }, 300)
           }
           this.$apply()
         } else {
           this.transition = 'all .3s'
-          this.translateX = this.casualTranslateX
+          this.translateX = this.baseTranslateX * -1 * this.index
           setTimeout(() => {
             this.moveing = false
           }, 300)
           this.$apply()
         }
+        this._autoPlay()
+        this.$apply()
       },
       touching(e) {
+        clearInterval(this.timer)
         if (this.moveing) {
           return
         }
@@ -150,5 +184,6 @@
           .slider-item-img
             width: 86.6666vw
             height: 29.3333vw
+            border-radius: 4px
 
 </style>
