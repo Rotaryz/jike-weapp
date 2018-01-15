@@ -413,7 +413,7 @@
           width: 2px
           height: 14px
           background: $color-orange
-          margin-right: 8px
+          margin-right: 5px
     .buy-button-wrapper
       position: fixed
       bottom: 0
@@ -433,8 +433,8 @@
           align-items: center
           justify-content: center
           .icon
-            width: 15px
-            height: 14px
+            width: 16px
+            height: 16px
             margin-bottom: 3px
         .customer-service
           flex: 1

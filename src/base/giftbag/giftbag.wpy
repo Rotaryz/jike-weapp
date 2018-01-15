@@ -2,7 +2,7 @@
   <view class="giftbag">
     <view class="mySelect-couponList-item-main" @tap="handleClick">
       <view class="couponList-item-head-container">
-        <image class="coupon-bc" src="http://jike-file.jerryf.cn/defaults/c-image/mine/pic-couponbg@2x.png"></image>
+        <image class="coupon-bc" wx:if="{{imageUrlHead}}" src="{{imageUrlHead + '/defaults/c-image/mine/pic-couponbg@2x.png'}}"></image>
         <view class="couponList-item-head-left">
           <view class="couponList-itemPay">
             <view ><text class="couponList-midMoney">￥</text><text class="couponList-bigMoney">{{giftbag.platform_price}}</text></view>
@@ -17,14 +17,14 @@
           <view class="couponList-item-head-right-btn">立即购买</view>
           <view class="couponList-item-storechange" @tap.stop="showStore">
             <view class="couponList-item-storechange-txt">支持店铺</view>
-            <image src="{{giftbag.checked?'http://jike-file.jerryf.cn/defaults/c-image/mine/icon-r_shrink@2x.png':'http://jike-file.jerryf.cn/defaults/c-image/mine/icon-r_open@2x.png'}}" class="couponList-item-storechange-icon"></image>
+            <image wx:if="{{imageUrlHead}}" src="{{imageUrlHead + (show?'/defaults/c-image/mine/icon-r_shrink@2x.png':'/defaults/c-image/mine/icon-r_open@2x.png')}}" class="couponList-item-storechange-icon"></image>
           </view>
         </view>
       </view>
-      <image class="gift-bag-img" src="http://jike-file.jerryf.cn/defaults/c-image/mine/pic-r_package@2x.png"></image>
+      <image class="gift-bag-img" wx:if="{{imageUrlHead}}" src="{{imageUrlHead + '/defaults/c-image/mine/pic-r_package@2x.png'}}"></image>
     </view>
 
-    <view class="store-avatar {{giftbag.checked?'':'hide'}}">
+    <view class="store-avatar {{show?'':'hide'}}">
       <view class="store-avatar-box" wx:for="{{giftbag.gift_bag_details}}" wx:key="{{item}}">
         <image class="store-avatar-img" src="{{item.merchant_data.logo_image}}"></image>
         <view class="store-name">{{item.merchant_data.shop_name}}</view>
@@ -35,6 +35,7 @@
 
 <script>
   import wepy from 'wepy'
+  import URIS from 'common/js/config'
 
   export default class Giftbag extends wepy.component {
     props = {
@@ -53,12 +54,18 @@
       }
     }
 
+    data = {
+      show: false,
+      imageUrlHead: URIS.image
+    }
+
     methods = {
       handleClick() {
         this.$emit('handleClick', 2, this.giftbag.id)
       },
       showStore() {
-        this.$emit('showStore', this.index)
+        this.show = !this.show
+        this.$apply()
       }
     }
   }
@@ -206,6 +213,11 @@
         .store-name
           font-size: $font-size-small-s
           color: #4A4657
+          width: 60px
+          text-align: center
+          overflow: hidden
+          text-overflow: ellipsis
+          white-space: nowrap
 
     .store-avatar.hide
       height: 0

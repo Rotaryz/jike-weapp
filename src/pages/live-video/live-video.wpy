@@ -6,11 +6,11 @@
               wx:key="index"
               @tap="conponDetail({{item.promotion_id}},{{index}})">
           <text class="arrows" wx:if="{{showBk === index}}"></text>
-          <image class="con_bk"
-                 src="http://jike-file.jerryf.cn/defaults/c-image/live/pic-r_couponbg1@2x.png"
+          <image class="con_bk" wx:if="{{imageUrlHead}}"
+                 src="{{imageUrlHead + '/defaults/c-image/live/pic-r_couponbg1@2x.png'}}"
                  wx:if="{{showBk !== index}}"></image>
-          <image class="con_bk"
-                 src="http://jike-file.jerryf.cn/defaults/c-image/live/pic-r_couponbg2@2x.png"
+          <image class="con_bk" wx:if="{{imageUrlHead}}"
+                 src="{{imageUrlHead + '/defaults/c-image/live/pic-r_couponbg2@2x.png'}}"
                  wx:if="{{showBk === index}}"></image>
           <view class="con-title">
             <view></view>
@@ -30,8 +30,8 @@
         <!--优惠券-->
         <view class="conpon-derail">
           <view class="close" @tap="hideDetail">
-            <image
-              src="http://jike-file.jerryf.cn/defaults/c-image/live/icon-close_black@2x.png"></image>
+            <image wx:if="{{imageUrlHead}}"
+              src="{{imageUrlHead + '/defaults/c-image/live/icon-close_black@2x.png'}}"></image>
           </view>
           <!--<view class="con-item">-->
           <!--<view class="con-title">-->
@@ -137,9 +137,11 @@
   import base from 'common/mixins/base'
   import Comment from '../comment/comment'
   import Order from 'api/order'
+  import URIS from 'common/js/config'
   export default class LiveVideo extends wepy.page {
     mixins = [users, base]
     data = {
+      imageUrlHead: URIS.image,
       show: false,
       liveMsg: '',
       state: false,

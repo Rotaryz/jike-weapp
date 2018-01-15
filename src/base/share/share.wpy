@@ -7,12 +7,12 @@
       <view class="share-content-wrapper">
         <button class="wx" open-type="share">
           <view class="wrapper">
-            <image src="http://jike-file.jerryf.cn/defaults/c-image/recommend/icon-wx@2x.png"></image>
+            <image wx:if="{{imageUrlHead}}" src="{{imageUrlHead + '/defaults/c-image/recommend/icon-wx@2x.png'}}"></image>
             <view class="text">微信好友</view>
           </view>
         </button>
         <view class="line" @tap="generatePicture">
-          <image src="http://jike-file.jerryf.cn/defaults/c-image/recommend/icon-pyq@2x.png"></image>
+          <image wx:if="{{imageUrlHead}}" src="{{imageUrlHead + '/defaults/c-image/recommend/icon-pyq@2x.png'}}"></image>
           <view class="text">微信朋友圈</view>
         </view>
       </view>
@@ -27,6 +27,7 @@
 <script>
   import wepy from 'wepy'
   import Tips from 'common/js/tips'
+  import URIS from 'common/js/config'
 
   export default class Share extends wepy.component {
     props = {
@@ -44,15 +45,16 @@
     data = {
       show: false,
       maskAnimation: '',
-      modalAnimation: ''
+      modalAnimation: '',
+      imageUrlHead: URIS.image
     }
 
     async _drawCanvas(type) {
       const ctx = await wepy.createCanvasContext('target')
 //      分享背景
-      const bgs = await wepy.downloadFile({url: 'http://jike-file.jerryf.cn/defaults/service-image/pic-sharebg.png'})
+      const bgs = await wepy.downloadFile({url: URIS.image + '/defaults/service-image/pic-sharebg.png'})
 //      分享券卷箭头
-      const arrows = await wepy.downloadFile({url: 'http://jike-file.jerryf.cn/defaults/service-image/pic-share_arrow.png'})
+      const arrows = await wepy.downloadFile({url: URIS.image + '/defaults/service-image/pic-share_arrow.png'})
 //      小程序码
       const qrcodes = await wepy.downloadFile({url: this.qrcode})
       let qrcode = qrcodes.tempFilePath
@@ -128,8 +130,8 @@
         ctx.fillText(user.nickName, 310, 1400)
         ctx.fillText('邀请你参加活动', 200, 1530)
       } else {
-        const manys = await wepy.downloadFile({url: 'http://jike-file.jerryf.cn/defaults/service-image/icon-many.png'})
-        const shares = await wepy.downloadFile({url: 'http://jike-file.jerryf.cn/defaults/service-image/icon-share_prize.png'})
+        const manys = await wepy.downloadFile({url: URIS.image + '/defaults/service-image/icon-many.png'})
+        const shares = await wepy.downloadFile({url: URIS.image + '/defaults/service-image/icon-share_prize.png'})
         const pics = await wepy.downloadFile({url: this.promotionImages[0].image.url})
         const user = this.$parent.$parent.globalData.user
         const avatars = await wepy.downloadFile({url: user.avatarUrl})

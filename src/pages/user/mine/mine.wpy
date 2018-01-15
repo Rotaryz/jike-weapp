@@ -1,9 +1,9 @@
 <template>
   <view class="mine">
     <view class="mine-main">
-      <view class="mine-head" @tap="navToMsgPage('/pages/user/myCenter/myCenter')">
+      <view class="mine-head" @tap="notestToPage('/pages/user/myCenter/myCenter')">
         <view class="mine-head-avatarBox">
-          <image class="mine-head-avatar" src="{{userInfo.avatarUrl}}" style="background-image: url('http://jike-file.jerryf.cn/defaults/c-image/mine/pic-default.png'); background-size: 48px 48px"></image>
+          <image class="mine-head-avatar" src="{{userInfo.avatarUrl}}" style="background-image: url({{imageUrlHead?imageUrlHead + '/defaults/c-image/mine/pic-default.png':''}}); background-size: 48px 48px"></image>
           <view >
             <view class="mine-head-nickName">{{userInfo.nickName}}</view>
             <view class="mine-head-nickName-down">
@@ -11,7 +11,7 @@
             </view>
           </view>
         </view>
-        <image src="http://jike-file.jerryf.cn/defaults/c-image/mine/icon-my_Rectangle.png" class="mine-headIcon"></image>
+        <image wx:if="{{imageUrlHead}}" src="{{imageUrlHead + '/defaults/c-image/mine/icon-my_Rectangle.png'}}" class="mine-headIcon"></image>
       </view>
 
       <view class="mine-phoneTestBox" wx:if="{{isPhone===0}}">
@@ -26,8 +26,9 @@
             <text class="mine-order-headTxt">我的订单</text>
           </view>
           <view class="mine-order-head-right">
-            <view class="red-dot" wx:if="{{tips.order}}"></view>
-            <image src="http://jike-file.jerryf.cn/defaults/c-image/mine/icon-my_Rectangle.png" class="mine-order-headIcon"></image>
+            <view class="red-dot" wx:if="{{false}}"></view>
+            <view class="mine-order-head-right-txt">查看所有订单</view>
+            <image wx:if="{{imageUrlHead}}" src="{{imageUrlHead + '/defaults/c-image/mine/icon-my_Rectangle.png'}}" class="mine-order-headIcon"></image>
           </view>
         </view>
         <view class="mine-order-menu">
@@ -46,15 +47,15 @@
           </view>
           <view class="mine-serve-Item-right">
             <view class="red-dot" wx:if="{{false}}"></view>
-            <image src="http://jike-file.jerryf.cn/defaults/c-image/mine/icon-my_Rectangle.png" class="mine-order-headIcon"></image>
+            <image wx:if="{{imageUrlHead}}" src="{{imageUrlHead + '/defaults/c-image/mine/icon-my_Rectangle.png'}}" class="mine-order-headIcon"></image>
           </view>
         </view>
       </view>
     </view>
 
     <view class="mine-logo">
-      <image class="mine-logo-image" src="http://jike-file.jerryf.cn/defaults/c-image/mine/logo-jike.png"></image>
-      <view class="mine-logo-txt">集客小程序技术支持</view>
+      <image class="mine-logo-image" wx:if="{{imageUrlHead}}" src="{{imageUrlHead + '/defaults/c-image/mine/pic-logo_zanbo@2x.png'}}"></image>
+      <view class="mine-logo-txt">赞播提供技术支持</view>
     </view>
 
     <view class="mine-cover" @tap="userLogin" wx-if="{{false}}"></view>
@@ -68,6 +69,7 @@
   import base from 'common/mixins/base'
   import PhoneTest from '@/base/phoneTest/phoneTest'
   import PhoneTestHint from '@/base/phoneTestHint/phoneTestHint'
+  import URIS from 'common/js/config'
 
   export default class Mine extends wepy.page {
     mixins = [users, base]
@@ -85,38 +87,38 @@
     }
 
     data = {
+      imageUrlHead: URIS.image,
       userInfo: {
         nickName: '加载中...',
         avatarUrl: null
       },
       isPhone: 1,
-      apply: 0,
       orderMenu: [
         {
-          imgUrl: 'http://jike-file.jerryf.cn/defaults/c-image/mine/icon-m_ppay@2x.png',
+          imgUrl: URIS.image + '/defaults/c-image/mine/icon-m_ppay@2x.png',
           text: '待付款'
         }, {
-          imgUrl: 'http://jike-file.jerryf.cn/defaults/c-image/mine/icon-m_used@2x.png',
+          imgUrl: URIS.image + '/defaults/c-image/mine/icon-m_used@2x.png',
           text: '待使用'
         }, {
-          imgUrl: 'http://jike-file.jerryf.cn/defaults/c-image/mine/icon-m_evalua@2x.png',
+          imgUrl: URIS.image + '/defaults/c-image/mine/icon-m_evalua@2x.png',
           text: '待评价'
         }, {
-          imgUrl: 'http://jike-file.jerryf.cn/defaults/c-image/mine/icon-m_refund@2x.png',
+          imgUrl: URIS.image + '/defaults/c-image/mine/icon-m_refund@2x.png',
           text: '退款/售后'
         }
       ],
       serveMenu: [
         {
-          imgUrl: 'http://jike-file.jerryf.cn/defaults/c-image/mine/icon-m_coupon32.png',
+          imgUrl: URIS.image + '/defaults/c-image/mine/icon-m_coupon32.png',
           text: '优惠券',
           url: '/pages/user/myCoupon/myCoupon'
         }, {
-          imgUrl: 'http://jike-file.jerryf.cn/defaults/c-image/mine/icon-m_money32@2x.png',
+          imgUrl: URIS.image + '/defaults/c-image/mine/icon-m_money32@2x.png',
           text: '红包',
           url: '/pages/user/redPacket/redPacket'
         }, {
-          imgUrl: 'http://jike-file.jerryf.cn/defaults/c-image/mine/icon-m_ collect32.png',
+          imgUrl: URIS.image + '/defaults/c-image/mine/icon-m_ collect32.png',
           text: '收藏',
           url: '/pages/user/mySelect/mySelect'
         }
@@ -141,19 +143,17 @@
       await this.$getUserInfo()
       this.loaded()
       this.userInfo = this.$parent.globalData.user
-      let customerId = wx.getStorageSync('customerId')
-      if (customerId) {
+//      let customerId = wx.getStorageSync('customerId')
+//      if (customerId) {
+//        this.isPhone = 1
+//        return
+//      }
+      let mobile = wx.getStorageSync('mobile')
+      if (mobile) {
         this.isPhone = 1
-        this.allpy = 1
         return
       }
       this.isPhone = 0
-      let token = wx.getStorageSync('token')
-      if (token) {
-        this.allpy = 1
-      } else {
-        this.apply = 0
-      }
     }
 
     methods = {
@@ -291,6 +291,11 @@
           display: flex
           align-items: center
 
+          .mine-order-head-right-txt
+            font-size: $font-size-small
+            color: #9b9b9b
+            margin-right: 5px
+
           .mine-order-headIcon
             width: 6px
             height: 10px
@@ -358,11 +363,12 @@
       margin-top: 3vh
 
       .mine-logo-image
-        width: 33px
-        height: 30px
+        width: 47.5px
+        height: 17.5px
+        margin-bottom: 3px
 
       .mine-logo-txt
         font-size: $font-size-small-s
-        color: #DADADA
+        color: #c8c8c8
 
 </style>
