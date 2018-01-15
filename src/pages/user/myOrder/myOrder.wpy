@@ -188,8 +188,14 @@
       }
       this.orderList = resList
       this.noOrder = this.orderList.length === 0 ? 1 : false
-      let customerId = wx.getStorageSync('customerId')
-      if (customerId) {
+//      let customerId = wx.getStorageSync('customerId')
+//      if (customerId) {
+//        this.isPhone = 1
+//      } else {
+//        this.isPhone = 0
+//      }
+      let mobile = wx.getStorageSync('mobile')
+      if (mobile) {
         this.isPhone = 1
       } else {
         this.isPhone = 0

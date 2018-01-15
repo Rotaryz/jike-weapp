@@ -1,7 +1,7 @@
 <template>
   <view class="mine">
     <view class="mine-main">
-      <view class="mine-head" @tap="navToMsgPage('/pages/user/myCenter/myCenter')">
+      <view class="mine-head" @tap="notestToPage('/pages/user/myCenter/myCenter')">
         <view class="mine-head-avatarBox">
           <image class="mine-head-avatar" src="{{userInfo.avatarUrl}}" style="background-image: url({{imageUrlHead?imageUrlHead + '/defaults/c-image/mine/pic-default.png':''}}); background-size: 48px 48px"></image>
           <view >
@@ -93,7 +93,6 @@
         avatarUrl: null
       },
       isPhone: 1,
-      apply: 0,
       orderMenu: [
         {
           imgUrl: URIS.image + '/defaults/c-image/mine/icon-m_ppay@2x.png',
@@ -144,19 +143,17 @@
       await this.$getUserInfo()
       this.loaded()
       this.userInfo = this.$parent.globalData.user
-      let customerId = wx.getStorageSync('customerId')
-      if (customerId) {
+//      let customerId = wx.getStorageSync('customerId')
+//      if (customerId) {
+//        this.isPhone = 1
+//        return
+//      }
+      let mobile = wx.getStorageSync('mobile')
+      if (mobile) {
         this.isPhone = 1
-        this.allpy = 1
         return
       }
       this.isPhone = 0
-      let token = wx.getStorageSync('token')
-      if (token) {
-        this.allpy = 1
-      } else {
-        this.apply = 0
-      }
     }
 
     methods = {

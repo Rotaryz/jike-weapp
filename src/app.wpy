@@ -83,8 +83,7 @@ export default class extends wepy.app {
       'pages/user/mySelect/mySelect',
       'pages/post-order/post-order',
       'pages/shareAndPrize/shareAndPrize',
-      'pages/net-error/net-error',
-      'pages/live/live'
+      'pages/net-error/net-error'
     ],
     window: {
       backgroundColor: '#F9F9F9',

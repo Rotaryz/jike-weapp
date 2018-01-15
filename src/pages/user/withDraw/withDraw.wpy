@@ -32,6 +32,7 @@
       </view>
     </view>
     <Toast></Toast>
+    <PhoneTest></PhoneTest>
   </view>
 </template>
 
@@ -40,6 +41,7 @@
   import base from 'common/mixins/base'
   import GetRedPacket from 'api/myRedPacket'
   import Toast from '@/base/toast/toast'
+  import PhoneTest from '@/base/phoneTest/phoneTest'
   import URIS from 'common/js/config'
 
   export default class WithDraw extends wepy.page {
@@ -53,11 +55,13 @@
       imageUrlHead: URIS.image,
       drawMoney: '',
       coverShow: false,
-      packetTotal: ''
+      packetTotal: '',
+      isPhone: 0
     }
 
     components = {
-      Toast
+      Toast,
+      PhoneTest
     }
 
     methods = {
@@ -77,6 +81,10 @@
         this.$apply()
       },
       submitMoney() {
+        if (this.isPhone !== 1) {
+          this.$invoke('PhoneTest', 'bindPhone')
+          return
+        }
         if (this.packetTotal.remaining * 1 === 0) {
           this.$invoke('Toast', 'show', '没有可提现余额')
           return
@@ -101,6 +109,16 @@
       await this.load()
     }
 
+    async onShow() {
+      let mobile = wepy.getStorageSync('mobile')
+      if (mobile) {
+        this.isPhone = 1
+      } else {
+        this.isPhone = 0
+      }
+      this.$apply()
+    }
+
     async load() {
       this.packetTotal = await GetRedPacket.getTotalRedpacket()
       if (this.packetTotal.error === 0) {
@@ -109,6 +127,13 @@
         }
       }
       this.loaded()
+    }
+
+    events = {
+      'isPhoneOk': () => {
+        this.isPhone = 1
+        this.$apply()
+      }
     }
   }
 </script>

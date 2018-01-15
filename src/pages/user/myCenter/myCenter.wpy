@@ -17,7 +17,7 @@
       </view>
       <view class="myCenter-msgList-item myCenter-msgList-phone" @tap="changePhone">
         <view class="myCenter-msgList-item-title">手机号</view>
-        <view class="myCenter-msgList-item-msg">{{phone}}</view>
+        <view class="myCenter-msgList-item-msg">{{phone?phone:'点击绑定手机'}}</view>
       </view>
       <PhoneTest></PhoneTest>
       <view class="myCenter-msgList-item myCenter-msgList-name">
