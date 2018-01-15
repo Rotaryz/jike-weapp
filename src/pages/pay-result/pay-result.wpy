@@ -31,11 +31,13 @@
   import base from 'common/mixins/base'
   import CouponApi from 'api/coupon'
   import Coupon from '@/base/coupon/coupon'
+  import URIS from 'common/js/config'
 
   export default class PayResult extends wepy.page {
     mixins = [base]
 
     data = {
+      imageUri: URIS.image,
       coupons: [],
       total: '',
       icon: ''
@@ -46,10 +48,10 @@
       const status = option.status
       if (status === 'success') {
         wepy.setNavigationBarTitle({title: '支付成功'})
-        this.icon = 'http://jike-file.jerryf.cn/defaults/c-image/recommend/icon-success@2x.png'
+        this.icon = `${this.imageUri}/defaults/c-image/recommend/icon-success@2x.png`
       } else {
         wepy.setNavigationBarTitle({title: '支付失败'})
-        this.icon = 'http://jike-file.jerryf.cn/defaults/c-image/recommend/icon-fail@2x.png'
+        this.icon = `${this.imageUri}/defaults/c-image/recommend/icon-fail@2x.png`
       }
       await this._getCouponList()
       this.loaded()

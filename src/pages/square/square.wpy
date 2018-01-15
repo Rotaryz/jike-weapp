@@ -13,7 +13,7 @@
     <cover-view class="shop-modal {{showSlide ? 'show' : ''}}">
       <cover-view class="modal">
         <cover-view class="location">
-          <cover-image src="http://jike-file.jerryf.cn/defaults/c-image/square/icon-s_location@2x.png"
+          <cover-image wx:if="{{imageUri}}" src="{{imageUri + '/defaults/c-image/square/icon-s_location@2x.png'}}"
                        mode="scaleToFill" class="icon-location"></cover-image>
           <cover-view class="content">{{currentMerchant.particular_address}}</cover-view>
         </cover-view>
@@ -24,10 +24,10 @@
               <cover-view class="subhead">{{currentMerchant.describe}}</cover-view>
             </cover-view>
             <cover-view class="logo-wrapper">
-              <cover-image src="http://jike-file.jerryf.cn/defaults/c-image/square/pic-s_shopbg@2x.png"
+              <cover-image wx:if="{{imageUri}}" src="{{imageUri + '/defaults/c-image/square/pic-s_shopbg@2x.png'}}"
                            class="image"></cover-image>
-              <cover-image wx:if="{{currentMerchant.code_name}}" class="industry"
-                           src="http://jike-file.jerryf.cn/defaults/c-image/square/icon-s_{{currentMerchant.code_name}}@2x.png"></cover-image>
+              <cover-image wx:if="{{imageUri && currentMerchant.code_name}}" class="industry"
+                           src="{{imageUri + '/defaults/c-image/square/icon-s_' + currentMerchant.code_name + '@2x.png'}}"></cover-image>
               <cover-image wx:if="{{currentMerchant.logo_image}}" src="{{currentMerchant.logo_image}}"
                            class="logo"></cover-image>
             </cover-view>
@@ -35,7 +35,7 @@
               <cover-view class="comment-content">
                 <cover-view class="stars">
                   <repeat for="{{stars}}" index="{{index}}" key="{{index}}">
-                    <cover-image src="http://jike-file.jerryf.cn/defaults/c-image/square/icon-s_evaluate@2x.png"
+                    <cover-image wx:if="{{imageUri}}" src="{{imageUri + '/defaults/c-image/square/icon-s_evaluate@2x.png'}}"
                                  class="icon-star"></cover-image>
                   </repeat>
                   <cover-view>{{currentMerchant.star_level !== '0.0' ? currentMerchant.star_level : '5.0'}}</cover-view>
@@ -46,25 +46,25 @@
           </cover-view>
           <cover-view class="bottom">
             <cover-image class="line"
-                         src="http://jike-file.jerryf.cn/defaults/c-image/square/pic-s_line@2x.png"></cover-image>
+                         wx:if="{{imageUri}}" src="{{imageUri + '/defaults/c-image/square/pic-s_line@2x.png'}}"></cover-image>
             <cover-view class="content-wrapper">
               <cover-view class="item">
-                <cover-image src="http://jike-file.jerryf.cn/defaults/c-image/square/icon-s_distance@2x.png"
+                <cover-image wx:if="{{imageUri}}" src="{{imageUri + '/defaults/c-image/square/icon-s_distance@2x.png'}}"
                              class="icon"></cover-image>
                 <cover-view class="content">距离{{distance}}米</cover-view>
               </cover-view>
               <cover-view class="item">
-                <cover-image src="http://jike-file.jerryf.cn/defaults/c-image/square/icon-s_swalk@2x.png"
+                <cover-image wx:if="{{imageUri}}" src="{{imageUri + '/defaults/c-image/square/icon-s_swalk@2x.png'}}"
                              class="icon"></cover-image>
                 <cover-view class="content">步行{{duration}}分钟</cover-view>
               </cover-view>
               <cover-view class="item" @tap="openLocation">
-                <cover-image src="http://jike-file.jerryf.cn/defaults/c-image/square/icon-s_navigation@2x.png"
+                <cover-image wx:if="{{imageUri}}" src="{{imageUri + '/defaults/c-image/square/icon-s_navigation@2x.png'}}"
                              class="icon"></cover-image>
                 <cover-view class="content">开始导航</cover-view>
               </cover-view>
               <cover-view class="item" @tap="makePhoneCall">
-                <cover-image src="http://jike-file.jerryf.cn/defaults/c-image/square/icon-s_tel@2x.png"
+                <cover-image wx:if="{{imageUri}}" src="{{imageUri + '/defaults/c-image/square/icon-s_tel@2x.png'}}"
                              class="icon"></cover-image>
                 <cover-view class="content">打电话</cover-view>
               </cover-view>
@@ -74,7 +74,7 @@
         <cover-view class="tip-wrapper" @tap="switchRecommend">
           <cover-view class="hot-wrapper">
             <cover-image class="hot"
-                         src="http://jike-file.jerryf.cn/defaults/c-image/square/pic-s_hot@2x.png"></cover-image>
+                         wx:if="{{imageUri}}" src="{{imageUri + '/defaults/c-image/square/pic-s_hot@2x.png'}}"></cover-image>
           </cover-view>
           <cover-view class="tips">
             <cover-view class="box"
@@ -84,7 +84,7 @@
                   <cover-view class="item-wrapper">
                     <cover-view class="icon-wrapper">
                       <cover-image class="icon"
-                                   src="http://jike-file.jerryf.cn/defaults/c-image/square/pic-s_activity@2x.png"></cover-image>
+                                   wx:if="{{imageUri}}" src="{{imageUri + '/defaults/c-image/square/pic-s_activity@2x.png'}}"></cover-image>
                     </cover-view>
                     <cover-view class="word">
                       {{item.activity}}活动开启中
@@ -93,7 +93,7 @@
                   <cover-view class="item-wrapper">
                     <cover-view class="icon-wrapper">
                       <cover-image class="icon"
-                                   src="http://jike-file.jerryf.cn/defaults/c-image/square/pic-s_coupon@2x.png"></cover-image>
+                                   wx:if="{{imageUri}}" src="{{imageUri + '/defaults/c-image/square/pic-s_coupon@2x.png'}}"></cover-image>
                     </cover-view>
                     <cover-view class="word">
                       {{item.title ? item.title + '正在疯抢中' : '您的优惠券正在路上'}}
@@ -114,11 +114,13 @@
   import base from 'common/mixins/base'
   import Merchants from 'api/merchants'
   import QQMap from 'common/libs/qqmap-jssdk'
+  import URIS from 'common/js/config'
 
   export default class Square extends wepy.page {
     mixins = [users, base]
 
     data = {
+      imageUri: URIS.image,
       firstUpdate: false,
       map: false,
       showSlide: false,
@@ -472,9 +474,6 @@
     width: 100%
     height: 100vh
     .shop-modal
-      position: fixed
-      top: 0
-      left: 0
       width: 100%
       padding: 0 10px
       padding-top: 4.75px

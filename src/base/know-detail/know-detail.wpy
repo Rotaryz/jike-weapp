@@ -9,28 +9,28 @@
         <view class="title">是否需要预约：</view>
         <view class="content">
           <text class="circle"></text>
-          <text class="value">{{note.need_subscribe === 1 ? '需要预约' : '不需要预约'}}</text>
+          <text class="value">{{note.need_subscribe ? note.need_subscribe === 1 ? '需要预约' : '不需要预约' : ''}}</text>
         </view>
       </view>
       <view class="item-wrapper">
         <view class="title">单人购买上限：</view>
         <view class="content">
           <text class="circle"></text>
-          <text class="value">{{note.buy_upper_limit === -1 ? '无上限' : note.buy_upper_limit + '张'}}</text>
+          <text class="value">{{note.buy_upper_limit ? note.buy_upper_limit === -1 ? '无上限' : note.buy_upper_limit + '张' : ''}}</text>
         </view>
       </view>
       <view class="item-wrapper">
         <view class="title">使用人数：</view>
         <view class="content">
           <text class="circle"></text>
-          <text class="value">{{note.can_use_number === -1 ? '不限人数' : note.can_use_number + '人'}}</text>
+          <text class="value">{{note.can_use_number ? note.can_use_number === -1 ? '不限人数' : note.can_use_number + '人' : ''}}</text>
         </view>
       </view>
       <view class="item-wrapper">
         <view class="title">备注：</view>
         <view class="content">
           <text class="circle"></text>
-          <text class="value">{{note.remarks ? note.remarks : ''}}</text>
+          <text class="value">{{note.remarks ? note.remarks ? note.remarks : '' : ''}}</text>
         </view>
       </view>
     </view>
