@@ -14,7 +14,7 @@
       <image src="http://jike-file.jerryf.cn/defaults/c-image/mine/icon-my_money_close.png" class="withDraw-inputBox-btn" @tap="clear"></image>
     </view>
     <view class="withDraw-hint">
-      <text>提现到微信钱包</text>
+      <text>提现到微信钱包 (提现金额不能小于1元)</text>
       <view class="withDraw-hint-redTxt" @tap="allIn">全部提现</view>
     </view>
     <view class="withDraw-btn {{drawMoney*1===0?'disab':''}}" @tap="submitMoney">提现</view>
@@ -81,6 +81,10 @@
         }
         if (this.drawMoney * 1 === 0) {
           this.$invoke('Toast', 'show', '请输入正确金额')
+          return
+        }
+        if (this.drawMoney * 1 < 1) {
+          this.$invoke('Toast', 'show', '提现金额不能小于1元')
           return
         }
         if (this.drawMoney > this.packetTotal.remaining) {
