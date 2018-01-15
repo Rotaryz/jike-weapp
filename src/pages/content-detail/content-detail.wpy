@@ -31,9 +31,9 @@
         <image wx:if="{{imageUri && !isFavorite}}" src="{{imageUri + '/defaults/c-image/recommend/icon-collection1@2x.png'}}" class="full-image"></image>
         <image wx:if="{{imageUri && isFavorite}}" src="{{imageUri + '/defaults/c-image/recommend/icon-collection2@2x.png'}}" class="full-image"></image>
       </view>
-      <view class="share">
+      <view class="share-btn" @tap="showShareModal">
         <image wx:if="{{imageUri}}" src="{{imageUri + '/defaults/c-image/recommend/icon-sharepolite@2x.png'}}" class="full-image"></image>
-        <view class="red">
+        <view class="red" wx:if="{{contents.activity_share}}">
           <image wx:if="{{imageUri}}" src="{{imageUri + '/defaults/c-image/recommend/pic-openmoney@2x.png'}}" class="full-image"></image>
         </view>
       </view>
@@ -93,7 +93,8 @@
         video: VIDEO_TYPE,
         coupon: COUPON_TYPE,
         couponType: 1
-      }
+      },
+      qrcode: ''
     }
 
     onShareAppMessage(res) {
@@ -179,6 +180,9 @@
     }
 
     methods = {
+      showShareModal() {
+        this.$invoke('share', 'show', 'content')
+      },
       async sharePunchLine() {
         await this._getSharePrize()
       },
@@ -287,7 +291,7 @@
         width: 50px
         height: 50px
         margin-bottom: 6.5px
-      .share
+      .share-btn
         position: relative
         width: 50px
         height: 50px

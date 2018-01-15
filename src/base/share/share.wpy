@@ -4,7 +4,7 @@
     <canvas canvas-id="target" class="canvas"></canvas>
     <view animation="{{modalAnimation}}" class="modal border-top-1px"
           wx:if="{{show}}">
-      <view class="content-wrapper">
+      <view class="share-content-wrapper">
         <button class="wx" open-type="share">
           <view class="wrapper">
             <image src="http://jike-file.jerryf.cn/defaults/c-image/recommend/icon-wx@2x.png"></image>
@@ -97,6 +97,36 @@
         ctx.setFillStyle('#464646')
         ctx.setFontSize(40)
         ctx.fillText('国颐堂', 370, 1700)
+      } else if (type === 'content') {
+        console.log(this.detail)
+        const pics = await wepy.downloadFile({url: this.detail.image_url})
+        const user = this.$parent.$parent.globalData.user
+        const avatars = await wepy.downloadFile({url: user.avatarUrl})
+        let pic = pics.tempFilePath
+        let avatar = avatars.tempFilePath
+        ctx.drawImage(pic, 110, 62, 1280, 816)
+        ctx.setFontSize(72)
+        ctx.setFillStyle('#464646')
+        ctx.setTextAlign('center')
+        ctx.fillText('· ' + this.detail.title + ' ·', 750, 1050)
+        ctx.stroke()
+
+        ctx.beginPath()
+        ctx.moveTo(174, 1022)
+        ctx.lineTo(388, 1022)
+        ctx.stroke()
+
+        ctx.beginPath()
+        ctx.moveTo(1112, 1022)
+        ctx.lineTo(1326, 1022)
+        ctx.stroke()
+
+        ctx.beginPath()
+        ctx.setTextAlign('left')
+        ctx.setFontSize(48)
+        ctx.drawImage(avatar, 200, 1340, 96, 96)
+        ctx.fillText(user.nickName, 310, 1400)
+        ctx.fillText('邀请你参加活动', 200, 1530)
       } else {
         const manys = await wepy.downloadFile({url: 'http://jike-file.jerryf.cn/defaults/service-image/icon-many.png'})
         const shares = await wepy.downloadFile({url: 'http://jike-file.jerryf.cn/defaults/service-image/icon-share_prize.png'})
@@ -234,7 +264,7 @@
       z-index: 2000
       background: $color-white
       box-shadow: 0 -4px 20px rgba(0, 0, 0, .1)
-      .content-wrapper
+      .share-content-wrapper
         display: flex
         align-items: center
         justify-content: center
