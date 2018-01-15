@@ -131,12 +131,13 @@
     }
 
     onShareAppMessage(res) {
+      const user = this.$parent.globalData.user
       if (res.from === 'button') {
         // 来自页面内转发按钮
 //        console.log(res.target)
       }
       return {
-        title: '优惠券',
+        title: user.nickName + '邀请你购买优惠券',
         path: this.currentPage,
         success: async () => {
           // 转发成功

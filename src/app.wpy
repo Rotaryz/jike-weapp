@@ -6,6 +6,7 @@
 import wepy from 'wepy'
 import 'wepy-async-function'
 import wxUtils from 'common/js/wxUtils'
+import URIS from 'common/js/config'
 
 export default class extends wepy.app {
   constructor() {
@@ -121,7 +122,7 @@ export default class extends wepy.app {
   }
 
   globalData = {
-    baseUrl: 'http://dev.jike-wap-api.jerryf.cn',
+    baseUrl: URIS.api,
     isAuthorise: false,
     user: null,
     orderInfo: {}
