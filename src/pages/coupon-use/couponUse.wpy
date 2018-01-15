@@ -3,7 +3,7 @@
     <view class="couponUse-item" wx:for="{{couponList}}" wx:key="{{item}}">
       <view class="couponUse-item-head">
         <view class="couponUse-item-head-container">
-          <image class="coupon-bc" src="http://jike-file.jerryf.cn/defaults/c-image/mine/pic-couponbg@2x.png"></image>
+          <image class="coupon-bc" wx:if="{{imageUrlHead}}" src="{{imageUrlHead + '/defaults/c-image/mine/pic-couponbg@2x.png'}}"></image>
           <view class="couponUse-item-head-left">
             <view class="couponUse-itemPay">
               <image src="{{item.image_url}}" class="promotion-image" wx:if="{{item.type==='exchange'}}"></image>
@@ -19,12 +19,12 @@
           <view class="couponUse-item-head-right">
             <view class="couponUse-item-head-right-btn">核销</view>
           </view>
-          <image class="exChange-img" src="http://jike-file.jerryf.cn/defaults/c-image/mine/pic-m_certificate@2x.png" wx:if="{{item.type==='exchange'}}"></image>
+          <image class="exChange-img" src="{{imageUrlHead + '/defaults/c-image/mine/pic-m_certificate@2x.png'}}" wx:if="{{item.type==='exchange' && imageUrlHead}}"></image>
         </view>
       </view>
       <view class="couponEwm-Msg-body">
         <image src="{{item.qrcodeUrl}}" class="couponEwm-Msg-body-EWM"></image>
-        <view style="background-image: url('http://jike-file.jerryf.cn/defaults/c-image/mine/pic-mabg.png'); background-size: 356rpx 80rpx" class="couponEwm-Msg-body-couponNum">{{item.beautyCode}}</view>
+        <view style="background-image: url({{imageUrlHead ? imageUrlHead + '/defaults/c-image/mine/pic-mabg.png':''}}); background-size: 356rpx 80rpx" class="couponEwm-Msg-body-couponNum">{{item.beautyCode}}</view>
         <view class="couponEwm-Msg-body-txt">该券码用于线下门店核销</view>
       </view>
     </view>
@@ -37,6 +37,7 @@
   import base from 'common/mixins/base'
   import getMyOrder from '@/api/myOrder'
   import Coupon from '@/api/coupon'
+  import URIS from 'common/js/config'
 
   export default class MyCoupon extends wepy.page {
     mixins = [base]
@@ -49,7 +50,8 @@
     }
 
     data = {
-      couponList: []
+      couponList: [],
+      imageUrlHead: URIS.image
     }
 
     methods = {

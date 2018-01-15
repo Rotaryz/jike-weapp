@@ -15,7 +15,7 @@
     <scroll-view scroll-y class="mySelect-couponList" bindscrolltolower="couponLower" wx:if="{{couponList.length>0}}">
       <view class="mySelect-couponList-item" wx:for="{{couponList}}" wx:key="{{index}}" @tap="couponDetail({{item.id}})">
         <view class="couponList-item-head-container">
-          <image class="coupon-bc" src="http://jike-file.jerryf.cn/defaults/c-image/mine/pic-couponbg@2x.png"></image>
+          <image class="coupon-bc" wx:if="{{imageUrlHead}}" src="{{imageUrlHead + '/defaults/c-image/mine/pic-couponbg@2x.png'}}"></image>
           <view class="couponList-item-head-left">
             <view class="couponList-itemPay">
               <view ><text class="couponList-midMoney">￥</text><text class="couponList-bigMoney">{{item.price}}</text></view>
@@ -50,13 +50,13 @@
           </view>
           <view class="mySelect-contentList-Msg-right">
             <view class="mySelect-contentList-select">
-              <image src="http://jike-file.jerryf.cn/defaults/c-image/mine/icon-r_collection@2x.png" class="mySelect-contentList-select-star"></image>
+              <image wx:if="{{imageUrlHead}}" src="{{imageUrlHead + '/defaults/c-image/mine/icon-r_collection@2x.png'}}" class="mySelect-contentList-select-star"></image>
               <view class="mySelect-contentList-select-left">
                 <text>{{item.content.favorite_count}}</text>
               </view>
             </view>
             <view class="mySelect-contentList-select">
-              <image src="http://jike-file.jerryf.cn/defaults/c-image/mine/icon-r_share1@2x.png" class="mySelect-contentList-select-star"></image>
+              <image wx:if="{{imageUrlHead}}" src="{{imageUrlHead + '/defaults/c-image/mine/icon-r_share1@2x.png'}}" class="mySelect-contentList-select-star"></image>
               <view class="mySelect-contentList-select-left">
                 <text>{{item.content.favorite_count}}</text>
               </view>
@@ -70,7 +70,7 @@
       <view class="mySelect-couponList-item" wx:for="{{kacList}}" wx:key="{{index}}">
         <view class="mySelect-couponList-item-main" @tap="kacDetail({{item.gift_bag_id}})">
           <view class="couponList-item-head-container">
-            <image class="coupon-bc" src="http://jike-file.jerryf.cn/defaults/c-image/mine/pic-couponbg@2x.png"></image>
+            <image class="coupon-bc" wx:if="{{imageUrlHead}}" src="{{imageUrlHead + '/defaults/c-image/mine/pic-couponbg@2x.png'}}"></image>
             <view class="couponList-item-head-left">
               <view class="couponList-itemPay">
                 <view ><text class="couponList-midMoney">￥</text><text class="couponList-bigMoney">{{item.gift_bag.platform_price}}</text></view>
@@ -85,11 +85,11 @@
               <view class="couponList-item-head-right-btn">立即购买</view>
               <view class="couponList-item-storechange" @tap.stop="showStore({{index}})">
                 <view class="couponList-item-storechange-txt">支持店铺</view>
-                <image src="{{item.checked?'http://jike-file.jerryf.cn/defaults/c-image/mine/icon-r_shrink@2x.png':'http://jike-file.jerryf.cn/defaults/c-image/mine/icon-r_open@2x.png'}}" class="couponList-item-storechange-icon"></image>
+                <image wx:if="{{imageUrlHead}}" src="{{imageUrlHead + (item.checked?'/defaults/c-image/mine/icon-r_shrink@2x.png':'/defaults/c-image/mine/icon-r_open@2x.png')}}" class="couponList-item-storechange-icon"></image>
               </view>
             </view>
           </view>
-          <image class="gift-bag-img" src="http://jike-file.jerryf.cn/defaults/c-image/mine/pic-r_package@2x.png"></image>
+          <image class="gift-bag-img" wx:if="{{imageUrlHead}}" src="{{imageUrlHead + '/defaults/c-image/mine/pic-r_package@2x.png'}}"></image>
         </view>
 
         <view class="store-avatar {{item.checked?'':'hide'}}">
@@ -108,6 +108,7 @@
   import wepy from 'wepy'
   import base from 'common/mixins/base'
   import mySelect from '@/api/mySelect'
+  import URIS from 'common/js/config'
 
   export default class MySelect extends wepy.page {
     mixins = [base]
@@ -117,9 +118,10 @@
     }
 
     data = {
+      imageUrlHead: URIS.image,
       tabList: ['优惠券', '内容', '礼包'],
       menuIdx: 0,
-      emptyImg: ['http://jike-file.jerryf.cn/defaults/c-image/mine/pic-my-nocoupon.png', 'http://jike-file.jerryf.cn/defaults/c-image/mine/pic-my_no_c.png', 'http://jike-file.jerryf.cn/defaults/c-image/mine/pic-my_no_c.png'],
+      emptyImg: [URIS.image + '/defaults/c-image/mine/pic-my-nocoupon.png', URIS.image + '/defaults/c-image/mine/pic-my_no_c.png', URIS.image + '/defaults/c-image/mine/pic-my_no_c.png'],
       emptyMsg: ['您还没有相关优惠券', '您还没有相关收藏', '您还没有相关收藏'],
       couponList: [],
       contentList: [],

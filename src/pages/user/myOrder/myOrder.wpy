@@ -50,6 +50,7 @@
   import PhoneTestHint from '@/base/phoneTestHint/phoneTestHint'
   import getMyOrder from '@/api/myOrder'
   import Appraise from '@/base/appraise/appraise'
+  import URIS from 'common/js/config'
 
   export default class MyOrder extends wepy.page {
     mixins = [base]
@@ -68,9 +69,10 @@
     }
 
     data = {
+      imageUrlHead: URIS.image,
       menuIdx: 1,
       menuItems: ['待付款', '待使用', '待评价', '退款/售后'],
-      noOrderIcon: ['http://jike-file.jerryf.cn/defaults/c-image/mine/pic-my_nopaid.png', 'http://jike-file.jerryf.cn/defaults/c-image/mine/pic-my_noused.png', 'http://jike-file.jerryf.cn/defaults/c-image/mine/pic-my_noevaluated.png', 'http://jike-file.jerryf.cn/defaults/c-image/mine/pic-my_norefund.png'],
+      noOrderIcon: [URIS.image + '/defaults/c-image/mine/pic-my_nopaid.png', URIS.image + '/defaults/c-image/mine/pic-my_noused.png', URIS.image + '/defaults/c-image/mine/pic-my_noevaluated.png', URIS.image + '/defaults/c-image/mine/pic-my_norefund.png'],
       orderItemStatus: ['待付款', '', '', '退款中', '退款完成', '已评价', '已关闭'],
       orderItemBtnTxt: ['付款', '进店使用', '评价', '再来一单'],
       isPhone: 1,

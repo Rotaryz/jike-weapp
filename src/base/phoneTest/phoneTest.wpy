@@ -5,7 +5,7 @@
       <view class="phoneTest-phoneWindow-head">
         <text class="phoneTest-phoneWindow-headTxt">绑定手机号</text>
         <view class="phoneTest-closeBtn" @tap="closeCover">
-          <image class="phoneTest-closeBtn-icon" src="http://jike-file.jerryf.cn/defaults/c-image/mine/icon-close_win.png"></image>
+          <image class="phoneTest-closeBtn-icon" wx:if="{{imageUrlHead}}" src="{{imageUrlHead + '/defaults/c-image/mine/icon-close_win.png'}}"></image>
         </view>
       </view>
 
@@ -13,13 +13,13 @@
 
       <view class="phoneTest-list">
         <view class="phoneTest-list-item">
-          <image class="phoneTest-list-item-image" src="http://jike-file.jerryf.cn/defaults/c-image/mine/icon-m_phone@2x.png"></image>
+          <image class="phoneTest-list-item-image" wx:if="{{imageUrlHead}}" src="{{imageUrlHead + '/defaults/c-image/mine/icon-m_phone@2x.png'}}"></image>
           <input type="number" placeholder="输入手机号" placeholder-class="phoneTest-list-item-placeh"
                  class="phoneTest-list-item-input {{phoneNumError?'':'error'}}" maxlength="11" bindinput="phoneNumIn"/>
         </view>
 
         <view class="phoneTest-list-item">
-          <image class="phoneTest-list-item-image" src="http://jike-file.jerryf.cn/defaults/c-image/mine/icon-m_code@2x.png"></image>
+          <image class="phoneTest-list-item-image" wx:if="{{imageUrlHead}}" src="{{imageUrlHead + '/defaults/c-image/mine/icon-m_code@2x.png'}}"></image>
           <view class="phoneTest-list-codeBox">
             <input type="text" placeholder="验证码" placeholder-class="phoneTest-list-item-placeh"
                    class="phoneTest-list-item-input" maxlength="6" bindinput="phoneCodeIn"/>
@@ -47,10 +47,12 @@
   import base from 'common/mixins/base'
   import user from 'api/user'
   import Toast from '@/base/toast/toast'
+  import URIS from 'common/js/config'
 
   export default class PhoneTest extends wepy.component {
     mixins = [users, base]
     data = {
+      imageUrlHead: URIS.image,
       phoneCodeTime: '获取验证码',
       phoneCodeDisabled: false,
       submitDisabled: true,

@@ -11,7 +11,7 @@
         <input type="digit" bindinput="moneyChange" class="withDraw-inputBox-input" value="{{drawMoney}}"/>
       </view>
 
-      <image src="http://jike-file.jerryf.cn/defaults/c-image/mine/icon-my_money_close.png" class="withDraw-inputBox-btn" @tap="clear"></image>
+      <image wx:if="{{imageUrlHead}}" src="{{imageUrlHead + '/defaults/c-image/mine/icon-my_money_close.png'}}" class="withDraw-inputBox-btn" @tap="clear"></image>
     </view>
     <view class="withDraw-hint">
       <text>提现到微信钱包 (提现金额不能小于1元)</text>
@@ -22,12 +22,12 @@
 
     <view class="withDraw-successCover" wx:if="{{coverShow}}">
       <view class="withDraw-success">
-        <image src="http://jike-file.jerryf.cn/defaults/c-image/mine/pic-my_unlucky.png" class="withDraw-success-img"></image>
+        <image wx:if="{{imageUrlHead}}" src="{{imageUrlHead + '/defaults/c-image/mine/pic-my_unlucky.png'}}" class="withDraw-success-img"></image>
         <view class="withDraw-success-top">提现成功</view>
         <view class="withDraw-success-bottom">
           <text class="withDraw-success-bottom-txt">提现金额已经存入您的微信钱包中</text>
           <view class="withDraw-success-bottom-btn">返回</view>
-          <image src="http://jike-file.jerryf.cn/defaults/c-image/mine/icon-close_white.png" class="withDraw-success-closeBtn" @tap="closeCover"></image>
+          <image wx:if="{{imageUrlHead}}" src="{{imageUrlHead + '/defaults/c-image/mine/icon-close_white.png'}}" class="withDraw-success-closeBtn" @tap="closeCover"></image>
         </view>
       </view>
     </view>
@@ -40,6 +40,7 @@
   import base from 'common/mixins/base'
   import GetRedPacket from 'api/myRedPacket'
   import Toast from '@/base/toast/toast'
+  import URIS from 'common/js/config'
 
   export default class WithDraw extends wepy.page {
     mixins = [base]
@@ -49,6 +50,7 @@
     }
 
     data = {
+      imageUrlHead: URIS.image,
       drawMoney: '',
       coverShow: false,
       packetTotal: ''

@@ -3,14 +3,14 @@
     <view class="appraise-Msg">
       <view class="appraise-Msg-head">
         <view class="appraise-Msg-closeBtn" @tap="closeCover">
-          <image src="http://jike-file.jerryf.cn/defaults/c-image/mine/icon-close_win.png" class="appraise-Msg-closeIcon"></image>
+          <image wx:if="{{imageUrlHead}}" src="{{imageUrlHead + '/defaults/c-image/mine/icon-close_win.png'}}" class="appraise-Msg-closeIcon"></image>
         </view>
         <text>评价</text>
       </view>
       <view class="appraise-Msg-list" wx:if="{{!appraiseSuccess}}">
         <view class="appraise-Msg-list-star">
           <view wx:for="{{[0,1,2,3,4]}}" wx:key="{{item}}" @tap="chioseStar({{index}})">
-            <image src="{{index <= starCount?'http://jike-file.jerryf.cn/defaults/c-image/mine/icon-evaluate_red.png':'http://jike-file.jerryf.cn/defaults/c-image/mine/icon-evaluate_gray.png'}}" class="starImg"></image>
+            <image wx:if="{{imageUrlHead}}" src="{{imageUrlHead + (index <= starCount?'/defaults/c-image/mine/icon-evaluate_red.png':'/defaults/c-image/mine/icon-evaluate_gray.png')}}" class="starImg"></image>
           </view>
         </view>
 
@@ -28,7 +28,7 @@
         <view class="appraise-submitBtn {{btnDisabled?'disabled':''}}" @tap="appraiseSubmit">匿名提交</view>
       </view>
       <view class="appraise-Msg-success" wx:if="{{appraiseSuccess}}">
-        <image src="http://jike-file.jerryf.cn/defaults/c-image/mine/pic-good@2x.png" class="appraise-Msg-success-img"></image>
+        <image wx:if="{{imageUrlHead}}" src="{{imageUrlHead + '/defaults/c-image/mine/pic-good@2x.png'}}" class="appraise-Msg-success-img"></image>
         <text class="appraise-Msg-success-txt">评价成功</text>
       </view>
     </view>
@@ -42,6 +42,7 @@
   import base from 'common/mixins/base'
   import getMyOrder from '@/api/myOrder'
   import Toast from '@/base/toast/toast'
+  import URIS from 'common/js/config'
 
   export default class appraise extends wepy.component {
     mixins = [base]
@@ -51,6 +52,7 @@
     }
 
     data = {
+      imageUrlHead: URIS.image,
       appraiseCover: false,
       starCount: -1,
       starDescribe: ['非常不满意，各方面都很差', '不满意，比较差', '一般，还需改善', '比较满意，仍可改善', '非常满意，无可挑剔'],

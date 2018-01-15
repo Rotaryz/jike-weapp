@@ -5,7 +5,7 @@
         <image model="aspectFill"
                src="{{avatar}}"
                class="myCenter-head-avatar"
-               style="background-image: url('http://jike-file.jerryf.cn/defaults/c-image/mine/pic-default.png'); background-size: 48px 48px"></image>
+               style="background-image: url({{imageUrlHead ? imageUrlHead + '/defaults/c-image/mine/pic-default.png':''}}); background-size: 48px 48px"></image>
         <view class="myCenter-head-txt">点击修改头像</view>
       </view>
     </view>
@@ -54,6 +54,7 @@
   import PhoneTest from '@/base/phoneTest/phoneTest'
   import Tips from '@/common/js/tips'
   import Toast from '@/base/toast/toast'
+  import URIS from 'common/js/config'
 
   export default class MyCenter extends wepy.page {
     mixins = [users, base]
@@ -70,6 +71,7 @@
     }
 
     data = {
+      imageUrlHead: URIS.image,
       userInfo: {
         nickName: '加载中...',
         avatarUrl: '',
