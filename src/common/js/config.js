@@ -23,27 +23,27 @@
 const URLS = {
   image: 'https://img.jerryf.cn',
   login: 'https://dev.jike-jwt.jerryf.cn',
-  api: 'https://dev.jike-backend-api.jerryf.cn'
+  api: 'https://dev.jike-wap-api.jerryf.cn'
 }
 
 /**
  * 测试环境
  * @type {{image: string, login: string, api: string}}
  */
-// const URIS = {
+// const URLS = {
 //   image: 'https://img.jkweixin.net',
 //   login: 'https://jwt.jkweixin.net',
-//   api: 'https://backend-api.jkweixin.net'
+//   api: 'https://wap-api.jkweixin.net'
 // }
 
 /**
  * 生产环境
  * @type {{image: string, login: string, api: string}}
  */
-// const URIS = {
+// const URLS = {
 //   image: 'https://img.jkweixin.com',
 //   login: 'https://jwt.jkweixin.com',
-//   api: 'https://backend-api.jkweixin.com'
+//   api: 'https://wap-api.jkweixin.com'
 // }
 
 class URIS {

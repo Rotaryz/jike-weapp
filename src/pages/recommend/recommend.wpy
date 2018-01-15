@@ -4,46 +4,46 @@
       <repeat>
         <Slider :list.sync="shopImages"></Slider>
       </repeat>
-      <image src="http://jike-file.jerryf.cn/defaults/c-image/recommend/pic-r_shadow@2x.png" class="underImage"></image>
+      <image wx:if="{{imageUri}}" src="{{imageUri + '/defaults/c-image/recommend/pic-r_shadow@2x.png'}}" class="underImage"></image>
     </view>
     <form bindsubmit="submit" report-submit='true'>
       <view class="nav-wrapper">
         <button form-type="submit" @tap="goToActivity('video_live', '/pages/live/live')" type="default" size="mini"
                 class="content-wrapper">
-          <image class="icon" src="http://jike-file.jerryf.cn/defaults/c-image/recommend/icon-r_live@2x.png"></image>
+          <image class="icon" wx:if="{{imageUri}}" src="{{imageUri + '/defaults/c-image/recommend/icon-r_live@2x.png'}}"></image>
           <view class="content">直播优惠</view>
         </button>
         <button form-type="submit" @tap="goToActivity('share', '/pages/shareAndPrize/shareAndPrize')" type="default" size="mini"
                 class="content-wrapper">
-          <image class="icon" src="http://jike-file.jerryf.cn/defaults/c-image/recommend/icon-r_share@2x.png"></image>
+          <image class="icon" wx:if="{{imageUri}}" src="{{imageUri + '/defaults/c-image/recommend/icon-r_share@2x.png'}}"></image>
           <view class="content">分享有礼</view>
         </button>
         <button form-type="submit" @tap="goToActivity('sign', '/pages/activity/activity?type=sign')" type="default" size="mini"
                 class="content-wrapper">
-          <image class="icon" src="http://jike-file.jerryf.cn/defaults/c-image/recommend/icon-r_sign@2x.png"></image>
+          <image class="icon" wx:if="{{imageUri}}" src="{{imageUri + '/defaults/c-image/recommend/icon-r_sign@2x.png'}}"></image>
           <view class="content">签到红包</view>
         </button>
         <button form-type="submit" @tap="goToActivity('lucky_draw','/pages/activity/activity?type=wheel')" type="default" size="mini"
                 class="content-wrapper">
-          <image class="icon" src="http://jike-file.jerryf.cn/defaults/c-image/recommend/icon-turntable@2x.png"></image>
+          <image class="icon" wx:if="{{imageUri}}" src="{{imageUri + '/defaults/c-image/recommend/icon-turntable@2x.png'}}"></image>
           <view class="content">大转盘 </view>
         </button>
       </view>
     </form>
     <!--<view @tap="" class="content-wrapper">-->
-    <!--<image class="icon" src="http://jike-file.jerryf.cn/defaults/c-image/recommend/icon-r_live@2x.png"></image>-->
+    <!--<image class="icon" wx:if={{imageUri}} src="{{imageUri + '/defaults/c-image/recommend/icon-r_live@2x.png"></image>-->
     <!--<view class="content">直播优惠</view>-->
     <!--</view>-->
     <!--<view @tap="goToActivity('share', '/pages/shareAndPrize/shareAndPrize')" class="content-wrapper">-->
-    <!--<image class="icon" src="http://jike-file.jerryf.cn/defaults/c-image/recommend/icon-r_share@2x.png"></image>-->
+    <!--<image class="icon" wx:if={{imageUri}} src="{{imageUri + '/defaults/c-image/recommend/icon-r_share@2x.png"></image>-->
     <!--<view class="content">分享有礼</view>-->
     <!--</view>-->
     <!--<view @tap="goToActivity('sign', '/pages/activity/activity?type=sign')" class="content-wrapper">-->
-    <!--<image class="icon" src="http://jike-file.jerryf.cn/defaults/c-image/recommend/icon-r_sign@2x.png"></image>-->
+    <!--<image class="icon" wx:if={{imageUri}} src="{{imageUri + '/defaults/c-image/recommend/icon-r_sign@2x.png"></image>-->
     <!--<view class="content">签到红包</view>-->
     <!--</view>-->
     <!--<view @tap="goToActivity('lucky_draw','/pages/activity/activity?type=wheel')" class="content-wrapper">-->
-    <!--<image class="icon" src="http://jike-file.jerryf.cn/defaults/c-image/recommend/icon-turntable@2x.png"></image>-->
+    <!--<image class="icon" wx:if={{imageUri}} src="{{imageUri + '/defaults/c-image/recommend/icon-turntable@2x.png"></image>-->
     <!--<view class="content">大转盘 </view>-->
     <!--</view>-->
     <view class="tab-container">
@@ -86,12 +86,12 @@
               </view>
               <view class="collect">
                 <view class="icon icon-collected">
-                  <image src="http://jike-file.jerryf.cn/defaults/c-image/mine/icon-r_collection@2x.png"
+                  <image wx:if="{{imageUri}}" src="{{imageUri + '/defaults/c-image/mine/icon-r_collection@2x.png'}}"
                          class="full-image"></image>
                 </view>
                 <view class="font">{{item.favorite_count}}</view>
                 <view class="icon icon-collected last">
-                  <image src="http://jike-file.jerryf.cn/defaults/c-image/mine/icon-r_share1@2x.png"
+                  <image wx:if="{{imageUri}}" src="{{imageUri + '/defaults/c-image/mine/icon-r_share1@2x.png'}}"
                          class="full-image"></image>
                 </view>
                 <view class="font">{{item.share_count}}</view>
@@ -117,6 +117,7 @@
   import CouponApi from 'api/coupon'
   import ContentsApi from 'api/contents'
   import Giftbag from '@/base/giftbag/giftbag'
+  import URIS from 'common/js/config'
 
   const COUPON_TYPE = 1
   const PACKAGE_TYPE = 2
@@ -128,6 +129,7 @@
     mixins = [users, base]
 
     data = {
+      imageUri: URIS.image,
       couponType: COUPON_TYPE,
       packageType: PACKAGE_TYPE,
       merchantId: wepy.getStorageSync('merchantId'),

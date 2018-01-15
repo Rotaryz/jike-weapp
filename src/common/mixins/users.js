@@ -46,19 +46,37 @@ export default class userMixin extends wepy.mixin {
    * 判断是否绑定用户手机号码
    * @returns {boolean}
    */
+  // async isAuthorise() {
+  //   const code = wepy.getStorageSync('code')
+  //   let token = wepy.getStorageSync('token')
+  //   if (!code || !token) {
+  //     token = await this.$getToken()
+  //   }
+  //   let customerId = wepy.getStorageSync('customerId')
+  //   if (!customerId) {
+  //     const userInfo = await this._getSqlUserInfo(token)
+  //     customerId = userInfo.customer_id
+  //     wepy.setStorageSync('customerId', customerId)
+  //   }
+  //   if (!customerId) {
+  //     return false
+  //   }
+  //   return true
+  // }
+
   async isAuthorise() {
     const code = wepy.getStorageSync('code')
     let token = wepy.getStorageSync('token')
     if (!code || !token) {
       token = await this.$getToken()
     }
-    let customerId = wepy.getStorageSync('customerId')
-    if (!customerId) {
+    let mobile = wepy.getStorageSync('mobile')
+    if (!mobile) {
       const userInfo = await this._getSqlUserInfo(token)
-      customerId = userInfo.customer_id
-      wepy.setStorageSync('customerId', customerId)
+      mobile = userInfo.customer.mobile
+      wepy.setStorageSync('mobile', mobile)
     }
-    if (!customerId) {
+    if (!mobile) {
       return false
     }
     return true
@@ -100,17 +118,18 @@ export default class userMixin extends wepy.mixin {
     }
     const res = await this._getSqlUserInfo(token)
     let user
-    wepy.setStorageSync('customerId', res.customer_id)
-    if (res.customer_id === 0) {
-      user = await this.$getUser()
+    wepy.setStorageSync('mobile', res.customer.mobile)
+    // wepy.setStorageSync('customerId', res.customer_id)
+    // if (res.customer_id === 0) {
+    //   user = await this.$getUser()
+    // } else {
+    if (!res.customer.avatarUrl) {
+      let resData = await this.$getUser()
+      user = Object.assign(res.customer, {avatarUrl: resData.avatarUrl})
     } else {
-      if (!res.customer.avatarUrl) {
-        let resData = await this.$getUser()
-        user = Object.assign(res.customer, {avatarUrl: resData.avatarUrl})
-      } else {
-        user = res.customer
-      }
+      user = res.customer
     }
+    // }
     this.$parent.updateGlobalData('user', user)
     return user
   }

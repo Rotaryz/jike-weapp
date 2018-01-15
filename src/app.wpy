@@ -19,7 +19,7 @@ export default class extends wepy.app {
     if (!tips) {
       wepy.setStorageSync('tips', {order: false})
     }
-    wepy.setStorageSync('merchantId', option.query.merchantId || 100000)
+    wepy.setStorageSync('merchantId', option.query.merchantId || 100004)
     // 校验SDK
     wxUtils.checkSDK()
     const storageDate = wepy.getStorageSync('collectDate')
@@ -66,6 +66,7 @@ export default class extends wepy.app {
     pages: [
       'pages/square/square',
       'pages/recommend/recommend',
+      'pages/live/live',
       'pages/pay-result/pay-result',
       'pages/coupon-detail/coupon-detail',
       'pages/content-detail/content-detail',

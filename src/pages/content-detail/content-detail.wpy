@@ -27,25 +27,29 @@
       </repeat>
     </view>
     <view class="fix-btn-wrapper">
-      <view class="collect" @tap="storeToggle">
-        <image wx:if="{{!isFavorite}}" src="http://jike-file.jerryf.cn/defaults/c-image/recommend/icon-collection1@2x.png" class="full-image"></image>
-        <image wx:if="{{isFavorite}}" src="http://jike-file.jerryf.cn/defaults/c-image/recommend/icon-collection2@2x.png" class="full-image"></image>
+      <view class="collect" @tap="checkCustomer">
+        <image wx:if="{{imageUri && !isFavorite}}" src="{{imageUri + '/defaults/c-image/recommend/icon-collection1@2x.png'}}" class="full-image"></image>
+        <image wx:if="{{imageUri && isFavorite}}" src="{{imageUri + '/defaults/c-image/recommend/icon-collection2@2x.png'}}" class="full-image"></image>
       </view>
       <view class="share">
-        <image src="http://jike-file.jerryf.cn/defaults/c-image/recommend/icon-sharepolite@2x.png" class="full-image"></image>
+        <image wx:if="{{imageUri}}" src="{{imageUri + '/defaults/c-image/recommend/icon-sharepolite@2x.png'}}" class="full-image"></image>
         <view class="red">
-          <image src="http://jike-file.jerryf.cn/defaults/c-image/recommend/pic-openmoney@2x.png" class="full-image"></image>
+          <image wx:if="{{imageUri}}" src="{{imageUri + '/defaults/c-image/recommend/pic-openmoney@2x.png'}}" class="full-image"></image>
         </view>
       </view>
     </view>
+    <phone-test @isPhoneOk.user="storeToggle"></phone-test>
   </view>
 </template>
 
 <script>
   import wepy from 'wepy'
   import base from 'common/mixins/base'
+  import users from 'common/mixins/users'
   import ContentsApi from 'api/contents'
   import Coupon from '@/base/coupon/coupon'
+  import PhoneTest from '@/base/phoneTest/phoneTest'
+  import URIS from 'common/js/config'
 
   const IMAGE_TYPE = 0
   const TEXT_TYPE = 1
@@ -53,9 +57,11 @@
   const COUPON_TYPE = 3
 
   export default class ContentDetail extends wepy.page {
-    mixins = [base]
+    mixins = [base, users]
 
     data = {
+      imageUri: URIS.image,
+      authorise: false,
       id: '',
       contents: {},
       details: [],
@@ -75,8 +81,14 @@
     }
 
     async load() {
+      await this._checkAuthorise()
       await this._getContentDetail()
       this.loaded()
+    }
+
+    async _checkAuthorise() {
+      const isAuthorise = await this.isAuthorise()
+      this.authorise = isAuthorise
     }
 
     async _getContentDetail() {
@@ -87,17 +99,28 @@
       this.isFavorite = data.is_favorite
     }
 
-    methods = {
-      async storeToggle() {
-        const id = this.id
-        if (this.isFavorite) {
+    async _storeToggle() {
+      const id = this.id
+      if (this.isFavorite) {
 //        取消收藏
-          await ContentsApi.cancelStoreContent(id)
-        } else {
-          await ContentsApi.storeContent(id)
+        await ContentsApi.cancelStoreContent(id)
+      } else {
+        await ContentsApi.storeContent(id)
+      }
+      await this._getContentDetail()
+      this.loaded()
+    }
+
+    methods = {
+      async checkCustomer() {
+        if (!this.authorise) {
+          this.$invoke('phone-test', 'show')
+          return
         }
-        await this._getContentDetail()
-        this.loaded()
+        await this._storeToggle()
+      },
+      async storeToggle() {
+        await this._storeToggle()
       }
     }
 
@@ -112,7 +135,8 @@
     }
 
     components = {
-      coupon: Coupon
+      'coupon': Coupon,
+      'phone-test': PhoneTest
     }
   }
 </script>
