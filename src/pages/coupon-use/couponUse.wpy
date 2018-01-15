@@ -17,7 +17,10 @@
             </view>
           </view>
           <view class="couponUse-item-head-right">
-            <view class="couponUse-item-head-right-btn">核销</view>
+            <view class="shopMsg">
+              <image src="{{item.shopLogo}}" class="shopLogo"></image>
+              <view class="shopName">{{item.shopName}}</view>
+            </view>
           </view>
           <image class="exChange-img" src="{{imageUrlHead + '/defaults/c-image/mine/pic-m_certificate@2x.png'}}" wx:if="{{item.type==='exchange' && imageUrlHead}}"></image>
         </view>
@@ -91,7 +94,9 @@
           type: item.promotion.promotion_type,
           qrcodeUrl: item.qrcode_url,
           id: item.promotion_id,
-          image_url: item.promotion.image_url || ''
+          image_url: item.promotion.image_url || '',
+          shopLogo: item.merchant_data.logo_image,
+          shopName: item.merchant_data.shop_name
         }
       })
     }
@@ -182,9 +187,26 @@
             align-items: center
             justify-content: center
 
-            .couponUse-item-head-right-btn
-              font-size: $font-size-medium
-              color: $color-text
+            .shopMsg
+              display: flex
+              flex-direction: column
+              align-items: center
+              width: 100%
+
+              .shopLogo
+               width: 32px
+               height: 32px
+               border-radius: 50%
+               margin-bottom: 5px
+
+              .shopName
+                font-size: $font-size-small
+                color: $color-text
+                width: 100%
+                text-align: center
+                overflow: hidden
+                text-overflow: ellipsis
+                white-space: nowrap
 
           .exChange-img
             position: absolute
