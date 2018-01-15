@@ -38,7 +38,24 @@
         </view>
       </view>
     </view>
-    <phone-test @isPhoneOk.user="storeToggle"></phone-test>
+    <!--<phone-test @isPhoneOk.user="storeToggle"></phone-test>-->
+    <share :qrcode.sync="qrcode" :detail.sync="contents" @sharePunchLine.user="sharePunchLine"></share>
+    <share-modal>
+      <view slot="content" class="base-modal-content">
+        <view class="header-wrapper">
+          <view class="title">现金红包</view>
+          <view class="cash">{{sharePrice}}<text class="yuan">元</text></view>
+        </view>
+        <view class="content">
+          <view class="text">现金已经存放入您的账户</view>
+          <view class="text">可进入个人中心-红包查看详情</view>
+        </view>
+        <view class="btn-wrapper">
+          <!--<view class="share"></view>-->
+          <navigator url="/pages/user/redPacket/redPacket" class="btn">查看红包</navigator>
+        </view>
+      </view>
+    </share-modal>
   </view>
 </template>
 
@@ -49,7 +66,11 @@
   import ContentsApi from 'api/contents'
   import Coupon from '@/base/coupon/coupon'
   import PhoneTest from '@/base/phoneTest/phoneTest'
+  import Share from '@/base/share/share'
+  import BaseModal from '@/base/base-modal/base-modal'
   import URIS from 'common/js/config'
+  import Info from 'api/info'
+  import Shares from 'api/share'
 
   const IMAGE_TYPE = 0
   const TEXT_TYPE = 1
@@ -75,21 +96,67 @@
       }
     }
 
+    onShareAppMessage(res) {
+      const user = this.$parent.globalData.user
+      if (res.from === 'button') {
+        // 来自页面内转发按钮
+//        console.log(res.target)
+      }
+      return {
+        title: user.nickName + '邀请你购买优惠券',
+        path: this.currentPage,
+        success: async () => {
+          // 转发成功
+          await this._getSharePrize()
+        },
+        fail: (res) => {
+          // 转发失败
+          console.log(res)
+        }
+      }
+    }
+
     async onLoad(option) {
       this.id = option.id
+      this.currentPage = `/pages/content-detail/content-detail?id=${option.id}`
       await this.load()
     }
 
     async load() {
-      await this._checkAuthorise()
+      await this._getUserInfo()
+      await this._createQrcode()
+//      await this._checkAuthorise()
       await this._getContentDetail()
       this.loaded()
     }
 
-    async _checkAuthorise() {
-      const isAuthorise = await this.isAuthorise()
-      this.authorise = isAuthorise
+    async _createQrcode() {
+      const res = await Info.createQrode({path: this.currentPage})
+      this.qrcode = res.image_url
     }
+
+    async _getUserInfo() {
+      await this.$getUserInfo()
+    }
+
+    async _getSharePrize() {
+      if (!this.contents.activity_share) {
+        return
+      }
+      const res = await Shares.getSharePrize()
+      this.loaded()
+      if (res.length === 0) {
+        return
+      }
+      this.sharePrice = res.price
+      this.$invoke('share-modal', 'show')
+      this.$apply()
+    }
+
+//    async _checkAuthorise() {
+//      const isAuthorise = await this.isAuthorise()
+//      this.authorise = isAuthorise
+//    }
 
     async _getContentDetail() {
       const data = await ContentsApi.getContentDetail(this.id)
@@ -112,11 +179,14 @@
     }
 
     methods = {
+      async sharePunchLine() {
+        await this._getSharePrize()
+      },
       async checkCustomer() {
-        if (!this.authorise) {
-          this.$invoke('phone-test', 'show')
-          return
-        }
+//        if (!this.authorise) {
+//          this.$invoke('phone-test', 'show')
+//          return
+//        }
         await this._storeToggle()
       },
       async storeToggle() {
@@ -136,7 +206,9 @@
 
     components = {
       'coupon': Coupon,
-      'phone-test': PhoneTest
+      'phone-test': PhoneTest,
+      'share': Share,
+      'share-modal': BaseModal
     }
   }
 </script>
