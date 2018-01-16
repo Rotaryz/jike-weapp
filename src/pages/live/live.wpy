@@ -26,14 +26,7 @@
     }
 
     async load() {
-      await this.$getUserInfo()
-      let isAuthorise = await this.isAuthorise()
-      if (!isAuthorise) {
-        this.$invoke('PhoneTest', 'bindPhone')
-      } else {
-        this.$com.LiveVideo.showMore()
-      }
-      this.$apply()
+      this.$com.LiveVideo.showMore()
       this.loaded()
     }
 
