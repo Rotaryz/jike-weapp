@@ -6,6 +6,7 @@
 import wepy from 'wepy'
 import 'wepy-async-function'
 import wxUtils from 'common/js/wxUtils'
+import URIS from 'common/js/config'
 
 export default class extends wepy.app {
   constructor() {
@@ -19,7 +20,7 @@ export default class extends wepy.app {
     if (!tips) {
       wepy.setStorageSync('tips', {order: false})
     }
-    wepy.setStorageSync('merchantId', option.query.merchantId || 100000)
+    wepy.setStorageSync('merchantId', option.query.merchantId || 100004)
     // 校验SDK
     wxUtils.checkSDK()
     const storageDate = wepy.getStorageSync('collectDate')
@@ -67,6 +68,7 @@ export default class extends wepy.app {
       'pages/live/live',
       'pages/square/square',
       'pages/recommend/recommend',
+      'pages/live/live',
       'pages/pay-result/pay-result',
       'pages/coupon-detail/coupon-detail',
       'pages/content-detail/content-detail',
@@ -121,7 +123,7 @@ export default class extends wepy.app {
   }
 
   globalData = {
-    baseUrl: 'http://dev.jike-wap-api.jerryf.cn',
+    baseUrl: URIS.api,
     isAuthorise: false,
     user: null,
     orderInfo: {}

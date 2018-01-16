@@ -97,7 +97,7 @@
       },
       addCount() {
         if (this.stock !== -1) {
-          if (this.count < this.stock - 1) {
+          if (this.count < this.stock) {
             this.count += 1
           }
         } else {

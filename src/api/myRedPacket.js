@@ -23,4 +23,17 @@ export default class GetRedPacket extends base {
     }
     return await this.get(url, data)
   }
+
+  /**
+   * 获取用户红包列表
+   * @param
+   * @returns {Promise.<*>}
+   */
+  static async withDrawMoney(money) {
+    const url = `${this.baseUrl}/api/info/withdrawals`
+    let data = {
+      money_amount: money
+    }
+    return await this.post(url, data)
+  }
 }

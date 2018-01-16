@@ -10,20 +10,20 @@
         </view>
       </repeat>
     </scroll-view>
-    <image class="btn_com btn_com-fi"
-           src="http://jike-file.jerryf.cn/defaults/c-image/live/icon-share-zhib.png"
+    <image class="btn_com btn_com-fi" wx:if="{{imageUrlHead}}"
+           src="{{imageUrlHead + '/defaults/c-image/live/icon-share-zhib.png'}}"
            @tap="shares"/>
     <image class="btn_com"
-           src="http://jike-file.jerryf.cn/defaults/c-image/live/icon- info.png"
-           wx:if="{{!showCom}}"
+           src="{{imageUrlHead + '/defaults/c-image/live/icon- info.png'}}"
+           wx:if="{{!showCom && imageUrlHead}}"
            @tap="showInput"/>
     <view class="inp_cpm" wx:if="{{showCom}}">
       <input type="text" placeholder="弹幕更容易引起主播的注意哦~" @input="bindTestInput"
              value="{{content}}" focus="true"
              bindconfirm="putContent({{activityId}})"/>
       <view @tap.default="putContent({{activityId}})">
-        <image
-          src="http://jike-file.jerryf.cn/defaults/c-image/live/icon-sendout.png"></image>
+        <image wx:if="{{imageUrlHead}}"
+          src="{{imageUrlHead + '/defaults/c-image/live/icon-sendout.png'}}"></image>
       </view>
     </view>
     <Share :qrcode.sync="qrcode"
@@ -38,6 +38,7 @@
   import users from 'common/mixins/users'
   import Share from '@/base/share/share'
   import Info from 'api/info'
+  import URIS from 'common/js/config'
   export default class Comment extends wepy.page {
     mixins = [users, base]
     components = {
@@ -62,6 +63,7 @@
       }
     }
     data = {
+      imageUrlHead: URIS.image,
       showCom: false,
       content: '',
       ifHide: 0,

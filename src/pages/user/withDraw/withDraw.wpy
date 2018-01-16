@@ -1,7 +1,7 @@
 <template>
   <view class="withDraw">
     <view class="withDraw-head">
-      <view class="withDraw-headTxt">账户余额<text class="withDraw-head-money">{{packetTotal.remaining}}</text></view>
+      <view class="withDraw-headTxt">账户余额<text class="withDraw-head-money">{{packetTotal.remaining?packetTotal.remaining:0}}</text></view>
       <view class="withDraw-headTxt">提现金额</view>
     </view>
 
@@ -11,10 +11,10 @@
         <input type="digit" bindinput="moneyChange" class="withDraw-inputBox-input" value="{{drawMoney}}"/>
       </view>
 
-      <image src="http://jike-file.jerryf.cn/defaults/c-image/mine/icon-my_money_close.png" class="withDraw-inputBox-btn" @tap="clear"></image>
+      <image wx:if="{{imageUrlHead}}" src="{{imageUrlHead + '/defaults/c-image/mine/icon-my_money_close.png'}}" class="withDraw-inputBox-btn" @tap="clear"></image>
     </view>
     <view class="withDraw-hint">
-      <text>提现到微信钱包</text>
+      <text>提现到微信钱包 (提现金额不能小于1元)</text>
       <view class="withDraw-hint-redTxt" @tap="allIn">全部提现</view>
     </view>
     <view class="withDraw-btn {{drawMoney*1===0?'disab':''}}" @tap="submitMoney">提现</view>
@@ -22,16 +22,17 @@
 
     <view class="withDraw-successCover" wx:if="{{coverShow}}">
       <view class="withDraw-success">
-        <image src="http://jike-file.jerryf.cn/defaults/c-image/mine/pic-my_unlucky.png" class="withDraw-success-img"></image>
+        <image wx:if="{{imageUrlHead}}" src="{{imageUrlHead + '/defaults/c-image/mine/pic-my_unlucky.png'}}" class="withDraw-success-img"></image>
         <view class="withDraw-success-top">提现成功</view>
         <view class="withDraw-success-bottom">
           <text class="withDraw-success-bottom-txt">提现金额已经存入您的微信钱包中</text>
           <view class="withDraw-success-bottom-btn">返回</view>
-          <image src="http://jike-file.jerryf.cn/defaults/c-image/mine/icon-close_white.png" class="withDraw-success-closeBtn" @tap="closeCover"></image>
+          <image wx:if="{{imageUrlHead}}" src="{{imageUrlHead + '/defaults/c-image/mine/icon-close_white.png'}}" class="withDraw-success-closeBtn" @tap="closeCover"></image>
         </view>
       </view>
     </view>
     <Toast></Toast>
+    <PhoneTest></PhoneTest>
   </view>
 </template>
 
@@ -40,6 +41,8 @@
   import base from 'common/mixins/base'
   import GetRedPacket from 'api/myRedPacket'
   import Toast from '@/base/toast/toast'
+  import PhoneTest from '@/base/phoneTest/phoneTest'
+  import URIS from 'common/js/config'
 
   export default class WithDraw extends wepy.page {
     mixins = [base]
@@ -49,13 +52,16 @@
     }
 
     data = {
+      imageUrlHead: URIS.image,
       drawMoney: '',
       coverShow: false,
-      packetTotal: ''
+      packetTotal: '',
+      isPhone: 0
     }
 
     components = {
-      Toast
+      Toast,
+      PhoneTest
     }
 
     methods = {
@@ -75,12 +81,20 @@
         this.$apply()
       },
       submitMoney() {
+        if (this.isPhone !== 1) {
+          this.$invoke('PhoneTest', 'bindPhone')
+          return
+        }
         if (this.packetTotal.remaining * 1 === 0) {
           this.$invoke('Toast', 'show', '没有可提现余额')
           return
         }
         if (this.drawMoney * 1 === 0) {
           this.$invoke('Toast', 'show', '请输入正确金额')
+          return
+        }
+        if (this.drawMoney * 1 < 1) {
+          this.$invoke('Toast', 'show', '提现金额不能小于1元')
           return
         }
         if (this.drawMoney > this.packetTotal.remaining) {
@@ -95,6 +109,16 @@
       await this.load()
     }
 
+    async onShow() {
+      let mobile = wepy.getStorageSync('mobile')
+      if (mobile) {
+        this.isPhone = 1
+      } else {
+        this.isPhone = 0
+      }
+      this.$apply()
+    }
+
     async load() {
       this.packetTotal = await GetRedPacket.getTotalRedpacket()
       if (this.packetTotal.error === 0) {
@@ -103,6 +127,13 @@
         }
       }
       this.loaded()
+    }
+
+    events = {
+      'isPhoneOk': () => {
+        this.isPhone = 1
+        this.$apply()
+      }
     }
   }
 </script>

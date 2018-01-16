@@ -13,24 +13,24 @@
     </view>
     <view class="desc-wrapper">
       <view class="description">
-        <view class="name">{{coupon.title}}</view>
-        <view class="limit">{{coupon.stock === -1 ? '不限量' : '限量' + coupon.stock + '件'}}</view>
+        <view class="name">{{coupon.title ? coupon.title : ''}}</view>
+        <view class="limit">{{coupon.stock ? coupon.stock === -1 ? '不限量' : '限量' + coupon.stock + '件' : ''}}</view>
         <view class="price-wrapper">
           <view class="price">
             <text class="rmb">¥</text>
-            <text class="number">{{coupon.platform_price}}</text>
+            <text class="number">{{coupon.platform_price ? coupon.platform_price : ''}}</text>
           </view>
-          <view class="origin-price">门市价:￥{{coupon.shop_price}}</view>
+          <view class="origin-price">门市价:￥{{coupon.shop_price ? coupon.shop_price : ''}}</view>
           <view class="buy-number">
-            <image class="icon" src="http://jike-file.jerryf.cn/defaults/c-image/recommend/icon-many.png"></image>
-            <text class="font">{{coupon.collected}}人已购买</text>
+            <image class="icon" wx:if="{{imageUri}}" src="{{imageUri + '/defaults/c-image/recommend/icon-many.png'}}"></image>
+            <text class="font">{{coupon.collected ? coupon.collected : ''}}人已购买</text>
           </view>
         </view>
       </view>
       <view class="share-wrapper">
         <view class="share-btn" @tap="showShareModal">
-          <image src="http://jike-file.jerryf.cn/defaults/c-image/recommend/pic-r_share3@2x.png" class="share-img" wx:if="{{!coupon.activity_share}}"></image>
-          <image src="http://jike-file.jerryf.cn/defaults/c-image/recommend/pic-r_share2@2x.png" class="share-img" wx:if="{{coupon.activity_share}}"></image>
+          <image src="{{imageUri + '/defaults/c-image/recommend/pic-r_share3@2x.png'}}" class="share-img" wx:if="{{imageUri && !coupon.activity_share}}"></image>
+          <image src="{{imageUri + '/defaults/c-image/recommend/pic-r_share2@2x.png'}}" class="share-img" wx:if="{{imageUri && coupon.activity_share}}"></image>
           <view class="share-txt" wx:if="{{coupon.activity_share}}">分享有礼</view>
         </view>
       </view>
@@ -55,12 +55,12 @@
     <view class="buy-button-wrapper border-top-1px">
       <view class="button-group">
         <view class="collect border-right-1px" @tap="postOrder('collect')">
-          <image wx:if="{{!isFavorite}}" class="icon" src="http://jike-file.jerryf.cn/defaults/c-image/recommend/icon-collection_1.png"></image>
-          <image wx:if="{{isFavorite}}" class="icon" src="http://jike-file.jerryf.cn/defaults/c-image/recommend/icon-collection_2.png"></image>
+          <image wx:if="{{imageUri && !isFavorite}}" class="icon" src="{{imageUri + '/defaults/c-image/recommend/icon-collection_1.png'}}"></image>
+          <image wx:if="{{imageUri && isFavorite}}" class="icon" src="{{imageUri + '/defaults/c-image/recommend/icon-collection_2.png'}}"></image>
           收藏
         </view>
         <view class="customer-service">
-          <image class="icon" src="http://jike-file.jerryf.cn/defaults/c-image/recommend/icon-my_service.png"></image>
+          <image class="icon" wx:if="{{imageUri}}" src="{{imageUri + '/defaults/c-image/recommend/icon-my_service.png'}}"></image>
           客服
         </view>
       </view>
@@ -104,6 +104,7 @@
   import BaseModal from '@/base/base-modal/base-modal'
   import Shares from 'api/share'
   import PostOrder from '@/base/post-order/post-order'
+  import URIS from 'common/js/config'
 
   const COUPON_TYPE = 1
   const PACKAGE_TYPE = 2
@@ -112,6 +113,7 @@
     mixins = [users, base]
 
     data = {
+      imageUri: URIS.image,
       type: 0,
       id: '',
       currentPage: '',
@@ -129,12 +131,13 @@
     }
 
     onShareAppMessage(res) {
+      const user = this.$parent.globalData.user
       if (res.from === 'button') {
         // 来自页面内转发按钮
 //        console.log(res.target)
       }
       return {
-        title: '优惠券',
+        title: user.nickName + '邀请你购买优惠券',
         path: this.currentPage,
         success: async () => {
           // 转发成功
@@ -410,7 +413,7 @@
           width: 2px
           height: 14px
           background: $color-orange
-          margin-right: 8px
+          margin-right: 5px
     .buy-button-wrapper
       position: fixed
       bottom: 0
@@ -430,8 +433,8 @@
           align-items: center
           justify-content: center
           .icon
-            width: 15px
-            height: 14px
+            width: 16px
+            height: 16px
             margin-bottom: 3px
         .customer-service
           flex: 1
