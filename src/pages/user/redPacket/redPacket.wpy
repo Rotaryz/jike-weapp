@@ -31,6 +31,7 @@
 
         <view class="myRedPacket-list-item-num"><text class="myRedPacket-list-item-num-money">{{item.price}}</text>元</view>
       </view>
+      <Underline></Underline>
     </scroll-view>
 
     <view class="myRedPacket-noList" wx:if="{{packetList.length===0}}">
@@ -49,6 +50,7 @@
   import Toast from '@/base/toast/toast'
   import URIS from 'common/js/config'
   import {ERR_OK} from '@/api/base'
+  import Underline from '@/base/underline-block/underline-block'
 
   export default class RedPacket extends wepy.page {
     mixins = [base]
@@ -61,7 +63,8 @@
     }
 
     components = {
-      Toast
+      Toast,
+      Underline
     }
 
     data = {
@@ -87,6 +90,7 @@
           let res = Json.data
           if (res.length === 0) {
             this.nothingAdd = true
+            this.$invoke('Underline', 'show')
           }
           this.packetList.push(...res)
           this.LowerLoading = false

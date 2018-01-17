@@ -36,6 +36,7 @@
           <image class="exChange-img" src="{{imageUrlHead + '/defaults/c-image/mine/pic-m_certificate@2x.png'}}" wx:if="{{item.promotionType==='exchange' && imageUrlHead}}"></image>
         </view>
       </view>
+      <Underline></Underline>
     </scroll-view>
 
     <Toast></Toast>
@@ -50,6 +51,7 @@
   import Toast from '@/base/toast/toast'
   import URIS from 'common/js/config'
   import {ERR_OK} from '@/api/base'
+  import Underline from '@/base/underline-block/underline-block'
 
   export default class MyCoupon extends wepy.page {
     mixins = [base]
@@ -59,7 +61,8 @@
     }
 
     components = {
-      Toast
+      Toast,
+      Underline
     }
 
     data = {
@@ -82,6 +85,7 @@
         }
         this.page = 1
         this.nothingAdd = false
+        this.$invoke('Underline', 'hide')
         this.couponList = this._computed(resList.data)
         this.$apply()
         this.loaded()
@@ -96,6 +100,7 @@
           }
           if (res.data.length === 0) {
             this.nothingAdd = true
+            this.$invoke('Underline', 'show')
           }
           let resArr = this._computed(res.data)
           this.couponList.push(...resArr)
