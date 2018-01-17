@@ -91,7 +91,6 @@
           this.packetList.push(...res)
           this.LowerLoading = false
           this.$apply()
-
         } else if (this.nothingAdd) {
           // 到底
         }

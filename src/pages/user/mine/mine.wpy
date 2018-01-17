@@ -70,7 +70,6 @@
   import PhoneTest from '@/base/phoneTest/phoneTest'
   import PhoneTestHint from '@/base/phoneTestHint/phoneTestHint'
   import URIS from 'common/js/config'
-  import {ERR_OK} from '@/api/base'
 
   export default class Mine extends wepy.page {
     mixins = [users, base]
