@@ -68,7 +68,7 @@
           </repeat>
         </view>
         <view class="discover-panel" style="display: {{activeTab === '2' ? 'block':''}}">
-          <navigator url="/pages/content-detail/content-detail?id={{item.id}}" class="ticky-wrapper"
+          <navigator url="/pages/content-detail/content-detail?id={{item.id}}&currentMerchant={{item.merchant_id}}" class="ticky-wrapper"
                      wx:for="{{contents}}" wx:key="unique">
             <view class="ticky">
               <image src="{{item.image_url}}" class="full-image"></image>
@@ -145,17 +145,22 @@
       moreContent: true
     }
 
-    onReachBottom() {
+    async onReachBottom() {
       if (this.activeTab === COUPON_TAB && this.moreCoupon) {
-        this._getCouponList()
+        await this._getCouponList()
       } else if (this.activeTab === DISCOVER_TAB && this.moreContent) {
-        this._getMerchantContents()
+        await this._getMerchantContents()
       }
     }
 
     async onShow() {
       await this.load()
       this.$invoke('Slider', 'init', this.shopImages.length)
+      if (this.activeTab === DISCOVER_TAB) {
+        this.contents = []
+        this.contentPage = 0
+        await this._getMerchantContents()
+      }
     }
 
     onHide() {

@@ -133,15 +133,16 @@
             const total = this.total
             const status = 'success'
             this.$parent.$navigate(`/pages/pay-result/pay-result?orderId=${orderId}&total=${total}&status=${status}`)
+            this._hide()
           },
           fail: () => {
-            const orderId = res.order_id
-            const total = this.total
-            const status = 'fail'
-            this.$parent.$navigate(`/pages/pay-result/pay-result?orderId=${orderId}&total=${total}&status=${status}`)
+//            const orderId = res.order_id
+//            const total = this.total
+//            const status = 'fail'
+//            this.$parent.$navigate(`/pages/pay-result/pay-result?orderId=${orderId}&total=${total}&status=${status}`)
           },
           complete: () => {
-            this._hide()
+//            this._hide()
           }
         })
       },
