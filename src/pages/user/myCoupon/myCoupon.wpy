@@ -49,6 +49,7 @@
   import myCoupon from '@/api/coupon'
   import Toast from '@/base/toast/toast'
   import URIS from 'common/js/config'
+  import {ERR_OK} from '@/api/base'
 
   export default class MyCoupon extends wepy.page {
     mixins = [base]
@@ -76,12 +77,12 @@
         this.menuIdx = idx
         this.couponList = []
         let resList = await this._getCouponList(this.menuIdx, 1)
-        if (resList.error === 0) {
-          resList = []
+        if (resList.error !== ERR_OK) {
+          return
         }
         this.page = 1
         this.nothingAdd = false
-        this.couponList = this._computed(resList)
+        this.couponList = this._computed(resList.data)
         this.$apply()
         this.loaded()
       },
@@ -90,13 +91,13 @@
           this.LowerLoading = true
           this.page++
           let res = await this._getCouponList(this.menuIdx, this.page)
-          if (res.error === 0) {
-            res = []
+          if (res.error !== ERR_OK) {
+            return
           }
-          if (res.length === 0) {
+          if (res.data.length === 0) {
             this.nothingAdd = true
           }
-          let resArr = this._computed(res)
+          let resArr = this._computed(res.data)
           this.couponList.push(...resArr)
           this.LowerLoading = false
           this.$apply()
@@ -132,11 +133,13 @@
 
     async load() {
       let resList = await this._getCouponList(this.menuIdx, 1)
-      if (resList.error === 0) {
-        resList = []
+      if (resList.error !== ERR_OK) {
+        this.loaded()
+        return
       }
-      this.couponList = this._computed(resList)
+      this.couponList = this._computed(resList.data)
       this.loaded()
+      this.$apply()
     }
 
     async _getCouponList(idx, page) {

@@ -55,6 +55,7 @@
   import Tips from '@/common/js/tips'
   import Toast from '@/base/toast/toast'
   import URIS from 'common/js/config'
+  import {ERR_OK} from '@/api/base'
 
   export default class MyCenter extends wepy.page {
     mixins = [users, base]
@@ -102,13 +103,17 @@
         Tips.success('修改成功')
         return true
       } else {
-        this.$invoke('Toast', 'show', '修改失败')
+        this.$invoke('Toast', 'show', res.message)
         return false
       }
     }
 
     async _updataUser() {
-      await this.$getUserInfo()
+      let res = await this.$getUserInfo()
+      if (res.error !== ERR_OK) {
+        this.loaded()
+        return
+      }
       this.userInfo = this.$parent.globalData.user
       this.avatar = this.userInfo.avatarUrl
       this.birth = this.userInfo.birth
@@ -153,10 +158,10 @@
       async updateAvatarImg() {
         const res = await user.updateAvatar('image_id')
         this.loaded()
-        if (res.error === 0) {
+        if (res.error === ERR_OK) {
           Tips.success('修改成功')
         } else {
-          this.$invoke('Toast', 'show', '修改失败')
+          this.$invoke('Toast', 'show', res.message)
           return false
         }
         this.avatar = res.data

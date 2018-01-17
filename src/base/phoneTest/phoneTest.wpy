@@ -48,6 +48,7 @@
   import user from 'api/user'
   import Toast from '@/base/toast/toast'
   import URIS from 'common/js/config'
+  import {ERR_OK} from '@/api/base'
 
   export default class PhoneTest extends wepy.component {
     mixins = [users, base]
@@ -119,16 +120,14 @@
         var reg = /^1[3|4|5|7|8][0-9]{9}$/
         var self = this
         if (reg.test(self.phoneNum) && !self.phoneCodeDisabled) {
-          let jkToken = await this.$getToken()
           self.phoneCodeTime = '发送中···'
           let data = {
-            jk_token: jkToken,
             mobile: self.phoneNum
           }
           let phoneCode = await this._getPhoneCode(data)
           this.loaded()
-          if (phoneCode.error !== 0) {
-            this.$invoke('Toast', 'show', '获取验证码失败')
+          if (phoneCode.error !== ERR_OK) {
+            this.$invoke('Toast', 'show', phoneCode.message)
             this.phoneCodeTime = '获取验证码'
             this.$apply()
             return
@@ -171,7 +170,7 @@
             resData = await this._bindPhone(data)
           }
           this.loaded()
-          if (resData.error === 0) {
+          if (resData.error === ERR_OK) {
             self.phoneTestCover = false
             self.$apply()
             tips.success(tipsMsg + '成功')
@@ -179,7 +178,7 @@
               self.$emit('isPhoneOk')
             }, 500)
           } else {
-            this.$invoke('Toast', 'show', tipsMsg + '失败')
+            this.$invoke('Toast', 'show', resData.message)
           }
         }
       }

@@ -86,6 +86,7 @@
   import base from 'common/mixins/base'
   import getShare from '@/api/share'
   import URIS from 'common/js/config'
+  import {ERR_OK} from '@/api/base'
 
   export default class ShareAndPrize extends wepy.page {
     mixins = [base]
@@ -103,11 +104,12 @@
     methods = {
       async showCover() {
         let res = await getShare.getShareAndPrizeDetail()
-        if (res.error === 0) {
-          res = {}
+        if (res.error !== ERR_OK) {
+          this.loaded()
+          return
         }
         this.loaded()
-        this.shareDetail = res
+        this.shareDetail = res.data
         this.coverShow = true
         this.$apply()
       },

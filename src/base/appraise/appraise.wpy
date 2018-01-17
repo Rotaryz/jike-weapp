@@ -43,6 +43,7 @@
   import getMyOrder from '@/api/myOrder'
   import Toast from '@/base/toast/toast'
   import URIS from 'common/js/config'
+  import {ERR_OK} from '@/api/base'
 
   export default class appraise extends wepy.component {
     mixins = [base]
@@ -138,12 +139,12 @@
         }
         let res = await getMyOrder.setAppraise(data)
         this.loaded()
-        if (res.status === 'success') {
+        if (res.error === ERR_OK) {
           this.appraiseSuccess = true
           this.$emit('appraiseSuccess')
           this.$apply()
         } else {
-          this.$invoke('Toast', 'show', '评价失败')
+          this.$invoke('Toast', 'show', res.message)
         }
       }
     }
