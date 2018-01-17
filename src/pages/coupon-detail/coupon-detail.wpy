@@ -22,15 +22,18 @@
           </view>
           <view class="origin-price">门市价:￥{{coupon.shop_price ? coupon.shop_price : ''}}</view>
           <view class="buy-number">
-            <image class="icon" wx:if="{{imageUri}}" src="{{imageUri + '/defaults/c-image/recommend/icon-many.png'}}"></image>
+            <image class="icon" wx:if="{{imageUri}}"
+                   src="{{imageUri + '/defaults/c-image/recommend/icon-many.png'}}"></image>
             <text class="font">{{coupon.collected ? coupon.collected : ''}}人已购买</text>
           </view>
         </view>
       </view>
       <view class="share-wrapper">
         <view class="share-btn" @tap="showShareModal">
-          <image src="{{imageUri + '/defaults/c-image/recommend/pic-r_share3@2x.png'}}" class="share-img" wx:if="{{imageUri && !coupon.activity_share}}"></image>
-          <image src="{{imageUri + '/defaults/c-image/recommend/pic-r_share2@2x.png'}}" class="share-img" wx:if="{{imageUri && coupon.activity_share}}"></image>
+          <image src="{{imageUri + '/defaults/c-image/recommend/pic-r_share3@2x.png'}}" class="share-img"
+                 wx:if="{{imageUri && !coupon.activity_share}}"></image>
+          <image src="{{imageUri + '/defaults/c-image/recommend/pic-r_share2@2x.png'}}" class="share-img"
+                 wx:if="{{imageUri && coupon.activity_share}}"></image>
           <view class="share-txt" wx:if="{{coupon.activity_share}}">分享有礼</view>
         </view>
       </view>
@@ -54,25 +57,31 @@
     </view>
     <view class="buy-button-wrapper border-top-1px">
       <view class="button-group">
-        <view class="collect border-right-1px" @tap="postOrder('collect')">
-          <image wx:if="{{imageUri && !isFavorite}}" class="icon" src="{{imageUri + '/defaults/c-image/recommend/icon-collection_1.png'}}"></image>
-          <image wx:if="{{imageUri && isFavorite}}" class="icon" src="{{imageUri + '/defaults/c-image/recommend/icon-collection_2.png'}}"></image>
+        <view class="collect border-right-1px" @tap="collectToggle">
+          <image wx:if="{{imageUri && !isFavorite}}" class="icon"
+                 src="{{imageUri + '/defaults/c-image/recommend/icon-collection_1.png'}}"></image>
+          <image wx:if="{{imageUri && isFavorite}}" class="icon"
+                 src="{{imageUri + '/defaults/c-image/recommend/icon-collection_2.png'}}"></image>
           收藏
         </view>
         <view class="customer-service">
-          <image class="icon" wx:if="{{imageUri}}" src="{{imageUri + '/defaults/c-image/recommend/icon-my_service.png'}}"></image>
+          <image class="icon" wx:if="{{imageUri}}"
+                 src="{{imageUri + '/defaults/c-image/recommend/icon-my_service.png'}}"></image>
           客服
         </view>
       </view>
-      <view class="buy-btn" @tap="postOrder('pay')">立即购买</view>
+      <view class="buy-btn" @tap="postOrder">立即购买</view>
     </view>
     <phone-test @isPhoneOk.user="getSymbol"></phone-test>
-    <share :qrcode.sync="qrcode" :detail.sync="coupon" :promotionImages.sync="promotionImages" @sharePunchLine.user="sharePunchLine"></share>
+    <share :qrcode.sync="qrcode" :detail.sync="coupon" :promotionImages.sync="promotionImages"
+           @sharePunchLine.user="sharePunchLine"></share>
     <share-modal>
       <view slot="content" class="base-modal-content">
         <view class="header-wrapper">
           <view class="title">现金红包</view>
-          <view class="cash">{{sharePrice}}<text class="yuan">元</text></view>
+          <view class="cash">{{sharePrice}}
+            <text class="yuan">元</text>
+          </view>
         </view>
         <view class="content">
           <view class="text">现金已经存放入您的账户</view>
@@ -84,7 +93,8 @@
         </view>
       </view>
     </share-modal>
-    <post-order :orderInfo.sync="orderInfo"></post-order>
+    <post-order :orderInfo.sync="orderInfo" @throw.user="postOrderFail"></post-order>
+    <toast></toast>
   </scroll-view>
 </template>
 
@@ -93,6 +103,7 @@
   import users from 'common/mixins/users'
   import base from 'common/mixins/base'
   import Slider from '@/base/slider/slider'
+  import {ERR_OK} from 'api/base'
   import CouponApi from 'api/coupon'
   import Info from 'api/info'
   import Coupon from '@/base/coupon/coupon'
@@ -104,6 +115,7 @@
   import BaseModal from '@/base/base-modal/base-modal'
   import Shares from 'api/share'
   import PostOrder from '@/base/post-order/post-order'
+  import Toast from '@/base/toast/toast'
   import URIS from 'common/js/config'
 
   const COUPON_TYPE = 1
@@ -174,19 +186,26 @@
       if (!this.coupon.activity_share) {
         return
       }
-      const res = await Shares.getSharePrize()
+      const json = await Shares.getSharePrize()
       this.loaded()
+      if (json.error !== ERR_OK) {
+        return
+      }
+      const res = json.data
       if (res.length === 0) {
         return
       }
       this.sharePrice = res.price
-      this.$invoke('share-modal', 'show')
       this.$apply()
+      this.$invoke('share-modal', 'show')
     }
 
     async _createQrcode() {
       const res = await Info.createQrode({path: this.currentPage})
-      this.qrcode = res.image_url
+      if (res.error === ERR_OK) {
+        const data = res.data
+        this.qrcode = data.image_url
+      }
     }
 
     async _getUserInfo() {
@@ -194,40 +213,46 @@
     }
 
     async _getCouponDetail() {
-      const data = await CouponApi.getShopCouponDetail(this.id)
-      wepy.setNavigationBarTitle({title: data.title})
-      this.promotionImages = data.promotion_images
-      data.platform_price = Math.floor(data.platform_price)
-      data.shop_price = Math.floor(data.shop_price)
-      this.coupon = data
-      this.services = data.detail
-      this.note = data.note
-      this.isFavorite = data.is_favorite
-      this.$apply()
+      const res = await CouponApi.getShopCouponDetail(this.id)
+      if (res.error === ERR_OK) {
+        const data = res.data
+        wepy.setNavigationBarTitle({title: data.title})
+        this.promotionImages = data.promotion_images
+        data.platform_price = Math.floor(data.platform_price)
+        data.shop_price = Math.floor(data.shop_price)
+        this.coupon = data
+        this.services = data.detail
+        this.note = data.note
+        this.isFavorite = data.is_favorite
+        this.$apply()
+      }
     }
 
     async _getPackageDetail() {
-      const data = await CouponApi.getPackageDetail(this.id)
-      wepy.setNavigationBarTitle({title: data.title})
-      data.platform_price = Math.floor(data.platform_price)
-      data.shop_price = Math.floor(data.shop_price)
-      this.coupon = data
-      this.note = data.note
-      this.promotionImages = data.gift_bag_images
-      this.isFavorite = data.is_favorite
-      this.promotions = data.gift_bag_details.map((item) => {
-        return new CouponFactory({
-          id: item.promotion.id,
-          title: item.promotion.title,
-          platform_price: item.promotion.platform_price,
-          promotion_type: item.promotion.promotion_type,
-          end_at: item.promotion.end_at,
-          not_allow_time: item.promotion.not_allow_time,
-          shop_logo: item.merchant_data.logo_image,
-          shop_name: item.merchant_data.shop_name
+      const res = await CouponApi.getPackageDetail(this.id)
+      if (res.error === ERR_OK) {
+        const data = res.data
+        wepy.setNavigationBarTitle({title: data.title})
+        data.platform_price = Math.floor(data.platform_price)
+        data.shop_price = Math.floor(data.shop_price)
+        this.coupon = data
+        this.note = data.note
+        this.promotionImages = data.gift_bag_images
+        this.isFavorite = data.is_favorite
+        this.promotions = data.gift_bag_details.map((item) => {
+          return new CouponFactory({
+            id: item.promotion.id,
+            title: item.promotion.title,
+            platform_price: item.promotion.platform_price,
+            promotion_type: item.promotion.promotion_type,
+            end_at: item.promotion.end_at,
+            not_allow_time: item.promotion.not_allow_time,
+            shop_logo: item.merchant_data.logo_image,
+            shop_name: item.merchant_data.shop_name
+          })
         })
-      })
-      this.$apply()
+        this.$apply()
+      }
     }
 
     submit() {
@@ -245,27 +270,6 @@
       this.$invoke('post-order', 'show')
     }
 
-    async collectToggle() {
-      if (this.type === COUPON_TYPE) {
-        if (this.isFavorite) {
-//            取消收藏
-          await CouponApi.cancelStoreCoupon(this.id)
-        } else {
-          await CouponApi.storeCoupon(this.id)
-        }
-        await this._getCouponDetail()
-      } else {
-        if (this.isFavorite) {
-//            取消收藏
-          await CouponApi.cancelStorePackage(this.id)
-        } else {
-          await CouponApi.storePackage(this.id)
-        }
-        await this._getPackageDetail()
-      }
-      this.loaded()
-    }
-
     methods = {
       showShareModal() {
         this.$invoke('share', 'show')
@@ -273,28 +277,44 @@
       async sharePunchLine() {
         await this._getSharePrize()
       },
+      async collectToggle() {
+        if (this.type === COUPON_TYPE) {
+          if (this.isFavorite) {
+//            取消收藏
+            await CouponApi.cancelStoreCoupon(this.id)
+          } else {
+            await CouponApi.storeCoupon(this.id)
+          }
+          await this._getCouponDetail()
+        } else {
+          if (this.isFavorite) {
+//            取消收藏
+            await CouponApi.cancelStorePackage(this.id)
+          } else {
+            await CouponApi.storePackage(this.id)
+          }
+          await this._getPackageDetail()
+        }
+        this.loaded()
+      },
       async getSymbol() {
         const isAuthorise = await this.isAuthorise()
         this.loaded()
         if (isAuthorise) {
-          await this.submit()
+          this.submit()
         }
       },
-      async postOrder(type) {
+      async postOrder() {
         const isAuthorise = await this.isAuthorise()
         this.loaded()
         if (!isAuthorise) {
           this.$invoke('phone-test', 'show')
           return
         }
-        switch (type) {
-          case 'pay':
-            this.submit()
-            break
-          case 'collect':
-            this.collectToggle()
-            break
-        }
+        this.submit()
+      },
+      postOrderFail(message) {
+        this.$invoke('toast', message || '网络错误...')
       }
     }
 
@@ -306,7 +326,8 @@
       'coupon': Coupon,
       'share': Share,
       'share-modal': BaseModal,
-      'post-order': PostOrder
+      'post-order': PostOrder,
+      'toast': Toast
     }
 
     config = {

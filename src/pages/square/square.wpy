@@ -112,6 +112,7 @@
   import wepy from 'wepy'
   import users from 'common/mixins/users'
   import base from 'common/mixins/base'
+  import {ERR_OK} from 'api/base'
   import Merchants from 'api/merchants'
   import QQMap from 'common/libs/qqmap-jssdk'
   import URIS from 'common/js/config'
@@ -212,40 +213,43 @@
     }
 
     async _getPlazaMerchants() {
-      const res = await Merchants.getPlazaMerchants()
-      this.merchants = res
-      res.forEach((item) => {
-        if (item.current_merchant) {
-          this.longitude = item.longitude
-          this.latitude = item.latitude + 0.009
-          this.$apply()
+      const json = await Merchants.getPlazaMerchants()
+      if (json.error === ERR_OK) {
+        const res = json.data
+        this.merchants = res
+        res.forEach((item) => {
+          if (item.current_merchant) {
+            this.longitude = item.longitude
+            this.latitude = item.latitude + 0.009
+            this.$apply()
+          }
+        })
+        const markers = res.map((item) => {
+          return {
+            iconPath: `./icon-s_${item.industry.code_name}@2x.png`,
+            id: item.id,
+            latitude: item.latitude,
+            longitude: item.longitude,
+            width: 32,
+            height: 34,
+            hasActivity: item.has_activity
+          }
+        })
+        this.markers = [...this.markers, ...markers]
+        this._setIncludePoints(this.markers)
+        if (markers.length === 1) {
+          this.bigMarkerIndex = 1
+          this._setPolyline(markers[0].id)
+          this._scaleMarker(1)
+          await this._getMerchantDetail(res[0].merchant_id)
+          setTimeout(() => {
+            this.showSlide = true
+            this.$apply()
+          }, 3000)
         }
-      })
-      const markers = res.map((item) => {
-        return {
-          iconPath: `./icon-s_${item.industry.code_name}@2x.png`,
-          id: item.id,
-          latitude: item.latitude,
-          longitude: item.longitude,
-          width: 32,
-          height: 34,
-          hasActivity: item.has_activity
-        }
-      })
-      this.markers = [...this.markers, ...markers]
-      this._setIncludePoints(this.markers)
-      if (markers.length === 1) {
-        this.bigMarkerIndex = 1
-        this._setPolyline(markers[0].id)
-        this._scaleMarker(1)
-        await this._getMerchantDetail(res[0].merchant_id)
-        setTimeout(() => {
-          this.showSlide = true
-          this.$apply()
-        }, 3000)
+        this._setIncludePoints([])
+        this.$apply()
       }
-      this._setIncludePoints([])
-      this.$apply()
     }
 
     _setIncludePoints(points) {
@@ -280,16 +284,19 @@
     }
 
     async _getMerchantDetail(id) {
-      const res = await Merchants.getMerchantsDetail(id)
-      this.currentMerchant = res
-      this.promotions = res.promotions
-      const starLevel = res.star_level === '0.0' ? 5 : res.star_level
-      this.stars = new Array(Math.floor(starLevel))
-      this.$apply()
-      this.loaded()
-      this._setTips()
-      this._caculateDistance()
-      this._setTipInterval()
+      const json = await Merchants.getMerchantsDetail(id)
+      if (json.error === ERR_OK) {
+        const res = json.data
+        this.currentMerchant = res
+        this.promotions = res.promotions
+        const starLevel = res.star_level === '0.0' ? 5 : res.star_level
+        this.stars = new Array(Math.floor(starLevel))
+        this.$apply()
+        this.loaded()
+        this._setTips()
+        this._caculateDistance()
+        this._setTipInterval()
+      }
     }
 
     _setTips() {
@@ -454,9 +461,8 @@
     // 分享
     onShareAppMessage() {
       return {
-        title: '国颐堂（黄石店）',
-        path: '/page/user?id=123',
-        imageUrl: ''
+        title: '广场',
+        path: '/pages/square/square'
       }
     }
 

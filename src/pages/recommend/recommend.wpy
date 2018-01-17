@@ -122,6 +122,7 @@
   import Coupon from '@/base/coupon/coupon'
   import Toast from '@/base/toast/toast'
 //  import PhoneTest from '@/base/phoneTest/phoneTest'
+  import {ERR_OK} from 'api/base'
   import CouponApi from 'api/coupon'
   import ContentsApi from 'api/contents'
   import Giftbag from '@/base/giftbag/giftbag'
@@ -186,28 +187,34 @@
     }
 
     async _getShopCouponList() {
-      const data = await CouponApi.getShopCouponList(this.merchantId)
-      this.shopImages = this._checkPropety(data.merchant_data.shop_image)
-      this.couponList = data.promotions
-      this.giftBags = data.gift_bags
-      this.activities = data.activities || {}
-      if (this.couponList.length === 0 && this.giftBags.length === 0) {
-        this.couponNothing = true
-      } else {
-        this.couponNothing = false
+      const res = await CouponApi.getShopCouponList(this.merchantId)
+      if (res.error === ERR_OK) {
+        const data = res.data
+        this.shopImages = this._checkPropety(data.merchant_data.shop_image)
+        this.couponList = data.promotions
+        this.giftBags = data.gift_bags
+        this.activities = data.activities || {}
+        if (this.couponList.length === 0 && this.giftBags.length === 0) {
+          this.couponNothing = true
+        } else {
+          this.couponNothing = false
+        }
+        this.$apply()
       }
-      this.$apply()
     }
 
     async _getCouponList() {
       this.couponPage += 1
       const res = await CouponApi.getShopCouponList(this.merchantId, {page: this.couponPage})
-      if (res.promotions.length === 0) {
-        this.moreCoupon = false
-      } else {
-        this.couponList = [...this.couponList, ...res.promotions]
+      if (res.error === ERR_OK) {
+        const data = res.data
+        if (data.promotions.length === 0) {
+          this.moreCoupon = false
+        } else {
+          this.couponList = [...this.couponList, ...data.promotions]
+        }
+        this.$apply()
       }
-      this.$apply()
       this.loaded()
     }
 
@@ -219,18 +226,21 @@
       if (this.$parent.globalData.merchantId) {
         params.current_merchant = this.$parent.globalData.merchantId
       }
-      const data = await ContentsApi.getMerchantContents(params)
-      if (data.length === 0) {
-        this.moreContent = false
-      } else {
-        this.contents = [...this.contents, ...data]
+      const res = await ContentsApi.getMerchantContents(params)
+      if (res.error === ERR_OK) {
+        const data = res.data
+        if (data.length === 0) {
+          this.moreContent = false
+        } else {
+          this.contents = [...this.contents, ...data]
+        }
+        if (this.contents.length > 0) {
+          this.contentNothing = false
+        } else {
+          this.contentNothing = true
+        }
+        this.$apply()
       }
-      if (this.contents.length > 0) {
-        this.contentNothing = false
-      } else {
-        this.contentNothing = true
-      }
-      this.$apply()
       this.loaded()
     }
 
