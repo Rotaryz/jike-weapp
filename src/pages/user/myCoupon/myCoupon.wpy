@@ -13,7 +13,7 @@
     </view>
 
     <scroll-view scroll-y class="{{menuIdx===0?'myCoupon-couponList':'myCoupon-couponList-ccc'}}" bindscrolltolower="couponLower" wx:if="{{couponList.length>0}}">
-      <view class="myCoupon-couponList-item" wx:for="{{couponList}}" wx:key="{{index}}" @tap="couponDetail({{item.id}},{{item.promotionType}},{{item.codeId}})">
+      <view class="myCoupon-couponList-item" wx:for="{{couponList}}" wx:key="{{index}}" @tap="couponDetail({{item.id}},{{item.promotionType}},{{item.codeId}},{{item.merchantId}})">
         <view class="couponList-item-head-container">
           <image class="coupon-bc" wx:if="{{imageUrlHead}}" src="{{imageUrlHead + '/defaults/c-image/mine/pic-couponbg@2x.png'}}"></image>
           <view class="couponList-item-head-left">
@@ -111,13 +111,13 @@
       toRecommend() {
         wx.switchTab({url: '/pages/recommend/recommend'})
       },
-      couponDetail(id, type, codeId) {
+      couponDetail(id, type, codeId, merchantId) {
         if (this.menuIdx === 0) {
           if (type === 'exchange') {
             this.$navigate('/pages/coupon-use/couponUse?type=' + type + '&id=' + codeId)
             return
           }
-          this.$navigate('/pages/coupon-detail/coupon-detail?type=1&id=' + id)
+          this.$navigate('/pages/coupon-detail/coupon-detail?type=1&id=' + id + '&currentMerchant=' + merchantId)
         }
       }
     }
@@ -159,7 +159,8 @@
           codeId: item.id,
           type: item.gift_bag_id,
           promotionType: item.promotion.promotion_type,
-          imageUrl: item.promotion.promotion_img || ''
+          imageUrl: item.promotion.promotion_img || '',
+          merchantId: item.merchant_id
         }
       })
     }

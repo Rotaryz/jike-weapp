@@ -13,7 +13,7 @@
     </view>
 
     <scroll-view scroll-y class="mySelect-couponList" bindscrolltolower="couponLower" wx:if="{{couponList.length>0}}">
-      <view class="mySelect-couponList-item" wx:for="{{couponList}}" wx:key="{{index}}" @tap="couponDetail({{item.id}})">
+      <view class="mySelect-couponList-item" wx:for="{{couponList}}" wx:key="{{index}}" @tap="couponDetail({{item.id}}, {{item.merchantId}})">
         <view class="couponList-item-head-container">
           <image class="coupon-bc" wx:if="{{imageUrlHead}}" src="{{imageUrlHead + '/defaults/c-image/mine/pic-couponbg@2x.png'}}"></image>
           <view class="couponList-item-head-left">
@@ -35,13 +35,13 @@
     </scroll-view>
 
     <scroll-view scroll-y class="mySelect-contentList" bindscrolltolower="contentLower" wx:if="{{contentList.length > 0}}">
-      <view class="mySelect-contentList-item" wx:for="{{contentList}}" wx:key="{{index}}" @tap="contentDetail({{item.content.id}})">
-        <image src="{{item.content.image.url}}" class="mySelect-contentList-item-contentImg"></image>
+      <view class="mySelect-contentList-item" wx:for="{{contentList}}" wx:key="{{index}}" @tap="contentDetail({{item.content_id}}, {{item.merchant_id}})">
+        <image src="{{item.content.image_url}}" class="mySelect-contentList-item-contentImg"></image>
         <view class="mySelect-contentList-Msg">
           <view class="mySelect-contentList-Msg-left">
-            <view class="mySelect-contentList-Msg-left-avatarBox" wx:for="{{item.content.customer_content_favorite}}" wx:key="{{item}}">
+            <view class="mySelect-contentList-Msg-left-avatarBox" wx:for="{{item.content.customer_images}}" wx:key="{{item}}">
               <view class="mySelect-contentList-avatarBox-item">
-                <image class="mySelect-contentList-avatarBox-img" src="{{item.wechat_data.avatar_url}}"></image>
+                <image class="mySelect-contentList-avatarBox-img" src="{{item}}"></image>
               </view>
             </view>
             <view class="dot-box" wx:if="{{item.content.favorite_count>5}}">
@@ -68,7 +68,7 @@
 
     <scroll-view scroll-y class="mySelect-kacList" bindscrolltolower="kacLower" wx:if="{{kacList.length > 0}}">
       <view class="mySelect-couponList-item" wx:for="{{kacList}}" wx:key="{{index}}">
-        <view class="mySelect-couponList-item-main" @tap="kacDetail({{item.gift_bag_id}})">
+        <view class="mySelect-couponList-item-main" @tap="kacDetail({{item.gift_bag_id}},{{item.merchant_id}})">
           <view class="couponList-item-head-container">
             <image class="coupon-bc" wx:if="{{imageUrlHead}}" src="{{imageUrlHead + '/defaults/c-image/mine/pic-couponbg@2x.png'}}"></image>
             <view class="couponList-item-head-left">
@@ -241,14 +241,14 @@
       toRecommend() {
         wx.switchTab({url: '/pages/recommend/recommend'})
       },
-      couponDetail(id) {
-        this.$navigate('/pages/coupon-detail/coupon-detail?type=1&id=' + id)
+      couponDetail(id, merchantId) {
+        this.$navigate('/pages/coupon-detail/coupon-detail?type=1&id=' + id + '&currentMerchant=' + merchantId)
       },
-      kacDetail(id) {
-        this.$navigate('/pages/coupon-detail/coupon-detail?type=2&id=' + id)
+      kacDetail(id, merchantId) {
+        this.$navigate('/pages/coupon-detail/coupon-detail?type=2&id=' + id + '&currentMerchant=' + merchantId)
       },
-      contentDetail(id) {
-        this.$navigate('/pages/content-detail/content-detail?id=' + id)
+      contentDetail(id, merchantId) {
+        this.$navigate('/pages/content-detail/content-detail?id=' + id + '&currentMerchant=' + merchantId)
       },
       async select(id, index, select) {
         console.log(id, index, select)
@@ -279,9 +279,6 @@
       showStore(idx) {
         this._checked(this.kacList, idx)
         this.$apply()
-      },
-      toDetail(id) {
-        this.$navigate('/pages/coupon-detail/coupon-detail?type=2&id=' + id)
       }
     }
 
@@ -348,7 +345,8 @@
           title: item.promotion.title,
           endAt: item.promotion.end_at,
           notAllowTime: item.promotion.not_allow_time,
-          id: item.promotion_id
+          id: item.promotion_id,
+          merchantId: item.merchant_id
         }
       })
     }
