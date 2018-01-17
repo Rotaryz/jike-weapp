@@ -43,6 +43,7 @@
   import Toast from '@/base/toast/toast'
   import PhoneTest from '@/base/phoneTest/phoneTest'
   import URIS from 'common/js/config'
+  import {ERR_OK} from '@/api/base'
 
   export default class WithDraw extends wepy.page {
     mixins = [base]
@@ -120,13 +121,13 @@
     }
 
     async load() {
-      this.packetTotal = await GetRedPacket.getTotalRedpacket()
-      if (this.packetTotal.error === 0) {
-        this.packetTotal = {
-          remaining: 0.00
-        }
-      }
+      let Json = await GetRedPacket.getTotalRedpacket()
       this.loaded()
+      if (Json.error !== ERR_OK) {
+        return
+      }
+      this.packetTotal = Json.data
+      this.$apply()
     }
 
     events = {

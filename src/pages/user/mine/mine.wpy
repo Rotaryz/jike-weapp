@@ -143,10 +143,7 @@
     async _getUserInfo() {
       let res = await this.$getUserInfo()
       this.loaded()
-      if (res.error !== ERR_OK) {
-        return
-      }
-      this.userInfo = this.$parent.globalData.user
+      this.userInfo = res
 //      let customerId = wx.getStorageSync('customerId')
 //      if (customerId) {
 //        this.isPhone = 1
@@ -158,6 +155,7 @@
         return
       }
       this.isPhone = 0
+      this.$apply()
     }
 
     methods = {
@@ -180,6 +178,7 @@
       'isPhoneOk': () => {
         this._getUserInfo()
         this.isPhone = 1
+        this.$apply()
       }
     }
   }

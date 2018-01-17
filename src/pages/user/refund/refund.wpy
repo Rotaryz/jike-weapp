@@ -50,6 +50,7 @@
   import base from 'common/mixins/base'
   import getMyOrder from '@/api/myOrder'
   import URIS from 'common/js/config'
+  import {ERR_OK} from '@/api/base'
 
   export default class Refund extends wepy.page {
     mixins = [base]
@@ -74,8 +75,12 @@
 
     async load(id) {
       let resMsg = await getMyOrder.getRefundDetail(id)
-      this.orderMsg = resMsg
       this.loaded()
+      if (resMsg.error !== ERR_OK) {
+        return
+      }
+      this.orderMsg = resMsg.data
+      this.$apply()
     }
   }
 </script>
