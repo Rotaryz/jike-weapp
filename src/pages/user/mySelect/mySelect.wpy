@@ -32,6 +32,7 @@
           </view>
         </view>
       </view>
+      <Underline></Underline>
     </scroll-view>
 
     <scroll-view scroll-y class="mySelect-contentList" bindscrolltolower="contentLower" wx:if="{{contentList.length > 0}}">
@@ -64,6 +65,7 @@
           </view>
         </view>
       </view>
+      <Underline></Underline>
     </scroll-view>
 
     <scroll-view scroll-y class="mySelect-kacList" bindscrolltolower="kacLower" wx:if="{{kacList.length > 0}}">
@@ -99,6 +101,7 @@
           </view>
         </view>
       </view>
+      <Underline></Underline>
     </scroll-view>
   </view>
 </template>
@@ -110,6 +113,7 @@
   import mySelect from '@/api/mySelect'
   import URIS from 'common/js/config'
   import {ERR_OK} from '@/api/base'
+  import Underline from '@/base/underline-block/underline-block'
 
   export default class MySelect extends wepy.page {
     mixins = [base]
@@ -133,12 +137,17 @@
       nothingBoxShow: true
     }
 
+    components = {
+      Underline
+    }
+
     methods = {
       async changeTab(idx) {
         this.menuIdx = idx
         this.contentList = []
         this.kacList = []
         this.couponList = []
+        this.$invoke('Underline', 'hide')
         switch (this.menuIdx) {
           case 0:
             let resList = await this._getCouponList(1)
@@ -192,6 +201,7 @@
             } else {
               this.nothingBoxShow = true
             }
+            this.$apply()
             break
         }
       },
@@ -208,6 +218,7 @@
           let res = Json.data
           if (res.length === 0) {
             this.nothingAdd = true
+            this.$invoke('Underline', 'show')
           }
           let resArr = this._computed(res)
           this.couponList.push(...resArr)
@@ -231,6 +242,7 @@
           let res = Json.data
           if (res.length === 0) {
             this.nothingAdd = true
+            this.$invoke('Underline', 'show')
           }
           this.contentList.push(...res)
           this.LowerLoading = false
@@ -253,6 +265,7 @@
           let res = Json.data
           if (res.length === 0) {
             this.nothingAdd = true
+            this.$invoke('Underline', 'show')
           }
           this.contentList.push(...res)
           this.LowerLoading = false
