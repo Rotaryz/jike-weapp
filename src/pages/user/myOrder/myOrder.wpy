@@ -31,7 +31,7 @@
           </view>
           <view class="myOrder-orderList-item-btnBox">
             <view class="myOrder-orderList-item-status">{{orderItemStatus[item.status]}}</view>
-            <view class="myOrder-orderList-item-btn" catchtap="useCoupon({{item.id}},{{item.promotion.id}},{{item.promotion_type}})">{{orderItemBtnTxt[menuIdx]}}</view>
+            <view class="myOrder-orderList-item-btn" catchtap="useCoupon({{item.id}},{{item.promotion.id}},{{item.promotion_type}},{{item.merchant_id}})">{{orderItemBtnTxt[menuIdx]}}</view>
           </view>
         </view>
       </view>
@@ -121,7 +121,7 @@
         let url = '/pages/user/myOrder-detail/myOrderDetail?status=' + status + '&id=' + id
         this.$navigate(url)
       },
-      async useCoupon(orderId, couponId, type) {
+      async useCoupon(orderId, couponId, type, merchantId) {
         switch (this.menuIdx) {
           case 0:
             let data = {
@@ -156,7 +156,7 @@
             } else if (type * 1 === 2) {
               couponType = 2
             }
-            this.$navigate('/pages/coupon-detail/coupon-detail?id=' + couponId + '&type=' + couponType)
+            this.$navigate('/pages/coupon-detail/coupon-detail?id=' + couponId + '&type=' + couponType + '&currentMerchant=' + merchantId)
             break
         }
       },

@@ -120,9 +120,10 @@
 
     methods = {
       genderChange(e) {
+        console.log(e)
         let choiceValue = Number(e.detail.value) + 1
         let self = this
-        if (choiceValue === Number(self.userInfo.sex)) {
+        if (choiceValue === Number(self.gender)) {
           return
         }
         let data = {
@@ -136,7 +137,7 @@
         this.$apply()
       },
       birthdayChange(e) {
-        if (e.detail.value === this.userInfo.birth) {
+        if (e.detail.value === this.birth) {
           return
         }
         let data = {

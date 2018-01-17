@@ -57,20 +57,22 @@
           <view>活动规则</view>
           <view class="shareAndPrize-rule-head-chunk"></view>
         </view>
-        <view class="shareAndPrize-rule-name">
-          <text>活动名称: {{shareDetail.name}}</text>
-          <text>活动时间: {{shareDetail.from_date}}-{{shareDetail.to_date}}</text>
-        </view>
-        <view class="shareAndPrize-rule-msg first">
-          <text class="title">中奖说明：</text>
-          <text>1.活动期间内,每人每天一次抽奖机会；</text>
-          <text>2.优惠券线下门店核销使用；</text>
-          <text>3.奖品数量有限,先到先得。</text>
-        </view>
-        <view class="shareAndPrize-rule-msg">
-          <text class="title">奖品说明：</text>
-          <text>1.红包</text>
-          <text>2.优惠券</text>
+        <view class="shareAndPrize-rule-body">
+          <view class="shareAndPrize-rule-name">
+            <text>活动名称: {{shareDetail.name}}</text>
+            <text>活动时间: {{shareDetail.from_date}}-{{shareDetail.to_date}}</text>
+          </view>
+          <view class="shareAndPrize-rule-msg first">
+            <text class="title">中奖说明：</text>
+            <text>1.用户分享成功后，返回当前页面获取奖品内容，点击领取奖品；</text>
+            <text>2.用户每天可以参与一次；</text>
+            <text>3.不同奖品随机发放；</text>
+            <text>4.奖品数量有限，先到先得；</text>
+          </view>
+          <view class="shareAndPrize-rule-msg">
+            <text class="title">奖品说明：</text>
+            <text wx:for="{{shareDetail.activity_promotion}}" wx:key="{{item}}">{{index+1}}.{{item.promotion_title}}</text>
+          </view>
         </view>
         <image wx:if="{{imageUrlHead}}" src="{{imageUrlHead + '/defaults/c-image/mine/icon-delet@2x.png'}}" class="shareAndPrize-rule-close" @tap="closeCover"></image>
       </view>
@@ -228,8 +230,8 @@
 
     .shareAndPrize-rule
       position: fixed
-      height: 298px
-      width: 240px
+      height: 280px
+      width: 245px
       margin: auto
       left: 0
       top: 0
@@ -237,7 +239,7 @@
       bottom: 0
       background: #fff
       border-radius: 2px
-      padding: 11px 20px
+      padding: 10px 10px
 
       .shareAndPrize-rule-head
         font-size: $font-size-medium
@@ -252,27 +254,29 @@
           margin-top: 4px
           margin-bottom: 14px
 
+      .shareAndPrize-rule-body
+        max-height: 244px
+        overflow-y: auto
 
-
-      .shareAndPrize-rule-name
-        display: flex
-        flex-direction: column
-        font-size: $font-size-small
-        line-height: 22px
-        margin-bottom: 20px
-
-      .shareAndPrize-rule-msg
-        display: flex
-        flex-direction: column
-        font-size: $font-size-small
-        line-height: 22px
-
-        .title
+        .shareAndPrize-rule-name
+          display: flex
+          flex-direction: column
           font-size: $font-size-small
-          color: #9b9b9b
+          line-height: 22px
+          margin-bottom: 20px
 
-      .shareAndPrize-rule-msg.first
-        margin-bottom: 30px
+        .shareAndPrize-rule-msg
+          display: flex
+          flex-direction: column
+          font-size: $font-size-small
+          line-height: 22px
+
+          .title
+            font-size: $font-size-small
+            color: #9b9b9b
+
+        .shareAndPrize-rule-msg.first
+          margin-bottom: 30px
 
       .shareAndPrize-rule-close
         width: 26px
