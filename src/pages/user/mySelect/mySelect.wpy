@@ -58,7 +58,7 @@
             <view class="mySelect-contentList-select">
               <image wx:if="{{imageUrlHead}}" src="{{imageUrlHead + '/defaults/c-image/mine/icon-r_share1@2x.png'}}" class="mySelect-contentList-select-star"></image>
               <view class="mySelect-contentList-select-left">
-                <text>{{item.content.favorite_count}}</text>
+                <text>{{item.content.share_count}}</text>
               </view>
             </view>
           </view>
