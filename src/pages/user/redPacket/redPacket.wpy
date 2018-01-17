@@ -48,6 +48,7 @@
   import GetRedPacket from 'api/myRedPacket'
   import Toast from '@/base/toast/toast'
   import URIS from 'common/js/config'
+  import {ERR_OK} from '@/api/base'
 
   export default class RedPacket extends wepy.page {
     mixins = [base]
@@ -78,18 +79,19 @@
         if (!this.LowerLoading && !this.nothingAdd) {
           this.LowerLoading = true
           this.page++
-          console.log(this.page)
-          let res = await this._getRedPacketList(this.page)
-          if (res.error === 0) {
-            res = []
+          let Json = await this._getRedPacketList(this.page)
+          this.loaded()
+          if (Json.error !== ERR_OK) {
+            return
           }
+          let res = Json.data
           if (res.length === 0) {
             this.nothingAdd = true
           }
           this.packetList.push(...res)
           this.LowerLoading = false
           this.$apply()
-          this.loaded()
+
         } else if (this.nothingAdd) {
           // 到底
         }
@@ -104,20 +106,19 @@
     }
 
     async load() {
-      this.packetTotal = await GetRedPacket.getTotalRedpacket()
-      if (this.packetTotal.error === 0) {
-        this.packetTotal = {
-          redpacker_count_monies: '0.00',
-          redpacker_count: '0'
-        }
+      let Json = await GetRedPacket.getTotalRedpacket()
+      if (Json.error !== ERR_OK) {
+        this.loaded()
+        return
       }
-      console.log(this.packetTotal)
+      this.packetTotal = Json.data
       this.packetTotalNum = this._computed(this.packetTotal.redpacker_count_monies)
-      this.packetList = await this._getRedPacketList(1)
-      if (this.packetList.error === 0) {
-        this.packetList = []
+      let Json1 = await this._getRedPacketList(1)
+      if (Json1.error !== ERR_OK) {
+        this.loaded()
+        return
       }
-      console.log(this.packetList)
+      this.packetList = Json1.data
       this.$apply()
       this.loaded()
     }

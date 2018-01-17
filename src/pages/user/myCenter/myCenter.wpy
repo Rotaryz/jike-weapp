@@ -99,7 +99,7 @@
     async _updateMsg(data) {
       let res = await user.updataMsg(data)
       this.loaded()
-      if (res.error === 0) {
+      if (res.error === ERR_OK) {
         Tips.success('修改成功')
         return true
       } else {
@@ -109,11 +109,7 @@
     }
 
     async _updataUser() {
-      let res = await this.$getUserInfo()
-      if (res.error !== ERR_OK) {
-        this.loaded()
-        return
-      }
+      await this.$getUserInfo()
       this.userInfo = this.$parent.globalData.user
       this.avatar = this.userInfo.avatarUrl
       this.birth = this.userInfo.birth
@@ -125,7 +121,6 @@
 
     methods = {
       genderChange(e) {
-        console.log(e)
         let choiceValue = Number(e.detail.value) + 1
         let self = this
         if (choiceValue === Number(self.gender)) {
