@@ -41,6 +41,7 @@
   import getMyOrder from '@/api/myOrder'
   import Coupon from '@/api/coupon'
   import URIS from 'common/js/config'
+  import {ERR_OK} from '@/api/base'
 
   export default class MyCoupon extends wepy.page {
     mixins = [base]
@@ -76,7 +77,11 @@
           resList = await getMyOrder.getOrderCouponList(id)
           break
       }
-      this.couponList = this._computed(resList)
+      if (resList.error !== ERR_OK) {
+        this.loaded()
+        return
+      }
+      this.couponList = this._computed(resList.data)
       this.loaded()
     }
 

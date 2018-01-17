@@ -109,6 +109,7 @@
   import base from 'common/mixins/base'
   import mySelect from '@/api/mySelect'
   import URIS from 'common/js/config'
+  import {ERR_OK} from '@/api/base'
 
   export default class MySelect extends wepy.page {
     mixins = [base]
@@ -141,13 +142,15 @@
         switch (this.menuIdx) {
           case 0:
             let resList = await this._getCouponList(1)
-            if (resList.error === 0) {
-              resList = []
+            this.loaded()
+            if (resList.error !== ERR_OK) {
+              this.$invoke('Toast', 'show', resList.message)
+              return
             }
             this.page = 1
             this.nothingAdd = false
             this.LowerLoading = false
-            this.couponList = this._computed(resList)
+            this.couponList = this._computed(resList.data)
             if (this.couponList.length > 0) {
               this.nothingBoxShow = false
             } else {
@@ -159,10 +162,13 @@
             this.page = 1
             this.nothingAdd = false
             this.LowerLoading = false
-            this.contentList = await this._getContentList(1)
-            if (this.contentList.error === 0) {
-              this.contentList = []
+            let resList1 = await this._getContentList(1)
+            this.loaded()
+            if (resList1.error !== ERR_OK) {
+              this.$invoke('Toast', 'show', resList1.message)
+              return
             }
+            this.contentList = resList1.data
             if (this.contentList.length > 0) {
               this.nothingBoxShow = false
             } else {
@@ -174,10 +180,13 @@
             this.page = 1
             this.nothingAdd = false
             this.LowerLoading = false
-            this.kacList = await mySelect.getKacList(1)
-            if (this.kacList.error === 0) {
-              this.kacList = []
+            let resList2 = await mySelect.getKacList(1)
+            this.loaded()
+            if (resList2.error !== ERR_OK) {
+              this.$invoke('Toast', 'show', resList2.message)
+              return
             }
+            this.kacList = resList2.data
             if (this.kacList.length > 0) {
               this.nothingBoxShow = false
             } else {
@@ -185,14 +194,18 @@
             }
             break
         }
-        this.loaded()
       },
       async couponLower() {
         if (!this.LowerLoading && !this.nothingAdd) {
           this.LowerLoading = true
           this.page++
-          console.log(this.page)
-          let res = await this._getCouponList(this.page)
+          let Json = await this._getCouponList(this.page)
+          if (Json.error !== ERR_OK) {
+            this.loaded()
+            this.$invoke('Toast', 'show', Json.message)
+            return
+          }
+          let res = Json.data
           if (res.length === 0) {
             this.nothingAdd = true
           }
@@ -209,7 +222,13 @@
         if (!this.LowerLoading && !this.nothingAdd) {
           this.LowerLoading = true
           this.page++
-          let res = await this._getContentList(this.page)
+          let Json = await this._getContentList(this.page)
+          if (Json.error !== ERR_OK) {
+            this.loaded()
+            this.$invoke('Toast', 'show', Json.message)
+            return
+          }
+          let res = Json.data
           if (res.length === 0) {
             this.nothingAdd = true
           }
@@ -225,8 +244,13 @@
         if (!this.LowerLoading && !this.nothingAdd) {
           this.LowerLoading = true
           this.page++
-          let res = await mySelect.getKacList(this.page)
-
+          let Json = await mySelect.getKacList(this.page)
+          if (Json.error !== ERR_OK) {
+            this.loaded()
+            this.$invoke('Toast', 'show', Json.message)
+            return
+          }
+          let res = Json.data
           if (res.length === 0) {
             this.nothingAdd = true
           }
@@ -250,32 +274,6 @@
       contentDetail(id, merchantId) {
         this.$navigate('/pages/content-detail/content-detail?id=' + id + '&currentMerchant=' + merchantId)
       },
-      async select(id, index, select) {
-        console.log(id, index, select)
-        let res
-        switch (select) {
-          case 0:
-            res = await mySelect.selectContent(id)
-            if (res.error === 0) {
-              this.contentList[index].selectStatus = 1
-              this.contentList[index].content.favorite_count++
-            } else {
-              // 失败
-            }
-            break
-          case 1:
-            res = await mySelect.cancleSelectContent(id)
-            if (res.error === 0) {
-              this.contentList[index].selectStatus = 0
-              this.contentList[index].content.favorite_count--
-            } else {
-              // 失败
-            }
-            break
-        }
-        this.$apply()
-        this.loaded()
-      },
       showStore(idx) {
         this._checked(this.kacList, idx)
         this.$apply()
@@ -290,10 +288,11 @@
       switch (this.menuIdx * 1) {
         case 0:
           let res = await this._getCouponList(1)
-          if (res.error === 0) {
-            res = []
+          if (res.error !== ERR_OK) {
+            this.loaded()
+            return
           }
-          this.couponList = this._computed(res)
+          this.couponList = this._computed(res.data)
           if (this.couponList.length > 0) {
             this.nothingBoxShow = false
           } else {
@@ -302,10 +301,11 @@
           break
         case 1:
           let res1 = await this._getContentList(1)
-          if (res1.error === 0) {
-            res1 = []
+          if (res1.error !== ERR_OK) {
+            this.loaded()
+            return
           }
-          this.contentList = res1
+          this.contentList = res1.data
           if (this.contentList.length > 0) {
             this.nothingBoxShow = false
           } else {
@@ -314,10 +314,11 @@
           break
         case 2:
           let res2 = await mySelect.getKacList(1)
-          if (res2.error === 0) {
-            res2 = []
+          if (res2.error !== ERR_OK) {
+            this.loaded()
+            return
           }
-          this.kacList = res2
+          this.kacList = res2.data
           if (this.kacList.length > 0) {
             this.nothingBoxShow = false
           } else {
@@ -325,7 +326,6 @@
           }
           break
       }
-
       this.$apply()
       this.loaded()
     }

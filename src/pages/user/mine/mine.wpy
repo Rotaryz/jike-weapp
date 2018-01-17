@@ -70,6 +70,7 @@
   import PhoneTest from '@/base/phoneTest/phoneTest'
   import PhoneTestHint from '@/base/phoneTestHint/phoneTestHint'
   import URIS from 'common/js/config'
+  import {ERR_OK} from '@/api/base'
 
   export default class Mine extends wepy.page {
     mixins = [users, base]
@@ -140,8 +141,11 @@
     }
 
     async _getUserInfo() {
-      await this.$getUserInfo()
+      let res = await this.$getUserInfo()
       this.loaded()
+      if (res.error !== ERR_OK) {
+        return
+      }
       this.userInfo = this.$parent.globalData.user
 //      let customerId = wx.getStorageSync('customerId')
 //      if (customerId) {

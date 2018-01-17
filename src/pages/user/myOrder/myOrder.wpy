@@ -51,6 +51,7 @@
   import getMyOrder from '@/api/myOrder'
   import Appraise from '@/base/appraise/appraise'
   import URIS from 'common/js/config'
+  import {ERR_OK} from '@/api/base'
 
   export default class MyOrder extends wepy.page {
     mixins = [base]
@@ -91,10 +92,11 @@
         this.page = 1
         this.nothingAdd = false
         let resList = await this._getOrderList(idx, this.page)
-        if (resList.error === 0) {
-          resList = []
+        if (resList.error !== ERR_OK) {
+          this.loaded()
+          return
         }
-        this.orderList = resList
+        this.orderList = resList.data
         this.noOrder = this.orderList.length === 0 ? 1 : false
         this.$apply()
         this.loaded()
@@ -106,10 +108,15 @@
           this.LowerLoading = true
           this.page++
           const res = await this._getOrderList(this.menuIdx, this.page)
-          if (res.length === 0) {
+          if (res.error !== ERR_OK) {
+            this.loaded()
+            this.$invoke('Toast', 'show', res.message)
+            return
+          }
+          if (res.data.length === 0) {
             this.nothingAdd = true
           }
-          this.orderList.push(...res)
+          this.orderList.push(...res.data)
           this.$apply()
           this.LowerLoading = false
           this.loaded()
@@ -129,11 +136,15 @@
             }
             let res = await getMyOrder.paymentOrder(data)
             this.loaded()
-            const {timestamp, nonceStr, signType, paySign} = res.pay_info
+            if (res.error !== ERR_OK) {
+              this.$invoke('Toast', 'show', res.message)
+              return
+            }
+            const {timestamp, nonceStr, signType, paySign} = res.data.pay_info
             const pay = await wepy.requestPayment({
               timeStamp: timestamp,
               nonceStr,
-              package: res.pay_info.package,
+              package: res.data.pay_info.package,
               signType,
               paySign
             })
@@ -183,10 +194,11 @@
         this.menuIdx = 1
       }
       let resList = await this._getOrderList(this.menuIdx, 1)
-      if (resList.error === 0) {
-        resList = []
+      if (resList.error !== 0) {
+        this.loaded()
+        return
       }
-      this.orderList = resList
+      this.orderList = resList.data
       this.noOrder = this.orderList.length === 0 ? 1 : false
 //      let customerId = wx.getStorageSync('customerId')
 //      if (customerId) {
@@ -201,6 +213,7 @@
         this.isPhone = 0
       }
       this.loaded()
+      this.$apply()
     }
 
     async _getOrderList(idx, page) {
@@ -217,8 +230,12 @@
         this.page = 1
         this.nothingAdd = false
         let resList = await this._getOrderList(2, 1)
-        this.orderList = resList
         this.loaded()
+        if (resList.error !== ERR_OK) {
+          this.$invoke('Toast', 'show', resList.message)
+          return
+        }
+        this.orderList = resList.data
         this.$apply()
       }
     }
