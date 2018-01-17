@@ -94,7 +94,8 @@
         coupon: COUPON_TYPE,
         couponType: 1
       },
-      qrcode: ''
+      qrcode: '',
+      currentMerchant: ''
     }
 
     onShareAppMessage(res) {
@@ -119,6 +120,7 @@
 
     async onLoad(option) {
       this.id = option.id
+      this.currentMerchant = option.currentMerchant
       this.currentPage = `/pages/content-detail/content-detail?id=${option.id}`
       await this.load()
     }
@@ -200,7 +202,7 @@
 
     events = {
       handleClick(type, couponId) {
-        this.$navigate(`/pages/coupon-detail/coupon-detail?type=${type}&id=${couponId}`)
+        this.$navigate(`/pages/coupon-detail/coupon-detail?type=${type}&id=${couponId}&currentMerchant=${this.currentMerchant}`)
       }
     }
 

@@ -153,6 +153,7 @@
     async onLoad(option) {
       this.type = Math.floor(option.type)
       this.id = option.id
+      this.currentMerchant = option.currentMerchant
       this.currentPage = `/pages/coupon-detail/coupon-detail?type=${this.type}&id=${this.id}`
       await this.load()
     }
@@ -165,7 +166,7 @@
       }
       await this._getUserInfo()
       await this._createQrcode()
-      this.currentMerchant = this.$parent.globalData.merchantId || wepy.getStorageSync('merchantId')
+      this.currentMerchant = this.currentMerchant || this.$parent.globalData.merchantId || wepy.getStorageSync('merchantId')
       this.loaded()
     }
 
