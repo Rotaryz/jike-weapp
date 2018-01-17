@@ -66,6 +66,10 @@
           <repeat for="{{couponList}}" key="index" index="index" item="item">
             <coupon :coupon.sync="item" @handleClick.user="goToCouponDetail"></coupon>
           </repeat>
+          <view class="nothing-box" wx:if="{{couponNothing}}">
+            <image src="{{imageUri + '/defaults/c-image/mine/pic-empty_coupon@2x.png'}}" wx:if="{{imageUri}}" class="nothing-img"></image>
+            <view class="nothing-txt">暂无优惠券</view>
+          </view>
         </view>
         <view class="discover-panel" style="display: {{activeTab === '2' ? 'block':''}}">
           <navigator url="/pages/content-detail/content-detail?id={{item.id}}&currentMerchant={{item.merchant_id}}" class="ticky-wrapper"
@@ -98,6 +102,10 @@
               </view>
             </view>
           </navigator>
+          <view class="nothing-box" wx:if="{{contentNothing}}">
+            <image src="{{imageUri + '/defaults/c-image/mine/pic-empty_content@2x.png'}}" wx:if="{{imageUri}}" class="nothing-img"></image>
+            <view class="nothing-txt">暂无内容</view>
+          </view>
         </view>
       </view>
     </view>
@@ -142,7 +150,9 @@
       couponPage: 1,
       contentPage: 0,
       moreCoupon: true,
-      moreContent: true
+      moreContent: true,
+      couponNothing: false,
+      contentNothing: false
     }
 
     async onReachBottom() {
@@ -181,6 +191,11 @@
       this.couponList = data.promotions
       this.giftBags = data.gift_bags
       this.activities = data.activities || {}
+      if (this.couponList.length === 0 && this.giftBags.length === 0) {
+        this.couponNothing = true
+      } else {
+        this.couponNothing = false
+      }
       this.$apply()
     }
 
@@ -209,6 +224,11 @@
         this.moreContent = false
       } else {
         this.contents = [...this.contents, ...data]
+      }
+      if (this.contents.length > 0) {
+        this.contentNothing = false
+      } else {
+        this.contentNothing = true
       }
       this.$apply()
       this.loaded()
@@ -619,4 +639,18 @@
                     display: block
                 .icon.last
                   margin-left: 22px
+
+  .nothing-box
+    height: 200px
+    display: flex
+    flex-direction: column
+    align-items: center
+    justify-content: center
+    .nothing-img
+      width: 100px
+      height: 80px
+      margin-bottom: 15px
+    .nothing-txt
+      font-size: $font-size-small
+      color: $color-text
 </style>

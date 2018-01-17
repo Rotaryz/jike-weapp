@@ -34,7 +34,7 @@
     </scroll-view>
 
     <view class="myRedPacket-noList" wx:if="{{packetList.length===0}}">
-      <image wx:if="{{imageUrlHead}}" src="{{imageUrlHead + '/defaults/c-image/mine/pic-my-money.png'}}" class="myRedPacket-noList-img"></image>
+      <image wx:if="{{imageUrlHead}}" src="{{imageUrlHead + '/defaults/c-image/mine/pic-no_moeny@2x.png'}}" class="myRedPacket-noList-img"></image>
       <view class="myRedPacket-noList-txt">您还没有红包</view>
     </view>
     <Toast></Toast>
@@ -233,9 +233,9 @@
         align-items: center
 
         .myRedPacket-noList-img
-          width: 83.5px
-          height: 65px
-          margin: 32.5px 0 17.5px 15px
+          width: 100px
+          height: 80px
+          margin: 15px 0
 
         .myRedPacket-noList-txt
           font-size: $font-size-small

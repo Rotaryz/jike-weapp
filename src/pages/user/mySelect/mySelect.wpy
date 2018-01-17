@@ -7,7 +7,7 @@
     </view>
 
     <view class="mySelect-nothing" wx:if="{{nothingBoxShow}}">
-      <image src="{{emptyImg[menuIdx]}}" class="mySelect-nothing-img"></image>
+      <image src="{{emptyImg[menuIdx]}}" wx:if="{{imageUrlHead}}" class="mySelect-nothing-img"></image>
       <view class="mySelect-nothing-txt">{{emptyMsg[menuIdx]}}</view>
       <view class="mySelect-nothingBtn" @tap="toRecommend">随便逛逛</view>
     </view>
@@ -121,7 +121,7 @@
       imageUrlHead: URIS.image,
       tabList: ['优惠券', '内容', '礼包'],
       menuIdx: 0,
-      emptyImg: [URIS.image + '/defaults/c-image/mine/pic-my-nocoupon.png', URIS.image + '/defaults/c-image/mine/pic-my_no_c.png', URIS.image + '/defaults/c-image/mine/pic-my_no_c.png'],
+      emptyImg: [URIS.image + '/defaults/c-image/mine/pic-empty_coupon@2x.png', URIS.image + '/defaults/c-image/mine/pic-empty_content@2x.png', URIS.image + '/defaults/c-image/mine/pic-empty_coupon@2x.png'],
       emptyMsg: ['您还没有相关优惠券', '您还没有相关收藏', '您还没有相关收藏'],
       couponList: [],
       contentList: [],
@@ -407,15 +407,15 @@
       align-items: center
 
       .mySelect-nothing-img
-        width: 73px
-        height: 53.5px
+        width: 100px
+        height: 80px
         margin-top: 25px
         margin-bottom: 8.5px
 
       .mySelect-nothing-txt
         font-size: $font-size-small
         line-height: 16.5px
-        margin-bottom: 34px
+        margin-bottom: 15px
 
       .mySelect-nothingBtn
         width: 85.5px

@@ -7,7 +7,7 @@
     </view>
 
     <view class="myCoupon-nothing" wx:if="{{couponList.length===0}}">
-      <image wx:if="{{imageUrlHead}}" src="{{imageUrlHead + '/defaults/c-image/mine/pic-my-nocoupon.png'}}" class="myCoupon-nothing-img"></image>
+      <image wx:if="{{imageUrlHead}}" src="{{imageUrlHead + '/defaults/c-image/mine/pic-empty_coupon@2x.png'}}" class="myCoupon-nothing-img"></image>
       <view class="myCoupon-nothing-txt">您还没有相关优惠券</view>
       <view class="myCoupon-nothingBtn" @tap="toRecommend">随便逛逛</view>
     </view>
@@ -18,7 +18,7 @@
           <image class="coupon-bc" wx:if="{{imageUrlHead}}" src="{{imageUrlHead + '/defaults/c-image/mine/pic-couponbg@2x.png'}}"></image>
           <view class="couponList-item-head-left">
             <view class="couponList-itemPay">
-              <image src="{{item.imageUrl}}" class="promotion-image" wx:if="{{item.promotionType==='exchange'}}"></image>
+              <image src="{{item.imageUrl}}" class="promotion-image" wx:if="{{item.promotionType==='exchange' && imageUrlHead}}"></image>
               <view wx:if="{{item.promotionType!=='exchange'}}"><text class="couponList-midMoney">￥</text><text class="couponList-bigMoney">{{item.price?item.price:''}}</text></view>
             </view>
             <view class="couponList-itemMsg">
@@ -211,15 +211,15 @@
     align-items: center
 
     .myCoupon-nothing-img
-      width: 73px
-      height: 53.5px
-      margin-top: 50rpx
-      margin-bottom: 17rpx
+      width: 100px
+      height: 80px
+      margin-top: 32px
+      margin-bottom: 8px
 
     .myCoupon-nothing-txt
       font-size: $font-size-small
       line-height: 33rpx
-      margin-bottom: 68rpx
+      margin-bottom: 15px
 
     .myCoupon-nothingBtn
       width: 86px
@@ -375,6 +375,11 @@
             display: flex
             align-items: center
             justify-content: center
+
+            .promotion-image
+              width: 56px
+              height: 28px
+              border-radius: 2px
 
             .couponList-midMoney
               font-size: $font-size-small-s
