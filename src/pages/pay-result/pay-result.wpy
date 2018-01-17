@@ -29,6 +29,7 @@
 <script>
   import wepy from 'wepy'
   import base from 'common/mixins/base'
+  import {ERR_OK} from 'api/base'
   import CouponApi from 'api/coupon'
   import Coupon from '@/base/coupon/coupon'
   import URIS from 'common/js/config'
@@ -58,13 +59,16 @@
     }
 
     async _getCouponList() {
-      const merchantId = wepy.getStorageSync('merchantId')
-      const res = await CouponApi.getShopCouponList(merchantId)
-      let list = res.promotions
-      if (list.length < 5) {
-        this.coupons = list
-      } else {
-        this.coupons = list.splice(0, 3)
+      const merchantId = this.$parent.globalData.merchantId || wepy.getStorageSync('merchantId')
+      const json = await CouponApi.getShopCouponList(merchantId)
+      if (json.error === ERR_OK) {
+        const res = json.data
+        let list = res.promotions
+        if (list.length < 5) {
+          this.coupons = list
+        } else {
+          this.coupons = list.splice(0, 3)
+        }
       }
     }
 

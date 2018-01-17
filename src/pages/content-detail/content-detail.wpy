@@ -63,6 +63,7 @@
   import wepy from 'wepy'
   import base from 'common/mixins/base'
   import users from 'common/mixins/users'
+  import {ERR_OK} from 'api/base'
   import ContentsApi from 'api/contents'
   import Coupon from '@/base/coupon/coupon'
   import PhoneTest from '@/base/phoneTest/phoneTest'
@@ -126,7 +127,7 @@
     }
 
     async load() {
-      await this._getUserInfo()
+//      await this._getUserInfo()
       await this._createQrcode()
 //      await this._checkAuthorise()
       await this._getContentDetail()
@@ -135,25 +136,32 @@
 
     async _createQrcode() {
       const res = await Info.createQrode({path: this.currentPage})
-      this.qrcode = res.image_url
+      if (res.error === ERR_OK) {
+        const data = res.data
+        this.qrcode = data.image_url
+      }
     }
-
-    async _getUserInfo() {
-      await this.$getUserInfo()
-    }
+//
+//    async _getUserInfo() {
+//      await this.$getUserInfo()
+//    }
 
     async _getSharePrize() {
       if (!this.contents.activity_share) {
         return
       }
-      const res = await Shares.getSharePrize()
+      const json = await Shares.getSharePrize()
       this.loaded()
+      if (json.error !== ERR_OK) {
+        return
+      }
+      const res = json.data
       if (res.length === 0) {
         return
       }
       this.sharePrice = res.price
-      this.$invoke('share-modal', 'show')
       this.$apply()
+      this.$invoke('share-modal', 'show')
     }
 
 //    async _checkAuthorise() {
@@ -162,11 +170,14 @@
 //    }
 
     async _getContentDetail() {
-      const data = await ContentsApi.getContentDetail(this.id)
-      wepy.setNavigationBarTitle({title: data.title})
-      this.contents = data
-      this.details = data.content_details
-      this.isFavorite = data.is_favorite
+      const json = await ContentsApi.getContentDetail(this.id)
+      if (json.error === ERR_OK) {
+        const data = json.data
+        wepy.setNavigationBarTitle({title: data.title})
+        this.contents = data
+        this.details = data.content_details
+        this.isFavorite = data.is_favorite
+      }
     }
 
     async _storeToggle() {
