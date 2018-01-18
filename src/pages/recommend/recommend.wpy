@@ -127,6 +127,7 @@
   import {ERR_OK} from 'api/base'
   import CouponApi from 'api/coupon'
   import ContentsApi from 'api/contents'
+  import Merchants from 'api/merchants'
   import Giftbag from '@/base/giftbag/giftbag'
   import URIS from 'common/js/config'
   import Underline from '@/base/underline-block/underline-block'
@@ -185,8 +186,18 @@
       this.merchantId = this.$parent.globalData.merchantId || wepy.getStorageSync('merchantId')
       const isAuthorise = await this.isAuthorise()
       this.$parent.updateGlobalData('isAuthorise', isAuthorise)
+      await this._saveLog()
       await this._getShopCouponList()
       this.loaded()
+    }
+
+    async _saveLog() {
+      const data = {
+        pages: '/pages/recommend/recommend',
+        params: '',
+        from: 'jike_c'
+      }
+      await Merchants.saveLog(data)
     }
 
     async _getShopCouponList() {

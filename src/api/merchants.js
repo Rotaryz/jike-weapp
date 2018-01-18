@@ -19,4 +19,14 @@ export default class Merchants extends base {
     const url = `${this.baseUrl}/api/merchants/plaza-merchants-show/${id}`
     return await this.get(url)
   }
+
+  /**
+   * 保存浏览记录
+   * @param data
+   * @returns {Promise.<*>}
+   */
+  static async saveLog(data) {
+    const url = `${this.baseUrl}/api/merchants/save-log`
+    return await this.post(url, data)
+  }
 }

@@ -11,6 +11,7 @@
        bindtap="tapMap"
        bindregionchange="regionchange">
     <cover-view class="shop-modal {{showSlide ? 'show' : ''}}">
+      <cover-image class="modal-bg" wx:if="{{imageUri}}" src="{{imageUri + '/defaults/c-image/square/pic-s_bg@2x.png'}}"></cover-image>
       <cover-view class="modal">
         <cover-view class="location">
           <cover-image wx:if="{{imageUri}}" src="{{imageUri + '/defaults/c-image/square/icon-s_location@2x.png'}}"
@@ -78,7 +79,7 @@
           </cover-view>
           <cover-view class="tips">
             <cover-view class="box"
-                        style="height: {{scrollHeight}}px;transition: {{transition}};transform: translateY(-{{translateY}}px)">
+                        style="height: {{scrollHeight}}px;transition: {{transition}};transform: {{transform}}">
               <repeat for="{{tips}}" key="index" index="index" item="item">
                 <cover-view class="tip">
                   <cover-view class="item-wrapper">
@@ -101,6 +102,26 @@
                   </cover-view>
                 </cover-view>
               </repeat>
+              <cover-view class="tip" wx:if="{{tips.length > 0}}">
+                <cover-view class="item-wrapper">
+                  <cover-view class="icon-wrapper">
+                    <cover-image class="icon"
+                                 wx:if="{{imageUri}}" src="{{imageUri + '/defaults/c-image/square/pic-s_activity@2x.png'}}"></cover-image>
+                  </cover-view>
+                  <cover-view class="word">
+                    {{tips[0].activity}}活动开启中
+                  </cover-view>
+                </cover-view>
+                <cover-view class="item-wrapper">
+                  <cover-view class="icon-wrapper">
+                    <cover-image class="icon"
+                                 wx:if="{{imageUri}}" src="{{imageUri + '/defaults/c-image/square/pic-s_coupon@2x.png'}}"></cover-image>
+                  </cover-view>
+                  <cover-view class="word">
+                    {{tips[0].title ? tips[0].title + '正在疯抢中' : '您的优惠券正在路上'}}
+                  </cover-view>
+                </cover-view>
+              </cover-view>
             </cover-view>
           </cover-view>
         </cover-view>
@@ -144,8 +165,9 @@
       activeMarkerId: '',
       tips: [],
       scrollHeight: 60,
-      translateY: 0,
-      transition: 'all .5s'
+      activeIndex: 0,
+      transform: '',
+      transition: ''
     }
 
     async onLoad() {
@@ -155,7 +177,13 @@
     }
 
     onShow() {
-//      console.log('show')
+      if (this.showSlide) {
+        this._setTipTimer()
+      }
+    }
+
+    onHide() {
+      this.clearTimer()
     }
 
     _newMap() {
@@ -366,25 +394,40 @@
     _setTipInterval() {
       const tipsLength = this.tips.length
       this.scrollHeight = 60 * tipsLength
+      this._setTipTimer()
+    }
+
+    _setTipTimer() {
+      const tipsLength = this.tips.length
       this.tipTimer = setInterval(() => {
-        this.transition = 'all .5s'
-        this.translateY += 60
-        if (this.translateY / 60 === tipsLength - 1) {
+        this.activeIndex += 1
+        if (this.activeIndex === tipsLength) {
           this.tipTimeOuter = setTimeout(() => {
+            this.activeIndex = 0
             this.transition = ''
-            this.translateY = 0
+            this.transform = 'translate3d(0, 0, 0)'
             this.$apply()
           }, 500)
+        } else {
+          this.transition = 'all .5s'
+          this.transform = `translate3d(0, -${this.activeIndex * 60}px, 0)`
         }
         this.$apply()
+        console.log(this.transform)
       }, 3000)
     }
 
     clearData() {
-      this.tipTimer && clearInterval(this.tipTimer)
-      this.tipTimeOuter && clearTimeout(this.tipTimeOuter)
+      this.clearTimer()
       this._scaleMarker(0)
       this._setPolyline(0)
+      this.$apply()
+    }
+
+    clearTimer() {
+      this.activeIndex = 0
+      this.tipTimer && clearInterval(this.tipTimer)
+      this.tipTimeOuter && clearTimeout(this.tipTimeOuter)
       this.$apply()
     }
 
@@ -425,7 +468,7 @@
           }, 20)
         }
       },
-      markertap(e) {
+      async markertap(e) {
         let markerId = e.markerId
         if (this.activeMarkerId === markerId && this.showSlide) {
           return
@@ -436,12 +479,16 @@
           return
         }
         let currentMerchant = this.merchants.find((item) => item.id === markerId)
-        this._getMerchantDetail(currentMerchant.merchant_id)
+        await this._getMerchantDetail(currentMerchant.merchant_id)
+        this.activeIndex = 0
         this._setPolyline(markerId)
         this.bigMarkerIndex = this.markers.findIndex((item) => item.id === markerId)
         this._scaleMarker(1)
-        this.showSlide = true
-        this.translateY = 0
+        this.$apply()
+        setTimeout(() => {
+          this.showSlide = true
+          this.$apply()
+        }, 100)
       },
       makePhoneCall() {
         const phone = this.currentMerchant.mobile
@@ -483,6 +530,7 @@
       width: 100%
       padding: 0 10px
       padding-top: 4.75px
+      padding-bottom: 3px
       box-sizing: border-box
       transition: all .5s
       opacity: 0
@@ -490,13 +538,19 @@
       &.show
         transform: translate3d(0, 0, 0)
         opacity: 1
+      .modal-bg
+        position: absolute
+        top: 2px
+        left: 6.5px
+        right: 6.5px
+        bottom: 0
+
       .modal
         position: relative
         width: 100%
         height: 100%
-        border-radius: 4px
+        border-radius: 3px
         background-color: $color-white
-        border-1px($color-col-line, 4px)
         .location
           display: flex
           align-items: center
@@ -630,7 +684,7 @@
         height: 60px
         padding-left: 10px
         .box
-          transform: translateY(0px)
+          transform: translate3d(0, 0, 0)
           .tip
             display: flex
             flex-direction: column
