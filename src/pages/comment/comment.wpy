@@ -23,7 +23,7 @@
              bindconfirm="putContent({{activityId}})"/>
       <view @tap.default="putContent({{activityId}})">
         <image wx:if="{{imageUrlHead}}"
-          src="{{imageUrlHead + '/defaults/c-image/live/icon-sendout.png'}}"></image>
+               src="{{imageUrlHead + '/defaults/c-image/live/icon-sendout.png'}}"></image>
       </view>
     </view>
     <Share :qrcode.sync="qrcode"
@@ -75,13 +75,13 @@
 
     async _createQrcode() {
       const res = await Info.createQrode({path: this.currentPage})
-      this.qrcode = res.image_url
+      this.qrcode = res.data.image_url
       this.$apply()
     }
 
     async showComment(id) {
       let res = await Live.getComment(id)
-      this.comment = res.reverse()
+      this.comment = res.data.reverse()
       this.loaded()
       this.$apply()
     }
@@ -113,8 +113,9 @@
         if (this.content !== '') {
           let res = await Live.setComment(id, this.content)
           this.content = ''
-          this.comment.push(res[0])
+          this.comment.push(res.data[0])
           this.$apply()
+//          this.$emit('putCon', res)
         } else {
           wepy.showModal({
             content: '评论内容不能为空',
@@ -130,12 +131,12 @@
         this.loaded()
       },
       shares() {
+        this.promotionImages = this.videoImages
         this.$invoke('Share', 'show', 'live')
         setTimeout(() => {
           this.showCom = false
           this.$apply()
         }, 300)
-        this.promotionImages = this.videoImages
         this.shop = this.shopName
       }
     }

@@ -127,8 +127,9 @@
     <Comment :videoImages.sync="videoImages"
              :activityId.sync="activityId" :shopName.sync="shopName"
              wx:if="{{show}}"></Comment>
-    <PhoneTest></PhoneTest>
   </view>
+  <PhoneTest></PhoneTest>
+  <Toast></Toast>
 </template>
 
 <script>
@@ -140,6 +141,8 @@
   import PhoneTest from '@/base/phoneTest/phoneTest'
   import Order from 'api/order'
   import URIS from 'common/js/config'
+  import Toast from '@/base/toast/toast'
+  import {ERR_OK} from 'api/base'
   export default class LiveVideo extends wepy.page {
     mixins = [users, base]
     data = {
@@ -164,7 +167,8 @@
     }
     components = {
       Comment: Comment,
-      PhoneTest: PhoneTest
+      PhoneTest: PhoneTest,
+      Toast: Toast
     }
     methods = {
       hideComment() {
@@ -188,7 +192,7 @@
         }
 //        this.state = !this.state
         let res = await Live.getConpon(id)
-        this.conDes = res
+        this.conDes = res.data
         this.title1 = this.conDes.title.slice(0, 4)
         this.title2 = this.conDes.title.slice(4)
         this.promotionId = id
@@ -222,7 +226,7 @@
             activity_id: this.liveMsg.id,
             current_merchant: meId
           }
-          const res = await Order.operation(data)
+          const res = (await Order.operation(data)).data
           this.loaded()
           const {timestamp, nonceStr, signType, paySign} = res.pay_info
           const pay = await wepy.requestPayment({
@@ -242,17 +246,26 @@
         }
       }
     }
+//    events = {
+//      putCon(res) {
+//        this.$invoke('Toast', 'show', res.message)
+//      }
+//    }
 
     async showMore() {
       this.show = true
       let res = await Live.getLiveMsg()
-      this.liveMsg = res
-      this.videoImages = this.liveMsg.image_url
-      this.shopName = ''
-      this.activityId = res.id
-      this.loaded()
-      this.$com.Comment.showComment(res.id)
-      this.$apply()
+      if (res.error === ERR_OK) {
+        this.liveMsg = res.data
+        this.videoImages = this.liveMsg.file_url + '?second=1&height=1280&width=852'
+        this.shopName = ''
+        this.activityId = res.data.id
+        this.loaded()
+        this.$com.Comment.showComment(this.activityId)
+        this.$apply()
+      } else {
+        this.$invoke('Toast', 'show', res.message)
+      }
     }
 
     async onLoad() {
