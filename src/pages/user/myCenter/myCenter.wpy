@@ -120,7 +120,7 @@
     }
 
     methods = {
-      genderChange(e) {
+      async genderChange(e) {
         let choiceValue = Number(e.detail.value) + 1
         let self = this
         if (choiceValue === Number(self.gender)) {
@@ -129,21 +129,23 @@
         let data = {
           sex: choiceValue
         }
-        if (!this._updateMsg(data)) {
+        let res = await this._updateMsg(data)
+        if (!res) {
           return
         }
         this.gender = choiceValue
         this.$parent.updateGlobalData('user', Object.assign({}, this.userInfo))
         this.$apply()
       },
-      birthdayChange(e) {
+      async birthdayChange(e) {
         if (e.detail.value === this.birth) {
           return
         }
         let data = {
           birth: e.detail.value
         }
-        if (!this._updateMsg(data)) {
+        let res = await this._updateMsg(data)
+        if (!res) {
           return
         }
         this.birth = e.detail.value
