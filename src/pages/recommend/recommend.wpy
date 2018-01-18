@@ -209,7 +209,9 @@
         const data = res.data
         if (data.promotions.length === 0) {
           this.moreCoupon = false
-          this.$invoke('underline1', 'show')
+          if (this.couponPage > 1) {
+            this.$invoke('underline1', 'show')
+          }
         } else {
           this.couponList = [...this.couponList, ...data.promotions]
         }
@@ -231,7 +233,9 @@
         const data = res.data
         if (data.length === 0) {
           this.moreContent = false
-          this.$invoke('underline2', 'show')
+          if (this.contentPage > 1) {
+            this.$invoke('underline2', 'show')
+          }
         } else {
           this.contents = [...this.contents, ...data]
         }
