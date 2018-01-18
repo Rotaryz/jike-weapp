@@ -340,6 +340,9 @@
       line-height: 11px
       &:first-child
         padding-top: 4px
+      &:last-child
+        height: 18px
+        overflow-y: hidden
     .monlogo
       font-size: $font-size-large
       color: $color-text
@@ -376,6 +379,7 @@
         .money-init
           display: flex
           .money-detail
+            margin-left: 6px
             min-width: 45px
             display: flex
             text-align: center
@@ -389,7 +393,7 @@
               text-indent: 0
               position: absolute
               color: $color-orange
-              left: -4px
+              left: -8px
               font-size: $font-size-small-s
               bottom: 0.8vw
           .money-init-s
@@ -489,6 +493,8 @@
             font-size: $font-size-small
             &.left
               text-align: left
+              display: flex
+              align-items: center
               .circle
                 display: inline-block
                 vertical-align: middle
@@ -500,6 +506,7 @@
               .font
                 display: inline-block
                 vertical-align: middle
+                no-wrap()
             &.middle
               text-align: center
             &.right
