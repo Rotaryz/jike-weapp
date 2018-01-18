@@ -4,9 +4,9 @@ export default class Live extends base {
    * 获取直播与优惠券列表
    * @returns {Promise.<*>}
    */
-  static async getLiveMsg() {
+  static async getLiveMsg(data) {
     const url = `${this.baseUrl}/api/activity/live/detail`
-    return await this.get(url)
+    return await this.get(url, data)
   }
 
   /**

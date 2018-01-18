@@ -164,7 +164,7 @@
         padding: $font-size-medium 0 0 $padding-all
 
         .com_name
-          color: $color-text-tr
+          color: #A4A3A9
         .com_msg
           color: $color-white
     .btn_com
