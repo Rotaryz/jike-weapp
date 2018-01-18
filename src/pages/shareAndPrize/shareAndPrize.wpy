@@ -59,19 +59,21 @@
         </view>
         <view class="shareAndPrize-rule-body">
           <view class="shareAndPrize-rule-name">
-            <text>活动名称: {{shareDetail.name}}</text>
-            <text>活动时间: {{shareDetail.from_date}}-{{shareDetail.to_date}}</text>
+            <view class="title">活动名称：</view>
+            <view class="content">{{shareDetail.name}}</view>
+            <view class="title">活动时间：</view>
+            <view class="content">{{shareDetail.from_date}}-{{shareDetail.to_date}}</view>
           </view>
           <view class="shareAndPrize-rule-msg first">
-            <text class="title">中奖说明：</text>
-            <text>1.用户分享成功后，返回当前页面获取奖品内容，点击领取奖品；</text>
-            <text>2.用户每天可以参与一次；</text>
-            <text>3.不同奖品随机发放；</text>
-            <text>4.奖品数量有限，先到先得；</text>
+            <view class="title">中奖说明：</view>
+            <view class="content">用户分享成功后，返回当前页面获取奖品内容，点击领取奖品；</view>
+            <view class="content">用户每天可以参与一次；</view>
+            <view class="content">不同奖品随机发放；</view>
+            <view class="content">奖品数量有限，先到先得；</view>
           </view>
           <view class="shareAndPrize-rule-msg">
-            <text class="title">奖品说明：</text>
-            <text wx:for="{{shareDetail.activity_promotion}}" wx:key="{{item}}">{{index+1}}.{{item.promotion_title}}</text>
+            <view class="title">奖品说明：</view>
+            <view wx:for="{{shareDetail.activity_promotion}}" wx:key="{{item}}" class="content">{{index+1}}.{{item.promotion_title}}</view>
           </view>
         </view>
         <image wx:if="{{imageUrlHead}}" src="{{imageUrlHead + '/defaults/c-image/mine/icon-delet@2x.png'}}" class="shareAndPrize-rule-close" @tap="closeCover"></image>
@@ -108,17 +110,17 @@
           current_merchant: merchantId
         }
         let res = await getShare.getShareAndPrizeDetail(data)
+        this.loaded()
         if (res.error !== ERR_OK) {
-          this.loaded()
           return
         }
-        this.loaded()
         this.shareDetail = res.data
         this.coverShow = true
         this.$apply()
       },
       closeCover() {
         this.coverShow = false
+        this.$apply()
       }
     }
 
@@ -267,19 +269,57 @@
         .shareAndPrize-rule-name
           display: flex
           flex-direction: column
-          font-size: $font-size-small
-          line-height: 22px
           margin-bottom: 20px
+
+          .title
+            line-height: 22px
+            font-size: $font-size-small
+            color: $color-text
+
+          .content
+            font-size: $font-size-small
+            line-height: 22px
+            color: #9b9b9b
+            display: flex
+            padding-left: 5px
+            position: relative
+            &::before
+              content: ''
+              display: block
+              width: 2px
+              height: 2px
+              border-radius: 50%
+              background: #9b9b9b
+              position: absolute
+              top: 10px
+              left: 0px
 
         .shareAndPrize-rule-msg
           display: flex
           flex-direction: column
-          font-size: $font-size-small
-          line-height: 22px
 
           .title
+            line-height: 22px
             font-size: $font-size-small
+            color: $color-text
+
+          .content
+            font-size: $font-size-small
+            line-height: 22px
             color: #9b9b9b
+            display: flex
+            padding-left: 5px
+            position: relative
+            &::before
+              content: ''
+              display: block
+              width: 2px
+              height: 2px
+              border-radius: 50%
+              background: #9b9b9b
+              position: absolute
+              top: 10px
+              left: 0px
 
         .shareAndPrize-rule-msg.first
           margin-bottom: 30px
