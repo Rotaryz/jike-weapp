@@ -30,9 +30,9 @@
       </view>
       <view class="share-wrapper">
         <view class="share-btn" @tap="showShareModal">
-          <image src="{{imageUri + '/defaults/c-image/recommend/pic-r_share3@2x.png'}}" class="share-img"
+          <image src="{{imageUri + '/defaults/c-image/recommend/pic-r_share5@2x.png'}}" class="share-img"
                  wx:if="{{imageUri && !coupon.activity_share}}"></image>
-          <image src="{{imageUri + '/defaults/c-image/recommend/pic-r_share2@2x.png'}}" class="share-img"
+          <image src="{{imageUri + '/defaults/c-image/recommend/pic-r_share4@2x.png'}}" class="share-img"
                  wx:if="{{imageUri && coupon.activity_share}}"></image>
           <view class="share-txt" wx:if="{{coupon.activity_share}}">分享有礼</view>
         </view>
