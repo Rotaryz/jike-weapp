@@ -30,22 +30,6 @@
         </button>
       </view>
     </form>
-    <!--<view @tap="" class="content-wrapper">-->
-    <!--<image class="icon" wx:if={{imageUri}} src="{{imageUri + '/defaults/c-image/recommend/icon-r_live@2x.png"></image>-->
-    <!--<view class="content">直播优惠</view>-->
-    <!--</view>-->
-    <!--<view @tap="goToActivity('share', '/pages/shareAndPrize/shareAndPrize')" class="content-wrapper">-->
-    <!--<image class="icon" wx:if={{imageUri}} src="{{imageUri + '/defaults/c-image/recommend/icon-r_share@2x.png"></image>-->
-    <!--<view class="content">分享有礼</view>-->
-    <!--</view>-->
-    <!--<view @tap="goToActivity('sign', '/pages/activity/activity?type=sign')" class="content-wrapper">-->
-    <!--<image class="icon" wx:if={{imageUri}} src="{{imageUri + '/defaults/c-image/recommend/icon-r_sign@2x.png"></image>-->
-    <!--<view class="content">签到红包</view>-->
-    <!--</view>-->
-    <!--<view @tap="goToActivity('lucky_draw','/pages/activity/activity?type=wheel')" class="content-wrapper">-->
-    <!--<image class="icon" wx:if={{imageUri}} src="{{imageUri + '/defaults/c-image/recommend/icon-turntable@2x.png"></image>-->
-    <!--<view class="content">大转盘 </view>-->
-    <!--</view>-->
     <view class="tab-container">
       <view class="tab-wrapper">
         <view class="tab-content border-bottom-1px">
@@ -83,7 +67,7 @@
                 <view class="avatar" wx:for="{{item.customer_images}}" wx:key="unique" wx:for-item="avatar">
                   <image src="{{avatar}}" alt="" class="full-image"></image>
                 </view>
-                <view class="more" wx:if="{{item.favorite_count > 5}}">
+                <view class="more" wx:if="{{item.customer_images.length === 5}}">
                   <view class="dot"></view>
                   <view class="dot"></view>
                   <view class="dot"></view>
@@ -195,7 +179,8 @@
       const data = {
         pages: '/pages/recommend/recommend',
         params: '',
-        from: 'jike_c'
+        from: 'jike_c',
+        merchant_id: this.merchantId
       }
       await Merchants.saveLog(data)
     }
