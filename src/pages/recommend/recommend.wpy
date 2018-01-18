@@ -232,6 +232,7 @@
       if (res.error === ERR_OK) {
         const data = res.data
         if (data.length === 0) {
+          this.contentPage -= 1
           this.moreContent = false
           if (this.contentPage > 1) {
             this.$invoke('underline2', 'show')
