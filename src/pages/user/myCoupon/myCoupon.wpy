@@ -7,18 +7,18 @@
     </view>
 
     <view class="myCoupon-nothing" wx:if="{{couponList.length===0}}">
-      <image wx:if="{{imageUrlHead}}" src="{{imageUrlHead + '/defaults/c-image/mine/pic-my-nocoupon.png'}}" class="myCoupon-nothing-img"></image>
+      <image wx:if="{{imageUrlHead}}" src="{{imageUrlHead + '/defaults/c-image/mine/pic-empty_coupon@2x.png'}}" class="myCoupon-nothing-img"></image>
       <view class="myCoupon-nothing-txt">您还没有相关优惠券</view>
       <view class="myCoupon-nothingBtn" @tap="toRecommend">随便逛逛</view>
     </view>
 
     <scroll-view scroll-y class="{{menuIdx===0?'myCoupon-couponList':'myCoupon-couponList-ccc'}}" bindscrolltolower="couponLower" wx:if="{{couponList.length>0}}">
-      <view class="myCoupon-couponList-item" wx:for="{{couponList}}" wx:key="{{index}}" @tap="couponDetail({{item.id}},{{item.promotionType}},{{item.codeId}})">
+      <view class="myCoupon-couponList-item" wx:for="{{couponList}}" wx:key="{{index}}" @tap="couponDetail({{item.id}},{{item.promotionType}},{{item.codeId}},{{item.merchantId}})">
         <view class="couponList-item-head-container">
           <image class="coupon-bc" wx:if="{{imageUrlHead}}" src="{{imageUrlHead + '/defaults/c-image/mine/pic-couponbg@2x.png'}}"></image>
           <view class="couponList-item-head-left">
             <view class="couponList-itemPay">
-              <image src="{{item.imageUrl}}" class="promotion-image" wx:if="{{item.promotionType==='exchange'}}"></image>
+              <image src="{{item.imageUrl}}" class="promotion-image" wx:if="{{item.promotionType==='exchange' && imageUrlHead}}"></image>
               <view wx:if="{{item.promotionType!=='exchange'}}"><text class="couponList-midMoney">￥</text><text class="couponList-bigMoney">{{item.price?item.price:''}}</text></view>
             </view>
             <view class="couponList-itemMsg">
@@ -36,6 +36,7 @@
           <image class="exChange-img" src="{{imageUrlHead + '/defaults/c-image/mine/pic-m_certificate@2x.png'}}" wx:if="{{item.promotionType==='exchange' && imageUrlHead}}"></image>
         </view>
       </view>
+      <Underline></Underline>
     </scroll-view>
 
     <Toast></Toast>
@@ -49,6 +50,8 @@
   import myCoupon from '@/api/coupon'
   import Toast from '@/base/toast/toast'
   import URIS from 'common/js/config'
+  import {ERR_OK} from '@/api/base'
+  import Underline from '@/base/underline-block/underline-block'
 
   export default class MyCoupon extends wepy.page {
     mixins = [base]
@@ -58,7 +61,8 @@
     }
 
     components = {
-      Toast
+      Toast,
+      Underline
     }
 
     data = {
@@ -76,12 +80,13 @@
         this.menuIdx = idx
         this.couponList = []
         let resList = await this._getCouponList(this.menuIdx, 1)
-        if (resList.error === 0) {
-          resList = []
+        if (resList.error !== ERR_OK) {
+          return
         }
         this.page = 1
         this.nothingAdd = false
-        this.couponList = this._computed(resList)
+        this.$invoke('Underline', 'hide')
+        this.couponList = this._computed(resList.data)
         this.$apply()
         this.loaded()
       },
@@ -90,13 +95,14 @@
           this.LowerLoading = true
           this.page++
           let res = await this._getCouponList(this.menuIdx, this.page)
-          if (res.error === 0) {
-            res = []
+          if (res.error !== ERR_OK) {
+            return
           }
-          if (res.length === 0) {
+          if (res.data.length === 0) {
             this.nothingAdd = true
+            this.$invoke('Underline', 'show')
           }
-          let resArr = this._computed(res)
+          let resArr = this._computed(res.data)
           this.couponList.push(...resArr)
           this.LowerLoading = false
           this.$apply()
@@ -111,13 +117,13 @@
       toRecommend() {
         wx.switchTab({url: '/pages/recommend/recommend'})
       },
-      couponDetail(id, type, codeId) {
+      couponDetail(id, type, codeId, merchantId) {
         if (this.menuIdx === 0) {
           if (type === 'exchange') {
             this.$navigate('/pages/coupon-use/couponUse?type=' + type + '&id=' + codeId)
             return
           }
-          this.$navigate('/pages/coupon-detail/coupon-detail?type=1&id=' + id)
+          this.$navigate('/pages/coupon-detail/coupon-detail?type=1&id=' + id + '&currentMerchant=' + merchantId)
         }
       }
     }
@@ -132,11 +138,13 @@
 
     async load() {
       let resList = await this._getCouponList(this.menuIdx, 1)
-      if (resList.error === 0) {
-        resList = []
+      if (resList.error !== ERR_OK) {
+        this.loaded()
+        return
       }
-      this.couponList = this._computed(resList)
+      this.couponList = this._computed(resList.data)
       this.loaded()
+      this.$apply()
     }
 
     async _getCouponList(idx, page) {
@@ -159,7 +167,8 @@
           codeId: item.id,
           type: item.gift_bag_id,
           promotionType: item.promotion.promotion_type,
-          imageUrl: item.promotion.promotion_img || ''
+          imageUrl: item.promotion.promotion_img || '',
+          merchantId: item.merchant_id
         }
       })
     }
@@ -210,15 +219,15 @@
     align-items: center
 
     .myCoupon-nothing-img
-      width: 73px
-      height: 53.5px
-      margin-top: 50rpx
-      margin-bottom: 17rpx
+      width: 100px
+      height: 80px
+      margin-top: 32px
+      margin-bottom: 8px
 
     .myCoupon-nothing-txt
       font-size: $font-size-small
       line-height: 33rpx
-      margin-bottom: 68rpx
+      margin-bottom: 15px
 
     .myCoupon-nothingBtn
       width: 86px
@@ -374,6 +383,11 @@
             display: flex
             align-items: center
             justify-content: center
+
+            .promotion-image
+              width: 56px
+              height: 28px
+              border-radius: 2px
 
             .couponList-midMoney
               font-size: $font-size-small-s

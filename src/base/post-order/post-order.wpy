@@ -41,6 +41,7 @@
 
 <script>
   import wepy from 'wepy'
+  import {ERR_OK} from 'api/base'
   import Order from 'api/order'
   import base from 'common/mixins/base'
 
@@ -116,7 +117,12 @@
           price,
           count: this.count
         }
-        const res = await Order.operation(data)
+        const json = await Order.operation(data)
+        if (json.error !== ERR_OK) {
+          this.$emit('throw', json.message)
+          return
+        }
+        const res = json.data
         this.loaded()
         const {timestamp, nonceStr, signType, paySign} = res.pay_info
         wx.requestPayment({
@@ -133,15 +139,16 @@
             const total = this.total
             const status = 'success'
             this.$parent.$navigate(`/pages/pay-result/pay-result?orderId=${orderId}&total=${total}&status=${status}`)
+            this._hide()
           },
           fail: () => {
-            const orderId = res.order_id
-            const total = this.total
-            const status = 'fail'
-            this.$parent.$navigate(`/pages/pay-result/pay-result?orderId=${orderId}&total=${total}&status=${status}`)
+//            const orderId = res.order_id
+//            const total = this.total
+//            const status = 'fail'
+//            this.$parent.$navigate(`/pages/pay-result/pay-result?orderId=${orderId}&total=${total}&status=${status}`)
           },
           complete: () => {
-            this._hide()
+//            this._hide()
           }
         })
       },

@@ -109,13 +109,13 @@ export default class Tips {
       title: title,
       image: '/common/image/icon-global_failure@2x.png',
       mask: true,
-      duration: 500
+      duration: 2000
     })
     // 隐藏结束回调
     if (onHide) {
       setTimeout(() => {
         onHide()
-      }, 500)
+      }, 2000)
     }
   }
 

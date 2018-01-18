@@ -1,6 +1,7 @@
 /* eslint-disable no-undef */
 import wepy from 'wepy'
 import User from 'api/user'
+import {ERR_OK} from '@/api/base'
 
 export default class userMixin extends wepy.mixin {
   isFunction(item) {
@@ -98,7 +99,11 @@ export default class userMixin extends wepy.mixin {
       iv: wxUser.iv,
       encryptedData: wxUser.encryptedData
     }
-    const res = await User.authorise(data)
+    const Json = await User.authorise(data)
+    if (Json.error !== ERR_OK) {
+      return ''
+    }
+    const res = Json.data
     token = res.jk_token
     if (token) {
       wepy.setStorageSync('token', token)
@@ -135,7 +140,11 @@ export default class userMixin extends wepy.mixin {
   }
 
   async _getSqlUserInfo(token) {
-    const res = await User.getUserInfo({jk_token: token})
+    const Json = await User.getUserInfo({jk_token: token})
+    if (Json.error !== ERR_OK) {
+      return {}
+    }
+    const res = Json.data
     wepy.setStorageSync('openId', res.openid)
     return res
   }

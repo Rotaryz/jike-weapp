@@ -31,10 +31,11 @@
 
         <view class="myRedPacket-list-item-num"><text class="myRedPacket-list-item-num-money">{{item.price}}</text>元</view>
       </view>
+      <Underline></Underline>
     </scroll-view>
 
     <view class="myRedPacket-noList" wx:if="{{packetList.length===0}}">
-      <image wx:if="{{imageUrlHead}}" src="{{imageUrlHead + '/defaults/c-image/mine/pic-my-money.png'}}" class="myRedPacket-noList-img"></image>
+      <image wx:if="{{imageUrlHead}}" src="{{imageUrlHead + '/defaults/c-image/mine/pic-no_moeny@2x.png'}}" class="myRedPacket-noList-img"></image>
       <view class="myRedPacket-noList-txt">您还没有红包</view>
     </view>
     <Toast></Toast>
@@ -48,6 +49,8 @@
   import GetRedPacket from 'api/myRedPacket'
   import Toast from '@/base/toast/toast'
   import URIS from 'common/js/config'
+  import {ERR_OK} from '@/api/base'
+  import Underline from '@/base/underline-block/underline-block'
 
   export default class RedPacket extends wepy.page {
     mixins = [base]
@@ -60,7 +63,8 @@
     }
 
     components = {
-      Toast
+      Toast,
+      Underline
     }
 
     data = {
@@ -78,18 +82,19 @@
         if (!this.LowerLoading && !this.nothingAdd) {
           this.LowerLoading = true
           this.page++
-          console.log(this.page)
-          let res = await this._getRedPacketList(this.page)
-          if (res.error === 0) {
-            res = []
+          let Json = await this._getRedPacketList(this.page)
+          this.loaded()
+          if (Json.error !== ERR_OK) {
+            return
           }
+          let res = Json.data
           if (res.length === 0) {
             this.nothingAdd = true
+            this.$invoke('Underline', 'show')
           }
           this.packetList.push(...res)
           this.LowerLoading = false
           this.$apply()
-          this.loaded()
         } else if (this.nothingAdd) {
           // 到底
         }
@@ -104,20 +109,19 @@
     }
 
     async load() {
-      this.packetTotal = await GetRedPacket.getTotalRedpacket()
-      if (this.packetTotal.error === 0) {
-        this.packetTotal = {
-          redpacker_count_monies: '0.00',
-          redpacker_count: '0'
-        }
+      let Json = await GetRedPacket.getTotalRedpacket()
+      if (Json.error !== ERR_OK) {
+        this.loaded()
+        return
       }
-      console.log(this.packetTotal)
+      this.packetTotal = Json.data
       this.packetTotalNum = this._computed(this.packetTotal.redpacker_count_monies)
-      this.packetList = await this._getRedPacketList(1)
-      if (this.packetList.error === 0) {
-        this.packetList = []
+      let Json1 = await this._getRedPacketList(1)
+      if (Json1.error !== ERR_OK) {
+        this.loaded()
+        return
       }
-      console.log(this.packetList)
+      this.packetList = Json1.data
       this.$apply()
       this.loaded()
     }
@@ -233,9 +237,9 @@
         align-items: center
 
         .myRedPacket-noList-img
-          width: 83.5px
-          height: 65px
-          margin: 32.5px 0 17.5px 15px
+          width: 100px
+          height: 80px
+          margin: 15px 0
 
         .myRedPacket-noList-txt
           font-size: $font-size-small

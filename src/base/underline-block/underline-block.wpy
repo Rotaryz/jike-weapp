@@ -1,0 +1,59 @@
+<template>
+  <view class="underline-block" wx:if="{{showLine}}">
+    <view class="line"></view>
+    <view class="dot"></view>
+    <view class="content">{{content}}</view>
+    <view class="dot"></view>
+    <view class="line"></view>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+
+  export default class Underline extends wepy.component {
+    data = {
+      showLine: false,
+      content: '已经到底啦'
+    }
+
+    methods = {
+      show() {
+        this.showLine = true
+        this.$apply()
+      },
+      hide() {
+        this.showLine = false
+        this.$apply()
+      }
+    }
+  }
+</script>
+
+<style lang="stylus">
+  @import '../../common/stylus/variable'
+
+  .underline-block
+    height: 55px
+    background: $color-background
+    display: flex
+    justify-content: center
+    align-items: center
+
+    .line
+      height: 1px
+      width: 34px
+      transform: scale(1, 0.5)
+      background: #ccc
+
+    .dot
+      width: 1px
+      height: 1px
+      border-radius: 50%
+      background: #ccc
+      margin: 0 5px
+
+    .content
+      font-size: $font-size-small
+      color: #c8c8c8
+</style>

@@ -13,7 +13,7 @@
 
     <scroll-view scroll-y class="myOrder-orderBox" bindscrolltolower="orderLower">
       <view class="myOrder-noOrderMsg" wx:if="{{noOrder}}">
-        <image src="{{noOrderIcon[menuIdx]}}" wx:if="noOrder" class="myOrder-noOrderMsg-Img"></image>
+        <image src="{{imageUrlHead + '/defaults/c-image/mine/pic-empty_order@2x.png'}}" wx:if="{{imageUrlHead}}" class="myOrder-noOrderMsg-Img"></image>
         <view class="myOrder-noOrderMsg-txt">您还没有相关订单</view>
         <view class="myOrder-noOrderBtn" @tap="toRecommend">随便逛逛</view>
       </view>
@@ -31,10 +31,11 @@
           </view>
           <view class="myOrder-orderList-item-btnBox">
             <view class="myOrder-orderList-item-status">{{orderItemStatus[item.status]}}</view>
-            <view class="myOrder-orderList-item-btn" catchtap="useCoupon({{item.id}},{{item.promotion.id}},{{item.promotion_type}})">{{orderItemBtnTxt[menuIdx]}}</view>
+            <view class="myOrder-orderList-item-btn" catchtap="useCoupon({{item.id}},{{item.promotion.id}},{{item.promotion_type}},{{item.merchant_id}})">{{orderItemBtnTxt[menuIdx]}}</view>
           </view>
         </view>
       </view>
+      <Underline></Underline>
     </scroll-view>
 
     <Appraise></Appraise>
@@ -51,6 +52,8 @@
   import getMyOrder from '@/api/myOrder'
   import Appraise from '@/base/appraise/appraise'
   import URIS from 'common/js/config'
+  import {ERR_OK} from '@/api/base'
+  import Underline from '@/base/underline-block/underline-block'
 
   export default class MyOrder extends wepy.page {
     mixins = [base]
@@ -65,7 +68,8 @@
     components = {
       PhoneTest,
       PhoneTestHint,
-      Appraise
+      Appraise,
+      Underline
     }
 
     data = {
@@ -90,11 +94,13 @@
         this.noOrder = false
         this.page = 1
         this.nothingAdd = false
+        this.$invoke('Underline', 'hide')
         let resList = await this._getOrderList(idx, this.page)
-        if (resList.error === 0) {
-          resList = []
+        if (resList.error !== ERR_OK) {
+          this.loaded()
+          return
         }
-        this.orderList = resList
+        this.orderList = resList.data
         this.noOrder = this.orderList.length === 0 ? 1 : false
         this.$apply()
         this.loaded()
@@ -106,10 +112,16 @@
           this.LowerLoading = true
           this.page++
           const res = await this._getOrderList(this.menuIdx, this.page)
-          if (res.length === 0) {
-            this.nothingAdd = true
+          if (res.error !== ERR_OK) {
+            this.loaded()
+            this.$invoke('Toast', 'show', res.message)
+            return
           }
-          this.orderList.push(...res)
+          if (res.data.length === 0) {
+            this.nothingAdd = true
+            this.$invoke('Underline', 'show')
+          }
+          this.orderList.push(...res.data)
           this.$apply()
           this.LowerLoading = false
           this.loaded()
@@ -121,7 +133,7 @@
         let url = '/pages/user/myOrder-detail/myOrderDetail?status=' + status + '&id=' + id
         this.$navigate(url)
       },
-      async useCoupon(orderId, couponId, type) {
+      async useCoupon(orderId, couponId, type, merchantId) {
         switch (this.menuIdx) {
           case 0:
             let data = {
@@ -129,11 +141,15 @@
             }
             let res = await getMyOrder.paymentOrder(data)
             this.loaded()
-            const {timestamp, nonceStr, signType, paySign} = res.pay_info
+            if (res.error !== ERR_OK) {
+              this.$invoke('Toast', 'show', res.message)
+              return
+            }
+            const {timestamp, nonceStr, signType, paySign} = res.data.pay_info
             const pay = await wepy.requestPayment({
               timeStamp: timestamp,
               nonceStr,
-              package: res.pay_info.package,
+              package: res.data.pay_info.package,
               signType,
               paySign
             })
@@ -156,7 +172,7 @@
             } else if (type * 1 === 2) {
               couponType = 2
             }
-            this.$navigate('/pages/coupon-detail/coupon-detail?id=' + couponId + '&type=' + couponType)
+            this.$navigate('/pages/coupon-detail/coupon-detail?id=' + couponId + '&type=' + couponType + '&currentMerchant=' + merchantId)
             break
         }
       },
@@ -183,10 +199,11 @@
         this.menuIdx = 1
       }
       let resList = await this._getOrderList(this.menuIdx, 1)
-      if (resList.error === 0) {
-        resList = []
+      if (resList.error !== 0) {
+        this.loaded()
+        return
       }
-      this.orderList = resList
+      this.orderList = resList.data
       this.noOrder = this.orderList.length === 0 ? 1 : false
 //      let customerId = wx.getStorageSync('customerId')
 //      if (customerId) {
@@ -201,6 +218,7 @@
         this.isPhone = 0
       }
       this.loaded()
+      this.$apply()
     }
 
     async _getOrderList(idx, page) {
@@ -217,8 +235,12 @@
         this.page = 1
         this.nothingAdd = false
         let resList = await this._getOrderList(2, 1)
-        this.orderList = resList
         this.loaded()
+        if (resList.error !== ERR_OK) {
+          this.$invoke('Toast', 'show', resList.message)
+          return
+        }
+        this.orderList = resList.data
         this.$apply()
       }
     }
@@ -272,15 +294,14 @@
         align-items: center
 
         .myOrder-noOrderMsg-Img
-          width: 92.5px
-          height: 53px
+          width: 100px
+          height: 80px
           margin-bottom: 10px
-          padding-left: 15px
 
         .myOrder-noOrderMsg-txt
           font-size: $font-size-small
           color: $color-text
-          margin-bottom: 35px
+          margin-bottom: 15px
 
         .myOrder-noOrderBtn
           width: 65.5px

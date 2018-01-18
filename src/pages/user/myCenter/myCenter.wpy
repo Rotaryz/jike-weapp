@@ -55,6 +55,7 @@
   import Tips from '@/common/js/tips'
   import Toast from '@/base/toast/toast'
   import URIS from 'common/js/config'
+  import {ERR_OK} from '@/api/base'
 
   export default class MyCenter extends wepy.page {
     mixins = [users, base]
@@ -98,11 +99,11 @@
     async _updateMsg(data) {
       let res = await user.updataMsg(data)
       this.loaded()
-      if (res.error === 0) {
+      if (res.error === ERR_OK) {
         Tips.success('修改成功')
         return true
       } else {
-        this.$invoke('Toast', 'show', '修改失败')
+        this.$invoke('Toast', 'show', res.message)
         return false
       }
     }
@@ -122,7 +123,7 @@
       genderChange(e) {
         let choiceValue = Number(e.detail.value) + 1
         let self = this
-        if (choiceValue === Number(self.userInfo.sex)) {
+        if (choiceValue === Number(self.gender)) {
           return
         }
         let data = {
@@ -136,7 +137,7 @@
         this.$apply()
       },
       birthdayChange(e) {
-        if (e.detail.value === this.userInfo.birth) {
+        if (e.detail.value === this.birth) {
           return
         }
         let data = {
@@ -152,10 +153,10 @@
       async updateAvatarImg() {
         const res = await user.updateAvatar('image_id')
         this.loaded()
-        if (res.error === 0) {
+        if (res.error === ERR_OK) {
           Tips.success('修改成功')
         } else {
-          this.$invoke('Toast', 'show', '修改失败')
+          this.$invoke('Toast', 'show', res.message)
           return false
         }
         this.avatar = res.data

@@ -66,9 +66,14 @@
           <repeat for="{{couponList}}" key="index" index="index" item="item">
             <coupon :coupon.sync="item" @handleClick.user="goToCouponDetail"></coupon>
           </repeat>
+          <view class="nothing-box" wx:if="{{couponNothing}}">
+            <image src="{{imageUri + '/defaults/c-image/mine/pic-empty_coupon@2x.png'}}" wx:if="{{imageUri}}" class="nothing-img"></image>
+            <view class="nothing-txt">暂无优惠券</view>
+          </view>
+          <underline1></underline1>
         </view>
         <view class="discover-panel" style="display: {{activeTab === '2' ? 'block':''}}">
-          <navigator url="/pages/content-detail/content-detail?id={{item.id}}" class="ticky-wrapper"
+          <navigator url="/pages/content-detail/content-detail?id={{item.id}}&currentMerchant={{item.merchant_id}}" class="ticky-wrapper"
                      wx:for="{{contents}}" wx:key="unique">
             <view class="ticky">
               <image src="{{item.image_url}}" class="full-image"></image>
@@ -98,6 +103,11 @@
               </view>
             </view>
           </navigator>
+          <view class="nothing-box" wx:if="{{contentNothing}}">
+            <image src="{{imageUri + '/defaults/c-image/mine/pic-empty_content@2x.png'}}" wx:if="{{imageUri}}" class="nothing-img"></image>
+            <view class="nothing-txt">暂无内容</view>
+          </view>
+          <underline2></underline2>
         </view>
       </view>
     </view>
@@ -114,10 +124,12 @@
   import Coupon from '@/base/coupon/coupon'
   import Toast from '@/base/toast/toast'
 //  import PhoneTest from '@/base/phoneTest/phoneTest'
+  import {ERR_OK} from 'api/base'
   import CouponApi from 'api/coupon'
   import ContentsApi from 'api/contents'
   import Giftbag from '@/base/giftbag/giftbag'
   import URIS from 'common/js/config'
+  import Underline from '@/base/underline-block/underline-block'
 
   const COUPON_TYPE = 1
   const PACKAGE_TYPE = 2
@@ -142,20 +154,27 @@
       couponPage: 1,
       contentPage: 0,
       moreCoupon: true,
-      moreContent: true
+      moreContent: true,
+      couponNothing: false,
+      contentNothing: false
     }
 
-    onReachBottom() {
+    async onReachBottom() {
       if (this.activeTab === COUPON_TAB && this.moreCoupon) {
-        this._getCouponList()
+        await this._getCouponList()
       } else if (this.activeTab === DISCOVER_TAB && this.moreContent) {
-        this._getMerchantContents()
+        await this._getMerchantContents()
       }
     }
 
     async onShow() {
       await this.load()
       this.$invoke('Slider', 'init', this.shopImages.length)
+      if (this.activeTab === DISCOVER_TAB) {
+        this.contents = []
+        this.contentPage = 0
+        await this._getMerchantContents()
+      }
     }
 
     onHide() {
@@ -171,23 +190,35 @@
     }
 
     async _getShopCouponList() {
-      const data = await CouponApi.getShopCouponList(this.merchantId)
-      this.shopImages = this._checkPropety(data.merchant_data.shop_image)
-      this.couponList = data.promotions
-      this.giftBags = data.gift_bags
-      this.activities = data.activities || {}
-      this.$apply()
+      const res = await CouponApi.getShopCouponList(this.merchantId)
+      if (res.error === ERR_OK) {
+        const data = res.data
+        this.shopImages = this._checkPropety(data.merchant_data.shop_image)
+        this.couponList = data.promotions
+        this.giftBags = data.gift_bags
+        this.activities = data.activities || {}
+        if (this.couponList.length === 0 && this.giftBags.length === 0) {
+          this.couponNothing = true
+        } else {
+          this.couponNothing = false
+        }
+        this.$apply()
+      }
     }
 
     async _getCouponList() {
       this.couponPage += 1
       const res = await CouponApi.getShopCouponList(this.merchantId, {page: this.couponPage})
-      if (res.promotions.length === 0) {
-        this.moreCoupon = false
-      } else {
-        this.couponList = [...this.couponList, ...res.promotions]
+      if (res.error === ERR_OK) {
+        const data = res.data
+        if (data.promotions.length === 0) {
+          this.moreCoupon = false
+          this.$invoke('underline1', 'show')
+        } else {
+          this.couponList = [...this.couponList, ...data.promotions]
+        }
+        this.$apply()
       }
-      this.$apply()
       this.loaded()
     }
 
@@ -199,13 +230,22 @@
       if (this.$parent.globalData.merchantId) {
         params.current_merchant = this.$parent.globalData.merchantId
       }
-      const data = await ContentsApi.getMerchantContents(params)
-      if (data.length === 0) {
-        this.moreContent = false
-      } else {
-        this.contents = [...this.contents, ...data]
+      const res = await ContentsApi.getMerchantContents(params)
+      if (res.error === ERR_OK) {
+        const data = res.data
+        if (data.length === 0) {
+          this.moreContent = false
+          this.$invoke('underline2', 'show')
+        } else {
+          this.contents = [...this.contents, ...data]
+        }
+        if (this.contents.length > 0) {
+          this.contentNothing = false
+        } else {
+          this.contentNothing = true
+        }
+        this.$apply()
       }
-      this.$apply()
       this.loaded()
     }
 
@@ -264,7 +304,9 @@
       Slider,
       package: Giftbag,
       coupon: Coupon,
-      toast: Toast
+      toast: Toast,
+      underline1: Underline,
+      underline2: Underline
 //      'phone-test': PhoneTest
     }
 
@@ -614,4 +656,18 @@
                     display: block
                 .icon.last
                   margin-left: 22px
+
+  .nothing-box
+    height: 200px
+    display: flex
+    flex-direction: column
+    align-items: center
+    justify-content: center
+    .nothing-img
+      width: 100px
+      height: 80px
+      margin-bottom: 15px
+    .nothing-txt
+      font-size: $font-size-small
+      color: $color-text
 </style>

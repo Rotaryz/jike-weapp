@@ -17,7 +17,7 @@
       </view>
       <view class="orderDetail-head-status">
         <view class="orderDetail-head-statusTxt">{{statusTxt[orderMsg.status]}}</view>
-        <view class="orderDetail-head-statusBtn" @tap="followWork({{orderMsg.status}}, {{orderMsg.id}})">{{btnTxt[orderMsg.status]}}</view>
+        <view class="orderDetail-head-statusBtn" @tap="followWork({{orderMsg.status}}, {{orderMsg.id}}, {{orderMsg.merchant_id}})">{{btnTxt[orderMsg.status]}}</view>
       </view>
     </view>
 
@@ -92,6 +92,7 @@
   import Appraise from '@/base/appraise/appraise'
   import Toast from '@/base/toast/toast'
   import URIS from 'common/js/config'
+  import {ERR_OK} from '@/api/base'
 
   export default class MyCoupon extends wepy.page {
     mixins = [base]
@@ -126,21 +127,30 @@
     }
 
     async load(id) {
-      this.orderMsg = await getMyOrder.getOrderDetail(id)
-      this.$apply()
+      let res = await getMyOrder.getOrderDetail(id)
       this.loaded()
+      if (res.error !== ERR_OK) {
+        return
+      }
+      this.orderMsg = res.data
+      this.$apply()
     }
 
     methods = {
-      async followWork(status, id) {
+      async followWork(status, id, merchantId) {
         let num = Number(status)
         switch (num) {
           case 0:
             let data = {
               order_id: id
             }
-            let res = await getMyOrder.paymentOrder(data)
+            let Json = await getMyOrder.paymentOrder(data)
             this.loaded()
+            if (Json.error !== ERR_OK) {
+              this.$invoke('Toast', 'show', Json.message)
+              return
+            }
+            let res = Json.data
             const {timestamp, nonceStr, signType, paySign} = res.pay_info
             const pay = await wepy.requestPayment({
               timeStamp: timestamp,
@@ -173,7 +183,7 @@
             } else if (this.orderMsg.promotion_type * 1 === 2) {
               couponType = 2
             }
-            this.$navigate('/pages/coupon-detail/coupon-detail?id=' + this.orderMsg.promotion_id + '&type=' + couponType)
+            this.$navigate('/pages/coupon-detail/coupon-detail?id=' + this.orderMsg.promotion_id + '&type=' + couponType + '&currentMerchant=' + merchantId)
             break
         }
       },
@@ -184,13 +194,14 @@
       },
       couponDetail() {
         let id = this.orderMsg.promotion_id
+        let merchantId = this.orderMsg.merchant_id
         let couponType
         if (this.orderMsg.promotion_type * 1 === 1) {
           couponType = 1
         } else if (this.orderMsg.promotion_type * 1 === 2) {
           couponType = 2
         }
-        this.$navigate('/pages/coupon-detail/coupon-detail?id=' + id + '&type=' + couponType)
+        this.$navigate('/pages/coupon-detail/coupon-detail?id=' + id + '&type=' + couponType + '&currentMerchant=' + merchantId)
       },
       serviceValChange(e) {
         this.refundChecked = e.detail.value
@@ -203,14 +214,14 @@
         }
         let cause = this.refundCause[this.refundChecked].txt
         const res = await getMyOrder.orderRebate(this.orderMsg.id, this.orderMsg.count, this.orderMsg.total, cause)
-        if (res.status === 'success') {
+        if (res.error === ERR_OK) {
           this.refundIng = false
           this.orderMsg = await getMyOrder.getOrderDetail(this.orderMsg.id)
           this.loaded()
           this.$apply()
           this.$navigate('../refund/refund?id=' + this.orderMsg.id)
         } else {
-          this.$invoke('Toast', 'show', '申请退款失败')
+          this.$invoke('Toast', 'show', res.message)
         }
       },
       closeRefund() {

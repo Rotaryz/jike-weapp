@@ -7,13 +7,13 @@
     </view>
 
     <view class="mySelect-nothing" wx:if="{{nothingBoxShow}}">
-      <image src="{{emptyImg[menuIdx]}}" class="mySelect-nothing-img"></image>
+      <image src="{{emptyImg[menuIdx]}}" wx:if="{{imageUrlHead}}" class="mySelect-nothing-img"></image>
       <view class="mySelect-nothing-txt">{{emptyMsg[menuIdx]}}</view>
       <view class="mySelect-nothingBtn" @tap="toRecommend">随便逛逛</view>
     </view>
 
     <scroll-view scroll-y class="mySelect-couponList" bindscrolltolower="couponLower" wx:if="{{couponList.length>0}}">
-      <view class="mySelect-couponList-item" wx:for="{{couponList}}" wx:key="{{index}}" @tap="couponDetail({{item.id}})">
+      <view class="mySelect-couponList-item" wx:for="{{couponList}}" wx:key="{{index}}" @tap="couponDetail({{item.id}}, {{item.merchantId}})">
         <view class="couponList-item-head-container">
           <image class="coupon-bc" wx:if="{{imageUrlHead}}" src="{{imageUrlHead + '/defaults/c-image/mine/pic-couponbg@2x.png'}}"></image>
           <view class="couponList-item-head-left">
@@ -32,16 +32,17 @@
           </view>
         </view>
       </view>
+      <Underline></Underline>
     </scroll-view>
 
     <scroll-view scroll-y class="mySelect-contentList" bindscrolltolower="contentLower" wx:if="{{contentList.length > 0}}">
-      <view class="mySelect-contentList-item" wx:for="{{contentList}}" wx:key="{{index}}" @tap="contentDetail({{item.content.id}})">
-        <image src="{{item.content.image.url}}" class="mySelect-contentList-item-contentImg"></image>
+      <view class="mySelect-contentList-item" wx:for="{{contentList}}" wx:key="{{index}}" @tap="contentDetail({{item.content_id}}, {{item.merchant_id}})">
+        <image src="{{item.content.image_url}}" class="mySelect-contentList-item-contentImg"></image>
         <view class="mySelect-contentList-Msg">
           <view class="mySelect-contentList-Msg-left">
-            <view class="mySelect-contentList-Msg-left-avatarBox" wx:for="{{item.content.customer_content_favorite}}" wx:key="{{item}}">
+            <view class="mySelect-contentList-Msg-left-avatarBox" wx:for="{{item.content.customer_images}}" wx:key="{{item}}">
               <view class="mySelect-contentList-avatarBox-item">
-                <image class="mySelect-contentList-avatarBox-img" src="{{item.wechat_data.avatar_url}}"></image>
+                <image class="mySelect-contentList-avatarBox-img" src="{{item}}"></image>
               </view>
             </view>
             <view class="dot-box" wx:if="{{item.content.favorite_count>5}}">
@@ -58,17 +59,18 @@
             <view class="mySelect-contentList-select">
               <image wx:if="{{imageUrlHead}}" src="{{imageUrlHead + '/defaults/c-image/mine/icon-r_share1@2x.png'}}" class="mySelect-contentList-select-star"></image>
               <view class="mySelect-contentList-select-left">
-                <text>{{item.content.favorite_count}}</text>
+                <text>{{item.content.share_count}}</text>
               </view>
             </view>
           </view>
         </view>
       </view>
+      <Underline></Underline>
     </scroll-view>
 
     <scroll-view scroll-y class="mySelect-kacList" bindscrolltolower="kacLower" wx:if="{{kacList.length > 0}}">
       <view class="mySelect-couponList-item" wx:for="{{kacList}}" wx:key="{{index}}">
-        <view class="mySelect-couponList-item-main" @tap="kacDetail({{item.gift_bag_id}})">
+        <view class="mySelect-couponList-item-main" @tap="kacDetail({{item.gift_bag_id}},{{item.merchant_id}})">
           <view class="couponList-item-head-container">
             <image class="coupon-bc" wx:if="{{imageUrlHead}}" src="{{imageUrlHead + '/defaults/c-image/mine/pic-couponbg@2x.png'}}"></image>
             <view class="couponList-item-head-left">
@@ -99,6 +101,7 @@
           </view>
         </view>
       </view>
+      <Underline></Underline>
     </scroll-view>
   </view>
 </template>
@@ -109,6 +112,8 @@
   import base from 'common/mixins/base'
   import mySelect from '@/api/mySelect'
   import URIS from 'common/js/config'
+  import {ERR_OK} from '@/api/base'
+  import Underline from '@/base/underline-block/underline-block'
 
   export default class MySelect extends wepy.page {
     mixins = [base]
@@ -121,7 +126,7 @@
       imageUrlHead: URIS.image,
       tabList: ['优惠券', '内容', '礼包'],
       menuIdx: 0,
-      emptyImg: [URIS.image + '/defaults/c-image/mine/pic-my-nocoupon.png', URIS.image + '/defaults/c-image/mine/pic-my_no_c.png', URIS.image + '/defaults/c-image/mine/pic-my_no_c.png'],
+      emptyImg: [URIS.image + '/defaults/c-image/mine/pic-empty_coupon@2x.png', URIS.image + '/defaults/c-image/mine/pic-empty_content@2x.png', URIS.image + '/defaults/c-image/mine/pic-empty_coupon@2x.png'],
       emptyMsg: ['您还没有相关优惠券', '您还没有相关收藏', '您还没有相关收藏'],
       couponList: [],
       contentList: [],
@@ -132,22 +137,29 @@
       nothingBoxShow: true
     }
 
+    components = {
+      Underline
+    }
+
     methods = {
       async changeTab(idx) {
         this.menuIdx = idx
         this.contentList = []
         this.kacList = []
         this.couponList = []
+        this.$invoke('Underline', 'hide')
         switch (this.menuIdx) {
           case 0:
             let resList = await this._getCouponList(1)
-            if (resList.error === 0) {
-              resList = []
+            this.loaded()
+            if (resList.error !== ERR_OK) {
+              this.$invoke('Toast', 'show', resList.message)
+              return
             }
             this.page = 1
             this.nothingAdd = false
             this.LowerLoading = false
-            this.couponList = this._computed(resList)
+            this.couponList = this._computed(resList.data)
             if (this.couponList.length > 0) {
               this.nothingBoxShow = false
             } else {
@@ -159,10 +171,13 @@
             this.page = 1
             this.nothingAdd = false
             this.LowerLoading = false
-            this.contentList = await this._getContentList(1)
-            if (this.contentList.error === 0) {
-              this.contentList = []
+            let resList1 = await this._getContentList(1)
+            this.loaded()
+            if (resList1.error !== ERR_OK) {
+              this.$invoke('Toast', 'show', resList1.message)
+              return
             }
+            this.contentList = resList1.data
             if (this.contentList.length > 0) {
               this.nothingBoxShow = false
             } else {
@@ -174,27 +189,36 @@
             this.page = 1
             this.nothingAdd = false
             this.LowerLoading = false
-            this.kacList = await mySelect.getKacList(1)
-            if (this.kacList.error === 0) {
-              this.kacList = []
+            let resList2 = await mySelect.getKacList(1)
+            this.loaded()
+            if (resList2.error !== ERR_OK) {
+              this.$invoke('Toast', 'show', resList2.message)
+              return
             }
+            this.kacList = resList2.data
             if (this.kacList.length > 0) {
               this.nothingBoxShow = false
             } else {
               this.nothingBoxShow = true
             }
+            this.$apply()
             break
         }
-        this.loaded()
       },
       async couponLower() {
         if (!this.LowerLoading && !this.nothingAdd) {
           this.LowerLoading = true
           this.page++
-          console.log(this.page)
-          let res = await this._getCouponList(this.page)
+          let Json = await this._getCouponList(this.page)
+          if (Json.error !== ERR_OK) {
+            this.loaded()
+            this.$invoke('Toast', 'show', Json.message)
+            return
+          }
+          let res = Json.data
           if (res.length === 0) {
             this.nothingAdd = true
+            this.$invoke('Underline', 'show')
           }
           let resArr = this._computed(res)
           this.couponList.push(...resArr)
@@ -209,9 +233,16 @@
         if (!this.LowerLoading && !this.nothingAdd) {
           this.LowerLoading = true
           this.page++
-          let res = await this._getContentList(this.page)
+          let Json = await this._getContentList(this.page)
+          if (Json.error !== ERR_OK) {
+            this.loaded()
+            this.$invoke('Toast', 'show', Json.message)
+            return
+          }
+          let res = Json.data
           if (res.length === 0) {
             this.nothingAdd = true
+            this.$invoke('Underline', 'show')
           }
           this.contentList.push(...res)
           this.LowerLoading = false
@@ -225,10 +256,16 @@
         if (!this.LowerLoading && !this.nothingAdd) {
           this.LowerLoading = true
           this.page++
-          let res = await mySelect.getKacList(this.page)
-
+          let Json = await mySelect.getKacList(this.page)
+          if (Json.error !== ERR_OK) {
+            this.loaded()
+            this.$invoke('Toast', 'show', Json.message)
+            return
+          }
+          let res = Json.data
           if (res.length === 0) {
             this.nothingAdd = true
+            this.$invoke('Underline', 'show')
           }
           this.contentList.push(...res)
           this.LowerLoading = false
@@ -241,47 +278,18 @@
       toRecommend() {
         wx.switchTab({url: '/pages/recommend/recommend'})
       },
-      couponDetail(id) {
-        this.$navigate('/pages/coupon-detail/coupon-detail?type=1&id=' + id)
+      couponDetail(id, merchantId) {
+        this.$navigate('/pages/coupon-detail/coupon-detail?type=1&id=' + id + '&currentMerchant=' + merchantId)
       },
-      kacDetail(id) {
-        this.$navigate('/pages/coupon-detail/coupon-detail?type=2&id=' + id)
+      kacDetail(id, merchantId) {
+        this.$navigate('/pages/coupon-detail/coupon-detail?type=2&id=' + id + '&currentMerchant=' + merchantId)
       },
-      contentDetail(id) {
-        this.$navigate('/pages/content-detail/content-detail?id=' + id)
-      },
-      async select(id, index, select) {
-        console.log(id, index, select)
-        let res
-        switch (select) {
-          case 0:
-            res = await mySelect.selectContent(id)
-            if (res.error === 0) {
-              this.contentList[index].selectStatus = 1
-              this.contentList[index].content.favorite_count++
-            } else {
-              // 失败
-            }
-            break
-          case 1:
-            res = await mySelect.cancleSelectContent(id)
-            if (res.error === 0) {
-              this.contentList[index].selectStatus = 0
-              this.contentList[index].content.favorite_count--
-            } else {
-              // 失败
-            }
-            break
-        }
-        this.$apply()
-        this.loaded()
+      contentDetail(id, merchantId) {
+        this.$navigate('/pages/content-detail/content-detail?id=' + id + '&currentMerchant=' + merchantId)
       },
       showStore(idx) {
         this._checked(this.kacList, idx)
         this.$apply()
-      },
-      toDetail(id) {
-        this.$navigate('/pages/coupon-detail/coupon-detail?type=2&id=' + id)
       }
     }
 
@@ -293,10 +301,11 @@
       switch (this.menuIdx * 1) {
         case 0:
           let res = await this._getCouponList(1)
-          if (res.error === 0) {
-            res = []
+          if (res.error !== ERR_OK) {
+            this.loaded()
+            return
           }
-          this.couponList = this._computed(res)
+          this.couponList = this._computed(res.data)
           if (this.couponList.length > 0) {
             this.nothingBoxShow = false
           } else {
@@ -305,10 +314,11 @@
           break
         case 1:
           let res1 = await this._getContentList(1)
-          if (res1.error === 0) {
-            res1 = []
+          if (res1.error !== ERR_OK) {
+            this.loaded()
+            return
           }
-          this.contentList = res1
+          this.contentList = res1.data
           if (this.contentList.length > 0) {
             this.nothingBoxShow = false
           } else {
@@ -317,10 +327,11 @@
           break
         case 2:
           let res2 = await mySelect.getKacList(1)
-          if (res2.error === 0) {
-            res2 = []
+          if (res2.error !== ERR_OK) {
+            this.loaded()
+            return
           }
-          this.kacList = res2
+          this.kacList = res2.data
           if (this.kacList.length > 0) {
             this.nothingBoxShow = false
           } else {
@@ -328,7 +339,6 @@
           }
           break
       }
-
       this.$apply()
       this.loaded()
     }
@@ -348,7 +358,8 @@
           title: item.promotion.title,
           endAt: item.promotion.end_at,
           notAllowTime: item.promotion.not_allow_time,
-          id: item.promotion_id
+          id: item.promotion_id,
+          merchantId: item.merchant_id
         }
       })
     }
@@ -409,15 +420,15 @@
       align-items: center
 
       .mySelect-nothing-img
-        width: 73px
-        height: 53.5px
+        width: 100px
+        height: 80px
         margin-top: 25px
         margin-bottom: 8.5px
 
       .mySelect-nothing-txt
         font-size: $font-size-small
         line-height: 16.5px
-        margin-bottom: 34px
+        margin-bottom: 15px
 
       .mySelect-nothingBtn
         width: 85.5px
