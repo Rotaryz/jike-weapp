@@ -61,7 +61,7 @@
     }
 
     async onLoad(options) {
-      await this.$getUserInfo()
+      await this.$getUserInfo(false)
 //        let data = options.param.split(',')
 //        let param = {}
 //        for (let item of data) {

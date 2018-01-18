@@ -223,20 +223,25 @@
 //            activity_id: this.liveMsg.id,
             current_merchant: meId
           }
-          const res = (await Order.operation(data)).data
+          let res = await Order.operation(data)
           this.loaded()
-          const {timestamp, nonceStr, signType, paySign} = res.pay_info
-          const pay = await wepy.requestPayment({
-            timeStamp: timestamp,
-            nonceStr,
-            package: res.pay_info.package,
-            signType,
-            paySign
-          })
-          if (pay.errMsg === 'requestPayment:ok') {
-            this.showBk = -1
-            this.state = false
-            this.$apply()
+          if (res.error === ERR_OK) {
+            res = res.data
+            const {timestamp, nonceStr, signType, paySign} = res.pay_info
+            const pay = await wepy.requestPayment({
+              timeStamp: timestamp,
+              nonceStr,
+              package: res.pay_info.package,
+              signType,
+              paySign
+            })
+            if (pay.errMsg === 'requestPayment:ok') {
+              this.showBk = -1
+              this.state = false
+              this.$apply()
+            }
+          } else {
+            this.$invoke('Toast', 'show', res.message)
           }
         } else {
           this.$invoke('PhoneTest', 'bindPhone')
@@ -251,7 +256,7 @@
 
     async showMore() {
       this.show = true
-      let res = await Live.getLiveMsg()
+      let res = await Live.getLiveMsg(false)
       if (res.error === ERR_OK) {
         this.liveMsg = res.data
         this.videoImages = this.liveMsg.file_url + '?second=1&height=1280&width=852'

@@ -115,13 +115,14 @@ export default class userMixin extends wepy.mixin {
    * 获取数据库用户信息
    * @returns {Promise.<*>}
    */
-  async $getUserInfo() {
+  async $getUserInfo(loading) {
+    console.log(loading)
     const token = await this.$getToken()
     if (!token) {
       console.log('not token')
       return
     }
-    const res = await this._getSqlUserInfo(token)
+    const res = await this._getSqlUserInfo(token, loading)
     let user
     wepy.setStorageSync('mobile', res.customer.mobile)
     // wepy.setStorageSync('customerId', res.customer_id)
@@ -139,8 +140,8 @@ export default class userMixin extends wepy.mixin {
     return user
   }
 
-  async _getSqlUserInfo(token) {
-    const Json = await User.getUserInfo({jk_token: token})
+  async _getSqlUserInfo(token, loading) {
+    const Json = await User.getUserInfo({jk_token: token}, loading)
     if (Json.error !== ERR_OK) {
       return {}
     }
