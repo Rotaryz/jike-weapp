@@ -1,0 +1,124 @@
+<template>
+  <view class="content">
+    <view class="loading">
+      <image wx:if="{{imageUri}}"
+             src="{{imageUri + '/defaults/b-image/page/icon-default-logo@2x.png'}}"></image>
+      <view class="shopText">赞播小程序</view>
+      <view class="load">
+        <text class="{{showLoad === 1 ? 'white-box' : ''}}"></text>
+        <text class="{{showLoad === 2 ? 'white-box' : ''}}"></text>
+        <text class="{{showLoad === 3 ? 'white-box' : ''}}"></text>
+      </view>
+    </view>
+    <view class="watermark">Copyright © 2018 赞播 All Rights Reserved.</view>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import URIS from 'common/js/config'
+  const INFOURL = '/pages/square/square'
+  import users from 'common/mixins/users'
+  export default class loading extends wepy.page {
+    mixins = [users]
+    config = {
+      navigationBarTitleText: '',
+      navigationBarBackgroundColor: '#fff'
+    }
+    data = {
+      imageUri: URIS.image,
+      showLoad: 1
+    }
+
+    show() {
+      setInterval(() => {
+        if (this.showLoad < 3) {
+          this.showLoad++
+        } else {
+          this.showLoad = 1
+        }
+        this.$apply()
+      }, 500)
+    }
+
+    async onShow() {
+      this.show()
+    }
+
+    navTo(type) {
+      setTimeout(() => {
+        if (type.indexOf('square') !== -1 || type.indexOf('recommend') !== -1 ||
+          type.indexOf('mine') !== -1) {
+          this.$switch({
+            url: `${type}`
+          })
+        } else {
+          wepy.redirectTo({
+            url: `${type}`
+          })
+        }
+      }, 1500)
+    }
+
+    async onLoad(options) {
+      await this.$getUserInfo()
+//        let data = options.param.split(',')
+//        let param = {}
+//        for (let item of data) {
+//          item = item.split(':')
+//          param[item[0]] = item[1]
+//        }
+      let url = INFOURL
+      if (options.path) {
+        url = decodeURI(options.path)
+      }
+
+      this.navTo(url)
+      if (options.merchantId) {
+        wepy.setStorageSync('merchantId', options.merchantId)
+      }
+    }
+  }
+</script>
+
+<style lang="stylus">
+  @import '../../common/stylus/variable'
+  @import '../../common/stylus/mixin'
+  .content
+    height: 100vh
+    width: 100vw
+    overflow-y: hidden
+    box-sizing: border-box
+    background: $color-white
+    padding-top: 41.33vw
+    .loading
+      display: flex
+      flex-direction: column
+      align-items: center
+      image
+        height: 64px
+        width: 64px
+      .shopText
+        font-size: $font-size-medium
+        line-height: 20px
+        margin-top: 6px
+        color: $color-text-td
+      .load
+        text
+          display: inline-block
+          margin: 0 2px
+          height: 6px
+          width: 6px
+          background: #9b9b9b
+          border-radius: 50%
+        .white-box
+          background: $color-master
+
+    .watermark
+      position: absolute
+      bottom: 6.67vw
+      font-size: $font-size-small-s
+      color: #9b9b9b
+      no-wrap()
+      row-center()
+</style>

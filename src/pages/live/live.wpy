@@ -1,7 +1,6 @@
 <template>
   <view class="liveALL">
     <LiveVideo></LiveVideo>
-    <PhoneTest></PhoneTest>
   </view>
 </template>
 
@@ -10,15 +9,14 @@
   import base from 'common/mixins/base'
   import users from 'common/mixins/users'
   import LiveVideo from '../live-video/live-video'
-  import PhoneTest from '@/base/phoneTest/phoneTest'
+
   export default class Live extends wepy.page {
     mixins = [users, base]
     config = {
       navigationBarTitleText: '直播优惠'
     }
     components = {
-      LiveVideo: LiveVideo,
-      PhoneTest: PhoneTest
+      LiveVideo: LiveVideo
     }
 
     async onLoad() {
@@ -27,20 +25,9 @@
 
     async load() {
       await this.$getUserInfo()
-      let isAuthorise = await this.isAuthorise()
-      if (!isAuthorise) {
-        this.$invoke('PhoneTest', 'bindPhone')
-      } else {
-        this.$com.LiveVideo.showMore()
-      }
+      this.$com.LiveVideo.showMore()
       this.$apply()
       this.loaded()
-    }
-
-    events = {
-      'isPhoneOk': () => {
-        this.$com.LiveVideo.showMore()
-      }
     }
   }
 </script>
