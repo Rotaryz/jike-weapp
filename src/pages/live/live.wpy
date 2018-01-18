@@ -23,6 +23,26 @@
       await this.load()
     }
 
+    onShareAppMessage(res) {
+      const user = this.$parent.globalData.user
+      if (res.from === 'button') {
+        // 来自页面内转发按钮
+//        console.log(res.target)
+      }
+      return {
+        title: user.nickName + '邀请你参与直播优惠',
+        path: '/pages/live/live',
+        success: async () => {
+          // 转发成功
+          await this._getSharePrize()
+        },
+        fail: (res) => {
+          // 转发失败
+          console.log(res)
+        }
+      }
+    }
+
     async load() {
       await this.$getUserInfo()
       this.$com.LiveVideo.showMore()

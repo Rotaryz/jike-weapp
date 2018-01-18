@@ -261,7 +261,9 @@
 
     async showMore() {
       this.show = true
-      let res = await Live.getLiveMsg(false)
+      const merchantId = this.$parent.$parent.globalData.merchantId ||
+        wepy.getStorageSync('merchantId')
+      let res = await Live.getLiveMsg({current_merchant: merchantId})
       if (res.error === ERR_OK) {
         this.liveMsg = res.data
         this.videoImages = this.liveMsg.file_url + '?second=1&height=1280&width=852'
