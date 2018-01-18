@@ -162,7 +162,6 @@
             code: self.phoneCode
           }
           if (this.modify) {
-            console.log('231564')
             tipsMsg = '手机修改'
             resData = await this._changePhone(data)
           } else {

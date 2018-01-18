@@ -3,7 +3,7 @@
     <view class="orderDetail-head">
       <view class="orderDetail-head-detailBox"  @tap="couponDetail">
         <view class="orderDetail-head-left">
-          <image src="{{orderMsg.promotion.promotion_images[0].image.url}}" class="orderDetail-head-img"></image>
+          <image src="{{orderMsg.promotion_type == 1 ? orderMsg.promotion.promotion_images[0].image.url : orderMsg.promotion.gift_bag_images[0].image.url }}" class="orderDetail-head-img"></image>
           <view class="orderDetail-head-msg">
             <view class="orderDetail-head-msg-title">{{orderMsg.promotion.title}}</view>
             <view class="orderDetail-head-msg-content">{{orderMsg.promotion.subhead}}</view>

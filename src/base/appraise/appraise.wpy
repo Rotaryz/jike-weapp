@@ -155,7 +155,6 @@
           orderId,
           couponId
         }
-        console.log(this.couponMsg)
         this.$apply()
       }
     }
