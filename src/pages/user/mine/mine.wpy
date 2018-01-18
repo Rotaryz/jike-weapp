@@ -127,11 +127,12 @@
     }
 
     async onLoad() {
-      this.load()
+
     }
 
     onShow() {
       this.tips = wx.getStorageSync('tips')
+      this.load()
     }
 
     async load() {
