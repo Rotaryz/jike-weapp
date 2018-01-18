@@ -215,12 +215,11 @@
           let meId = this.$parent.$parent.globalData.merchantId || await
               wepy.getStorageSync('merchantId')
           const data = {
-//            from: 'c_live',
+            from: 'c_live',
             promotion_id: this.promotionId,
-            title: this.conDes.title,
             count: 1,
             promotion_type: 1,
-//            activity_id: this.liveMsg.id,
+            activity_id: this.liveMsg.id,
             current_merchant: meId
           }
           let res = await Order.operation(data)

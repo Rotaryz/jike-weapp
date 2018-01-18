@@ -108,12 +108,11 @@
       },
       async postOrder() {
         /* eslint-disable no-undef */
-        const {current_merchant, promotion_type, promotion_id, title, price} = this.orderInfo
+        const {current_merchant, promotion_type, promotion_id, price} = this.orderInfo
         const data = {
           current_merchant,
           promotion_type,
           promotion_id,
-          title,
           price,
           count: this.count
         }

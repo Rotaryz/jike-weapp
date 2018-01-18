@@ -74,9 +74,9 @@
       }
 
       this.navTo(url)
-      if (options.merchantId) {
-        wepy.setStorageSync('merchantId', options.merchantId)
-      }
+//      if (options.merchantId) {
+//        wepy.setStorageSync('merchantId', options.merchantId)
+//      }
     }
   }
 </script>

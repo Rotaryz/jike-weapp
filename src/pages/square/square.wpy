@@ -1,5 +1,6 @@
 <template>
   <map id="map"
+       scale="18"
        longitude="{{longitude}}"
        latitude="{{latitude}}"
        controls="{{controls}}"
@@ -7,7 +8,6 @@
        markers="{{markers}}"
        bindmarkertap="markertap"
        polyline="{{polyline}}"
-       include-points="{{includePoints}}"
        bindtap="tapMap"
        bindregionchange="regionchange">
     <cover-view class="shop-modal {{showSlide ? 'show' : ''}}">
@@ -235,7 +235,7 @@
           width: 36,
           height: 36,
           left: width - 49,
-          top: height - 103
+          top: height - 85
         }
       })
     }
@@ -248,7 +248,8 @@
         res.forEach((item) => {
           if (item.current_merchant) {
             this.longitude = item.longitude
-            this.latitude = item.latitude + 0.009
+//            this.latitude = item.latitude
+            this.latitude = item.latitude + 0.001
             this.$apply()
           }
         })
@@ -264,7 +265,7 @@
           }
         })
         this.markers = [...this.markers, ...markers]
-        this._setIncludePoints(this.markers)
+//        this._setIncludePoints(this.markers)
         if (markers.length === 1) {
           this.bigMarkerIndex = 1
           this._setPolyline(markers[0].id)
@@ -386,8 +387,8 @@
       if (index === 0) {
         return
       }
-      this.markers[index].width = type === 1 ? 42 : 32
-      this.markers[index].height = type === 1 ? 44 : 34
+      this.markers[index].width = type === 1 ? 48 : 32
+      this.markers[index].height = type === 1 ? 50 : 34
       this.$apply()
     }
 
@@ -488,7 +489,7 @@
         setTimeout(() => {
           this.showSlide = true
           this.$apply()
-        }, 100)
+        }, 300)
       },
       makePhoneCall() {
         const phone = this.currentMerchant.mobile
@@ -529,7 +530,7 @@
     .shop-modal
       width: 100%
       padding: 0 10px
-      padding-top: 4.75px
+      padding-top: 10px
       padding-bottom: 3px
       box-sizing: border-box
       transition: all .5s
@@ -540,7 +541,7 @@
         opacity: 1
       .modal-bg
         position: absolute
-        top: 2px
+        top: 6.5px
         left: 6.5px
         right: 6.5px
         bottom: 0
