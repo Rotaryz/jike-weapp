@@ -103,7 +103,11 @@
 
     methods = {
       async showCover() {
-        let res = await getShare.getShareAndPrizeDetail()
+        const merchantId = this.$parent.globalData.merchantId || wepy.getStorageSync('merchantId')
+        let data = {
+          current_merchant: merchantId
+        }
+        let res = await getShare.getShareAndPrizeDetail(data)
         if (res.error !== ERR_OK) {
           this.loaded()
           return
