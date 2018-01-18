@@ -241,6 +241,8 @@
             if (pay.errMsg === 'requestPayment:ok') {
               this.showBk = -1
               this.state = false
+              this.moveWay = '0%'
+              this.transition = '0%'
               this.$apply()
             }
           } else {
