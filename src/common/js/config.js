@@ -15,9 +15,7 @@
 //   单点登录地址  https://jwt.jkweixin.com
 //   B端api地址   https://backend-api.jkweixin.com
 //   C端api地址   https://wap-api.jkweixin.com
-import wepy from 'wepy'
 
-console.log(wepy)
 const version = '/v1'
 
 const URLS = {
