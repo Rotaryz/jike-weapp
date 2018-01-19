@@ -73,7 +73,7 @@
           </view>
           <view class="shareAndPrize-rule-msg">
             <view class="title">奖品说明：</view>
-            <view wx:for="{{shareDetail.activity_promotion}}" wx:key="{{item}}" class="content">{{index+1}}.{{item.promotion_title}}</view>
+            <view wx:for="{{shareDetail.activity_promotion}}" wx:key="{{item}}" class="content">{{item.promotion_title}}</view>
           </view>
         </scroll-view>
         <image wx:if="{{imageUrlHead}}" src="{{imageUrlHead + '/defaults/c-image/mine/icon-delet@2x.png'}}" class="shareAndPrize-rule-close" @tap="closeCover"></image>
