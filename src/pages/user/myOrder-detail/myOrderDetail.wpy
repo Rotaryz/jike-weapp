@@ -217,7 +217,8 @@
         if (res.error === ERR_OK) {
           this.refundIng = false
           let id = this.orderMsg.id
-          this.orderMsg = await getMyOrder.getOrderDetail(this.orderMsg.id)
+          let resNew = await getMyOrder.getOrderDetail(this.orderMsg.id)
+          this.orderMsg = resNew.data
           this.loaded()
           this.$apply()
           this.$navigate('../refund/refund?id=' + id)
