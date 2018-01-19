@@ -11,8 +11,8 @@ export default class share extends base {
     return await this.get(url, data)
   }
 
-  static async getSharePrize() {
+  static async getSharePrize(data) {
     const url = `${this.baseUrl}/api/activity/share-prize`
-    return await this.get(url)
+    return await this.get(url, data)
   }
 }

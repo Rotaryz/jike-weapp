@@ -116,7 +116,6 @@ export default class userMixin extends wepy.mixin {
    * @returns {Promise.<*>}
    */
   async $getUserInfo(loading) {
-    console.log(loading)
     const token = await this.$getToken()
     if (!token) {
       console.log('not token')

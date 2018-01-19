@@ -489,7 +489,7 @@
         setTimeout(() => {
           this.showSlide = true
           this.$apply()
-        }, 300)
+        }, 500)
       },
       makePhoneCall() {
         const phone = this.currentMerchant.mobile

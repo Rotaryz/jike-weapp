@@ -40,12 +40,12 @@
         <image src="{{item.content.image_url}}" class="mySelect-contentList-item-contentImg"></image>
         <view class="mySelect-contentList-Msg">
           <view class="mySelect-contentList-Msg-left">
-            <view class="mySelect-contentList-Msg-left-avatarBox" wx:for="{{item.content.customer_images}}" wx:key="{{item}}">
+            <view class="mySelect-contentList-Msg-left-avatarBox" wx:for="{{item.content.customer_images}}" wx:key="{{item}}" wx:if="{{index < 5}}">
               <view class="mySelect-contentList-avatarBox-item">
                 <image class="mySelect-contentList-avatarBox-img" src="{{item}}"></image>
               </view>
             </view>
-            <view class="dot-box" wx:if="{{item.content.customer_images.length===5}}">
+            <view class="dot-box" wx:if="{{item.content.customer_images.length>=5}}">
               <view wx:for="{{[1,2,3]}}" wx:key="{{item}}" class="mySelect-contentList-Msg-left-dot"></view>
             </view>
           </view>

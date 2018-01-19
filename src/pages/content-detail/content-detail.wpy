@@ -150,7 +150,7 @@
       if (!this.contents.activity_share) {
         return
       }
-      const json = await Shares.getSharePrize()
+      const json = await Shares.getSharePrize({current_merchant: this.currentMerchant})
       this.loaded()
       if (json.error !== ERR_OK) {
         return
@@ -240,7 +240,7 @@
     background-color: $color-white
     .picture-wrapper
       width: 100%
-      height: 53.33333333vw
+      height: 23.96011396vw
       margin-bottom: 40px
     .line-title
       margin-bottom: 30px
@@ -316,4 +316,52 @@
           height: 12px
           image
             display: block
+    .base-modal-content
+      .header-wrapper
+        height: 124.5px
+        padding-top: 13.5px
+        box-sizing: border-box
+        background-color: $color-prize-bc
+        .title
+          position: relative
+          margin-bottom: 17.5px
+          font-size: $font-size-small
+          color: $color-white
+          text-align: center
+          &:before, &:after
+            content: ''
+            position: absolute
+            top: 4px
+            display: block
+            width: 40px
+            height: 1px
+            border-bottom: 1px solid $color-white
+          &:before
+            left: 58px
+          &:after
+            right: 58px
+        .cash
+          text-align: center
+          font-size: 30px
+          color: $color-yellow
+          .yuan
+            font-size: $font-size-small
+      .content
+        margin-top: 24px
+        text-align: center
+        .text
+          line-height: 17px
+          font-size: $font-size-small
+          color: $color-text-d
+      .btn-wrapper
+        margin-top: 60px
+        padding: 0 20px
+        .btn
+          height: 40px
+          border-radius: 4px
+          line-height: 40px
+          text-align: center
+          font-size: $font-size-small
+          color: $color-white
+          background-color: $color-prize-bc
 </style>
