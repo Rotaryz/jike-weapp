@@ -216,10 +216,11 @@
         const res = await getMyOrder.orderRebate(this.orderMsg.id, this.orderMsg.count, this.orderMsg.total, cause)
         if (res.error === ERR_OK) {
           this.refundIng = false
+          let id = this.orderMsg.id
           this.orderMsg = await getMyOrder.getOrderDetail(this.orderMsg.id)
           this.loaded()
           this.$apply()
-          this.$navigate('../refund/refund?id=' + this.orderMsg.id)
+          this.$navigate('../refund/refund?id=' + id)
         } else {
           this.$invoke('Toast', 'show', res.message)
         }
