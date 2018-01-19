@@ -117,12 +117,12 @@
           count: this.count
         }
         const json = await Order.operation(data)
+        this.loaded()
         if (json.error !== ERR_OK) {
           this.$emit('throw', json.message)
           return
         }
         const res = json.data
-        this.loaded()
         const {timestamp, nonceStr, signType, paySign} = res.pay_info
         wx.requestPayment({
           timeStamp: timestamp,

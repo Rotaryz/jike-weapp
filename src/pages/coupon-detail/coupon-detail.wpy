@@ -13,18 +13,18 @@
     </view>
     <view class="desc-wrapper">
       <view class="description">
-        <view class="name">{{coupon.title ? coupon.title : ''}}</view>
-        <view class="limit">{{coupon.stock ? coupon.stock === -1 ? '不限量' : '限量' + coupon.stock + '件' : ''}}</view>
+        <view class="name">{{coupon.title !== undefined ? coupon.title : ''}}</view>
+        <view class="limit">{{coupon.stock !== undefined ? coupon.stock === -1 ? '不限量' : '限量' + coupon.stock + '件' : ''}}</view>
         <view class="price-wrapper">
           <view class="price">
             <text class="rmb">¥</text>
-            <text class="number">{{coupon.platform_price ? coupon.platform_price : ''}}</text>
+            <text class="number">{{coupon.platform_price !== undefined ? coupon.platform_price : ''}}</text>
           </view>
-          <view class="origin-price">门市价:￥{{coupon.shop_price ? coupon.shop_price : ''}}</view>
+          <view class="origin-price">门市价:￥{{coupon.shop_price !== undefined ? coupon.shop_price : ''}}</view>
           <view class="buy-number">
             <image class="icon" wx:if="{{imageUri}}"
                    src="{{imageUri + '/defaults/c-image/recommend/icon-many.png'}}"></image>
-            <text class="font">{{coupon.collected ? coupon.collected : ''}}人已购买</text>
+            <text class="font">{{coupon.collected !== undefined ? coupon.collected : ''}}人已购买</text>
           </view>
         </view>
       </view>
@@ -70,7 +70,7 @@
           客服
         </view>
       </view>
-      <view class="buy-btn" @tap="postOrder">立即购买</view>
+      <view class="buy-btn {{stock === 0 ? 'disable' : ''}}" @tap="postOrder">立即购买</view>
     </view>
     <phone-test @isPhoneOk.user="getSymbol"></phone-test>
     <share :qrcode.sync="qrcode" :detail.sync="coupon" :promotionImages.sync="promotionImages"
@@ -130,6 +130,7 @@
       id: '',
       currentPage: '',
       promotionImages: [],
+      stock: '',
       coupon: {},
       services: [],
       promotions: [],
@@ -186,7 +187,7 @@
       if (!this.coupon.activity_share) {
         return
       }
-      const json = await Shares.getSharePrize()
+      const json = await Shares.getSharePrize({current_merchant: this.currentMerchant})
       this.loaded()
       if (json.error !== ERR_OK) {
         return
@@ -224,6 +225,8 @@
         this.services = data.detail
         this.note = data.note
         this.isFavorite = data.is_favorite
+        this.stock = data.stock
+        console.log(data.stock)
         this.$apply()
       }
     }
@@ -236,6 +239,7 @@
         data.platform_price = Math.floor(data.platform_price)
         data.shop_price = Math.floor(data.shop_price)
         this.coupon = data
+        this.stock = data.stock
         this.note = data.note
         this.promotionImages = data.gift_bag_images
         this.isFavorite = data.is_favorite
@@ -251,6 +255,7 @@
             shop_name: item.merchant_data.shop_name
           })
         })
+        console.log(data.stock)
         this.$apply()
       }
     }
@@ -305,6 +310,9 @@
         }
       },
       async postOrder() {
+        if (this.stock === 0) {
+          return
+        }
         const isAuthorise = await this.isAuthorise()
         this.loaded()
         if (!isAuthorise) {
@@ -314,7 +322,11 @@
         this.submit()
       },
       postOrderFail(message) {
-        this.$invoke('toast', message || '网络错误...')
+        this.$invoke('toast', 'show', message || '网络错误...')
+        if (message === '库存不足') {
+          this.stock = 0
+          this.$invoke('post-order', 'hide')
+        }
       }
     }
 
@@ -475,6 +487,8 @@
         font-size: $font-size-medium
         color: $color-white
         background-color: $color-button
+        &.disable
+          opacity: .2
     .base-modal-content
       .header-wrapper
         height: 124.5px

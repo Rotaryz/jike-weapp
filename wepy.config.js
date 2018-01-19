@@ -1,5 +1,5 @@
 const path = require('path')
-var prod = process.env.NODE_ENV === 'production'
+var env = process.env.NODE_ENV
 
 module.exports = {
   wpyExt: '.wpy',
@@ -42,7 +42,7 @@ module.exports = {
   }
 }
 
-if (prod) {
+if (env === 'production') {
   delete module.exports.compilers.babel.sourcesMap
   // 压缩sass
   // module.exports.compilers['sass'] = {outputStyle: 'compressed'}

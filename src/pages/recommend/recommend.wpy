@@ -64,10 +64,10 @@
             </view>
             <view class="collector">
               <view class="avatar-wrapper">
-                <view class="avatar" wx:for="{{item.customer_images}}" wx:key="unique" wx:for-item="avatar">
+                <view class="avatar" wx:for="{{item.customer_images}}" wx:key="unique" wx:for-item="avatar" wx:if="{{index < 5}}">
                   <image src="{{avatar}}" alt="" class="full-image"></image>
                 </view>
-                <view class="more" wx:if="{{item.customer_images.length === 5}}">
+                <view class="more" wx:if="{{item.customer_images.length >= 5}}">
                   <view class="dot"></view>
                   <view class="dot"></view>
                   <view class="dot"></view>
