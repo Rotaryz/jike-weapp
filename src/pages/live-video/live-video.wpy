@@ -23,7 +23,7 @@
              src="{{liveMsg.file_url ? liveMsg.file_url : ''}}"
              poster="{{liveMsg.image_url ? liveMsg.image_url : ''}}"
              style="transform: translate3d({{moveWay}},{{transition}},0)"
-             loop="true">
+             loop="true" controls="{{showControls}}">
       </video>
       <view class="live_conpons" wx:if="{{state}}"
             animation="{{animation}}" style="width:{{width}}px">
@@ -163,7 +163,8 @@
       sendNum: -1,
       moveWay: 0,
       transition: 0,
-      width: 0
+      width: 0,
+      showControls: false
     }
     components = {
       Comment: Comment,
