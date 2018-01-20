@@ -15,14 +15,15 @@
     }
 
     onShareAppMessage(res) {
+      const user = this.$parent.globalData.user
       let title = ''
       if (this.type === 'wheel') {
-        title = '大转盘'
+        title = `大转盘`
       } else if (this.type === 'sign') {
         title = '签到红包'
       }
       return {
-        title: title,
+        title: user.nickName + title,
         path: `/pages/activity/activity?type=${this.type}&merchantId=${this.merchantId}`,
         success: async () => {
           // 转发成功
