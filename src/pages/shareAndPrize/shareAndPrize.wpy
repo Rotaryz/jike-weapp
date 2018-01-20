@@ -76,8 +76,10 @@
             <view wx:for="{{shareDetail.activity_promotion}}" wx:key="{{item}}" class="content">{{item.promotion_title}}</view>
           </view>
         </view>
-        <image wx:if="{{imageUrlHead}}" src="{{imageUrlHead + '/defaults/c-image/mine/icon-delet@2x.png'}}" class="shareAndPrize-rule-close" @tap="closeCover"></image>
       </scroll-view>
+      <view class="close-box">
+        <image wx:if="{{imageUrlHead}}" src="{{imageUrlHead + '/defaults/c-image/mine/icon-delet@2x.png'}}" class="shareAndPrize-rule-close" @tap="closeCover"></image>
+      </view>
     </view>
 
   </view>
@@ -323,12 +325,14 @@
         .shareAndPrize-rule-msg.first
           margin-bottom: 22px
 
+    .close-box
+      position: fixed
+      bottom: 8vh
+      left: 50%
+      transform: translate(-50%, 0)
+
       .shareAndPrize-rule-close
         width: 26px
         height: 26px
-        position: fixed
-        bottom: 8vh
-        left: 50%
-        transform: translate(-50%, 0)
 
 </style>
