@@ -193,9 +193,6 @@
         return
       }
       const res = json.data
-      if (res.length === 0) {
-        return
-      }
       this.sharePrice = res.price
       this.$apply()
       this.$invoke('share-modal', 'show')
