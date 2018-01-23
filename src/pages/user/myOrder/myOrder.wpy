@@ -39,6 +39,7 @@
     </scroll-view>
 
     <Appraise></Appraise>
+    <Toast></Toast>
 
   </view>
 </template>
@@ -53,6 +54,7 @@
   import Appraise from '@/base/appraise/appraise'
   import URIS from 'common/js/config'
   import {ERR_OK} from '@/api/base'
+  import Toast from '@/base/toast/toast'
   import Underline from '@/base/underline-block/underline-block'
 
   export default class MyOrder extends wepy.page {
@@ -69,7 +71,8 @@
       PhoneTest,
       PhoneTestHint,
       Appraise,
-      Underline
+      Underline,
+      Toast
     }
 
     data = {

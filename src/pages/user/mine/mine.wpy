@@ -20,7 +20,7 @@
       </view>
 
       <view class="mine-order">
-        <view class="mine-order-head" @tap="notestToPage('/pages/user/myOrder/myOrder')">
+        <view class="mine-order-head" @tap="notestToPage('/pages/user/myOrder/myOrder?idx={{currentIdx}}')">
           <view class="mine-order-head-left">
             <view class="red-block"></view>
             <text class="mine-order-headTxt">我的订单</text>
@@ -123,7 +123,8 @@
           url: '/pages/user/mySelect/mySelect'
         }
       ],
-      tips: null
+      tips: null,
+      currentIdx: 1
     }
 
     async onLoad() {

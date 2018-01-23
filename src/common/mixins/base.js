@@ -19,16 +19,12 @@ export default class base extends wepy.mixin {
     const now = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate()
     const collectDate = wepy.getStorageSync('collectDate')
     const collectLength = wepy.getStorageSync('collectLength')
-    if (now === collectDate && collectLength >= 7) {
-      return
-    } else if (now === collectDate && collectLength < 7) {
-      const res = await Info.collectFormIds({form_ids: [formId]})
+    if (now === collectDate && collectLength < 7) {
+      await Info.collectFormIds({form_ids: [formId]})
       wepy.setStorageSync('collectLength', collectLength + 1)
-      console.log(res)
     } else if (now !== collectDate) {
       wepy.setStorageSync('collectDate', now)
-      const res = await Info.collectFormIds({form_ids: [formId]})
-      console.log(res)
+      await Info.collectFormIds({form_ids: [formId]})
       wepy.setStorageSync('collectLength', 0)
     }
   }

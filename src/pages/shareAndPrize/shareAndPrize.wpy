@@ -52,7 +52,7 @@
     </view>
 
     <view class="shareAndPrize-cover" wx:if="{{coverShow}}">
-      <view class="shareAndPrize-rule">
+      <scroll-view scroll-y class="shareAndPrize-rule">
         <view class="shareAndPrize-rule-head">
           <view>活动规则</view>
           <view class="shareAndPrize-rule-head-chunk"></view>
@@ -73,9 +73,11 @@
           </view>
           <view class="shareAndPrize-rule-msg">
             <view class="title">奖品说明：</view>
-            <view wx:for="{{shareDetail.activity_promotion}}" wx:key="{{item}}" class="content">{{index+1}}.{{item.promotion_title}}</view>
+            <view wx:for="{{shareDetail.activity_promotion}}" wx:key="{{item}}" class="content">{{item.promotion_title}}</view>
           </view>
         </view>
+      </scroll-view>
+      <view class="close-box">
         <image wx:if="{{imageUrlHead}}" src="{{imageUrlHead + '/defaults/c-image/mine/icon-delet@2x.png'}}" class="shareAndPrize-rule-close" @tap="closeCover"></image>
       </view>
     </view>
@@ -263,8 +265,7 @@
           margin-bottom: 14px
 
       .shareAndPrize-rule-body
-        max-height: 244px
-        overflow-y: auto
+        height: 244px
 
         .shareAndPrize-rule-name
           display: flex
@@ -322,14 +323,16 @@
               left: 0px
 
         .shareAndPrize-rule-msg.first
-          margin-bottom: 30px
+          margin-bottom: 22px
+
+    .close-box
+      position: fixed
+      bottom: 8vh
+      left: 50%
+      transform: translate(-50%, 0)
 
       .shareAndPrize-rule-close
         width: 26px
         height: 26px
-        position: fixed
-        bottom: 8vh
-        left: 50%
-        transform: translate(-50%, 0)
 
 </style>
