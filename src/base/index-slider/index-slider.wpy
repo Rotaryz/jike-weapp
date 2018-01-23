@@ -75,6 +75,7 @@
     }
 
     _autoPlay() {
+      clearInterval(this.timer)
       this.timer = setInterval(() => {
         this._autoPlayMove()
       }, 3000)
