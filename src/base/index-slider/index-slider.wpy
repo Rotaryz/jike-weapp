@@ -78,6 +78,7 @@
       this.timer = setInterval(() => {
         this._autoPlayMove()
       }, 3000)
+      this.$apply()
     }
 
     methods = {
@@ -88,6 +89,7 @@
       },
       stop() {
         clearInterval(this.timer)
+        this.$apply()
       },
       changeVal(e) {
         this.swiperCurrent = e.detail.current
