@@ -65,18 +65,30 @@
           <view class="header" @tap="test">服务详情
             <view class="lines"></view>
           </view>
-          <view class="detail-wrapper">
-            <view class="item-wrapper" wx:for="{{conDes.detail}}"
-                  wx:key="index">
-              <view class="lines"></view>
-              <view class="content left">
-                <view class="circle"></view>
-                <view class="font">{{item.servie}}</view>
+          <scroll-view scroll-y>
+            <view class="detail-wrapper">
+              <view class="item-wrapper" wx:for="{{conDes.detail}}"
+                    wx:key="index">
+                <view class="lines"></view>
+                <view class="content left">
+                  <view class="circle"></view>
+                  <view class="font">{{item.servie}}</view>
+                </view>
+                <view class="content middle">{{item.number}}次</view>
+                <view class="content right">￥{{item.price}}</view>
               </view>
-              <view class="content middle">{{item.number}}次</view>
-              <view class="content right">￥{{item.price}}</view>
+              <view class="item-wrapper" wx:for="{{conDes.detail}}"
+                    wx:key="index">
+                <view class="lines"></view>
+                <view class="content left">
+                  <view class="circle"></view>
+                  <view class="font">{{item.servie}}</view>
+                </view>
+                <view class="content middle">{{item.number}}次</view>
+                <view class="content right">￥{{item.price}}</view>
+              </view>
             </view>
-          </view>
+          </scroll-view>
         </view>
         <!--购买详情-->
         <view class="know-detail">
@@ -482,7 +494,8 @@
         font-size: $font-size-medium
         color: $color-text-l
         position: relative
-
+      scroll-view
+        height: 19.4vw
       .detail-wrapper
         .item-wrapper
           display: flex
@@ -509,6 +522,7 @@
                 border-radius: 50%
                 background-color: $color-circle
               .font
+                flex: 3
                 display: inline-block
                 vertical-align: middle
                 no-wrap()
