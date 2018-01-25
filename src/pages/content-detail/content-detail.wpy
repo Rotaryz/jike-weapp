@@ -18,7 +18,7 @@
             {{item.text}}
           </view>
           <view class="content video-wrapper" wx:if="{{item.type === type.video}}">
-            <video src="{{item.detail.url}}"></video>
+            <video wx:if="{{showVideo}}" src="{{item.detail.url}}"></video>
           </view>
           <view class="content coupon-wrapper" wx:if="{{item.type === type.coupon}}">
             <coupon :coupon.sync="item.detail" :buy="buy" :border="yes"></coupon>
@@ -40,7 +40,7 @@
     </view>
     <!--<phone-test @isPhoneOk.user="storeToggle"></phone-test>-->
     <share :qrcode.sync="qrcode" :detail.sync="contents" @sharePunchLine.user="sharePunchLine"></share>
-    <share-modal>
+    <share-modal @hide.user="showVideoPlay">
       <view slot="content" class="base-modal-content">
         <view class="header-wrapper">
           <view class="title">现金红包</view>
@@ -88,6 +88,8 @@
       contents: {},
       details: [],
       isFavorite: false,
+      showVideo: true,
+      sharePrice: 0,
       type: {
         image: IMAGE_TYPE,
         text: TEXT_TYPE,
@@ -157,6 +159,8 @@
       }
       const res = json.data
       this.sharePrice = res.price
+      console.log(this.sharePrice)
+      this.showVideo = false
       this.$apply()
       this.$invoke('share-modal', 'show')
     }
@@ -192,6 +196,9 @@
     methods = {
       showShareModal() {
         this.$invoke('share', 'show', 'content')
+      },
+      showVideoPlay() {
+        this.showVideo = true
       },
       async sharePunchLine() {
         await this._getSharePrize()
@@ -282,6 +289,7 @@
           width: 100%
           height: 0
           padding-top: 53.3333333333%
+          background-color: $color-black
           video
             position: absolute
             top: 0
