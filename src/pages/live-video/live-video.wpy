@@ -77,16 +77,6 @@
                 <view class="content middle">{{item.number}}次</view>
                 <view class="content right">￥{{item.price}}</view>
               </view>
-              <view class="item-wrapper" wx:for="{{conDes.detail}}"
-                    wx:key="index">
-                <view class="lines"></view>
-                <view class="content left">
-                  <view class="circle"></view>
-                  <view class="font">{{item.servie}}</view>
-                </view>
-                <view class="content middle">{{item.number}}次</view>
-                <view class="content right">￥{{item.price}}</view>
-              </view>
             </view>
           </scroll-view>
         </view>
