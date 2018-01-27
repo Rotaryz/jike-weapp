@@ -39,4 +39,14 @@ export default class Contents extends base {
     const url = `${this.baseUrl}/api/favorite/content/${id}`
     return await this.delete(url)
   }
+
+  /**
+   * 增加分享次数
+   * @param id
+   * @returns {Promise.<*>}
+   */
+  static async setShare(id) {
+    const url = `${this.baseUrl}/api/contents/set-share/${id}`
+    return await this.post(url, null, false)
+  }
 }

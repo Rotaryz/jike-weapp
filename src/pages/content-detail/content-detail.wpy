@@ -149,6 +149,7 @@
 //    }
 
     async _getSharePrize() {
+      await ContentsApi.setShare(this.id)
       if (!this.contents.activity_share) {
         return
       }
@@ -159,10 +160,12 @@
       }
       const res = json.data
       this.sharePrice = res.price
-      console.log(this.sharePrice)
       this.showVideo = false
+      this.contents.activity_share = false
       this.$apply()
-      this.$invoke('share-modal', 'show')
+      if (this.sharePrice) {
+        this.$invoke('share-modal', 'show')
+      }
     }
 
 //    async _checkAuthorise() {

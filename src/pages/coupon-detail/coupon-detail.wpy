@@ -194,8 +194,11 @@
       }
       const res = json.data
       this.sharePrice = res.price
+      this.coupon.activity_share = false
       this.$apply()
-      this.$invoke('share-modal', 'show')
+      if (this.sharePrice) {
+        this.$invoke('share-modal', 'show')
+      }
     }
 
     async _createQrcode() {
