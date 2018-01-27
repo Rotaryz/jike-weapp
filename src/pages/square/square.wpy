@@ -156,6 +156,7 @@
       stars: [],
       distance: '',
       duration: '',
+      locations: {},
       markers: [],
       polyline: [],
       controls: [],
@@ -176,10 +177,9 @@
       this.loaded()
     }
 
-    onShow() {
-      if (this.showSlide) {
-        this._setTipTimer()
-      }
+    async onShow() {
+      await this.show()
+      this.loaded()
     }
 
     onHide() {
@@ -195,10 +195,29 @@
     async load() {
       await this.isAuthorise()
       await this._newMapContext()
+    }
+
+    async show() {
       await this._setLoaction()
       await this._setControls()
       await this._getPlazaMerchants()
-      await this._translateMarkers()
+//      await this._translateMarkers()
+      this.controlSlide()
+    }
+
+    controlSlide() {
+      if (this.showSlide) {
+        const activeIndex = this.markers.find((item) => item.id === this.activeMarkerId)
+        if (activeIndex === -1) {
+          this.showSlide = false
+          this.$apply()
+          return
+        }
+        this.activeIndex = 0
+        this.transition = ''
+        this.transform = 'translate3d(0, 0, 0)'
+        this._setTipTimer()
+      }
     }
 
     async _newMapContext() {
@@ -219,7 +238,7 @@
         width: 18,
         height: 27
       }]
-      this.markers = [...this.markers, ...location]
+      this.locations = location
       this.$apply()
     }
 
@@ -254,6 +273,17 @@
           }
         })
         const markers = res.map((item) => {
+          if (item.id === this.activeMarkerId) {
+            return {
+              iconPath: `./icon-s_${item.industry.code_name}@2x.png`,
+              id: item.id,
+              latitude: item.latitude,
+              longitude: item.longitude,
+              width: 48,
+              height: 50,
+              hasActivity: item.has_activity
+            }
+          }
           return {
             iconPath: `./icon-s_${item.industry.code_name}@2x.png`,
             id: item.id,
@@ -264,7 +294,7 @@
             hasActivity: item.has_activity
           }
         })
-        this.markers = [...this.markers, ...markers]
+        this.markers = [...this.locations, ...markers]
 //        this._setIncludePoints(this.markers)
         if (markers.length === 1) {
           this.bigMarkerIndex = 1
