@@ -20,7 +20,7 @@
       if (!tips) {
         wepy.setStorageSync('tips', {order: false})
       }
-      wepy.setStorageSync('merchantId', option.query.merchantId || 100009)
+      wepy.setStorageSync('merchantId', option.query.merchantId || 100004)
       // 校验SDK
       wxUtils.checkSDK()
       const storageDate = wepy.getStorageSync('collectDate')

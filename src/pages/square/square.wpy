@@ -482,12 +482,15 @@
         let currentMerchant = this.merchants.find((item) => item.id === markerId)
         await this._getMerchantDetail(currentMerchant.merchant_id)
         this.activeIndex = 0
+        this.transition = ''
+        this.transform = 'translate3d(0, 0, 0)'
         this._setPolyline(markerId)
         this.bigMarkerIndex = this.markers.findIndex((item) => item.id === markerId)
         this._scaleMarker(1)
         this.$apply()
         setTimeout(() => {
           this.showSlide = true
+          this.transition = 'all .5s'
           this.$apply()
         }, 500)
       },

@@ -106,7 +106,7 @@
                 <view
                   class="circle "></view>
                 <view class="value">
-                  {{conDes.note.need_subscribe === '0' ? '需要预约' : '不需要预约'}}
+                  {{conDes.note.need_subscribe === '0' ? '不需要预约' : '需要预约'}}
                 </view>
               </view>
             </view>
