@@ -20,7 +20,8 @@
       if (!tips) {
         wepy.setStorageSync('tips', {order: false})
       }
-      wepy.setStorageSync('merchantId', this.config.current_merchant)
+      let extConfig = wepy.getExtConfigSync()
+      wepy.setStorageSync('merchantId', extConfig.current_merchant ? extConfig.current_merchant : this.config.current_merchant)
       // 校验SDK
       wxUtils.checkSDK()
       const storageDate = wepy.getStorageSync('collectDate')
@@ -66,7 +67,7 @@
     }
 
     config = {
-      current_merchant: 100000,
+      current_merchant: 100009,
       pages: [
         'pages/loading/loading',
         'pages/square/square',

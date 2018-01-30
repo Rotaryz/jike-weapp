@@ -11,8 +11,10 @@
        bindtap="tapMap"
        bindregionchange="regionchange">
     <cover-view class="shop-modal {{showSlide ? 'show' : ''}}">
-      <cover-image class="modal-bg" wx:if="{{imageUri}}"
-                   src="{{imageUri + '/defaults/c-image/square/pic-s_bg@2x.png'}}"></cover-image>
+      <cover-view class="modal-bg-wrapper">
+        <cover-image class="modal-bg" wx:if="{{imageUri}}"
+                     src="{{imageUri + '/defaults/c-image/square/pic-s_bg@2x.png'}}"></cover-image>
+      </cover-view>
       <cover-view class="modal">
         <cover-view class="location">
           <cover-image wx:if="{{imageUri}}" src="{{imageUri + '/defaults/c-image/square/icon-s_location@2x.png'}}"
@@ -154,6 +156,7 @@
       imageUri: URIS.image,
       firstUpdate: false,
       map: false,
+      isControlSlide: false,
       showSlide: true,
       location: {},
       longitude: '',
@@ -193,6 +196,7 @@
 
     onHide() {
       this.clearTimer()
+      this.isControlSlide = true
     }
 
     _newMap() {
@@ -211,22 +215,22 @@
       await this._setControls()
       await this._getPlazaMerchants()
 //      await this._translateMarkers()
-      this.controlSlide()
+      if (this.isControlSlide) {
+        this.controlSlide()
+      }
     }
 
     controlSlide() {
-      if (this.showSlide) {
-        const activeIndex = this.markers.find((item) => item.id === this.activeMarkerId)
-        if (activeIndex === -1) {
-          this.showSlide = false
-          this.$apply()
-          return
-        }
-        this.activeIndex = 0
-        this.transition = ''
-        this.transform = 'translate3d(0, 0, 0)'
-        this._setTipTimer()
+      const activeIndex = this.markers.find((item) => item.id === this.activeMarkerId)
+      if (activeIndex === -1) {
+        this.showSlide = false
+        this.$apply()
+        return
       }
+      this.activeIndex = 0
+      this.transition = ''
+      this.transform = 'translate3d(0, 0, 0)'
+      this._setTipTimer()
     }
 
     async _newMapContext() {
@@ -307,17 +311,17 @@
           }
         })
         this.markers = [...this.locations, ...markers]
-//        if (markers.length === 1) {
-        this.bigMarkerIndex = this.markers.findIndex((item) => item.id === this.activeMarkerId)
-        this._setPolyline(this.markers[this.bigMarkerIndex].id)
-        this._scaleMarker(1)
-        const currentMerchant = res.find((item) => item.id === this.activeMarkerId)
-        await this._getMerchantDetail(currentMerchant.merchant_id)
+        if (!this.isControlSlide) {
+          this.bigMarkerIndex = this.markers.findIndex((item) => item.id === this.activeMarkerId)
+          this._setPolyline(this.markers[this.bigMarkerIndex].id)
+          this._scaleMarker(1)
+          const currentMerchant = res.find((item) => item.id === this.activeMarkerId)
+          await this._getMerchantDetail(currentMerchant.merchant_id)
 //          setTimeout(() => {
 //            this.showSlide = true
 //            this.$apply()
 //          }, 3000)
-//        }
+        }
         this._setIncludePoints([])
         this.$apply()
       }
@@ -442,6 +446,9 @@
 
     _setTipTimer() {
       const tipsLength = this.tips.length
+      if (!tipsLength) {
+        return
+      }
       this.tipTimer = setInterval(() => {
         this.activeIndex += 1
         if (this.activeIndex === tipsLength) {
@@ -573,24 +580,23 @@
     width: 100%
     height: 100vh
     .shop-modal
+      position: relative
       width: 100%
+      height: 211px
       padding: 0 10px
       padding-top: 10px
       padding-bottom: 3px
       box-sizing: border-box
-      transition: all .5s
-      opacity: 0
-      transform: translate3d(0, -100%, 0)
-      &.show
-        transform: translate3d(0, 0, 0)
-        opacity: 1
-      .modal-bg
-        position: absolute
-        top: 6.5px
-        left: 6.5px
-        right: 6.5px
-        bottom: 0
 
+      .modal-bg-wrapper
+        position: absolute
+        display: flex
+        padding: 0
+        box-sizing: border-box
+        .modal-bg
+          display: flex
+          width: 100%
+          height: 100%
       .modal
         position: relative
         width: 100%

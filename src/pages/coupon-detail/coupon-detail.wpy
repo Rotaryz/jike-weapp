@@ -53,7 +53,7 @@
       <service-detail :services.sync="services"></service-detail>
     </view>
     <view wx:if="{{type === 1}}">
-      <know-detail :note.sync="note" :notAllowTime="coupon.not_allow_time"></know-detail>
+      <know-detail :note.sync="note" :notAllowTime.sync="notAllowTime"></know-detail>
     </view>
     <view class="buy-button-wrapper border-top-1px">
       <view class="button-group">
@@ -135,6 +135,7 @@
       services: [],
       promotions: [],
       note: {},
+      notAllowTime: '',
       buy: 'no',
       isFavorite: false,
       currentMerchant: 0,
@@ -224,6 +225,7 @@
         this.coupon = data
         this.services = data.detail
         this.note = data.note
+        this.notAllowTime = data.not_allow_time
         this.isFavorite = data.is_favorite
         this.stock = data.stock
         this.$apply()
