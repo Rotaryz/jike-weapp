@@ -53,7 +53,7 @@
       <service-detail :services.sync="services"></service-detail>
     </view>
     <view wx:if="{{type === 1}}">
-      <know-detail :note.sync="note"></know-detail>
+      <know-detail :note.sync="note" :notAllowTime="coupon.not_allow_time"></know-detail>
     </view>
     <view class="buy-button-wrapper border-top-1px">
       <view class="button-group">
@@ -172,6 +172,7 @@
     }
 
     async load() {
+      this.currentMerchant = this.currentMerchant || this.$parent.globalData.merchantId || wepy.getStorageSync('merchantId')
       if (this.type === COUPON_TYPE) {
         await this._getCouponDetail()
       } else if (this.type === PACKAGE_TYPE) {
@@ -179,7 +180,6 @@
       }
       await this._getUserInfo()
       await this._createQrcode()
-      this.currentMerchant = this.currentMerchant || this.$parent.globalData.merchantId || wepy.getStorageSync('merchantId')
       this.loaded()
     }
 
@@ -231,7 +231,7 @@
     }
 
     async _getPackageDetail() {
-      const res = await CouponApi.getPackageDetail(this.id)
+      const res = await CouponApi.getPackageDetail(this.id, this.currentMerchant)
       if (res.error === ERR_OK) {
         const data = res.data
         wepy.setNavigationBarTitle({title: data.title})

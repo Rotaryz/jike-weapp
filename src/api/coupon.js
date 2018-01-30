@@ -50,9 +50,9 @@ export default class Coupon extends base {
    * @param packageId 礼包id
    * @returns {Promise.<*>}
    */
-  static async getPackageDetail(packageId) {
+  static async getPackageDetail(packageId, currentMerchant) {
     const url = `${this.baseUrl}/api/merchants/gift-bags/${packageId}`
-    return await this.get(url)
+    return await this.get(url, {current_merchant: currentMerchant})
   }
 
   /**

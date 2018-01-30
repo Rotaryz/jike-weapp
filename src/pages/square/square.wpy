@@ -11,7 +11,8 @@
        bindtap="tapMap"
        bindregionchange="regionchange">
     <cover-view class="shop-modal {{showSlide ? 'show' : ''}}">
-      <cover-image class="modal-bg" wx:if="{{imageUri}}" src="{{imageUri + '/defaults/c-image/square/pic-s_bg@2x.png'}}"></cover-image>
+      <cover-image class="modal-bg" wx:if="{{imageUri}}"
+                   src="{{imageUri + '/defaults/c-image/square/pic-s_bg@2x.png'}}"></cover-image>
       <cover-view class="modal">
         <cover-view class="location">
           <cover-image wx:if="{{imageUri}}" src="{{imageUri + '/defaults/c-image/square/icon-s_location@2x.png'}}"
@@ -36,7 +37,8 @@
               <cover-view class="comment-content">
                 <cover-view class="stars">
                   <repeat for="{{stars}}" index="{{index}}" key="{{index}}">
-                    <cover-image wx:if="{{imageUri}}" src="{{imageUri + '/defaults/c-image/square/icon-s_evaluate@2x.png'}}"
+                    <cover-image wx:if="{{imageUri}}"
+                                 src="{{imageUri + '/defaults/c-image/square/icon-s_evaluate@2x.png'}}"
                                  class="icon-star"></cover-image>
                   </repeat>
                   <cover-view>{{currentMerchant.star_level !== '0.0' ? currentMerchant.star_level : '5.0'}}</cover-view>
@@ -47,7 +49,8 @@
           </cover-view>
           <cover-view class="bottom">
             <cover-image class="line"
-                         wx:if="{{imageUri}}" src="{{imageUri + '/defaults/c-image/square/pic-s_line@2x.png'}}"></cover-image>
+                         wx:if="{{imageUri}}"
+                         src="{{imageUri + '/defaults/c-image/square/pic-s_line@2x.png'}}"></cover-image>
             <cover-view class="content-wrapper">
               <cover-view class="item">
                 <cover-image wx:if="{{imageUri}}" src="{{imageUri + '/defaults/c-image/square/icon-s_distance@2x.png'}}"
@@ -60,7 +63,8 @@
                 <cover-view class="content">步行{{duration}}分钟</cover-view>
               </cover-view>
               <cover-view class="item" @tap="openLocation">
-                <cover-image wx:if="{{imageUri}}" src="{{imageUri + '/defaults/c-image/square/icon-s_navigation@2x.png'}}"
+                <cover-image wx:if="{{imageUri}}"
+                             src="{{imageUri + '/defaults/c-image/square/icon-s_navigation@2x.png'}}"
                              class="icon"></cover-image>
                 <cover-view class="content">开始导航</cover-view>
               </cover-view>
@@ -75,7 +79,8 @@
         <cover-view class="tip-wrapper" @tap="switchRecommend">
           <cover-view class="hot-wrapper">
             <cover-image class="hot"
-                         wx:if="{{imageUri}}" src="{{imageUri + '/defaults/c-image/square/pic-s_hot@2x.png'}}"></cover-image>
+                         wx:if="{{imageUri}}"
+                         src="{{imageUri + '/defaults/c-image/square/pic-s_hot@2x.png'}}"></cover-image>
           </cover-view>
           <cover-view class="tips">
             <cover-view class="box"
@@ -85,7 +90,8 @@
                   <cover-view class="item-wrapper">
                     <cover-view class="icon-wrapper">
                       <cover-image class="icon"
-                                   wx:if="{{imageUri}}" src="{{imageUri + '/defaults/c-image/square/pic-s_activity@2x.png'}}"></cover-image>
+                                   wx:if="{{imageUri}}"
+                                   src="{{imageUri + '/defaults/c-image/square/pic-s_activity@2x.png'}}"></cover-image>
                     </cover-view>
                     <cover-view class="word">
                       {{item.activity}}活动开启中
@@ -94,7 +100,8 @@
                   <cover-view class="item-wrapper">
                     <cover-view class="icon-wrapper">
                       <cover-image class="icon"
-                                   wx:if="{{imageUri}}" src="{{imageUri + '/defaults/c-image/square/pic-s_coupon@2x.png'}}"></cover-image>
+                                   wx:if="{{imageUri}}"
+                                   src="{{imageUri + '/defaults/c-image/square/pic-s_coupon@2x.png'}}"></cover-image>
                     </cover-view>
                     <cover-view class="word">
                       {{item.title ? item.title + '正在疯抢中' : '您的优惠券正在路上'}}
@@ -106,7 +113,8 @@
                 <cover-view class="item-wrapper">
                   <cover-view class="icon-wrapper">
                     <cover-image class="icon"
-                                 wx:if="{{imageUri}}" src="{{imageUri + '/defaults/c-image/square/pic-s_activity@2x.png'}}"></cover-image>
+                                 wx:if="{{imageUri}}"
+                                 src="{{imageUri + '/defaults/c-image/square/pic-s_activity@2x.png'}}"></cover-image>
                   </cover-view>
                   <cover-view class="word">
                     {{tips[0].activity}}活动开启中
@@ -115,7 +123,8 @@
                 <cover-view class="item-wrapper">
                   <cover-view class="icon-wrapper">
                     <cover-image class="icon"
-                                 wx:if="{{imageUri}}" src="{{imageUri + '/defaults/c-image/square/pic-s_coupon@2x.png'}}"></cover-image>
+                                 wx:if="{{imageUri}}"
+                                 src="{{imageUri + '/defaults/c-image/square/pic-s_coupon@2x.png'}}"></cover-image>
                   </cover-view>
                   <cover-view class="word">
                     {{tips[0].title ? tips[0].title + '正在疯抢中' : '您的优惠券正在路上'}}
@@ -145,7 +154,7 @@
       imageUri: URIS.image,
       firstUpdate: false,
       map: false,
-      showSlide: false,
+      showSlide: true,
       location: {},
       longitude: '',
       latitude: '',
@@ -266,6 +275,9 @@
         this.merchants = res
         res.forEach((item) => {
           if (item.current_merchant) {
+            if (!this.activeMarkerId) {
+              this.activeMarkerId = item.id
+            }
             this.longitude = item.longitude
 //            this.latitude = item.latitude
             this.latitude = item.latitude + 0.001
@@ -295,17 +307,17 @@
           }
         })
         this.markers = [...this.locations, ...markers]
-//        this._setIncludePoints(this.markers)
-        if (markers.length === 1) {
-          this.bigMarkerIndex = 1
-          this._setPolyline(markers[0].id)
-          this._scaleMarker(1)
-          await this._getMerchantDetail(res[0].merchant_id)
-          setTimeout(() => {
-            this.showSlide = true
-            this.$apply()
-          }, 3000)
-        }
+//        if (markers.length === 1) {
+        this.bigMarkerIndex = this.markers.findIndex((item) => item.id === this.activeMarkerId)
+        this._setPolyline(this.markers[this.bigMarkerIndex].id)
+        this._scaleMarker(1)
+        const currentMerchant = res.find((item) => item.id === this.activeMarkerId)
+        await this._getMerchantDetail(currentMerchant.merchant_id)
+//          setTimeout(() => {
+//            this.showSlide = true
+//            this.$apply()
+//          }, 3000)
+//        }
         this._setIncludePoints([])
         this.$apply()
       }
@@ -469,24 +481,24 @@
         wepy.switchTab({url: '/pages/recommend/recommend'})
       },
       async tapMap(e) {
-        if (!this.showSlide) {
-          return
-        }
-        this.clearData()
-        this.showSlide = false
+//        if (!this.showSlide) {
+//          return
+//        }
+//        this.clearData()
+//        this.showSlide = false
       },
       async regionchange(e) {
-        this.mapContext.getCenterLocation({
-          success: (res) => {
-            this.moveLongitude = res.longitude
-            this.moveLatitude = res.latitude
-            if ((this.moveLongitude !== this.longitude || this.moveLatitude !== this.latitude) && this.showSlide) {
-              this.clearData()
-              this.showSlide = false
-            }
-            this.$apply()
-          }
-        })
+//        this.mapContext.getCenterLocation({
+//          success: (res) => {
+//            this.moveLongitude = res.longitude
+//            this.moveLatitude = res.latitude
+//            if ((this.moveLongitude !== this.longitude || this.moveLatitude !== this.latitude) && this.showSlide) {
+//              this.clearData()
+//              this.showSlide = false
+//            }
+//            this.$apply()
+//          }
+//        })
       },
       controltap(e) {
         if (e.controlId === 1) {
@@ -519,7 +531,7 @@
         this._scaleMarker(1)
         this.$apply()
         setTimeout(() => {
-          this.showSlide = true
+//          this.showSlide = true
           this.transition = 'all .5s'
           this.$apply()
         }, 500)

@@ -5,6 +5,12 @@
       购买须知
     </view>
     <view class="detail-wrapper">
+      <view class="item-wrapper" wx:if="{{notAllowTime !== ''}}">
+        <view class="content">
+          <text class="circle"></text>
+          <text class="value">{{notAllowTime}}</text>
+        </view>
+      </view>
       <view class="item-wrapper">
         <view class="title">是否需要预约：</view>
         <view class="content">
@@ -44,6 +50,10 @@
       note: {
         type: Object,
         default: {}
+      },
+      notAllowTime: {
+        type: String,
+        default: ''
       }
     }
   }

@@ -15,12 +15,12 @@
       this.use('promisify')
     }
 
-    onLaunch(option) {
+    onLaunch() {
       const tips = wepy.getStorageSync('tips')
       if (!tips) {
         wepy.setStorageSync('tips', {order: false})
       }
-      wepy.setStorageSync('merchantId', option.query.merchantId || 100004)
+      wepy.setStorageSync('merchantId', this.config.current_merchant)
       // 校验SDK
       wxUtils.checkSDK()
       const storageDate = wepy.getStorageSync('collectDate')
@@ -66,6 +66,7 @@
     }
 
     config = {
+      current_merchant: 100000,
       pages: [
         'pages/loading/loading',
         'pages/square/square',
