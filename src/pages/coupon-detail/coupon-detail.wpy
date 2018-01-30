@@ -168,7 +168,7 @@
     async onLoad(option) {
       this.type = Math.floor(option.type)
       this.id = option.id
-      this.currentMerchant = option.currentMerchant
+      this.currentMerchant = option.currentMerchant ? option.currentMerchant : 0
       this.currentPage = `/pages/coupon-detail/coupon-detail?type=${this.type}&id=${this.id}`
       await this.load()
     }
@@ -195,12 +195,12 @@
         return
       }
       const res = json.data
-      if (res.length === 0) {
-        return
-      }
       this.sharePrice = res.price
+      this.coupon.activity_share = false
       this.$apply()
-      this.$invoke('share-modal', 'show')
+      if (this.sharePrice) {
+        this.$invoke('share-modal', 'show')
+      }
     }
 
     async _createQrcode() {
@@ -228,7 +228,6 @@
         this.note = data.note
         this.isFavorite = data.is_favorite
         this.stock = data.stock
-        console.log(data.stock)
         this.$apply()
       }
     }
@@ -242,7 +241,7 @@
         data.shop_price = Math.floor(data.shop_price)
         this.coupon = data
         this.stock = data.stock
-        this.note = data.note
+//        this.note = data.note
         this.promotionImages = data.gift_bag_images
         this.isFavorite = data.is_favorite
         this.promotions = data.gift_bag_details.map((item) => {
@@ -257,7 +256,6 @@
             shop_name: item.merchant_data.shop_name
           })
         })
-        console.log(data.stock)
         this.$apply()
       }
     }

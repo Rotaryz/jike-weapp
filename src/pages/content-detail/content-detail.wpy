@@ -15,10 +15,10 @@
             <image class="full-image" src="{{item.detail.url}}"></image>
           </view>
           <view class="content text-wrapper" wx:if="{{item.type === type.text}}">
-            {{item.text}}
+            <text>{{item.text}}</text>
           </view>
           <view class="content video-wrapper" wx:if="{{item.type === type.video}}">
-            <video src="{{item.detail.url}}"></video>
+            <video wx:if="{{showVideo}}" src="{{item.detail.url}}"></video>
           </view>
           <view class="content coupon-wrapper" wx:if="{{item.type === type.coupon}}">
             <coupon :coupon.sync="item.detail" :buy="buy" :border="yes"></coupon>
@@ -40,7 +40,7 @@
     </view>
     <!--<phone-test @isPhoneOk.user="storeToggle"></phone-test>-->
     <share :qrcode.sync="qrcode" :detail.sync="contents" @sharePunchLine.user="sharePunchLine"></share>
-    <share-modal>
+    <share-modal @hide.user="showVideoPlay">
       <view slot="content" class="base-modal-content">
         <view class="header-wrapper">
           <view class="title">现金红包</view>
@@ -88,6 +88,8 @@
       contents: {},
       details: [],
       isFavorite: false,
+      showVideo: true,
+      sharePrice: 0,
       type: {
         image: IMAGE_TYPE,
         text: TEXT_TYPE,
@@ -147,6 +149,7 @@
 //    }
 
     async _getSharePrize() {
+      await ContentsApi.setShare(this.id)
       if (!this.contents.activity_share) {
         return
       }
@@ -156,12 +159,13 @@
         return
       }
       const res = json.data
-      if (res.length === 0) {
-        return
-      }
       this.sharePrice = res.price
+      this.showVideo = false
+      this.contents.activity_share = false
       this.$apply()
-      this.$invoke('share-modal', 'show')
+      if (this.sharePrice) {
+        this.$invoke('share-modal', 'show')
+      }
     }
 
 //    async _checkAuthorise() {
@@ -195,6 +199,9 @@
     methods = {
       showShareModal() {
         this.$invoke('share', 'show', 'content')
+      },
+      showVideoPlay() {
+        this.showVideo = true
       },
       async sharePunchLine() {
         await this._getSharePrize()
@@ -264,7 +271,7 @@
         &:after
           right: -75px
     .content-wrapper
-      margin-bottom: 40px
+      margin-bottom: 20px
       &:last-child
         margin-bottom: 0
       .content
@@ -288,6 +295,7 @@
           width: 100%
           height: 0
           padding-top: 53.3333333333%
+          background-color: $color-black
           video
             position: absolute
             top: 0

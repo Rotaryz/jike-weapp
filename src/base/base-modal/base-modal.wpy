@@ -5,7 +5,7 @@
         <slot name="content"></slot>
       </view>
       <view class="close-wrapper" @tap.stop="close">
-        <image wx:if="{{imageUrlHead}}" src="{{imageUrlHead + '/defaults/c-image/recommend/icon-delet@2x.png'}}" class="full-image"></image>
+        <image wx:if="{{imageUrlHead}}" src="{{imageUrlHead + '/defaults/c-image/mine/icon-delet@2x.png'}}" class="full-image"></image>
       </view>
     </view>
   </view>
