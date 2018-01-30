@@ -21,7 +21,7 @@
       <view class="myOrder-orderList" wx:if="{{orderList.length > 0}}">
         <view class="myOrder-orderList-item" wx:for="{{orderList}}" @tap="showDetail({{item.id}},{{item.status}})" wx:key="{{item.id}}">
           <view class="myOrder-orderList-item-left">
-            <image class="myOrder-orderList-item-logo" src="{{item.promotion.promotion_images[0].image.url}}"></image>
+            <image class="myOrder-orderList-item-logo" src="{{item.merchant_data.logo_image}}"></image>
             <view class="myOrder-orderList-item-msg">
               <view class="myOrder-orderList-item-title">{{item.title}}</view>
               <view class="myOrder-orderList-item-count myOrder-orderList-item-detail" wx:if="{{menuIdx===0}}">数量: {{item.count}}</view>

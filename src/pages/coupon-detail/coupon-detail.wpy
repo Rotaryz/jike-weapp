@@ -5,7 +5,9 @@
         <block slot="content">
           <repeat for="{{promotionImages}}" index="index" key="index" item="item">
             <swiper-item wx:if="{{item.image}}">
-              <image src="{{item.image.url}}" class="slide-image" width="355" height="150"/>
+              <view class="slide-item">
+                <image mode="widthFix" src="{{item.image.url}}" class="slide-image"/>
+              </view>
             </swiper-item>
           </repeat>
         </block>
@@ -371,6 +373,13 @@
         width: 100%
         height: 100%
         background-color: #363636
+        .slide-item
+          width: 100%
+          height: 100%
+          overflow: hidden
+          background: $color-master
+          .slide-image
+            width: 100%
     .desc-wrapper
       display: flex
       height: 94px
