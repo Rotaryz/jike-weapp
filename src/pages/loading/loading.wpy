@@ -17,8 +17,10 @@
 <script>
   import wepy from 'wepy'
   import URIS from 'common/js/config'
+
   const INFOURL = '/pages/square/square'
   import users from 'common/mixins/users'
+
   export default class loading extends wepy.page {
     mixins = [users]
     config = {
@@ -46,18 +48,16 @@
     }
 
     navTo(type) {
-      setTimeout(() => {
-        if (type.indexOf('square') !== -1 || type.indexOf('recommend') !== -1 ||
-          type.indexOf('mine') !== -1) {
-          this.$switch({
-            url: `${type}`
-          })
-        } else {
-          wepy.redirectTo({
-            url: `${type}`
-          })
-        }
-      }, 1500)
+      if (type.indexOf('square') !== -1 || type.indexOf('recommend') !== -1 ||
+        type.indexOf('mine') !== -1) {
+        this.$switch({
+          url: `${type}`
+        })
+      } else {
+        wepy.redirectTo({
+          url: `${type}`
+        })
+      }
     }
 
     async onLoad(options) {
