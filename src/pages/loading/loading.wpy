@@ -18,7 +18,7 @@
   import wepy from 'wepy'
   import URIS from 'common/js/config'
 
-  const INFOURL = '/pages/square/square'
+  const INFOURL = '/pages/recommend/recommend'
   import users from 'common/mixins/users'
 
   export default class loading extends wepy.page {
