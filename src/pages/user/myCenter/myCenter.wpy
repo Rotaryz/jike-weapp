@@ -2,7 +2,7 @@
   <view class="myCenter">
     <view class="myCenter-head">
       <view class="myCenter-head-avatarBox" @tap="updateAvatarImg">
-        <image model="aspectFill"
+        <image mode="aspectFill"
                src="{{avatar}}"
                class="myCenter-head-avatar"
                style="background-image: url({{imageUrlHead ? imageUrlHead + '/defaults/c-image/mine/pic-default.png':''}}); background-size: 48px 48px"></image>

@@ -37,7 +37,10 @@
 
     <scroll-view scroll-y class="mySelect-contentList" bindscrolltolower="contentLower" wx:if="{{contentList.length > 0}}">
       <view class="mySelect-contentList-item" wx:for="{{contentList}}" wx:key="{{index}}" @tap="contentDetail({{item.content_id}}, {{item.merchant_id}})">
-        <image src="{{item.content.image_url}}" class="mySelect-contentList-item-contentImg"></image>
+        <view class="mySelect-contentList-item-contentImg">
+          <image src="{{item.content.image_url}}" class="mySelect-contentList-item-contentImg-img" mode="widthFix"></image>
+          <view class="title">{{item.content.title}}</view>
+        </view>
         <view class="mySelect-contentList-Msg">
           <view class="mySelect-contentList-Msg-left">
             <view class="mySelect-contentList-Msg-left-avatarBox" wx:for="{{item.content.customer_images}}" wx:key="{{item}}" wx:if="{{index < 5}}">
@@ -96,7 +99,7 @@
 
         <view class="store-avatar {{item.checked?'':'hide'}}">
           <view class="store-avatar-box" wx:for="{{item.gift_bag.gift_bag_detail}}" wx:key="{{item}}">
-            <image class="store-avatar-img" src="{{item.merchant_data.logo_image}}"></image>
+            <image class="store-avatar-img" src="{{item.merchant_data.logo_image}}" mode="aspectFill"></image>
             <view class="store-name">{{item.merchant_data.shop_name}}</view>
           </view>
         </view>
@@ -534,14 +537,29 @@
       .mySelect-contentList-item
         width: 93.6vw
         font-size: 0
-        height: 40vw
+        height: 42.7vw
         background: $color-highlight-background
         margin: 10px 3.2vw 0
+        border-radius: 4px
+        border: 1px solid #ddd
 
         .mySelect-contentList-item-contentImg
           width: 93.6vw
-          height: 29.3vw
-          background: #ccc
+          height: 32vw
+          background: $color-white
+          overflow: hidden
+          position: relative
+          .mySelect-contentList-item-contentImg-img
+            width: 93.6vw
+          .title
+            position: absolute
+            left: 10px
+            top: 10px
+            font-size: $font-size-medium
+            color: $color-white
+            font-family: PingFangSC-Medium
+            line-height: 14px
+            text-shadow: 0 2px 5px rgba(0, 0, 0, 0.5)
 
         .mySelect-contentList-Msg
           height: 10.7vw

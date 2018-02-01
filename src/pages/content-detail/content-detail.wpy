@@ -8,17 +8,19 @@
         · {{contents.title}} ·
       </view>
     </view>
-    <view>
+    <view class="content-container">
       <repeat for="{{details}}" key="index" index="index" item="item">
         <view class="content-wrapper">
           <view class="content image-wrapper" wx:if="{{item.type === type.image}}">
-            <image class="full-image" src="{{item.detail.url}}"></image>
+            <image class="full-image" src="{{item.detail.url}}" mode="widthFix"></image>
           </view>
           <view class="content text-wrapper" wx:if="{{item.type === type.text}}">
             <text>{{item.text}}</text>
           </view>
           <view class="content video-wrapper" wx:if="{{item.type === type.video}}">
-            <video wx:if="{{showVideo}}" src="{{item.detail.url}}"></video>
+            <view class="video-box">
+              <video wx:if="{{showVideo}}" src="{{item.detail.url}}"></video>
+            </view>
           </view>
           <view class="content coupon-wrapper" wx:if="{{item.type === type.coupon}}">
             <coupon :coupon.sync="item.detail" :buy="buy" :border="yes"></coupon>
@@ -248,13 +250,15 @@
     .picture-wrapper
       width: 100%
       height: 40vw
-      margin-bottom: 40px
+      margin-bottom: 20px
       overflow: hidden
       .image
         width: 100%
     .line-title
-      margin-bottom: 30px
+      margin-bottom: 20px
       text-align: center
+      width: 100%
+      overflow: hidden
       .title-content
         position: relative
         display: inline-block
@@ -271,19 +275,15 @@
         &:after
           right: -75px
     .content-wrapper
-      margin-bottom: 20px
+      margin-bottom: 10px
       &:last-child
         margin-bottom: 0
       .content
         &.image-wrapper
-          position: relative
-          width: 100%
-          height: 0
-          padding-top: 40%
+          padding: 0 12px
           image
-            position: absolute
-            top: 0
-            left: 0
+            width: 100%
+            border-radius: 4px
         &.text-wrapper
           padding: 5px 12px
           line-height: 23px
@@ -291,20 +291,20 @@
           color: $color-text-d
           background-color: $color-white
         &.video-wrapper
-          position: relative
-          width: 100%
-          height: 0
-          padding-top: 53.3333333333%
-          background-color: $color-black
-          video
-            position: absolute
-            top: 0
-            left: 0
-            width: 100%
-            height: 100%
+          padding: 0 12px
+          .video-box
+            background-color: $color-black
+            position: relative
+            height: 0
+            padding-top: 53.3333333333%
+            video
+              position: absolute
+              top: 0
+              left: 0
+              width: 100%
+              height: 100%
         &.coupon-wrapper
           background-color: $color-white
-          padding-bottom: 20px
     .fix-btn-wrapper
       position: fixed
       right: 12px
@@ -375,4 +375,7 @@
           font-size: $font-size-small
           color: $color-white
           background-color: $color-prize-bc
+
+    .content-container
+      padding-bottom: 10px
 </style>
