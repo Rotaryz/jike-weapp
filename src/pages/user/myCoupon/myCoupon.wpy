@@ -18,7 +18,7 @@
           <image class="coupon-bc" wx:if="{{imageUrlHead}}" src="{{imageUrlHead + '/defaults/c-image/mine/pic-couponbg@2x.png'}}"></image>
           <view class="couponList-item-head-left">
             <view class="couponList-itemPay">
-              <image src="{{item.imageUrl}}" class="promotion-image" wx:if="{{item.promotionType==='exchange' && imageUrlHead}}"></image>
+              <image src="{{item.imageUrl}}" class="promotion-image" wx:if="{{item.promotionType==='exchange' && imageUrlHead}}" mode="aspectFit"></image>
               <view wx:if="{{item.promotionType!=='exchange'}}"><text class="couponList-midMoney">￥</text><text class="couponList-bigMoney">{{item.price?item.price:''}}</text></view>
             </view>
             <view class="couponList-itemMsg">
@@ -279,8 +279,8 @@
             justify-content: center
 
             .promotion-image
-              width: 56px
-              height: 28px
+              width: 55px
+              height: 55px
               border-radius: 2px
 
             .couponList-midMoney
@@ -385,8 +385,8 @@
             justify-content: center
 
             .promotion-image
-              width: 56px
-              height: 28px
+              width: 55px
+              height: 55px
               border-radius: 2px
 
             .couponList-midMoney

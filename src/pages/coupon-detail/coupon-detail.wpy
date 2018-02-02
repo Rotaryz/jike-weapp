@@ -43,7 +43,7 @@
     <view class="promotion-detail" wx:if="{{promotions.length > 0}}">
       <view class="header">
         <view class="red-block"></view>
-        礼包详情
+        <view class="red-title">礼包详情</view>
       </view>
       <view class="promotion-wrapper">
         <repeat for="{{promotions}}" key="index" index="index" item="item">
@@ -445,18 +445,20 @@
       background-color: $color-white
       .header
         height: 39px
-        line-height: 39px
         margin-left: 12px
         border-bottom: 1px solid $color-col-line
-        font-size: $font-size-medium
-        color: $color-master
         display: flex
-        align-items: center
         .red-block
           width: 2px
           height: 14px
+          margin-top: 12px
           background: $color-orange
           margin-right: 5px
+        .red-title
+          margin-top: 12px
+          line-height: 14px
+          font-size: $font-size-medium
+          color: $color-master
     .buy-button-wrapper
       position: fixed
       bottom: 0

@@ -76,7 +76,8 @@
         width: 2px
         height: 14px
         background: $color-orange
-        margin-right: 8px
+        margin-right: 5px
+        margin-bottom: 2px
     .detail-wrapper
       padding: 7.5px 0
       .item-wrapper
