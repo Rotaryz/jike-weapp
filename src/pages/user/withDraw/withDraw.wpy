@@ -1,7 +1,7 @@
 <template>
   <view class="withDraw">
     <view class="withDraw-head">
-      <view class="withDraw-headTxt">账户余额<text class="withDraw-head-money">{{packetTotal.remaining?packetTotal.remaining:0}}</text></view>
+      <view class="withDraw-headTxt">账户余额<text class="withDraw-head-money">{{packetTotal.remaining?packetTotal.remaining:0}}</text>元</view>
       <view class="withDraw-headTxt">提现金额</view>
     </view>
 
@@ -157,6 +157,7 @@
           font-size: $font-size-medium-x
           color: $color-button
           margin-left: 10px
+          margin-right: 5px
 
     .withDraw-inputBox
       display: flex
