@@ -22,7 +22,7 @@
         <view class="myOrder-orderList-item" wx:for="{{orderList}}" @tap="showDetail({{item.id}},{{item.status}})" wx:key="{{item.id}}">
           <view class="myOrder-orderList-item-left">
             <view class="myOrder-orderList-item-logo-box">
-              <image class="myOrder-orderList-item-logo" src="{{item.merchant_data.logo_image}}" mode="widthFix"></image>
+              <image class="myOrder-orderList-item-logo" src="{{item.merchant_data.logo_image}}" mode="aspectFill"></image>
             </view>
             <view class="myOrder-orderList-item-msg">
               <view class="myOrder-orderList-item-title">{{item.title}}</view>
@@ -344,6 +344,7 @@
 
             .myOrder-orderList-item-logo
               width: 64px
+              height: 64px
 
           .myOrder-orderList-item-msg
 
