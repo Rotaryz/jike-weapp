@@ -70,13 +70,13 @@
 //        }
       let url = INFOURL
       if (options.path) {
-        url = decodeURI(options.path)
+        url = decodeURIComponent(options.path)
       }
 
       this.navTo(url)
-//      if (options.merchantId) {
-//        wepy.setStorageSync('merchantId', options.merchantId)
-//      }
+      if (options.merchantId) {
+        wepy.setStorageSync('merchantId', options.merchantId)
+      }
     }
   }
 </script>
