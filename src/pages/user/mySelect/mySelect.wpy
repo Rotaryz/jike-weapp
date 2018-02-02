@@ -763,6 +763,7 @@
 
             .store-name
               font-size: $font-size-small-s
+              line-height: 12px
               color: #4A4657
               overflow: hidden
               width: 60px
