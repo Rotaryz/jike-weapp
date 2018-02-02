@@ -43,7 +43,7 @@
                                  src="{{imageUri + '/defaults/c-image/square/icon-s_evaluate@2x.png'}}"
                                  class="icon-star"></cover-image>
                   </repeat>
-                  <cover-view>{{currentMerchant.star_level !== '0.0' ? currentMerchant.star_level : '5.0'}}</cover-view>
+                  <cover-view class="star-level">{{currentMerchant.star_level !== '0.0' ? currentMerchant.star_level : '5.0'}}</cover-view>
                 </cover-view>
                 <cover-view class="store">{{currentMerchant.favorite_count}}人已收藏</cover-view>
               </cover-view>
@@ -463,7 +463,6 @@
           this.transform = `translate3d(0, -${this.activeIndex * 60}px, 0)`
         }
         this.$apply()
-        console.log(this.transform)
       }, 3000)
     }
 
@@ -590,6 +589,8 @@
 
       .modal-bg-wrapper
         position: absolute
+        top: 0
+        left: 0
         display: flex
         padding: 0
         box-sizing: border-box
@@ -680,6 +681,8 @@
                     margin-right: 1.5px
                     width: 10px
                     height: 10px
+                  .star-level
+                    display: flex
                 .store
                   margin-top: 8px
                   font-size: $font-size-small-s

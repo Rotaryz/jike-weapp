@@ -125,7 +125,7 @@
               <view class="content">
                 <view class="circle"></view>
                 <view class="value">
-                  {{conDes.note.can_use_number === -1 ? '不限' :
+                  {{conDes.note.buy_upper_limit === -1 ? '不限' :
                   '每人限购' + conDes.note.buy_upper_limit + '张优惠券'}}
                 </view>
               </view>
