@@ -14,8 +14,8 @@
                  wx:if="{{showBk === index}}"></image>
           <view class="con-title">
             <view></view>
-            <view class="monlogo">{{item.promotion_platform_price}}000</view>
-            <view>{{item.promotion_title}}{{item.promotion_title}}</view>
+            <view class="monlogo">{{item.promotion_platform_price}}</view>
+            <view>{{item.promotion_title}}</view>
           </view>
         </view>
       </scroll-view>
