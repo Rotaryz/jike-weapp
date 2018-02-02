@@ -537,7 +537,9 @@
         this._scaleMarker(1)
         this.$apply()
         setTimeout(() => {
-//          this.showSlide = true
+          if (!this.showSlide) {
+            this.showSlide = true
+          }
           this.transition = 'all .5s'
           this.$apply()
         }, 500)
