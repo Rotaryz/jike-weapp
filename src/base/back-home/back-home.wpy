@@ -1,0 +1,74 @@
+<template>
+  <view class="back-home" wx:if="{{showHome}}" @tap.stop="toHome">
+    <image class="homeLogo {{bigShow ? 'BigLogo' : ''}}" wx:if="{{imageUrlHead}}" src="{{imageUrlHead + '/defaults/c-image/mine/icon-return_index@3x.png'}}" style="transition:{{transition}}"></image>
+  </view>
+</template>
+
+<script>
+  /* eslint-disable no-undef */
+  import wepy from 'wepy'
+  import URIS from 'common/js/config'
+
+  export default class BackHome extends wepy.component {
+    data = {
+      showHome: false,
+      imageUrlHead: URIS.image,
+      animationData: {},
+      bigShow: false,
+      timer: null,
+      transition: 'width,height 1.5s,1.5s'
+    }
+
+    methods = {
+      show() {
+        this._init()
+        this.showHome = true
+        this.transition = 'width,height 1.5s,1.5s'
+        this.timer = setInterval(() => {
+          this.bigShow = !this.bigShow
+          this.$apply()
+        }, 1500)
+        this.$apply()
+      },
+      hide() {
+        this._init()
+      },
+      toHome() {
+        wx.switchTab({url: '/pages/recommend/recommend'})
+      }
+    }
+
+    _init() {
+      this.transition = ''
+      clearInterval(this.timer)
+      this.showHome = false
+      this.bigShow = false
+      this.$apply()
+    }
+  }
+</script>
+
+<style lang="stylus">
+  @import '../../common/stylus/variable'
+
+  .back-home
+    position: fixed
+    z-index: 100
+    right: 16px
+    bottom: 60px
+    width: 75px
+    height: 75px
+
+    .homeLogo
+      width: 50px
+      height: 50px
+      position: absolute
+      left: 50%
+      top: 50%
+      transform: translate(-50%, -50%)
+
+    .BigLogo
+      width: 75px
+      height: 75px
+
+</style>
