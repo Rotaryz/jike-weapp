@@ -257,6 +257,14 @@
       })
     }
 
+    _checked(arr, idx) {
+      arr.forEach((item, index) => {
+        if (idx * 1 === index * 1) {
+          item.checked = item.checked ? '' : '1'
+        }
+      })
+    }
+
     methods = {
 //      async getSymbol() {
 //        const isAuthorise = await this.isAuthorise()
@@ -292,6 +300,13 @@
 
     mathFloorNumber(number) {
       return Math.floor(number)
+    }
+
+    events = {
+      showStore(idx) {
+        this._checked(this.giftBags, idx)
+        this.$apply()
+      }
     }
 
     watch = {

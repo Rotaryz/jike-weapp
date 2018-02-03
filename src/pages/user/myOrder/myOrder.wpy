@@ -40,6 +40,7 @@
       <Underline></Underline>
     </scroll-view>
 
+    <BackHome></BackHome>
     <Appraise></Appraise>
     <Toast></Toast>
 
@@ -58,6 +59,7 @@
   import {ERR_OK} from '@/api/base'
   import Toast from '@/base/toast/toast'
   import Underline from '@/base/underline-block/underline-block'
+  import BackHome from '@/base/back-home/back-home'
 
   export default class MyOrder extends wepy.page {
     mixins = [base]
@@ -75,7 +77,8 @@
       PhoneTestHint,
       Appraise,
       Underline,
-      Toast
+      Toast,
+      BackHome
     }
 
     data = {
@@ -194,7 +197,21 @@
 
     async onShow() {
       wepy.setStorageSync('tips', {order: false})
+      const scene = wx.getStorageSync('scene')
+      if (scene === 1014) {
+        this.$invoke('BackHome', 'show')
+      } else {
+        this.$invoke('BackHome', 'hide')
+      }
       this.load({idx: this.menuIdx})
+    }
+
+    onHide() {
+      this.$invoke('BackHome', 'hide')
+    }
+
+    onUnload() {
+      this.$invoke('BackHome', 'hide')
     }
 
     async load(option) {
