@@ -60,6 +60,10 @@
       shopName: {
         type: String,
         default: ''
+      },
+      currentMerchant: {
+        type: String,
+        default: ''
       }
     }
     data = {
@@ -74,9 +78,12 @@
     }
 
     async _createQrcode() {
-      const res = await Info.createQrode({path: this.currentPage})
-      this.qrcode = res.data.image_url
-      this.$apply()
+      setTimeout(async () => {
+        let currentPage = `/pages/live/live?currentMerchant=${this.currentMerchant}`
+        const res = await Info.createQrode({path: currentPage})
+        this.qrcode = res.data.image_url
+        this.$apply()
+      }, 20)
     }
 
     async showComment(id) {
@@ -87,7 +94,7 @@
     }
 
     async onLoad() {
-      this._createQrcode()
+      await this._createQrcode()
     }
 
     methods = {

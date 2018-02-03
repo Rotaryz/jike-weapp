@@ -147,7 +147,7 @@
       </view>
     </view>
     <Comment :videoImages.sync="videoImages"
-             :activityId.sync="activityId" :shopName.sync="shopName"
+             :activityId.sync="activityId" :shopName.sync="shopName" :currentMerchant.sync="merchantId"
              wx:if="{{show}}"></Comment>
   </view>
   <PhoneTest></PhoneTest>
@@ -168,7 +168,14 @@
   import Tips from 'common/js/tips'
   export default class LiveVideo extends wepy.page {
     mixins = [users, base]
+    props = {
+      currentMerchant: {
+        type: String,
+        default: ''
+      }
+    }
     data = {
+      merchantId: 0,
       imageUrlHead: URIS.image,
       show: false,
       liveMsg: '',
@@ -236,8 +243,7 @@
         let isAuthorise = await this.isAuthorise()
         this.loaded()
         if (isAuthorise) {
-          let meId = this.$parent.$parent.globalData.merchantId || await
-              wepy.getStorageSync('merchantId')
+          let meId = this.currentMerchant
           const data = {
             from: 'c_live',
             promotion_id: this.promotionId,
@@ -298,9 +304,15 @@
       }
     }
 
+    _setCurrentMerchant() {
+      this.merchantId = this.currentMerchant
+      this.$apply()
+    }
+
     async onLoad() {
       let res = await wepy.getSystemInfo()
       this.width = res.windowWidth - 95
+      this._setCurrentMerchant()
       this.$apply()
     }
   }

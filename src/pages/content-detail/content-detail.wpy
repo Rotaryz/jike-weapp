@@ -74,6 +74,7 @@
   import URIS from 'common/js/config'
   import Info from 'api/info'
   import Shares from 'api/share'
+  import {getParams} from 'common/js/data'
 
   const IMAGE_TYPE = 0
   const TEXT_TYPE = 1
@@ -124,9 +125,16 @@
     }
 
     async onLoad(option) {
-      this.id = option.id
-      this.currentMerchant = option.currentMerchant
-      this.currentPage = `/pages/content-detail/content-detail?id=${option.id}`
+      if (option.scene) {
+        let scene = decodeURIComponent(option.scene)
+        const params = getParams(scene)
+        this.id = params.id
+        this.currentMerchant = params.merchantid
+      } else {
+        this.id = option.id
+        this.currentMerchant = option.currentMerchant
+      }
+      this.currentPage = `/pages/content-detail/content-detail?id=${option.id}&merchantid=${this.currentMerchant}`
       await this.load()
     }
 
