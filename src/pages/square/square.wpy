@@ -146,8 +146,8 @@
   import base from 'common/mixins/base'
   import {ERR_OK} from 'api/base'
   import Merchants from 'api/merchants'
-  import QQMap from 'common/libs/qqmap-jssdk'
   import URIS from 'common/js/config'
+  import GDMap from 'common/libs/amap-wx'
 
   export default class Square extends wepy.page {
     mixins = [users, base]
@@ -190,6 +190,7 @@
     }
 
     async onShow() {
+      this.clearTimer()
       await this.show()
       this.loaded()
     }
@@ -200,9 +201,7 @@
     }
 
     _newMap() {
-      this.qqmapsdk = new QQMap({
-        key: 'WPABZ-ZVD6P-RJJD5-VSCIN-BBADV-FMFJX'
-      })
+      this.gdmapsdk = new GDMap.AMapWX({key: '2c61f0905c3cbd6aff6bc90ae4e48a3e'})
     }
 
     async load() {
@@ -238,7 +237,7 @@
     }
 
     async _setLoaction() {
-      const res = await wepy.getLocation({type:'gcj02'})
+      const res = await wepy.getLocation({type: 'gcj02'})
       this.location = {
         latitude: res.latitude,
         longitude: res.longitude
@@ -311,17 +310,15 @@
           }
         })
         this.markers = [...this.locations, ...markers]
-        if (!this.isControlSlide) {
-          this.bigMarkerIndex = this.markers.findIndex((item) => item.id === this.activeMarkerId)
-          this._setPolyline(this.markers[this.bigMarkerIndex].id)
-          this._scaleMarker(1)
-          const currentMerchant = res.find((item) => item.id === this.activeMarkerId)
-          await this._getMerchantDetail(currentMerchant.merchant_id)
+        this.bigMarkerIndex = this.markers.findIndex((item) => item.id === this.activeMarkerId)
+        this._setPolyline(this.markers[this.bigMarkerIndex].id)
+        this._scaleMarker(1)
+        const currentMerchant = res.find((item) => item.id === this.activeMarkerId)
+        await this._getMerchantDetail(currentMerchant.merchant_id)
 //          setTimeout(() => {
 //            this.showSlide = true
 //            this.$apply()
 //          }, 3000)
-        }
         this._setIncludePoints([])
         this.$apply()
       }
@@ -412,15 +409,28 @@
     }
 
     _caculateDistance() {
-      this.qqmapsdk.calculateDistance({
-        mode: 'driving',
-        from: this.location,
-        to: [{
-          longitude: this.currentMerchant.longitude,
-          latitude: this.currentMerchant.latitude
-        }],
+      // 腾讯
+//      this.qqmapsdk.calculateDistance({
+//        mode: 'driving',
+//        from: this.location,
+//        to: [{
+//          latitude: this.currentMerchant.latitude,
+//          longitude: this.currentMerchant.longitude
+//        }],
+//        success: (res) => {
+//          console.log(res)
+//          const result = res.result.elements[0]
+//          this.distance = Math.floor(result.distance)
+//          this.duration = Math.floor(result.duration / 60)
+//          this.$apply()
+//        }
+//      })
+      // 高德
+      this.gdmapsdk.getWalkingRoute({
+        origin: this.location.longitude + ',' + this.location.latitude,
+        destination: this.currentMerchant.longitude + ',' + this.currentMerchant.latitude,
         success: (res) => {
-          const result = res.result.elements[0]
+          const result = res.paths[0]
           this.distance = Math.floor(result.distance)
           this.duration = Math.floor(result.duration / 60)
           this.$apply()
@@ -449,6 +459,7 @@
       if (!tipsLength) {
         return
       }
+      clearInterval(this.tipTimer)
       this.tipTimer = setInterval(() => {
         this.activeIndex += 1
         if (this.activeIndex === tipsLength) {
