@@ -201,7 +201,7 @@
     }
 
     _newMap() {
-      this.gdmapsdk = new GDMap.AMapWX({key: '2c61f0905c3cbd6aff6bc90ae4e48a3e'})
+      this.gdmapsdk = new GDMap.AMapWX({key: 'd3950730147fbf5fe991ecc0344968b4'})
     }
 
     async load() {
