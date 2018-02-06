@@ -5,7 +5,9 @@
         <block slot="content">
           <repeat for="{{promotionImages}}" index="index" key="index" item="item">
             <swiper-item wx:if="{{item.image}}">
-              <image src="{{item.image.url}}" class="slide-image" width="355" height="150"/>
+              <view class="slide-item">
+                <image mode="widthFix" src="{{item.image.url}}" class="slide-image"/>
+              </view>
             </swiper-item>
           </repeat>
         </block>
@@ -41,7 +43,7 @@
     <view class="promotion-detail" wx:if="{{promotions.length > 0}}">
       <view class="header">
         <view class="red-block"></view>
-        礼包详情
+        <view class="red-title">礼包详情</view>
       </view>
       <view class="promotion-wrapper">
         <repeat for="{{promotions}}" key="index" index="index" item="item">
@@ -53,7 +55,7 @@
       <service-detail :services.sync="services"></service-detail>
     </view>
     <view wx:if="{{type === 1}}">
-      <know-detail :note.sync="note"></know-detail>
+      <know-detail :note.sync="note" :notAllowTime.sync="notAllowTime"></know-detail>
     </view>
     <view class="buy-button-wrapper border-top-1px">
       <view class="button-group">
@@ -135,6 +137,7 @@
       services: [],
       promotions: [],
       note: {},
+      notAllowTime: '',
       buy: 'no',
       isFavorite: false,
       currentMerchant: 0,
@@ -166,12 +169,13 @@
     async onLoad(option) {
       this.type = Math.floor(option.type)
       this.id = option.id
-      this.currentMerchant = option.currentMerchant
+      this.currentMerchant = option.currentMerchant ? option.currentMerchant : 0
       this.currentPage = `/pages/coupon-detail/coupon-detail?type=${this.type}&id=${this.id}`
       await this.load()
     }
 
     async load() {
+      this.currentMerchant = this.currentMerchant || this.$parent.globalData.merchantId || wepy.getStorageSync('merchantId')
       if (this.type === COUPON_TYPE) {
         await this._getCouponDetail()
       } else if (this.type === PACKAGE_TYPE) {
@@ -179,7 +183,6 @@
       }
       await this._getUserInfo()
       await this._createQrcode()
-      this.currentMerchant = this.currentMerchant || this.$parent.globalData.merchantId || wepy.getStorageSync('merchantId')
       this.loaded()
     }
 
@@ -193,12 +196,12 @@
         return
       }
       const res = json.data
-      if (res.length === 0) {
-        return
-      }
       this.sharePrice = res.price
+      this.coupon.activity_share = false
       this.$apply()
-      this.$invoke('share-modal', 'show')
+      if (this.sharePrice) {
+        this.$invoke('share-modal', 'show')
+      }
     }
 
     async _createQrcode() {
@@ -224,15 +227,15 @@
         this.coupon = data
         this.services = data.detail
         this.note = data.note
+        this.notAllowTime = data.not_allow_time
         this.isFavorite = data.is_favorite
         this.stock = data.stock
-        console.log(data.stock)
         this.$apply()
       }
     }
 
     async _getPackageDetail() {
-      const res = await CouponApi.getPackageDetail(this.id)
+      const res = await CouponApi.getPackageDetail(this.id, this.currentMerchant)
       if (res.error === ERR_OK) {
         const data = res.data
         wepy.setNavigationBarTitle({title: data.title})
@@ -240,7 +243,7 @@
         data.shop_price = Math.floor(data.shop_price)
         this.coupon = data
         this.stock = data.stock
-        this.note = data.note
+//        this.note = data.note
         this.promotionImages = data.gift_bag_images
         this.isFavorite = data.is_favorite
         this.promotions = data.gift_bag_details.map((item) => {
@@ -255,7 +258,6 @@
             shop_name: item.merchant_data.shop_name
           })
         })
-        console.log(data.stock)
         this.$apply()
       }
     }
@@ -371,6 +373,13 @@
         width: 100%
         height: 100%
         background-color: #363636
+        .slide-item
+          width: 100%
+          height: 100%
+          overflow: hidden
+          background: $color-master-gray
+          .slide-image
+            width: 100%
     .desc-wrapper
       display: flex
       height: 94px
@@ -436,18 +445,20 @@
       background-color: $color-white
       .header
         height: 39px
-        line-height: 39px
         margin-left: 12px
         border-bottom: 1px solid $color-col-line
-        font-size: $font-size-medium
-        color: $color-master
         display: flex
-        align-items: center
         .red-block
           width: 2px
           height: 14px
+          margin-top: 12px
           background: $color-orange
           margin-right: 5px
+        .red-title
+          margin-top: 12px
+          line-height: 14px
+          font-size: $font-size-medium
+          color: $color-master
     .buy-button-wrapper
       position: fixed
       bottom: 0

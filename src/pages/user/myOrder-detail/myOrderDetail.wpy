@@ -3,7 +3,9 @@
     <view class="orderDetail-head">
       <view class="orderDetail-head-detailBox"  @tap="couponDetail">
         <view class="orderDetail-head-left">
-          <image src="{{orderMsg.promotion_type == 1 ? orderMsg.promotion.promotion_images[0].image.url : orderMsg.promotion.gift_bag_images[0].image.url }}" class="orderDetail-head-img"></image>
+          <view class="orderDetail-head-img-box">
+            <image src="{{orderMsg.promotion_type == 1 ? orderMsg.promotion.promotion_images[0].image.url : orderMsg.promotion.gift_bag_images[0].image.url}}" mode="widthFix" class="orderDetail-head-img"></image>
+          </view>
           <view class="orderDetail-head-msg">
             <view class="orderDetail-head-msg-title">{{orderMsg.promotion.title}}</view>
             <view class="orderDetail-head-msg-content">{{orderMsg.promotion.subhead}}</view>
@@ -17,14 +19,16 @@
       </view>
       <view class="orderDetail-head-status">
         <view class="orderDetail-head-statusTxt">{{statusTxt[orderMsg.status]}}</view>
-        <view class="orderDetail-head-statusBtn" @tap="followWork({{orderMsg.status}}, {{orderMsg.id}}, {{orderMsg.merchant_id}})">{{btnTxt[orderMsg.status]}}</view>
+        <view class="orderDetail-head-statusBtn" @tap="followWork({{orderMsg.status}}, {{orderMsg.id}}, {{orderMsg.merchant_id}})" wx:if="{{orderMsg.promotion_type == 1 || orderMsg.status != 7}}">{{btnTxt[orderMsg.status]}}</view>
       </view>
     </view>
 
     <view class="orderDetail-merchant">
       <view class="orderDetail-merchant-title">商家信息</view>
       <view class="orderDetail-merchant-msgBox">
-        <image src="{{orderMsg.merchant_data.logo_image}}" class="orderDetail-merchant-logo"></image>
+        <view class="orderDetail-merchant-logo-box">
+          <image src="{{orderMsg.merchant_data.logo_image}}" mode="widthFix" class="orderDetail-merchant-logo"></image>
+        </view>
         <view class="orderDetail-merchant-msg">
           <view class="orderDetail-merchant-msgName">{{orderMsg.merchant_data.name}}</view>
           <view class="orderDetail-merchant-msgWork">{{orderMsg.merchant_data.describe}}</view>
@@ -108,8 +112,8 @@
 
     data = {
       imageUrlHead: URIS.image,
-      btnTxt: ['付款', '申请退款', '评价', '查看详情', '查看详情', '再来一单', '再来一单'],
-      statusTxt: ['待付款', '待使用', '待评价', '退款中', '退款成功', '已评价', '已关闭'],
+      btnTxt: ['付款', '申请退款', '评价', '查看详情', '查看详情', '再来一单', '再来一单', '再来一单'],
+      statusTxt: ['待付款', '待使用', '待评价', '退款中', '退款成功', '已评价', '已关闭', '退款失败'],
       orderMsg: null,
       refundIng: false,
       refundCause: [
@@ -270,13 +274,16 @@
         .orderDetail-head-left
           display: flex
 
-          .orderDetail-head-img
+          .orderDetail-head-img-box
             width: 120px
             height: 64px
-            background: #ccc
+            background: $color-master
             border: 1px solid $color-row-line
             border-radius: 2px
             margin-right: 9.5px
+            overflow: hidden
+            .orderDetail-head-img
+              width: 120px
 
           .orderDetail-head-msg
 
@@ -341,13 +348,16 @@
       .orderDetail-merchant-msgBox
         display: flex
         padding: 9px 0 9px 12px
-
-        .orderDetail-merchant-logo
+        .orderDetail-merchant-logo-box
           width: 65px
           height: 65px
           border-radius: 2px
           margin-right: 8px
-          background: #ccc
+          background: $color-master-gray
+          overflow: hidden
+
+          .orderDetail-merchant-logo
+            width: 65px
 
         .orderDetail-merchant-msgName
           font-size: $font-size-medium-x

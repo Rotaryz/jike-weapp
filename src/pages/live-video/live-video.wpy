@@ -65,20 +65,18 @@
           <view class="header" @tap="test">服务详情
             <view class="lines"></view>
           </view>
-          <scroll-view scroll-y>
-            <view class="detail-wrapper">
-              <view class="item-wrapper" wx:for="{{conDes.detail}}"
-                    wx:key="index">
-                <view class="lines"></view>
-                <view class="content left">
-                  <view class="circle"></view>
-                  <view class="font">{{item.servie}}</view>
-                </view>
-                <view class="content middle">{{item.number}}次</view>
-                <view class="content right">￥{{item.price}}</view>
+          <view class="detail-wrapper">
+            <view class="item-wrapper" wx:for="{{conDes.detail}}"
+                  wx:key="index">
+              <view class="lines"></view>
+              <view class="content left">
+                <view class="circle"></view>
+                <view class="font">{{item.servie}}</view>
               </view>
+              <view class="content middle">{{item.number}}次</view>
+              <view class="content right">￥{{item.price}}</view>
             </view>
-          </scroll-view>
+          </view>
         </view>
         <!--购买详情-->
         <view class="know-detail">
@@ -86,7 +84,7 @@
             <view class="lines"></view>
           </view>
 
-          <scroll-view scroll-y class="detail-wrapper">
+          <view class="detail-wrapper">
             <view class="item-wrapper">
               <view class="title ">
                 有效期：
@@ -106,7 +104,7 @@
                 <view
                   class="circle "></view>
                 <view class="value">
-                  {{conDes.note.need_subscribe === '0' ? '需要预约' : '不需要预约'}}
+                  {{conDes.note.need_subscribe === 0 ? '不需要预约' : '需要预约'}}
                 </view>
               </view>
             </view>
@@ -117,11 +115,33 @@
                 <view class="circle"></view>
                 <view class="value">
                   {{conDes.note.can_use_number === -1 ? '不限人数' :
-                  '每张券最多' + conDes.note.can_use_number + '人'}}
+                  '每张券限' + conDes.note.can_use_number + '人使用'}}
                 </view>
               </view>
             </view>
-          </scroll-view>
+            <view class="item-wrapper">
+              <view class="title ">单人购买上限：
+              </view>
+              <view class="content">
+                <view class="circle"></view>
+                <view class="value">
+                  {{conDes.note.can_use_number === -1 ? '不限' :
+                  '每人限购' + conDes.note.buy_upper_limit + '张优惠券'}}
+                </view>
+              </view>
+            </view>
+            <view class="item-wrapper">
+              <view class="title ">备注：
+              </view>
+              <view class="content">
+                <view class="circle"></view>
+                <view class="value">
+                  {{conDes.note.remarks ? conDes.note.remarks : ''}}
+                </view>
+              </view>
+            </view>
+            <view class="last"></view>
+          </view>
         </view>
         <view class="btn-buy" @tap="postOrder">点击购买</view>
       </view>
@@ -145,6 +165,7 @@
   import URIS from 'common/js/config'
   import Toast from '@/base/toast/toast'
   import {ERR_OK} from 'api/base'
+  import Tips from 'common/js/tips'
   export default class LiveVideo extends wepy.page {
     mixins = [users, base]
     data = {
@@ -242,6 +263,7 @@
               this.state = false
               this.moveWay = '0%'
               this.transition = '0%'
+              Tips.success('支付成功')
               this.$apply()
             }
           } else {
@@ -484,9 +506,10 @@
         font-size: $font-size-medium
         color: $color-text-l
         position: relative
-      scroll-view
-        height: 19.4vw
+
       .detail-wrapper
+        height: 19.4vw
+        overflow-y: auto
         .item-wrapper
           display: flex
           align-items: center
@@ -541,6 +564,7 @@
         padding: 7.5px 0 4vw
         box-sizing: border-box
         height: 34.4vw
+        overflow-y: auto
         .item-wrapper
           margin-bottom: 2.4vw
           &:last-child
@@ -566,5 +590,8 @@
               vertical-align: middle
               font-size: $font-size-small
 
+        .last
+          height: 10vw
+          width: 100%
   /*display: none*/
 </style>

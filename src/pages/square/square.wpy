@@ -11,7 +11,10 @@
        bindtap="tapMap"
        bindregionchange="regionchange">
     <cover-view class="shop-modal {{showSlide ? 'show' : ''}}">
-      <cover-image class="modal-bg" wx:if="{{imageUri}}" src="{{imageUri + '/defaults/c-image/square/pic-s_bg@2x.png'}}"></cover-image>
+      <cover-view class="modal-bg-wrapper">
+        <cover-image class="modal-bg" wx:if="{{imageUri}}"
+                     src="{{imageUri + '/defaults/c-image/square/pic-s_bg@2x.png'}}"></cover-image>
+      </cover-view>
       <cover-view class="modal">
         <cover-view class="location">
           <cover-image wx:if="{{imageUri}}" src="{{imageUri + '/defaults/c-image/square/icon-s_location@2x.png'}}"
@@ -36,7 +39,8 @@
               <cover-view class="comment-content">
                 <cover-view class="stars">
                   <repeat for="{{stars}}" index="{{index}}" key="{{index}}">
-                    <cover-image wx:if="{{imageUri}}" src="{{imageUri + '/defaults/c-image/square/icon-s_evaluate@2x.png'}}"
+                    <cover-image wx:if="{{imageUri}}"
+                                 src="{{imageUri + '/defaults/c-image/square/icon-s_evaluate@2x.png'}}"
                                  class="icon-star"></cover-image>
                   </repeat>
                   <cover-view>{{currentMerchant.star_level !== '0.0' ? currentMerchant.star_level : '5.0'}}</cover-view>
@@ -47,7 +51,8 @@
           </cover-view>
           <cover-view class="bottom">
             <cover-image class="line"
-                         wx:if="{{imageUri}}" src="{{imageUri + '/defaults/c-image/square/pic-s_line@2x.png'}}"></cover-image>
+                         wx:if="{{imageUri}}"
+                         src="{{imageUri + '/defaults/c-image/square/pic-s_line@2x.png'}}"></cover-image>
             <cover-view class="content-wrapper">
               <cover-view class="item">
                 <cover-image wx:if="{{imageUri}}" src="{{imageUri + '/defaults/c-image/square/icon-s_distance@2x.png'}}"
@@ -60,7 +65,8 @@
                 <cover-view class="content">步行{{duration}}分钟</cover-view>
               </cover-view>
               <cover-view class="item" @tap="openLocation">
-                <cover-image wx:if="{{imageUri}}" src="{{imageUri + '/defaults/c-image/square/icon-s_navigation@2x.png'}}"
+                <cover-image wx:if="{{imageUri}}"
+                             src="{{imageUri + '/defaults/c-image/square/icon-s_navigation@2x.png'}}"
                              class="icon"></cover-image>
                 <cover-view class="content">开始导航</cover-view>
               </cover-view>
@@ -75,7 +81,8 @@
         <cover-view class="tip-wrapper" @tap="switchRecommend">
           <cover-view class="hot-wrapper">
             <cover-image class="hot"
-                         wx:if="{{imageUri}}" src="{{imageUri + '/defaults/c-image/square/pic-s_hot@2x.png'}}"></cover-image>
+                         wx:if="{{imageUri}}"
+                         src="{{imageUri + '/defaults/c-image/square/pic-s_hot@2x.png'}}"></cover-image>
           </cover-view>
           <cover-view class="tips">
             <cover-view class="box"
@@ -85,7 +92,8 @@
                   <cover-view class="item-wrapper">
                     <cover-view class="icon-wrapper">
                       <cover-image class="icon"
-                                   wx:if="{{imageUri}}" src="{{imageUri + '/defaults/c-image/square/pic-s_activity@2x.png'}}"></cover-image>
+                                   wx:if="{{imageUri}}"
+                                   src="{{imageUri + '/defaults/c-image/square/pic-s_activity@2x.png'}}"></cover-image>
                     </cover-view>
                     <cover-view class="word">
                       {{item.activity}}活动开启中
@@ -94,7 +102,8 @@
                   <cover-view class="item-wrapper">
                     <cover-view class="icon-wrapper">
                       <cover-image class="icon"
-                                   wx:if="{{imageUri}}" src="{{imageUri + '/defaults/c-image/square/pic-s_coupon@2x.png'}}"></cover-image>
+                                   wx:if="{{imageUri}}"
+                                   src="{{imageUri + '/defaults/c-image/square/pic-s_coupon@2x.png'}}"></cover-image>
                     </cover-view>
                     <cover-view class="word">
                       {{item.title ? item.title + '正在疯抢中' : '您的优惠券正在路上'}}
@@ -106,7 +115,8 @@
                 <cover-view class="item-wrapper">
                   <cover-view class="icon-wrapper">
                     <cover-image class="icon"
-                                 wx:if="{{imageUri}}" src="{{imageUri + '/defaults/c-image/square/pic-s_activity@2x.png'}}"></cover-image>
+                                 wx:if="{{imageUri}}"
+                                 src="{{imageUri + '/defaults/c-image/square/pic-s_activity@2x.png'}}"></cover-image>
                   </cover-view>
                   <cover-view class="word">
                     {{tips[0].activity}}活动开启中
@@ -115,7 +125,8 @@
                 <cover-view class="item-wrapper">
                   <cover-view class="icon-wrapper">
                     <cover-image class="icon"
-                                 wx:if="{{imageUri}}" src="{{imageUri + '/defaults/c-image/square/pic-s_coupon@2x.png'}}"></cover-image>
+                                 wx:if="{{imageUri}}"
+                                 src="{{imageUri + '/defaults/c-image/square/pic-s_coupon@2x.png'}}"></cover-image>
                   </cover-view>
                   <cover-view class="word">
                     {{tips[0].title ? tips[0].title + '正在疯抢中' : '您的优惠券正在路上'}}
@@ -145,7 +156,8 @@
       imageUri: URIS.image,
       firstUpdate: false,
       map: false,
-      showSlide: false,
+      isControlSlide: false,
+      showSlide: true,
       location: {},
       longitude: '',
       latitude: '',
@@ -156,6 +168,7 @@
       stars: [],
       distance: '',
       duration: '',
+      locations: {},
       markers: [],
       polyline: [],
       controls: [],
@@ -176,14 +189,14 @@
       this.loaded()
     }
 
-    onShow() {
-      if (this.showSlide) {
-        this._setTipTimer()
-      }
+    async onShow() {
+      await this.show()
+      this.loaded()
     }
 
     onHide() {
       this.clearTimer()
+      this.isControlSlide = true
     }
 
     _newMap() {
@@ -195,10 +208,29 @@
     async load() {
       await this.isAuthorise()
       await this._newMapContext()
+    }
+
+    async show() {
       await this._setLoaction()
       await this._setControls()
       await this._getPlazaMerchants()
-      await this._translateMarkers()
+//      await this._translateMarkers()
+      if (this.isControlSlide) {
+        this.controlSlide()
+      }
+    }
+
+    controlSlide() {
+      const activeIndex = this.markers.find((item) => item.id === this.activeMarkerId)
+      if (activeIndex === -1) {
+        this.showSlide = false
+        this.$apply()
+        return
+      }
+      this.activeIndex = 0
+      this.transition = ''
+      this.transform = 'translate3d(0, 0, 0)'
+      this._setTipTimer()
     }
 
     async _newMapContext() {
@@ -219,7 +251,7 @@
         width: 18,
         height: 27
       }]
-      this.markers = [...this.markers, ...location]
+      this.locations = location
       this.$apply()
     }
 
@@ -247,6 +279,9 @@
         this.merchants = res
         res.forEach((item) => {
           if (item.current_merchant) {
+            if (!this.activeMarkerId) {
+              this.activeMarkerId = item.id
+            }
             this.longitude = item.longitude
 //            this.latitude = item.latitude
             this.latitude = item.latitude + 0.001
@@ -254,6 +289,17 @@
           }
         })
         const markers = res.map((item) => {
+          if (item.id === this.activeMarkerId) {
+            return {
+              iconPath: `./icon-s_${item.industry.code_name}@2x.png`,
+              id: item.id,
+              latitude: item.latitude,
+              longitude: item.longitude,
+              width: 48,
+              height: 50,
+              hasActivity: item.has_activity
+            }
+          }
           return {
             iconPath: `./icon-s_${item.industry.code_name}@2x.png`,
             id: item.id,
@@ -264,17 +310,17 @@
             hasActivity: item.has_activity
           }
         })
-        this.markers = [...this.markers, ...markers]
-//        this._setIncludePoints(this.markers)
-        if (markers.length === 1) {
-          this.bigMarkerIndex = 1
-          this._setPolyline(markers[0].id)
+        this.markers = [...this.locations, ...markers]
+        if (!this.isControlSlide) {
+          this.bigMarkerIndex = this.markers.findIndex((item) => item.id === this.activeMarkerId)
+          this._setPolyline(this.markers[this.bigMarkerIndex].id)
           this._scaleMarker(1)
-          await this._getMerchantDetail(res[0].merchant_id)
-          setTimeout(() => {
-            this.showSlide = true
-            this.$apply()
-          }, 3000)
+          const currentMerchant = res.find((item) => item.id === this.activeMarkerId)
+          await this._getMerchantDetail(currentMerchant.merchant_id)
+//          setTimeout(() => {
+//            this.showSlide = true
+//            this.$apply()
+//          }, 3000)
         }
         this._setIncludePoints([])
         this.$apply()
@@ -400,6 +446,9 @@
 
     _setTipTimer() {
       const tipsLength = this.tips.length
+      if (!tipsLength) {
+        return
+      }
       this.tipTimer = setInterval(() => {
         this.activeIndex += 1
         if (this.activeIndex === tipsLength) {
@@ -439,24 +488,24 @@
         wepy.switchTab({url: '/pages/recommend/recommend'})
       },
       async tapMap(e) {
-        if (!this.showSlide) {
-          return
-        }
-        this.clearData()
-        this.showSlide = false
+//        if (!this.showSlide) {
+//          return
+//        }
+//        this.clearData()
+//        this.showSlide = false
       },
       async regionchange(e) {
-        this.mapContext.getCenterLocation({
-          success: (res) => {
-            this.moveLongitude = res.longitude
-            this.moveLatitude = res.latitude
-            if ((this.moveLongitude !== this.longitude || this.moveLatitude !== this.latitude) && this.showSlide) {
-              this.clearData()
-              this.showSlide = false
-            }
-            this.$apply()
-          }
-        })
+//        this.mapContext.getCenterLocation({
+//          success: (res) => {
+//            this.moveLongitude = res.longitude
+//            this.moveLatitude = res.latitude
+//            if ((this.moveLongitude !== this.longitude || this.moveLatitude !== this.latitude) && this.showSlide) {
+//              this.clearData()
+//              this.showSlide = false
+//            }
+//            this.$apply()
+//          }
+//        })
       },
       controltap(e) {
         if (e.controlId === 1) {
@@ -482,12 +531,15 @@
         let currentMerchant = this.merchants.find((item) => item.id === markerId)
         await this._getMerchantDetail(currentMerchant.merchant_id)
         this.activeIndex = 0
+        this.transition = ''
+        this.transform = 'translate3d(0, 0, 0)'
         this._setPolyline(markerId)
         this.bigMarkerIndex = this.markers.findIndex((item) => item.id === markerId)
         this._scaleMarker(1)
         this.$apply()
         setTimeout(() => {
-          this.showSlide = true
+//          this.showSlide = true
+          this.transition = 'all .5s'
           this.$apply()
         }, 500)
       },
@@ -528,24 +580,23 @@
     width: 100%
     height: 100vh
     .shop-modal
+      position: relative
       width: 100%
+      height: 211px
       padding: 0 10px
       padding-top: 10px
       padding-bottom: 3px
       box-sizing: border-box
-      transition: all .5s
-      opacity: 0
-      transform: translate3d(0, -100%, 0)
-      &.show
-        transform: translate3d(0, 0, 0)
-        opacity: 1
-      .modal-bg
-        position: absolute
-        top: 6.5px
-        left: 6.5px
-        right: 6.5px
-        bottom: 0
 
+      .modal-bg-wrapper
+        position: absolute
+        display: flex
+        padding: 0
+        box-sizing: border-box
+        .modal-bg
+          display: flex
+          width: 100%
+          height: 100%
       .modal
         position: relative
         width: 100%

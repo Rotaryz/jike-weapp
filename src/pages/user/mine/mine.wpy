@@ -3,7 +3,7 @@
     <view class="mine-main">
       <view class="mine-head" @tap="notestToPage('/pages/user/myCenter/myCenter')">
         <view class="mine-head-avatarBox">
-          <image class="mine-head-avatar" src="{{userInfo.avatarUrl}}" style="background-image: url({{imageUrlHead?imageUrlHead + '/defaults/c-image/mine/pic-default.png':''}}); background-size: 48px 48px"></image>
+          <image class="mine-head-avatar" src="{{userInfo.avatarUrl}}" mode="aspectFill" style="background-image: url({{imageUrlHead?imageUrlHead + '/defaults/c-image/mine/pic-default.png':''}}); background-size: 48px 48px"></image>
           <view >
             <view class="mine-head-nickName">{{userInfo.nickName}}</view>
             <view class="mine-head-nickName-down">
@@ -20,7 +20,7 @@
       </view>
 
       <view class="mine-order">
-        <view class="mine-order-head" @tap="notestToPage('/pages/user/myOrder/myOrder')">
+        <view class="mine-order-head" @tap="notestToPage('/pages/user/myOrder/myOrder?idx={{currentIdx}}')">
           <view class="mine-order-head-left">
             <view class="red-block"></view>
             <text class="mine-order-headTxt">我的订单</text>
@@ -123,7 +123,8 @@
           url: '/pages/user/mySelect/mySelect'
         }
       ],
-      tips: null
+      tips: null,
+      currentIdx: 1
     }
 
     async onLoad() {

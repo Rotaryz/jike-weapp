@@ -4,13 +4,13 @@
       <view class="slider-content-ul" style="transition:{{transition}}; transform: translateX({{list.length===1?0:translateX}}px)"
             bindtouchstart="touchBegin" bindtouchmove="touching" bindtouchend="touchEnd" animation="{{animationData}}">
         <view class="slider-item" wx:if="{{list.length!==1}}">
-          <image src="{{list[list.length-1].image.url}}" class="slider-item-img"></image>
+          <image src="{{list[list.length-1].image.url}}" class="slider-item-img" mode="widthFix"></image>
         </view>
         <view class="slider-item" wx:for="{{list}}" wx:key="{{item}}">
-          <image src="{{item.image.url}}" class="slider-item-img"></image>
+          <image src="{{item.image.url}}" class="slider-item-img" mode="widthFix"></image>
         </view>
         <view class="slider-item" wx:if="{{list.length!==1}}">
-          <image src="{{list[0].image.url}}" class="slider-item-img"></image>
+          <image src="{{list[0].image.url}}" class="slider-item-img" mode="widthFix"></image>
         </view>
       </view>
     </view>
@@ -75,9 +75,11 @@
     }
 
     _autoPlay() {
+      clearInterval(this.timer)
       this.timer = setInterval(() => {
         this._autoPlayMove()
       }, 3000)
+      this.$apply()
     }
 
     methods = {
@@ -88,6 +90,7 @@
       },
       stop() {
         clearInterval(this.timer)
+        this.$apply()
       },
       changeVal(e) {
         this.swiperCurrent = e.detail.current
@@ -165,13 +168,14 @@
 </script>
 
 <style lang="stylus">
+  @import "../../common/stylus/variable"
   .slider
     width: 100%
     height: 100%
     .slider-content
       position: absolute
       width: 86.6666vw
-      height: 29.3333vw
+      height: 40vw
       top: 50%
       left: 50%
       transform: translate(-50%, -50%)
@@ -179,11 +183,13 @@
         display: flex
         .slider-item
           width: 86.6666vw
-          height: 29.3333vw
+          height: 40vw
           margin-right: 2.6666vw
+          overflow: hidden
+          background: $color-master-gray
+          border-radius: 4px
           .slider-item-img
             width: 86.6666vw
-            height: 29.3333vw
-            border-radius: 4px
+
 
 </style>

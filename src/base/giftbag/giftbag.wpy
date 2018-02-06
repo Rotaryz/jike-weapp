@@ -26,7 +26,7 @@
 
     <view class="store-avatar {{show?'':'hide'}}">
       <view class="store-avatar-box" wx:for="{{giftbag.gift_bag_details}}" wx:key="{{item}}">
-        <image class="store-avatar-img" src="{{item.merchant_data.logo_image}}"></image>
+        <image class="store-avatar-img" src="{{item.merchant_data.logo_image}}" mode="aspectFill"></image>
         <view class="store-name">{{item.merchant_data.shop_name}}</view>
       </view>
     </view>
@@ -212,6 +212,7 @@
 
         .store-name
           font-size: $font-size-small-s
+          line-height: 12px
           color: #4A4657
           width: 60px
           text-align: center

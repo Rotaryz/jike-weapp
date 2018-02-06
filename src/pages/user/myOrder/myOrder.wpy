@@ -21,7 +21,9 @@
       <view class="myOrder-orderList" wx:if="{{orderList.length > 0}}">
         <view class="myOrder-orderList-item" wx:for="{{orderList}}" @tap="showDetail({{item.id}},{{item.status}})" wx:key="{{item.id}}">
           <view class="myOrder-orderList-item-left">
-            <image class="myOrder-orderList-item-logo" src="{{item.promotion.promotion_images[0].image.url}}"></image>
+            <view class="myOrder-orderList-item-logo-box">
+              <image class="myOrder-orderList-item-logo" src="{{item.merchant_data.logo_image}}" mode="widthFix"></image>
+            </view>
             <view class="myOrder-orderList-item-msg">
               <view class="myOrder-orderList-item-title">{{item.title}}</view>
               <view class="myOrder-orderList-item-count myOrder-orderList-item-detail" wx:if="{{menuIdx===0}}">数量: {{item.count}}</view>
@@ -64,7 +66,8 @@
       navigationBarTitleText: '我的订单',
       navigationBarBackgroundColor: '#fff',
       navigationBarTextStyle: 'black',
-      backgroundColor: '#F9F9F9'
+      backgroundColor: '#F9F9F9',
+      disableScroll: true
     }
 
     components = {
@@ -80,7 +83,7 @@
       menuIdx: 1,
       menuItems: ['待付款', '待使用', '待评价', '退款/售后'],
       noOrderIcon: [URIS.image + '/defaults/c-image/mine/pic-my_nopaid.png', URIS.image + '/defaults/c-image/mine/pic-my_noused.png', URIS.image + '/defaults/c-image/mine/pic-my_noevaluated.png', URIS.image + '/defaults/c-image/mine/pic-my_norefund.png'],
-      orderItemStatus: ['待付款', '', '', '退款中', '退款完成', '已评价', '已关闭'],
+      orderItemStatus: ['待付款', '', '', '退款中', '退款完成', '已评价', '已关闭', '退款失败'],
       orderItemBtnTxt: ['付款', '进店使用', '评价', '再来一单'],
       isPhone: 1,
       LowerLoading: false,
@@ -331,12 +334,16 @@
         .myOrder-orderList-item-left
           display: flex
           width: 80%
-
-          .myOrder-orderList-item-logo
+          .myOrder-orderList-item-logo-box
             width: 64px
             height: 64px
             border: 1px solid $color-row-line
             margin-right: 9px
+            background: $color-master-gray
+            overflow: hidden
+
+            .myOrder-orderList-item-logo
+              width: 64px
 
           .myOrder-orderList-item-msg
 

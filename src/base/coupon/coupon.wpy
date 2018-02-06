@@ -17,7 +17,7 @@
       <view class="couponList-item-head-right">
         <view class="couponList-item-head-right-btn" wx:if="{{avatar==='no'}}">立即购买</view>
         <view class="shopMsg" wx:if="{{avatar!=='no'}}">
-          <image src="{{coupon.shop_logo}}" class="shopLogo"></image>
+          <image src="{{coupon.shop_logo}}" class="shopLogo" mode="aspectFill"></image>
           <view class="shopName">{{coupon.shop_name}}</view>
         </view>
       </view>
