@@ -39,6 +39,7 @@
       <Underline></Underline>
     </scroll-view>
 
+    <BackHome></BackHome>
     <Toast></Toast>
   </view>
 </template>
@@ -52,6 +53,7 @@
   import URIS from 'common/js/config'
   import {ERR_OK} from '@/api/base'
   import Underline from '@/base/underline-block/underline-block'
+  import BackHome from '@/base/back-home/back-home'
 
   export default class MyCoupon extends wepy.page {
     mixins = [base]
@@ -62,7 +64,8 @@
 
     components = {
       Toast,
-      Underline
+      Underline,
+      BackHome
     }
 
     data = {
@@ -134,6 +137,20 @@
 
     async onShow() {
       await this.load()
+      const scene = wx.getStorageSync('scene')
+      if (scene === 1014) {
+        this.$invoke('BackHome', 'show')
+      } else {
+        this.$invoke('BackHome', 'hide')
+      }
+    }
+
+    onHide() {
+      this.$invoke('BackHome', 'hide')
+    }
+
+    onUnload() {
+      this.$invoke('BackHome', 'hide')
     }
 
     async load() {

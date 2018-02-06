@@ -22,7 +22,7 @@
         <view class="myOrder-orderList-item" wx:for="{{orderList}}" @tap="showDetail({{item.id}},{{item.status}})" wx:key="{{item.id}}">
           <view class="myOrder-orderList-item-left">
             <view class="myOrder-orderList-item-logo-box">
-              <image class="myOrder-orderList-item-logo" src="{{item.merchant_data.logo_image}}" mode="widthFix"></image>
+              <image class="myOrder-orderList-item-logo" src="{{item.merchant_data.logo_image}}" mode="aspectFill"></image>
             </view>
             <view class="myOrder-orderList-item-msg">
               <view class="myOrder-orderList-item-title">{{item.title}}</view>
@@ -40,6 +40,7 @@
       <Underline></Underline>
     </scroll-view>
 
+    <BackHome></BackHome>
     <Appraise></Appraise>
     <Toast></Toast>
 
@@ -58,6 +59,8 @@
   import {ERR_OK} from '@/api/base'
   import Toast from '@/base/toast/toast'
   import Underline from '@/base/underline-block/underline-block'
+  import BackHome from '@/base/back-home/back-home'
+  import {getParams} from 'common/js/data'
 
   export default class MyOrder extends wepy.page {
     mixins = [base]
@@ -75,7 +78,8 @@
       PhoneTestHint,
       Appraise,
       Underline,
-      Toast
+      Toast,
+      BackHome
     }
 
     data = {
@@ -188,13 +192,33 @@
     }
 
     async onLoad(option) {
-      this.menuIdx = option.idx
+      if (option.scene) {
+        let scene = decodeURIComponent(option.scene)
+        const params = getParams(scene)
+        this.menuIdx = params.idx
+      } else {
+        this.menuIdx = option.idx
+      }
       this.$apply()
     }
 
     async onShow() {
       wepy.setStorageSync('tips', {order: false})
+      const scene = wx.getStorageSync('scene')
+      if (scene === 1014) {
+        this.$invoke('BackHome', 'show')
+      } else {
+        this.$invoke('BackHome', 'hide')
+      }
       this.load({idx: this.menuIdx})
+    }
+
+    onHide() {
+      this.$invoke('BackHome', 'hide')
+    }
+
+    onUnload() {
+      this.$invoke('BackHome', 'hide')
     }
 
     async load(option) {
@@ -344,6 +368,7 @@
 
             .myOrder-orderList-item-logo
               width: 64px
+              height: 64px
 
           .myOrder-orderList-item-msg
 

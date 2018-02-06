@@ -43,7 +43,7 @@
                                  src="{{imageUri + '/defaults/c-image/square/icon-s_evaluate@2x.png'}}"
                                  class="icon-star"></cover-image>
                   </repeat>
-                  <cover-view>{{currentMerchant.star_level !== '0.0' ? currentMerchant.star_level : '5.0'}}</cover-view>
+                  <cover-view class="star-level">{{currentMerchant.star_level !== '0.0' ? currentMerchant.star_level : '5.0'}}</cover-view>
                 </cover-view>
                 <cover-view class="store">{{currentMerchant.favorite_count}}人已收藏</cover-view>
               </cover-view>
@@ -146,8 +146,8 @@
   import base from 'common/mixins/base'
   import {ERR_OK} from 'api/base'
   import Merchants from 'api/merchants'
-  import QQMap from 'common/libs/qqmap-jssdk'
   import URIS from 'common/js/config'
+  import GDMap from 'common/libs/amap-wx'
 
   export default class Square extends wepy.page {
     mixins = [users, base]
@@ -190,6 +190,7 @@
     }
 
     async onShow() {
+      this.clearTimer()
       await this.show()
       this.loaded()
     }
@@ -200,9 +201,7 @@
     }
 
     _newMap() {
-      this.qqmapsdk = new QQMap({
-        key: 'WPABZ-ZVD6P-RJJD5-VSCIN-BBADV-FMFJX'
-      })
+      this.gdmapsdk = new GDMap.AMapWX({key: '2c61f0905c3cbd6aff6bc90ae4e48a3e'})
     }
 
     async load() {
@@ -238,7 +237,7 @@
     }
 
     async _setLoaction() {
-      const res = await wepy.getLocation()
+      const res = await wepy.getLocation({type: 'gcj02'})
       this.location = {
         latitude: res.latitude,
         longitude: res.longitude
@@ -311,17 +310,15 @@
           }
         })
         this.markers = [...this.locations, ...markers]
-        if (!this.isControlSlide) {
-          this.bigMarkerIndex = this.markers.findIndex((item) => item.id === this.activeMarkerId)
-          this._setPolyline(this.markers[this.bigMarkerIndex].id)
-          this._scaleMarker(1)
-          const currentMerchant = res.find((item) => item.id === this.activeMarkerId)
-          await this._getMerchantDetail(currentMerchant.merchant_id)
+        this.bigMarkerIndex = this.markers.findIndex((item) => item.id === this.activeMarkerId)
+        this._setPolyline(this.markers[this.bigMarkerIndex].id)
+        this._scaleMarker(1)
+        const currentMerchant = res.find((item) => item.id === this.activeMarkerId)
+        await this._getMerchantDetail(currentMerchant.merchant_id)
 //          setTimeout(() => {
 //            this.showSlide = true
 //            this.$apply()
 //          }, 3000)
-        }
         this._setIncludePoints([])
         this.$apply()
       }
@@ -412,15 +409,28 @@
     }
 
     _caculateDistance() {
-      this.qqmapsdk.calculateDistance({
-        mode: 'driving',
-        from: this.location,
-        to: [{
-          longitude: this.currentMerchant.longitude,
-          latitude: this.currentMerchant.latitude
-        }],
+      // 腾讯
+//      this.qqmapsdk.calculateDistance({
+//        mode: 'driving',
+//        from: this.location,
+//        to: [{
+//          latitude: this.currentMerchant.latitude,
+//          longitude: this.currentMerchant.longitude
+//        }],
+//        success: (res) => {
+//          console.log(res)
+//          const result = res.result.elements[0]
+//          this.distance = Math.floor(result.distance)
+//          this.duration = Math.floor(result.duration / 60)
+//          this.$apply()
+//        }
+//      })
+      // 高德
+      this.gdmapsdk.getWalkingRoute({
+        origin: this.location.longitude + ',' + this.location.latitude,
+        destination: this.currentMerchant.longitude + ',' + this.currentMerchant.latitude,
         success: (res) => {
-          const result = res.result.elements[0]
+          const result = res.paths[0]
           this.distance = Math.floor(result.distance)
           this.duration = Math.floor(result.duration / 60)
           this.$apply()
@@ -449,6 +459,7 @@
       if (!tipsLength) {
         return
       }
+      clearInterval(this.tipTimer)
       this.tipTimer = setInterval(() => {
         this.activeIndex += 1
         if (this.activeIndex === tipsLength) {
@@ -463,7 +474,6 @@
           this.transform = `translate3d(0, -${this.activeIndex * 60}px, 0)`
         }
         this.$apply()
-        console.log(this.transform)
       }, 3000)
     }
 
@@ -538,7 +548,9 @@
         this._scaleMarker(1)
         this.$apply()
         setTimeout(() => {
-//          this.showSlide = true
+          if (!this.showSlide) {
+            this.showSlide = true
+          }
           this.transition = 'all .5s'
           this.$apply()
         }, 500)
@@ -590,9 +602,13 @@
 
       .modal-bg-wrapper
         position: absolute
+        top: 0
+        left: 0
         display: flex
         padding: 0
         box-sizing: border-box
+        left: 0
+        top: 0
         .modal-bg
           display: flex
           width: 100%
@@ -620,7 +636,9 @@
             display: flex
             flex: 1
         .shop
+          width: 100%
           .top
+            width: 100%
             display: flex
             height: 69.75px
             .desc
@@ -630,13 +648,21 @@
               justify-content: center
               padding-left: 10px
               color: $color-text
+              position: relative
               .title
+                width: 100%
                 margin-bottom: 2.5px
                 font-size: $font-size-medium-x
                 overflow: hidden
                 text-overflow: ellipsis
                 white-space: nowrap
+                position: absolute
+                left: 10px
+                top: 18px
               .subhead
+                position: absolute
+                left: 10px
+                top: 45px
                 font-size: $font-size-small-s
             .logo-wrapper
               position: relative
@@ -670,7 +696,12 @@
               flex-direction: column
               justify-content: center
               align-items: center
+              position: relative
               .comment-content
+                position: absolute
+                left: 50%
+                top: 50%
+                transform: translate(-50%, -50%)
                 .stars
                   display: flex
                   align-items: center
@@ -680,6 +711,8 @@
                     margin-right: 1.5px
                     width: 10px
                     height: 10px
+                  .star-level
+                    display: flex
                 .store
                   margin-top: 8px
                   font-size: $font-size-small-s

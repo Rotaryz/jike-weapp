@@ -19,7 +19,7 @@
       </view>
       <view class="orderDetail-head-status">
         <view class="orderDetail-head-statusTxt">{{statusTxt[orderMsg.status]}}</view>
-        <view class="orderDetail-head-statusBtn" @tap="followWork({{orderMsg.status}}, {{orderMsg.id}}, {{orderMsg.merchant_id}})" wx:if="{{orderMsg.promotion_type == 1 || orderMsg.status != 7}}">{{btnTxt[orderMsg.status]}}</view>
+        <view class="orderDetail-head-statusBtn" @tap="followWork({{orderMsg.status}}, {{orderMsg.id}}, {{orderMsg.merchant_id}})" wx:if="{{orderMsg.promotion_type == 1 && orderMsg.status != 7}}">{{btnTxt[orderMsg.status]}}</view>
       </view>
     </view>
 
@@ -27,7 +27,7 @@
       <view class="orderDetail-merchant-title">商家信息</view>
       <view class="orderDetail-merchant-msgBox">
         <view class="orderDetail-merchant-logo-box">
-          <image src="{{orderMsg.merchant_data.logo_image}}" mode="widthFix" class="orderDetail-merchant-logo"></image>
+          <image src="{{orderMsg.merchant_data.logo_image}}" mode="aspectFill" class="orderDetail-merchant-logo"></image>
         </view>
         <view class="orderDetail-merchant-msg">
           <view class="orderDetail-merchant-msgName">{{orderMsg.merchant_data.name}}</view>
@@ -358,6 +358,7 @@
 
           .orderDetail-merchant-logo
             width: 65px
+            height: 65px
 
         .orderDetail-merchant-msgName
           font-size: $font-size-medium-x

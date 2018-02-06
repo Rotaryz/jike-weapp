@@ -15,7 +15,9 @@
       this.use('promisify')
     }
 
-    onLaunch() {
+    onLaunch(options) {
+      const scene = options.scene
+      wepy.setStorageSync('scene', scene)
       const tips = wepy.getStorageSync('tips')
       if (!tips) {
         wepy.setStorageSync('tips', {order: false})
