@@ -238,7 +238,7 @@
     }
 
     async _setLoaction() {
-      const res = await wepy.getLocation()
+      const res = await wepy.getLocation({type:'gcj02'})
       this.location = {
         latitude: res.latitude,
         longitude: res.longitude
