@@ -29,11 +29,13 @@
     }
     data = {
       imageUri: URIS.image,
-      showLoad: 1
+      showLoad: 1,
+      timer: null
     }
 
     show() {
-      setInterval(() => {
+      clearInterval(this.timer)
+      this.timer = setInterval(() => {
         if (this.showLoad < 3) {
           this.showLoad++
         } else {
@@ -41,6 +43,15 @@
         }
         this.$apply()
       }, 500)
+      this.$apply()
+    }
+
+    onHide() {
+      clearInterval(this.timer)
+    }
+
+    onUnload() {
+      clearInterval(this.timer)
     }
 
     async onShow() {
@@ -68,15 +79,17 @@
 //          item = item.split(':')
 //          param[item[0]] = item[1]
 //        }
+      if (options.merchantId) {
+        if (this.$parent.globalData.merchantId) {
+          this.$parent.updateGlobalData('merchantId', options.merchantId)
+        }
+        wepy.setStorageSync('merchantId', options.merchantId)
+      }
       let url = INFOURL
       if (options.path) {
         url = decodeURIComponent(options.path)
       }
-
       this.navTo(url)
-      if (options.merchantId) {
-        wepy.setStorageSync('merchantId', options.merchantId)
-      }
     }
   }
 </script>
