@@ -136,10 +136,6 @@
     }
 
     async onShow() {
-      this.couponList = []
-      this.page = 1
-      this.nothingAdd = false
-      this.$invoke('Underline', 'hide')
       await this.load()
       const scene = wx.getStorageSync('scene')
       if (scene === 1014) {
@@ -158,7 +154,13 @@
     }
 
     async load() {
-      let resList = await this._getCouponList(this.menuIdx, 1)
+      let limit
+      if (this.nothingAdd || this.couponList.length >= 100) {
+        limit = 100
+      } else {
+        limit = this.couponList.length ? this.couponList.length : 10
+      }
+      let resList = await this._getCouponList(this.menuIdx, 1, limit)
       if (resList.error !== ERR_OK) {
         this.loaded()
         return
@@ -168,8 +170,8 @@
       this.$apply()
     }
 
-    async _getCouponList(idx, page) {
-      return await myCoupon.getUserCouponList(idx, page)
+    async _getCouponList(idx, page, limit = 10) {
+      return await myCoupon.getUserCouponList(idx, page, limit)
     }
 
     _computed(arr) {

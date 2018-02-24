@@ -301,15 +301,15 @@
     }
 
     async load() {
-      this.contentList = []
-      this.kacList = []
-      this.couponList = []
-      this.page = 1
-      this.nothingAdd = false
-      this.$invoke('Underline', 'hide')
+      let limit
       switch (this.menuIdx * 1) {
         case 0:
-          let res = await this._getCouponList(1)
+          if (this.nothingAdd || this.couponList.length >= 100) {
+            limit = 100
+          } else {
+            limit = this.couponList.length ? this.couponList.length : 10
+          }
+          let res = await this._getCouponList(1, limit)
           if (res.error !== ERR_OK) {
             this.loaded()
             return
@@ -322,7 +322,12 @@
           }
           break
         case 1:
-          let res1 = await this._getContentList(1)
+          if (this.nothingAdd || this.contentList.length >= 100) {
+            limit = 100
+          } else {
+            limit = this.contentList.length ? this.contentList.length : 10
+          }
+          let res1 = await this._getContentList(1, limit)
           if (res1.error !== ERR_OK) {
             this.loaded()
             return
@@ -335,7 +340,12 @@
           }
           break
         case 2:
-          let res2 = await mySelect.getKacList(1)
+          if (this.nothingAdd || this.kacList.length >= 100) {
+            limit = 100
+          } else {
+            limit = this.kacList.length ? this.kacList.length : 10
+          }
+          let res2 = await mySelect.getKacList(1, limit)
           if (res2.error !== ERR_OK) {
             this.loaded()
             return
@@ -352,12 +362,12 @@
       this.loaded()
     }
 
-    async _getCouponList(page) {
-      return await mySelect.getSelectList(page)
+    async _getCouponList(page, limit = 10) {
+      return await mySelect.getSelectList(page, limit)
     }
 
-    async _getContentList(page) {
-      return await mySelect.getContentList(page)
+    async _getContentList(page, limit = 10) {
+      return await mySelect.getContentList(page, limit)
     }
     _computed(arr) {
       return arr.map((item) => {

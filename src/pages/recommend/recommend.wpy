@@ -256,9 +256,15 @@
       if (this.contents.length === 0) {
         return
       }
+      let limit
+      if (!this.moreContent || this.contents.length >= 100) {
+        limit = 100
+      } else {
+        limit = this.contents.length
+      }
       const params = {
         page: 1,
-        limit: this.contents.length
+        limit
       }
       if (this.$parent.globalData.merchantId) {
         params.current_merchant = this.$parent.globalData.merchantId

@@ -196,7 +196,6 @@
     }
 
     async onShow() {
-      this.orderList = []
       wepy.setStorageSync('tips', {order: false})
       const scene = wx.getStorageSync('scene')
       if (scene === 1014) {
@@ -204,10 +203,6 @@
       } else {
         this.$invoke('BackHome', 'hide')
       }
-      this.page = 1
-      this.nothingAdd = false
-      this.scrollTop = 0
-      this.$invoke('Underline', 'hide')
       this.load({idx: this.menuIdx})
       this.$apply()
     }
@@ -227,7 +222,13 @@
       } else {
         this.menuIdx = 1
       }
-      let resList = await this._getOrderList(this.menuIdx, 1)
+      let limit
+      if (this.nothingAdd || this.orderList.length >= 100) {
+        limit = 100
+      } else {
+        limit = this.orderList.length ? this.orderList.length : 10
+      }
+      let resList = await this._getOrderList(this.menuIdx, 1, limit)
       if (resList.error !== 0) {
         this.loaded()
         return
@@ -250,8 +251,8 @@
       this.$apply()
     }
 
-    async _getOrderList(idx, page) {
-      return await getMyOrder.getOrderList(idx, page)
+    async _getOrderList(idx, page, limit = 10) {
+      return await getMyOrder.getOrderList(idx, page, limit)
     }
 
     events = {
