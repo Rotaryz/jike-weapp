@@ -196,6 +196,7 @@
     }
 
     async onShow() {
+      this.orderList = []
       wepy.setStorageSync('tips', {order: false})
       const scene = wx.getStorageSync('scene')
       if (scene === 1014) {
@@ -203,7 +204,12 @@
       } else {
         this.$invoke('BackHome', 'hide')
       }
+      this.page = 1
+      this.nothingAdd = false
+      this.scrollTop = 0
+      this.$invoke('Underline', 'hide')
       this.load({idx: this.menuIdx})
+      this.$apply()
     }
 
     onHide() {

@@ -154,12 +154,9 @@
     }
 
     async onShow() {
-      await this.load()
       this.$invoke('Slider', 'init', this.shopImages.length)
-      this.contents = []
-      this.contentPage = 0
       if (this.activeTab === DISCOVER_TAB) {
-        await this._getMerchantContents()
+        await this._getShowMerchantContents()
       }
       this.loaded()
     }
@@ -168,12 +165,16 @@
       this.$invoke('Slider', 'stop')
     }
 
+    async onLoad() {
+      await this.load()
+    }
+
     async load() {
       this.merchantId = this.$parent.globalData.merchantId || wepy.getStorageSync('merchantId')
-      const isAuthorise = await this.isAuthorise()
+      const isAuthorise = await this.isAuthorise(false)
       this.$parent.updateGlobalData('isAuthorise', isAuthorise)
       await this._saveLog()
-      await this._getShopCouponList()
+      await this._getShopCouponList(false)
     }
 
     async _saveLog() {
@@ -183,11 +184,11 @@
         from: 'jike_c',
         merchant_id: this.merchantId
       }
-      await Merchants.saveLog(data)
+      await Merchants.saveLog(data, false)
     }
 
-    async _getShopCouponList() {
-      const res = await CouponApi.getShopCouponList(this.merchantId)
+    async _getShopCouponList(loading = true) {
+      const res = await CouponApi.getShopCouponList(this.merchantId, {}, loading)
       if (res.error === ERR_OK) {
         const data = res.data
         this.shopImages = this._checkPropety(data.merchant_data.shop_image)
@@ -249,6 +250,22 @@
         this.$apply()
       }
       this.loaded()
+    }
+
+    async _getShowMerchantContents() {
+      if (this.contents.length === 0) {
+        return
+      }
+      const params = {
+        page: 1,
+        limit: this.contents.length
+      }
+      if (this.$parent.globalData.merchantId) {
+        params.current_merchant = this.$parent.globalData.merchantId
+      }
+      const res = await ContentsApi.getMerchantContents(params)
+      this.contents = res.data
+      this.$apply()
     }
 
     _checkPropety(arr) {

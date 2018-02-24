@@ -301,6 +301,12 @@
     }
 
     async load() {
+      this.contentList = []
+      this.kacList = []
+      this.couponList = []
+      this.page = 1
+      this.nothingAdd = false
+      this.$invoke('Underline', 'hide')
       switch (this.menuIdx * 1) {
         case 0:
           let res = await this._getCouponList(1)

@@ -136,6 +136,10 @@
     }
 
     async onShow() {
+      this.couponList = []
+      this.page = 1
+      this.nothingAdd = false
+      this.$invoke('Underline', 'hide')
       await this.load()
       const scene = wx.getStorageSync('scene')
       if (scene === 1014) {

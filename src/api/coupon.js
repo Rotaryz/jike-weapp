@@ -6,9 +6,9 @@ export default class Coupon extends base {
    * @param merchantId 商家Id
    * @returns {Promise.<*>}
    */
-  static async getShopCouponList(merchantId, data) {
+  static async getShopCouponList(merchantId, data, loading = true) {
     const url = `${this.baseUrl}/api/merchants/show-merchant/${merchantId}`
-    return await this.get(url, data)
+    return await this.get(url, data, loading)
   }
 
   /**
