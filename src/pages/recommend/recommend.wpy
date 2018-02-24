@@ -153,20 +153,25 @@
       }
     }
 
-    async onShow() {
+    async onLoad() {
+      await this.load()
       this.$invoke('Slider', 'init', this.shopImages.length)
+    }
+
+    async onShow() {
+      if (this.shopImages.length) {
+        this.$invoke('Slider', 'init', this.shopImages.length)
+      }
       if (this.activeTab === DISCOVER_TAB) {
         await this._getShowMerchantContents()
+      } else if (this.activeTab === COUPON_TAB) {
+        await this._getShowCouponList()
       }
       this.loaded()
     }
 
     onHide() {
       this.$invoke('Slider', 'stop')
-    }
-
-    async onLoad() {
-      await this.load()
     }
 
     async load() {
@@ -270,8 +275,33 @@
         params.current_merchant = this.$parent.globalData.merchantId
       }
       const res = await ContentsApi.getMerchantContents(params)
-      this.contents = res.data
+      if (res.error === ERR_OK) {
+        this.contents = res.data
+        if (this.contents.length > 0) {
+          this.contentNothing = false
+        } else {
+          this.contentNothing = true
+        }
+        this.$apply()
+      }
       this.$apply()
+    }
+
+    async _getShowCouponList() {
+      if (this.couponList.length === 0 || this.couponPage === 1) {
+        return
+      }
+      let limit
+      if (!this.moreCoupon || this.couponList.length >= 100) {
+        limit = 100
+      } else {
+        limit = this.couponList.length
+      }
+      const res = await CouponApi.getShopCouponList(this.merchantId, {page: 1, limit})
+      if (res.error === ERR_OK) {
+        this.couponList = res.data.promotions
+        this.$apply()
+      }
     }
 
     _checkPropety(arr) {
