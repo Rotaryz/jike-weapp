@@ -65,7 +65,7 @@ export default class userMixin extends wepy.mixin {
   //   return true
   // }
 
-  async isAuthorise() {
+  async isAuthorise(loading = true) {
     const code = wepy.getStorageSync('code')
     let token = wepy.getStorageSync('token')
     if (!code || !token) {
@@ -73,7 +73,7 @@ export default class userMixin extends wepy.mixin {
     }
     let mobile = wepy.getStorageSync('mobile')
     if (!mobile) {
-      const userInfo = await this._getSqlUserInfo(token)
+      const userInfo = await this._getSqlUserInfo(token, loading)
       mobile = userInfo.customer.mobile
       wepy.setStorageSync('mobile', mobile)
     }

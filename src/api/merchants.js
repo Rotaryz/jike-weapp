@@ -25,8 +25,8 @@ export default class Merchants extends base {
    * @param data
    * @returns {Promise.<*>}
    */
-  static async saveLog(data) {
+  static async saveLog(data, loading = true) {
     const url = `${this.baseUrl}/api/merchants/save-log`
-    return await this.post(url, data)
+    return await this.post(url, data, loading)
   }
 }

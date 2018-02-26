@@ -6,11 +6,12 @@ export default class myOrder extends base {
    * @param status状态 page页码
    * @returns {Promise.<*>}
    */
-  static async getOrderList(status, page) {
+  static async getOrderList(status, page, limit = 10) {
     const url = `${this.baseUrl}/api/orders/wechat-orders`
     let data = {
       status,
-      page
+      page,
+      limit
     }
     return await this.get(url, data)
   }
