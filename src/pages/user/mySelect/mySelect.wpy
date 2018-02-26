@@ -48,7 +48,7 @@
                 <image class="mySelect-contentList-avatarBox-img" src="{{item}}"></image>
               </view>
             </view>
-            <view class="dot-box" wx:if="{{item.content.customer_images.length>=5}}">
+            <view class="dot-box" wx:if="{{item.content.customer_images.length>5}}">
               <view wx:for="{{[1,2,3]}}" wx:key="{{item}}" class="mySelect-contentList-Msg-left-dot"></view>
             </view>
           </view>
