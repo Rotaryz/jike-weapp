@@ -110,7 +110,7 @@
   import Toast from '@/base/toast/toast'
 //  import PhoneTest from '@/base/phoneTest/phoneTest'
   import {ERR_OK} from 'api/base'
-  import CouponApi from 'api/coupon'
+//  import CouponApi from 'api/coupon'
   import ContentsApi from 'api/contents'
   import Merchants from 'api/merchants'
   import Giftbag from '@/base/giftbag/giftbag'
