@@ -112,8 +112,8 @@
 
     data = {
       imageUrlHead: URIS.image,
-      btnTxt: ['付款', '申请退款', '评价', '查看详情', '查看详情', '再来一单', '再来一单', '再来一单'],
-      statusTxt: ['待付款', '待使用', '待评价', '退款中', '退款成功', '已评价', '已关闭', '退款失败'],
+      btnTxt: ['付款', '申请退款', '评价', '查看详情', '查看详情', '再来一单', '再来一单', '再来一单', '再来一单', '再来一单'],
+      statusTxt: ['待付款', '待使用', '待评价', '退款中', '退款成功', '已评价', '已关闭', '退款失败', '退款失败', '已关闭'],
       orderMsg: null,
       refundIng: false,
       refundCause: [
@@ -177,10 +177,13 @@
             break
           case 3:
           case 4:
+          case 7:
+          case 8:
             this.$navigate('../refund/refund?id=' + id)
             break
           case 5:
           case 6:
+          case 9:
             let couponType
             if (this.orderMsg.promotion_type * 1 === 1) {
               couponType = 1
