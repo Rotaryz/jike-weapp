@@ -164,11 +164,8 @@
       if (this.shopImages.length) {
         this.$invoke('Slider', 'init', this.shopImages.length)
       }
-      if (this.couponList.length === 0 && this.giftBags.length === 0) {
-        this.couponNothing = true
-      } else {
-        this.couponNothing = false
-      }
+      this.couponNothing = this.couponList.length === 0 && this.giftBags.length === 0
+      this.contentNothing = this.contents.length === 0
       this.loaded()
     }
 
@@ -544,6 +541,8 @@
         } else if (index === DISCOVER_TAB) {
           await this._getShowContents()
         }
+        this.couponNothing = this.couponList.length === 0 && this.giftBags.length === 0
+        this.contentNothing = this.contents.length === 0
         this.loaded()
         this.$apply()
       },
