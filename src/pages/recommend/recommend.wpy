@@ -138,11 +138,12 @@
       activeTab: COUPON_TAB,
       contents: [],
       couponPage: 1,
-      contentPage: 0,
+      contentPage: 1,
       moreCoupon: true,
       moreContent: true,
       couponNothing: false,
-      contentNothing: false
+      contentNothing: false,
+      shopChange: true
     }
 
     onShareAppMessage(res) {
@@ -167,25 +168,26 @@
 
     async onReachBottom() {
       if (this.activeTab === COUPON_TAB && this.moreCoupon) {
-        await this._getCouponList()
+        await this._getMoreCoupons()
       } else if (this.activeTab === DISCOVER_TAB && this.moreContent) {
-        await this._getMerchantContents()
+        await this._getMoreContents()
       }
+      this.loaded()
     }
 
     async onLoad() {
-      await this.load()
       this.$invoke('Slider', 'init', this.shopImages.length)
     }
 
     async onShow() {
+      await this.load()
       if (this.shopImages.length) {
         this.$invoke('Slider', 'init', this.shopImages.length)
       }
-      if (this.activeTab === DISCOVER_TAB) {
-        await this._getShowMerchantContents()
-      } else if (this.activeTab === COUPON_TAB) {
-        await this._getShowCouponList()
+      if (this.couponList.length === 0 && this.giftBags.length === 0) {
+        this.couponNothing = true
+      } else {
+        this.couponNothing = false
       }
       this.loaded()
     }
@@ -195,11 +197,31 @@
     }
 
     async load() {
+      let oldId = this.merchantId
       this.merchantId = this.$parent.globalData.merchantId || wepy.getStorageSync('merchantId')
+      this.shopChange = !(oldId === this.merchantId)
       const isAuthorise = await this.isAuthorise(false)
       this.$parent.updateGlobalData('isAuthorise', isAuthorise)
       await this._saveLog()
-      await this._getShopCouponList(false)
+      await this._getMechantsMsg()
+      if (this.activeTab === COUPON_TAB) {
+        this.$invoke('underline1', 'hide')
+        this.moreCoupon = true
+        await this._getGiftBags()
+        if (this.shopChange) {
+          await this._getCoupons()
+        } else {
+          await this._getShowCoupons()
+        }
+      } else if (this.activeTab === DISCOVER_TAB) {
+        this.$invoke('underline2', 'hide')
+        this.moreContent = true
+        if (this.shopChange) {
+          await this._getContents()
+        } else {
+          await this._getShowContents()
+        }
+      }
     }
 
     async _saveLog() {
@@ -212,117 +234,292 @@
       await Merchants.saveLog(data, false)
     }
 
-    async _getShopCouponList(loading = true) {
-      const res = await CouponApi.getShopCouponList(this.merchantId, {}, loading)
+    // 获取轮播图和活动状态
+    async _getMechantsMsg(loading = true) {
+      let res = await Merchants.getMerchantsStatus(this.merchantId, {}, loading)
       if (res.error === ERR_OK) {
-        const data = res.data
+        let data = res.data
         this.shopImages = this._checkPropety(data.merchant_data.shop_image)
-        this.couponList = data.promotions
-        this.giftBags = data.gift_bags
         this.activities = data.activities || {}
-        if (this.couponList.length === 0 && this.giftBags.length === 0) {
-          this.couponNothing = true
-        } else {
-          this.couponNothing = false
-        }
         this.$apply()
       }
     }
 
-    async _getCouponList() {
-      this.couponPage += 1
-      const res = await CouponApi.getShopCouponList(this.merchantId, {page: this.couponPage})
+    // 获取礼包列表(全部)
+    async _getGiftBags() {
+      let res = await Merchants.getGiftBags(this.merchantId)
       if (res.error === ERR_OK) {
-        const data = res.data
-        if (data.promotions.length === 0) {
-          this.moreCoupon = false
-          if (this.couponPage > 1) {
-            this.$invoke('underline1', 'show')
-          }
+        this.giftBags = res.data
+        this.$apply()
+      }
+    }
+
+    // 获取优惠券列表（分页）
+    async _getCoupons() {
+      let params = {
+        page: 1,
+        limit: 10
+      }
+      let res = await Merchants.getCoupons(this.merchantId, params)
+      if (res.error === ERR_OK) {
+        this.couponList = res.data
+        this.$apply()
+      }
+    }
+
+    // 获取优惠券列表（不切店的情况下按之前浏览的数量读取数据, 切店后重新开始获取）
+    async _getShowCoupons() {
+      this.$invoke('underline1', 'hide')
+      this.moreCoupon = true
+      let params
+      let limit
+      if (!this.moreCoupon || this.couponList.length >= 100) {
+        limit = 100
+      } else {
+        limit = Math.ceil(this.couponList.length % 10) * 10 || 10
+      }
+      if (this.shopChange) {
+        params = {
+          page: 1
+        }
+      } else {
+        params = {
+          page: 1,
+          limit
+        }
+      }
+      let res = await Merchants.getCoupons(this.merchantId, params)
+      if (res.error === ERR_OK) {
+        this.couponList = res.data
+        this.$apply()
+      }
+    }
+
+    // 获取内容列表 (分页)
+    async _getContents() {
+      let params
+      if (this.$parent.globalData.merchantId) {
+        params = {
+          current_merchant: this.$parent.globalData.merchantId
+        }
+      } else {
+        params = {}
+      }
+      const res = await ContentsApi.getMerchantContents(params)
+      if (res.error === ERR_OK) {
+        this.contents = res.data
+        if (this.contents.length) {
+          this.contentNothing = false
         } else {
-          this.couponList = [...this.couponList, ...data.promotions]
+          this.contentNothing = true
         }
         this.$apply()
       }
-      this.loaded()
     }
 
-    async _getMerchantContents() {
-      this.contentPage += 1
-      const params = {
+    // 获取内容列表（不切店的情况下按之前浏览的数量读取数据, 切店后重新开始获取）
+    async _getShowContents() {
+      this.$invoke('underline2', 'hide')
+      this.moreContent = true
+      let params, limit
+      if (!this.moreContent || this.contents.length >= 100) {
+        limit = 100
+      } else {
+        limit = Math.ceil(this.contents.length / 10) * 10 || 10
+      }
+      if (this.$parent.globalData.merchantId) {
+        params = {
+          current_merchant: this.$parent.globalData.merchantId,
+          page: 1,
+          limit
+        }
+      } else {
+        params = {
+          page: 1,
+          limit
+        }
+      }
+      const res = await ContentsApi.getMerchantContents(params)
+      if (res.error === ERR_OK) {
+        this.contents = res.data
+        if (this.contents.length) {
+          this.contentNothing = false
+        } else {
+          this.contentNothing = true
+        }
+        this.$apply()
+      }
+    }
+
+    // 加载更多优惠券
+    async _getMoreCoupons() {
+      this.couponPage ++
+      let params = {
+        page: this.couponPage
+      }
+      let res = await Merchants.getCoupons(this.merchantId, params)
+      if (res.error === ERR_OK) {
+        if (!res.data.length) {
+          this.moreCoupon = false
+          this.couponPage --
+          this.$invoke('underline1', 'show')
+          return
+        }
+        this.couponList = [...this.couponList, ...res.data]
+        this.$apply()
+      }
+    }
+
+    // 加载更多内容
+    async _getMoreContents() {
+      this.contentPage ++
+      let params = {
         page: this.contentPage
       }
       if (this.$parent.globalData.merchantId) {
         params.current_merchant = this.$parent.globalData.merchantId
       }
-      const res = await ContentsApi.getMerchantContents(params)
+      let res = await ContentsApi.getMerchantContents(params)
       if (res.error === ERR_OK) {
-        const data = res.data
-        if (data.length === 0) {
+        if (!res.data.length) {
           this.moreContent = false
-          if (this.contentPage > 1) {
-            this.$invoke('underline2', 'show')
-          }
-          this.contentPage -= 1
-        } else {
-          this.contents = [...this.contents, ...data]
+          this.contentPage --
+          this.$invoke('underline2', 'show')
+          return
         }
-        if (this.contents.length > 0) {
-          this.contentNothing = false
-        } else {
-          this.contentNothing = true
-        }
+        this.contents = [...this.contents, ...res.data]
         this.$apply()
       }
-      this.loaded()
     }
 
-    async _getShowMerchantContents() {
-      if (this.contents.length === 0) {
-        return
-      }
-      let limit
-      if (!this.moreContent || this.contents.length >= 100) {
-        limit = 100
-      } else {
-        limit = this.contents.length
-      }
-      const params = {
-        page: 1,
-        limit
-      }
-      if (this.$parent.globalData.merchantId) {
-        params.current_merchant = this.$parent.globalData.merchantId
-      }
-      const res = await ContentsApi.getMerchantContents(params)
-      if (res.error === ERR_OK) {
-        this.contents = res.data
-        if (this.contents.length > 0) {
-          this.contentNothing = false
-        } else {
-          this.contentNothing = true
-        }
-        this.$apply()
-      }
-      this.$apply()
-    }
-
-    async _getShowCouponList() {
-      if (this.couponList.length === 0 || this.couponPage === 1) {
-        return
-      }
-      let limit
-      if (!this.moreCoupon || this.couponList.length >= 100) {
-        limit = 100
-      } else {
-        limit = this.couponList.length
-      }
-      const res = await CouponApi.getShopCouponList(this.merchantId, {page: 1, limit})
-      if (res.error === ERR_OK) {
-        this.couponList = res.data.promotions
-        this.$apply()
-      }
-    }
+//    async _getShopCouponList(loading = true) {
+//      let params
+//      let limit
+//      if (!this.moreCoupon || this.couponList.length >= 100) {
+//        limit = 100
+//      } else {
+//        limit = this.couponList.length || 10
+//      }
+//      if (this.shopChange) {
+//        params = {
+//          page: 1
+//        }
+//      } else {
+//        params = {
+//          page: 1,
+//          limit
+//        }
+//      }
+//      const res = await CouponApi.getShopCouponList(this.merchantId, params, loading)
+//      if (res.error === ERR_OK) {
+//        const data = res.data
+//        this.shopImages = this._checkPropety(data.merchant_data.shop_image)
+//        this.couponList = data.promotions
+//        this.giftBags = data.gift_bags
+//        this.activities = data.activities || {}
+//        if (this.couponList.length === 0 && this.giftBags.length === 0) {
+//          this.couponNothing = true
+//        } else {
+//          this.couponNothing = false
+//        }
+//        this.$apply()
+//      }
+//    }
+//
+//    async _getCouponList() {
+//      this.couponPage += 1
+//      const res = await CouponApi.getShopCouponList(this.merchantId, {page: this.couponPage})
+//      if (res.error === ERR_OK) {
+//        const data = res.data
+//        if (data.promotions.length === 0) {
+//          this.moreCoupon = false
+//          if (this.couponPage > 1) {
+//            this.$invoke('underline1', 'show')
+//          }
+//        } else {
+//          this.couponList = [...this.couponList, ...data.promotions]
+//        }
+//        this.$apply()
+//      }
+//      this.loaded()
+//    }
+//
+//    async _getMerchantContents() {
+//      this.contentPage += 1
+//      const params = {
+//        page: this.contentPage
+//      }
+//      if (this.$parent.globalData.merchantId) {
+//        params.current_merchant = this.$parent.globalData.merchantId
+//      }
+//      const res = await ContentsApi.getMerchantContents(params)
+//      if (res.error === ERR_OK) {
+//        const data = res.data
+//        if (data.length === 0) {
+//          this.moreContent = false
+//          if (this.contentPage > 1) {
+//            this.$invoke('underline2', 'show')
+//          }
+//          this.contentPage -= 1
+//        } else {
+//          this.contents = [...this.contents, ...data]
+//        }
+//        if (this.contents.length > 0) {
+//          this.contentNothing = false
+//        } else {
+//          this.contentNothing = true
+//        }
+//        this.$apply()
+//      }
+//      this.loaded()
+//    }
+//
+//    async _getShowMerchantContents() {
+//      if (this.contents.length === 0) {
+//        return
+//      }
+//      let limit
+//      if (!this.moreContent || this.contents.length >= 100) {
+//        limit = 100
+//      } else {
+//        limit = this.contents.length
+//      }
+//      const params = {
+//        page: 1,
+//        limit
+//      }
+//      if (this.$parent.globalData.merchantId) {
+//        params.current_merchant = this.$parent.globalData.merchantId
+//      }
+//      const res = await ContentsApi.getMerchantContents(params)
+//      if (res.error === ERR_OK) {
+//        this.contents = res.data
+//        if (this.contents.length > 0) {
+//          this.contentNothing = false
+//        } else {
+//          this.contentNothing = true
+//        }
+//        this.$apply()
+//      }
+//      this.$apply()
+//    }
+//
+//    async _getShowCouponList() {
+//      if (this.couponList.length === 0 || this.couponPage === 1) {
+//        return
+//      }
+//      let limit
+//      if (!this.moreCoupon || this.couponList.length >= 100) {
+//        limit = 100
+//      } else {
+//        limit = this.couponList.length
+//      }
+//      const res = await CouponApi.getShopCouponList(this.merchantId, {page: 1, limit})
+//      if (res.error === ERR_OK) {
+//        this.couponList = res.data.promotions
+//        this.$apply()
+//      }
+//    }
 
     _checkPropety(arr) {
       return arr.filter((item) => {
@@ -362,9 +559,13 @@
       },
       async clickTab(index) {
         this.activeTab = index
-        if (index === DISCOVER_TAB && !this.contents.length) {
-          await this._getMerchantContents()
+        if (index === COUPON_TAB) {
+          await this._getShowCoupons()
+        } else if (index === DISCOVER_TAB) {
+          await this._getShowContents()
         }
+        this.loaded()
+        this.$apply()
       },
       async goToCouponDetail(type, couponId) {
         this.$navigate(`/pages/coupon-detail/coupon-detail?type=${type}&id=${couponId}`)
