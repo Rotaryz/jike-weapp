@@ -6,10 +6,11 @@ export default class mySelect extends base {
    * @param token jk_token
    * @returns {Promise.<*>}
    */
-  static async getSelectList(page) {
+  static async getSelectList(page, limit = 10) {
     const url = `${this.baseUrl}/api/favorite/promotion`
     let data = {
-      page
+      page,
+      limit
     }
     return await this.get(url, data)
   }
@@ -18,10 +19,11 @@ export default class mySelect extends base {
    * @param token jk_token
    * @returns {Promise.<*>}
    */
-  static async getContentList(page) {
+  static async getContentList(page, limit = 10) {
     const url = `${this.baseUrl}/api/favorite/content`
     let data = {
-      page
+      page,
+      limit
     }
     return await this.get(url, data)
   }
@@ -30,10 +32,11 @@ export default class mySelect extends base {
    * @param
    * @returns {Promise.<*>}
    */
-  static async getKacList(page) {
+  static async getKacList(page, limit = 10) {
     const url = `${this.baseUrl}/api/favorite/gift`
     let data = {
-      page
+      page,
+      limit
     }
     return await this.get(url, data)
   }

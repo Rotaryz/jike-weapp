@@ -15,9 +15,7 @@
       this.use('promisify')
     }
 
-    onLaunch(options) {
-      const scene = options.scene
-      wepy.setStorageSync('scene', scene)
+    onLaunch() {
       const tips = wepy.getStorageSync('tips')
       if (!tips) {
         wepy.setStorageSync('tips', {order: false})
@@ -33,6 +31,11 @@
         wepy.setStorageSync('collectDate', collectDate)
         wepy.setStorageSync('collectLength', 0)
       }
+    }
+
+    onShow(options) {
+      const scene = options.scene
+      wepy.setStorageSync('scene', scene)
     }
 
     isObject(item) {
