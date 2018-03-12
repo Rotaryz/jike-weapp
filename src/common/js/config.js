@@ -35,7 +35,7 @@ const URLS = {
 // const URLS = {
 //   image: 'https://img.jkweixin.net',
 //   login: 'https://jwt.jkweixin.net',
-//   api: 'https://wap-api.jkweixin.net'
+//   api: 'https://wap-api.jkweixin.net' + version
 // }
 //
 // const URLS = {

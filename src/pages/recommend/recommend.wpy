@@ -110,7 +110,7 @@
   import Toast from '@/base/toast/toast'
 //  import PhoneTest from '@/base/phoneTest/phoneTest'
   import {ERR_OK} from 'api/base'
-  import CouponApi from 'api/coupon'
+//  import CouponApi from 'api/coupon'
   import ContentsApi from 'api/contents'
   import Merchants from 'api/merchants'
   import Giftbag from '@/base/giftbag/giftbag'
@@ -184,11 +184,8 @@
       if (this.shopImages.length) {
         this.$invoke('Slider', 'init', this.shopImages.length)
       }
-      if (this.couponList.length === 0 && this.giftBags.length === 0) {
-        this.couponNothing = true
-      } else {
-        this.couponNothing = false
-      }
+      this.couponNothing = this.couponList.length === 0 && this.giftBags.length === 0
+      this.contentNothing = this.contents.length === 0
       this.loaded()
     }
 
@@ -564,6 +561,8 @@
         } else if (index === DISCOVER_TAB) {
           await this._getShowContents()
         }
+        this.couponNothing = this.couponList.length === 0 && this.giftBags.length === 0
+        this.contentNothing = this.contents.length === 0
         this.loaded()
         this.$apply()
       },
