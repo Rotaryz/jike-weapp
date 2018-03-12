@@ -147,7 +147,8 @@
       </view>
     </view>
     <Comment :videoImages.sync="videoImages"
-             :activityId.sync="activityId" :shopName.sync="shopName" :currentMerchant.sync="merchantId"
+             :activityId.sync="activityId" :shopName.sync="shopName"
+             :currentMerchant.sync="merchantId"
              wx:if="{{show}}"></Comment>
   </view>
   <PhoneTest></PhoneTest>
@@ -375,7 +376,7 @@
     font-size: $font-size-small-s
     color: #5D5D5D
     width: 100%
-    height :100%
+    height: 100%
     view
       padding-left: 10px
       width: ($font-size-small-s* 5)
@@ -386,7 +387,7 @@
         line-height: 11px
     .monlogo
       padding-bottom: 3px
-      font-weight :600
+      font-weight: 600
       font-size: 17px
       color: $color-text
       position: relative
@@ -606,5 +607,6 @@
         .last
           height: 10vw
           width: 100%
+
   /*display: none*/
 </style>
