@@ -32,7 +32,7 @@
           </view>
         </view>
       </view>
-      <view class="post-btn" @tap.stop="postOrder">
+      <view class="post-btn {{industry}}-bg" @tap.stop="postOrder">
         提交订单
       </view>
     </view>
@@ -49,7 +49,11 @@
     mixins = [base]
 
     props = {
-      orderInfo: Object
+      orderInfo: Object,
+      industry: {
+        type: String,
+        default: ''
+      }
     }
 
     data = {

@@ -1,8 +1,10 @@
 <template>
   <view class="myOrder">
     <view class="myOrder-menuTab">
-      <view wx:for="{{menuItems}}" wx:key="{{item}}" class="{{index==menuIdx?'myOrder-menuTab-item active':'myOrder-menuTab-item'}}" @tap="tabChange({{index}})">
-        {{item}}
+      <view wx:for="{{menuItems}}" wx:key="{{index}}"
+            class="{{index === menuIdx?'myOrder-menuTab-item ' + industry + '-border':'myOrder-menuTab-item'}}"
+            @tap="tabChange({{item.type}},{{index}})">
+        {{item.title}}
       </view>
     </view>
 
@@ -11,29 +13,56 @@
       <PhoneTest></PhoneTest>
     </view>
 
-    <scroll-view scroll-y class="myOrder-orderBox" bindscrolltolower="orderLower">
+    <scroll-view scroll-y class="myOrder-orderBox"
+                 bindscrolltolower="orderLower">
       <view class="myOrder-noOrderMsg" wx:if="{{noOrder}}">
-        <image src="{{imageUrlHead + '/defaults/c-image/mine/pic-empty_order@2x.png'}}" wx:if="{{imageUrlHead}}" class="myOrder-noOrderMsg-Img"></image>
+        <image
+          src="{{imageUrlHead + '/defaults/c-image/mine/pic-empty_order@2x.png'}}"
+          wx:if="{{imageUrlHead}}" class="myOrder-noOrderMsg-Img"></image>
         <view class="myOrder-noOrderMsg-txt">您还没有相关订单</view>
         <view class="myOrder-noOrderBtn" @tap="toRecommend">随便逛逛</view>
       </view>
 
       <view class="myOrder-orderList" wx:if="{{orderList.length > 0}}">
-        <view class="myOrder-orderList-item" wx:for="{{orderList}}" @tap="showDetail({{item.id}},{{item.status}})" wx:key="{{item.id}}">
+        <view class="myOrder-orderList-item" wx:for="{{orderList}}"
+              @tap="showDetail({{item.id}},{{item.status}})"
+              wx:key="{{item.id}}">
           <view class="myOrder-orderList-item-left">
             <view class="myOrder-orderList-item-logo-box">
-              <image class="myOrder-orderList-item-logo" src="{{item.merchant_data.logo_image}}" mode="aspectFill"></image>
+              <image class="myOrder-orderList-item-logo"
+                     src="{{item.merchant_data.logo_image}}"
+                     mode="aspectFill"></image>
             </view>
             <view class="myOrder-orderList-item-msg">
               <view class="myOrder-orderList-item-title">{{item.title}}</view>
-              <view class="myOrder-orderList-item-count myOrder-orderList-item-detail" wx:if="{{menuIdx===0}}">数量: {{item.count}}</view>
-              <view class="myOrder-orderList-item-time myOrder-orderList-item-detail" wx:if="{{menuIdx!==0}}">下单时间: {{item.created_at}}</view>
-              <view class="myOrder-orderList-item-total myOrder-orderList-item-detail">总价: ￥{{item.total}}</view>
+              <view
+                class="myOrder-orderList-item-count myOrder-orderList-item-detail"
+                wx:if="{{item.status === 0}}">数量: {{item.count}}
+              </view>
+              <view
+                class="myOrder-orderList-item-time myOrder-orderList-item-detail"
+                wx:if="{{item.status !== 0}}">下单时间: {{item.created_at}}
+              </view>
+              <view
+                class="myOrder-orderList-item-total myOrder-orderList-item-detail">
+                总价: ￥{{item.total}}
+              </view>
             </view>
           </view>
           <view class="myOrder-orderList-item-btnBox">
-            <view class="myOrder-orderList-item-status">{{orderItemStatus[item.status]}}</view>
-            <view class="myOrder-orderList-item-btn" catchtap="useCoupon({{item.id}},{{item.promotion.id}},{{item.promotion_type}},{{item.merchant_id}})">{{orderItemBtnTxt[menuIdx]}}</view>
+            <view class="myOrder-orderList-item-status">
+              {{orderItemStatus[item.status]}}
+            </view>
+            <view class="myOrder-orderList-item-btn {{industry}}-bg"
+                  wx:if="{{menuIdx!==0}}"
+                  catchtap="useCoupon({{item.id}},{{item.promotion.id}},{{item.promotion_type}},{{item.merchant_id}},{{item.status}})">
+              {{orderItemBtnTxt[menuIdx - 1]}}
+            </view>
+            <view class="myOrder-orderList-item-btn {{industry}}-bg"
+                  wx:if="{{menuIdx===0}}"
+                  catchtap="useCoupon({{item.id}},{{item.promotion.id}},{{item.promotion_type}},{{item.merchant_id}},{{item.status}})">
+              {{orderItemBtnTxt[item.status]}}
+            </view>
           </view>
         </view>
       </view>
@@ -84,28 +113,35 @@
 
     data = {
       imageUrlHead: URIS.image,
-      menuIdx: 1,
-      menuItems: ['待付款', '待使用', '待评价', '退款/售后'],
+      menuIdx: 0,
+      menuItems: [{title: '全部', type: 4}, {
+        title: '待付款',
+        type: 0
+      }, {title: '待使用', type: 1}, {title: '待评价', type: 2}, {
+        title: '退款/售后',
+        type: 3
+      }],
       noOrderIcon: [URIS.image + '/defaults/c-image/mine/pic-my_nopaid.png', URIS.image + '/defaults/c-image/mine/pic-my_noused.png', URIS.image + '/defaults/c-image/mine/pic-my_noevaluated.png', URIS.image + '/defaults/c-image/mine/pic-my_norefund.png'],
       orderItemStatus: ['待付款', '', '', '退款中', '退款完成', '已评价', '已关闭', '退款失败', '退款失败', '已关闭'],
-      orderItemBtnTxt: ['付款', '进店使用', '评价', '再来一单'],
+      orderItemBtnTxt: ['付款', '进店使用', '评价', '再来一单', '再来一单', '再来一单', '再来一单', '再来一单', '再来一单', '再来一单'],
       isPhone: 1,
       LowerLoading: false,
       orderList: [],
       page: 1,
       nothingAdd: false,
-      noOrder: false
+      noOrder: false,
+      industry: wepy.getStorageSync('shop').industry
     }
 
     methods = {
-      async tabChange(idx) {
+      async tabChange(type, idx) {
         this.menuIdx = idx
         this.orderList = []
         this.noOrder = false
         this.page = 1
         this.nothingAdd = false
         this.$invoke('Underline', 'hide')
-        let resList = await this._getOrderList(idx, this.page)
+        let resList = await this._getOrderList(type, this.page)
         if (resList.error !== ERR_OK) {
           this.loaded()
           return
@@ -143,8 +179,8 @@
         let url = '/pages/user/myOrder-detail/myOrderDetail?status=' + status + '&id=' + id
         this.$navigate(url)
       },
-      async useCoupon(orderId, couponId, type, merchantId) {
-        switch (this.menuIdx) {
+      async useCoupon(orderId, couponId, type, merchantId, status) {
+        switch (status) {
           case 0:
             let data = {
               order_id: orderId
@@ -175,7 +211,7 @@
             this.$invoke('Appraise', 'showCover')
             this.$broadcast('sendCouponMsg', orderId, couponId)
             break
-          case 3:
+          default:
             let couponType
             if (type * 1 === 1) {
               couponType = 1
@@ -192,19 +228,19 @@
     }
 
     async onLoad(option) {
-      if (option.scene) {
-        let scene = decodeURIComponent(option.scene)
-        const params = getParams(scene)
-        this.menuIdx = params.idx
-      } else {
-        this.menuIdx = option.idx
-      }
+      this.industry = wepy.getStorageSync('shop').industry
+      this.menuIdx = option.idx * 1 + 1
       this.$apply()
     }
 
     async onShow() {
       wepy.setStorageSync('tips', {order: false})
       const scene = wx.getStorageSync('scene')
+//      if (scene) {
+//        let scene = decodeURIComponent(option.scene)
+//        const params = getParams(scene)
+//        this.menuIdx = params.idx
+//      }
       if (scene === 1014) {
         this.$invoke('BackHome', 'show')
       } else {
@@ -227,7 +263,7 @@
       if (option.idx || option.idx === 0) {
         this.menuIdx = Number(option.idx)
       } else {
-        this.menuIdx = 1
+        this.menuIdx = 0
       }
       let limit
       if (this.nothingAdd || this.orderList.length >= 100) {
@@ -235,7 +271,8 @@
       } else {
         limit = this.orderList.length ? this.orderList.length : 10
       }
-      let resList = await this._getOrderList(this.menuIdx, 1, limit)
+      let type = this.menuIdx === 0 ? 4 : this.menuIdx - 1
+      let resList = await this._getOrderList(type, 1, limit)
       if (resList.error !== 0) {
         this.loaded()
         return
@@ -314,7 +351,6 @@
         color: $color-text-t
         border-bottom: 2px solid $color-text-t
 
-
     .myOrder-phoneTestBox
       height: 55px
 
@@ -347,7 +383,7 @@
           text-align: center
           line-height: 24px
           font-size: $font-size-small
-          border-radius: 4rpx
+          border-radius: 4 rpx
 
           &:active
             border: 1px solid $color-button
@@ -390,13 +426,12 @@
               color: #696671
               line-height: 16.5px
 
-
         .myOrder-orderList-item-btnBox
           width: 58px
 
           .myOrder-orderList-item-status
             font-size: $font-size-small-s
-            color: $color-text-t
+            color: $color-orange
             text-align: right
             line-height: 15px
 
@@ -406,7 +441,6 @@
             bottom: 29px
             width: 57px
             height: 23px
-            border: 1px solid #656079
             background: $color-button
             border-radius: 2px
             text-align: center

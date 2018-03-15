@@ -23,7 +23,7 @@
             </view>
           </view>
           <view class="content coupon-wrapper" wx:if="{{item.type === type.coupon}}">
-            <coupon :coupon.sync="item.detail" :buy="buy" :border="yes"></coupon>
+            <coupon :coupon.sync="item.detail" :buy="buy" :border="yes" :industry.sync="industry"></coupon>
           </view>
         </view>
       </repeat>
@@ -101,7 +101,8 @@
         couponType: 1
       },
       qrcode: '',
-      currentMerchant: ''
+      currentMerchant: '',
+      industry: wepy.getStorageSync('shop').industry
     }
 
     onShareAppMessage(res) {
@@ -125,6 +126,7 @@
     }
 
     async onLoad(option) {
+      this.industry = wepy.getStorageSync('shop').industry
       if (option.scene) {
         let scene = decodeURIComponent(option.scene)
         const params = getParams(scene)

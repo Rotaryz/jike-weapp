@@ -32,7 +32,7 @@
       } else if (option.currentMerchant) {
         this.currentMerchant = option.currentMerchant
       } else {
-        this.currentMerchant = this.$parent.globalData.merchantId || wepy.getStorageSync('merchantId')
+        this.currentMerchant = wepy.getStorageSync('merchantId')
       }
       await this.load()
     }

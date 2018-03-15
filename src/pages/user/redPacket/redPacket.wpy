@@ -16,7 +16,7 @@
         </view>
       </view>
 
-      <view class="myRedPacket-withDraw" @tap="withDrawSub">提现</view>
+      <view class="myRedPacket-withDraw {{industry}}-bg" @tap="withDrawSub">提现</view>
     </view>
 
     <scroll-view scroll-y class="myRedPacket-list" wx:if="{{packetList.length>0}}" bindscrolltolower="redPacketLower">
@@ -74,7 +74,8 @@
       packetTotalNum: ['0', '.00'],
       LowerLoading: false,
       page: 1,
-      nothingAdd: false
+      nothingAdd: false,
+      industry: wepy.getStorageSync('shop').industry
     }
 
     methods = {
@@ -105,6 +106,7 @@
     }
 
     async onLoad() {
+      this.industry = wepy.getStorageSync('shop').industry
       await this.load()
     }
 

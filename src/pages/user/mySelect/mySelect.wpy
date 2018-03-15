@@ -2,7 +2,7 @@
   <view class="mySelect">
     <view class="mySelect-tab">
       <view class="mySelect-tab-item" wx:for="{{tabList}}" wx:key="{{item}}">
-        <view class="{{index===menuIdx?'mySelect-tab-itemTxt active':'mySelect-tab-itemTxt'}}" @tap="changeTab({{index}})">{{item}}</view>
+        <view class="{{index===menuIdx?'mySelect-tab-itemTxt ' + industry + '-border':'mySelect-tab-itemTxt'}}" @tap="changeTab({{index}})">{{item}}</view>
       </view>
     </view>
 
@@ -137,7 +137,8 @@
       LowerLoading: false,
       page: 1,
       nothingAdd: false,
-      nothingBoxShow: true
+      nothingBoxShow: true,
+      industry: wepy.getStorageSync('shop').industry
     }
 
     components = {
@@ -297,6 +298,7 @@
     }
 
     async onShow() {
+      this.industry = wepy.getStorageSync('shop').industry
       await this.load()
     }
 

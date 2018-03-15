@@ -2,7 +2,7 @@
   <view class="myCoupon">
     <view class="myCoupon-tab">
       <view class="myCoupon-tab-item" wx:for="{{tabList}}" wx:key="{{item}}">
-        <view class="{{index===menuIdx?'myCoupon-tab-itemTxt active':'myCoupon-tab-itemTxt'}}" @tap="changeTab({{index}})">{{item}}</view>
+        <view class="{{index===menuIdx?'myCoupon-tab-itemTxt '+industry+'-border':'myCoupon-tab-itemTxt'}}" @tap="changeTab({{index}})">{{item}}</view>
       </view>
     </view>
 
@@ -29,7 +29,7 @@
             </view>
           </view>
           <view class="couponList-item-head-right">
-            <view class="couponList-item-head-right-btn" wx:if="{{menuIdx===0}}" catchtap="useCoupon({{item.codeId}}, 'coupon')">进店使用</view>
+            <view class="couponList-item-head-right-btn {{industry}}" wx:if="{{menuIdx===0}}" catchtap="useCoupon({{item.codeId}}, 'coupon')">进店使用</view>
             <image class="couponList-noItemBtn" wx:if="{{menuIdx===1 && imageUrlHead}}" src="{{imageUrlHead + '/defaults/c-image/mine/pic-my_already .png'}}"></image>
             <image class="couponList-noItemBtn" wx:if="{{menuIdx===2 && imageUrlHead}}" src="{{imageUrlHead + '/defaults/c-image/mine/pic-my_overdue.png'}}"></image>
           </view>
@@ -75,7 +75,8 @@
       couponList: [],
       page: 1,
       LowerLoading: false,
-      nothingAdd: false
+      nothingAdd: false,
+      industry: wepy.getStorageSync('shop').industry
     }
 
     methods = {
@@ -136,6 +137,7 @@
     }
 
     async onShow() {
+      this.industry = wepy.getStorageSync('shop').industry
       await this.load()
       const scene = wx.getStorageSync('scene')
       if (scene === 1014) {

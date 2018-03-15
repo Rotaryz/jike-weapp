@@ -39,7 +39,7 @@
       this.type = option.type
       this.loaded()
       const token = wepy.getStorageSync('token')
-      this.merchantId = this.$parent.globalData.merchantId || wepy.getStorageSync('merchantId')
+      this.merchantId = wepy.getStorageSync('merchantId')
       if (this.type === 'wheel') {
         this.webviewUrl = `https://h5.live.gytcrm.com/index.html?token=${token}&merchantId=${this.merchantId}#/wheel`
       } else if (this.type === 'sign') {

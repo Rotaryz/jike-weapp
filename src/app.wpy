@@ -72,9 +72,10 @@
     }
 
     config = {
-      current_merchant: 100004,
+      current_merchant: 100009,
       pages: [
         'pages/loading/loading',
+        'pages/browse-shops/browse-shops',
         'pages/square/square',
         'pages/live/live',
         'pages/recommend/recommend',
@@ -100,7 +101,7 @@
         backgroundColor: '#F9F9F9',
         backgroundTextStyle: 'light',
         navigationBarBackgroundColor: '#fff',
-        navigationBarTitleText: '集客',
+        navigationBarTitleText: '',
         navigationBarTextStyle: 'black'
       },
       tabBar: {
@@ -111,7 +112,7 @@
         list: [
           {
             pagePath: 'pages/square/square',
-            text: '广场',
+            text: '联盟',
             iconPath: './icon/icon-tab_square1@2x.png',
             selectedIconPath: './icon/icon-tab_square2@2x.png'
           },

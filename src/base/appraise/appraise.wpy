@@ -25,7 +25,7 @@
             <input type="text" max-length="200" class="appraise-Msg-input" placeholder="其他想说的" placeholder-class="appraise-Msg-input-holder" bindinput="appraiseMsginput" />
           </view>
         </checkbox-group>
-        <view class="appraise-submitBtn {{btnDisabled?'disabled':''}}" @tap="appraiseSubmit">匿名提交</view>
+        <view class="appraise-submitBtn {{industry}}-bg {{btnDisabled?'disabled':''}}" @tap="appraiseSubmit">匿名提交</view>
       </view>
       <view class="appraise-Msg-success" wx:if="{{appraiseSuccess}}">
         <image wx:if="{{imageUrlHead}}" src="{{imageUrlHead + '/defaults/c-image/mine/pic-good@2x.png'}}" class="appraise-Msg-success-img"></image>
@@ -79,7 +79,8 @@
       couponMsg: null,
       appraise: '',
       appraiseSuccess: false,
-      btnDisabled: true
+      btnDisabled: true,
+      industry: wepy.getStorageSync('shop').industry
     }
 
     onLoad() {
@@ -325,7 +326,7 @@
           background: $color-button-act
 
       .appraise-submitBtn.disabled
-        background: $color-button-dis
+        opacity :0.6
 
       .appraise-Msg-success
         display: flex

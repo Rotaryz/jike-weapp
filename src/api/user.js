@@ -64,4 +64,13 @@ export default class User extends base {
     const url = `${this.baseUrl}/api/info/image-change`
     return await this.updateImg(url, name)
   }
+
+  /**
+   * 用户浏览店铺记录
+   * @returns {Promise.<*>}
+   */
+  static async browsingHistory(data) {
+    const url = `${this.baseUrl}/api/info/browsing-history`
+    return await this.get(url, data)
+  }
 }

@@ -106,7 +106,7 @@
         color: $color-text-d
 
         .refund-head-status-red
-          color: $color-text-t
+          color: $color-orange
 
       .refund-head-money
         padding-top: 10px
@@ -159,7 +159,7 @@
             height: 85px
 
           .refund-progress-stepTitle.active
-            color: $color-text-t
+            color: $color-orange
 
           .refund-progress-stepTitle
             font-size: $font-size-small

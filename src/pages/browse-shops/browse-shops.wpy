@@ -1,0 +1,155 @@
+<template>
+  <view class="browse-shop">
+    <scroll-view scroll-y class="container" @scrolltolower="loadMore">
+      <view class="shop-item" wx:for="{{broList}}" wx:key="item"
+            @tap="goRecommend({{item.merchant_id}})">
+        <view class="item-container">
+          <view class="shop-logo">
+            <image class="logo" src="{{item.logo}}" mode="aspectFill"></image>
+          </view>
+          <view class="item-content">
+            <view class="top">
+              <view class="title">{{item.shop_name}}</view>
+              <view class="describe">{{item.describe}}</view>
+            </view>
+            <view class="down">
+              <image class="down-icon" wx:if="{{imageUrlHead}}"
+                     src="{{imageUrlHead + '/defaults/c-image/mine/icon-address@2x.png'}}"></image>
+              <view class="address">{{item.particular_address}}</view>
+            </view>
+          </view>
+        </view>
+      </view>
+      <Underline></Underline>
+    </scroll-view>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import URIS from 'common/js/config'
+  import users from 'common/mixins/users'
+  import user from '@/api/user'
+  import base from 'common/mixins/base'
+  import {ERR_OK} from '@/api/base'
+  import Underline from '@/base/underline-block/underline-block'
+  export default class browseShop extends wepy.page {
+    mixins = [users, base]
+
+    config = {
+      navigationBarTitleText: '我浏览过的店',
+      navigationBarBackgroundColor: '#fff'
+    }
+
+    data = {
+      imageUrlHead: URIS.image,
+      broList: [],
+      page: 1,
+      isLoad: true
+    }
+
+    async _load() {
+      let data = {page: this.page}
+      let res = await user.browsingHistory(data)
+      this.loaded()
+      if (res.error === ERR_OK) {
+        return res.data
+      }
+    }
+
+    async onLoad() {
+      this.broList = await this._load()
+      this.$apply()
+    }
+
+    methods = {
+      async loadMore() {
+        if (this.isLoad) {
+          this.page++
+          let res = await this._load()
+          this.broList = this.broList.concat(res)
+          if (res.length === 0) {
+            this.$invoke('Underline', 'show')
+            this.isLoad = false
+          }
+          this.$apply()
+        }
+      },
+      goRecommend(merchantId) {
+        wepy.setStorageSync('merchantId', merchantId)
+        wepy.switchTab({url: '/pages/recommend/recommend'})
+      }
+    }
+    components = {
+      Underline
+//      'phone-test': PhoneTest
+    }
+  }
+</script>
+
+<style lang="stylus">
+  @import '../../common/stylus/variable'
+  @import '../../common/stylus/mixin'
+
+  page
+    width: 100vw
+    height: 100vh
+    background: $color-background
+
+    .browse-shop
+      width: 100%
+      height: 100%
+      .container
+        width: 100%
+        height: 100%
+
+        .shop-item
+          height: 61px
+          padding: 14.5px 12px
+          background: $color-white
+          margin-bottom: 10px
+          .item-container
+            width: 100%
+            height: 100%
+            display: flex
+            .shop-logo
+              width: 60px
+              height: 60px
+              border: 0.5px solid $color-col-line
+              border-radius: 2px
+              margin-right: 10px
+              .logo
+                width: 60px
+                height: 60px
+                border-radius: 2px
+            .item-content
+              flex: 1
+              display: flex
+              flex-direction: column
+              justify-content: space-between
+              overflow: hidden
+              .top
+                display: flex
+                flex-direction: column
+                .title
+                  font-size: $font-size-medium
+                  color: $color-text
+                  margin-bottom: 9px
+                .describe
+                  font-size: $font-size-small
+                  color: $color-text-9b
+              .down
+                display: flex
+                align-items: center
+                overflow: hidden
+                .down-icon
+                  width: 9px
+                  height: 11.5px
+                  margin-right: 3px
+                .address
+                  flex: 1
+                  font-size: $font-size-small
+                  color: $color-text-d
+                  no-wrap()
+
+</style>

@@ -1,7 +1,7 @@
 <template>
   <view class="service-detail">
     <view class="header border-bottom-1px" @tap="test">
-      <view class="red-block"></view>
+      <view class="red-block line-{{industry}}"></view>
       服务详情
     </view>
     <view class="detail-wrapper">
@@ -27,6 +27,10 @@
       services: {
         type: Array,
         default: []
+      },
+      industry: {
+        type: String,
+        default: ''
       }
     }
   }
@@ -50,6 +54,7 @@
         width: 2px
         height: 14px
         background: $color-orange
+        text-indent: 8px
         margin-right: 5px
         margin-bottom: 2px
     .detail-wrapper
