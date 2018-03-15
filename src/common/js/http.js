@@ -53,6 +53,7 @@ export default class http {
       throw this.requestException(resData)
     }
   }
+
   /**
    * 判断请求是否成功
    */
@@ -102,7 +103,7 @@ export default class http {
     return this.request('DELETE', url, data, loading)
   }
 
-  static updateImg (url, name, loading = true) {
+  static updateImg(url, name, loading = true) {
     return this.update(url, name, loading)
   }
 }

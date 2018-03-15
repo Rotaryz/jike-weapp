@@ -134,13 +134,15 @@ export default class userMixin extends wepy.mixin {
         avatarUrl: resData.avatarUrl,
         image: res.image,
         app_id: res.app_id,
-        business_circle_id: res.business_circle_id
+        business_circle_id: res.business_circle_id,
+        count: res.count
       })
     } else {
       user = Object.assign(res.customer, {
         image: res.image,
         app_id: res.app_id,
-        business_circle_id: res.business_circle_id
+        business_circle_id: res.business_circle_id,
+        count: res.count
       })
     }
     // }

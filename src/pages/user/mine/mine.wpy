@@ -97,7 +97,7 @@
                 <image class="mine-serve-avatarBox-img" src="{{item}}"></image>
               </view>
             </view>
-            <view class="shop-count">100家</view>
+            <view class="shop-count">{{userInfo.count}}家</view>
             <image wx:if="{{imageUrlHead}}"
                    src="{{imageUrlHead + '/defaults/c-image/mine/icon-my_Rectangle.png'}}"
                    class="mine-order-headIcon"></image>
@@ -211,6 +211,7 @@
       this.loaded()
       this.userInfo = res
       this.userImage = res.image
+      console.log(this.userInfo )
 //      let customerId = wx.getStorageSync('customerId')
 //      if (customerId) {
 //        this.isPhone = 1
