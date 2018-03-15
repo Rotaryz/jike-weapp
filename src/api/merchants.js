@@ -6,7 +6,7 @@ export default class Merchants extends base {
    * @returns {Promise.<*>}
    */
   static async getPlazaMerchants() {
-    const url = `${this.baseUrl}/api/merchants/plaza-merchants`
+    const url = `${this.baseUrl}/api/circles/plaza-merchants`
     return await this.get(url)
   }
 
@@ -58,5 +58,14 @@ export default class Merchants extends base {
   static async saveLog(data, loading = true) {
     const url = `${this.baseUrl}/api/merchants/save-log`
     return await this.post(url, data, loading)
+  }
+  /**
+   * 商家信息
+   * @param data
+   * @returns {Promise.<*>}
+   */
+  static async showShop(id) {
+    const url = `${this.baseUrl}/api/merchants/merchants-data/${id}`
+    return await this.get(url)
   }
 }

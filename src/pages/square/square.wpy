@@ -192,6 +192,9 @@
     async onShow() {
       this.clearTimer()
       await this.show()
+      wepy.setNavigationBarTitle({
+        title: wepy.getStorageSync('shop').shop_name
+      })
       this.loaded()
     }
 
@@ -494,7 +497,8 @@
     methods = {
       switchRecommend() {
         const merchantId = this.currentMerchant.merchant_id
-        this.$parent.updateGlobalData('merchantId', merchantId)
+//        this.$parent.updateGlobalData('merchantId', merchantId)
+        wepy.setStorageSync('merchantId', merchantId)
         wepy.switchTab({url: '/pages/recommend/recommend'})
       },
       async tapMap(e) {
@@ -573,13 +577,13 @@
     // 分享
     onShareAppMessage() {
       return {
-        title: '广场',
+        title: wepy.getStorageSync('shop').shop_name,
         path: '/pages/square/square'
       }
     }
 
     config = {
-      navigationBarTitleText: '广场'
+      navigationBarTitleText: ''
     }
   }
 

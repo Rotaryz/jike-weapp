@@ -1,60 +1,114 @@
 <template>
   <view class="mine">
     <view class="mine-main">
-      <view class="mine-head" @tap="notestToPage('/pages/user/myCenter/myCenter')">
+      <view class="mine-head"
+            @tap="notestToPage('/pages/user/myCenter/myCenter')">
         <view class="mine-head-avatarBox">
-          <image class="mine-head-avatar" src="{{userInfo.avatarUrl}}" mode="aspectFill" style="background-image: url({{imageUrlHead?imageUrlHead + '/defaults/c-image/mine/pic-default.png':''}}); background-size: 48px 48px"></image>
-          <view >
+          <image class="mine-head-avatar" src="{{userInfo.avatarUrl}}"
+                 mode="aspectFill"
+                 style="background-image: url({{imageUrlHead?imageUrlHead + '/defaults/c-image/mine/pic-default.png':''}}); background-size: 48px 48px"></image>
+          <view>
             <view class="mine-head-nickName">{{userInfo.nickName}}</view>
             <view class="mine-head-nickName-down">
               编辑个人资料 >
             </view>
           </view>
         </view>
-        <image wx:if="{{imageUrlHead}}" src="{{imageUrlHead + '/defaults/c-image/mine/icon-my_Rectangle.png'}}" class="mine-headIcon"></image>
+        <image wx:if="{{imageUrlHead}}"
+               src="{{imageUrlHead + '/defaults/c-image/mine/icon-my_Rectangle.png'}}"
+               class="mine-headIcon"></image>
       </view>
 
       <view class="mine-phoneTestBox" wx:if="{{isPhone===0}}">
         <PhoneTestHint></PhoneTestHint>
-        <PhoneTest></PhoneTest>
+        <PhoneTest :industry.sync="industry"></PhoneTest>
       </view>
 
       <view class="mine-order">
-        <view class="mine-order-head" @tap="notestToPage('/pages/user/myOrder/myOrder?idx={{currentIdx}}')">
+        <view class="mine-order-head"
+              @tap="notestToPage('/pages/user/myOrder/myOrder?idx={{currentIdx}}')">
           <view class="mine-order-head-left">
-            <view class="red-block"></view>
-            <text class="mine-order-headTxt">我的订单</text>
+            <text class="mine-order-headTxt line-{{industry}}">我的订单</text>
           </view>
           <view class="mine-order-head-right">
             <view class="red-dot" wx:if="{{false}}"></view>
             <view class="mine-order-head-right-txt">查看所有订单</view>
-            <image wx:if="{{imageUrlHead}}" src="{{imageUrlHead + '/defaults/c-image/mine/icon-my_Rectangle.png'}}" class="mine-order-headIcon"></image>
+            <image wx:if="{{imageUrlHead}}"
+                   src="{{imageUrlHead + '/defaults/c-image/mine/icon-my_Rectangle.png'}}"
+                   class="mine-order-headIcon"></image>
           </view>
         </view>
         <view class="mine-order-menu">
-          <view class="mine-order-menuItem" wx:for="{{orderMenu}}" wx:key="{{item.text}}" @tap="notestToPage('/pages/user/myOrder/myOrder?idx={{index}}')">
-            <image src="{{item.imgUrl}}" class="mine-order-menuItem-image"></image>
+          <view class="mine-order-menuItem" wx:for="{{orderMenu}}"
+                wx:key="{{item.text}}"
+                @tap="notestToPage('/pages/user/myOrder/myOrder?idx={{index}}')">
+            <image src="{{item.imgUrl}}"
+                   class="mine-order-menuItem-image"></image>
             <view class="mine-order-menuItem-txt">{{item.text}}</view>
           </view>
         </view>
       </view>
 
       <view class="mine-serve">
-        <view class="mine-serve-Item" wx:for="{{serveMenu}}" wx:key="{{item.text}}" @tap="notestToPage({{item.url}})">
+        <view class="mine-serve-Item" wx:for="{{serveMenu}}"
+              wx:key="{{item.text}}" @tap="notestToPage({{item.url}})">
           <view class="mine-serve-Item-left">
-            <image src="{{item.imgUrl}}" class="mine-serve-menuItem-image"></image>
+            <image src="{{item.imgUrl}}"
+                   class="mine-serve-menuItem-image"></image>
             <view class="mine-serve-menuItem-txt">{{item.text}}</view>
           </view>
           <view class="mine-serve-Item-right">
             <view class="red-dot" wx:if="{{false}}"></view>
-            <image wx:if="{{imageUrlHead}}" src="{{imageUrlHead + '/defaults/c-image/mine/icon-my_Rectangle.png'}}" class="mine-order-headIcon"></image>
+            <image wx:if="{{imageUrlHead}}"
+                   src="{{imageUrlHead + '/defaults/c-image/mine/icon-my_Rectangle.png'}}"
+                   class="mine-order-headIcon"></image>
+          </view>
+        </view>
+      </view>
+      <view class="mine-serve mine-shop">
+        <view class="mine-serve-Item" wx:for="{{shopList}}"
+              wx:key="{{item.text}}" @tap="goShop">
+          <view class="mine-serve-Item-left">
+            <image src="{{item.imgUrl}}"
+                   class="mine-serve-menuItem-image"></image>
+            <view class="mine-serve-menuItem-txt">{{item.text}}</view>
+          </view>
+          <view class="mine-serve-Item-right">
+            <view class="red-dot" wx:if="{{false}}"></view>
+            <image wx:if="{{imageUrlHead}}"
+                   src="{{imageUrlHead + '/defaults/c-image/mine/icon-my_Rectangle.png'}}"
+                   class="mine-order-headIcon"></image>
+          </view>
+        </view>
+      </view>
+      <view class="mine-main-under">
+        <view class="mine-serve-Item"
+              @tap="notestToPage('/pages/browse-shops/browse-shops')">
+          <view class="mine-serve-Item-left">
+            <image wx:if="{{imageUrlHead}}"
+                   src="{{imageUrlHead + '/defaults/c-image/mine/icon-shop@2x.png'}}"
+                   class="mine-serve-menuItem-image"></image>
+            <view class="mine-serve-menuItem-txt">我浏览过的店</view>
+          </view>
+          <view class="mine-serve-Item-right">
+            <view class="mine-serve-avatar-box">
+              <view class="mine-serve-avatarBox-item"
+                    wx:for="{{userImage}}" wx:key="{{index}}">
+                <image class="mine-serve-avatarBox-img" src="{{item}}"></image>
+              </view>
+            </view>
+            <view class="shop-count">100家</view>
+            <image wx:if="{{imageUrlHead}}"
+                   src="{{imageUrlHead + '/defaults/c-image/mine/icon-my_Rectangle.png'}}"
+                   class="mine-order-headIcon"></image>
           </view>
         </view>
       </view>
     </view>
 
     <view class="mine-logo">
-      <image class="mine-logo-image" wx:if="{{imageUrlHead}}" src="{{imageUrlHead + '/defaults/c-image/mine/pic-logo_zanbo@2x.png'}}"></image>
+      <image class="mine-logo-image" wx:if="{{imageUrlHead}}"
+             src="{{imageUrlHead + '/defaults/c-image/mine/pic-logo_zanbo@2x.png'}}"></image>
       <view class="mine-logo-txt">赞播提供技术支持</view>
     </view>
 
@@ -70,12 +124,15 @@
   import PhoneTest from '@/base/phoneTest/phoneTest'
   import PhoneTestHint from '@/base/phoneTestHint/phoneTestHint'
   import URIS from 'common/js/config'
-
+  const SHOPLIST = [{
+    imgUrl: URIS.image + '/defaults/c-image/mine/icon-businessarea@2x.png',
+    text: '我的商圈'
+  }]
   export default class Mine extends wepy.page {
     mixins = [users, base]
 
     config = {
-      navigationBarTitleText: '我的',
+      navigationBarTitleText: '',
       navigationBarBackgroundColor: '#fff',
       navigationBarTextStyle: 'black',
       backgroundColor: '#F9F9F9'
@@ -87,10 +144,12 @@
     }
 
     data = {
+      shopList: SHOPLIST,
       imageUrlHead: URIS.image,
       userInfo: {
         nickName: '加载中...',
-        avatarUrl: null
+        avatarUrl: null,
+        industry: wepy.getStorageSync('shop').industry
       },
       isPhone: 1,
       orderMenu: [
@@ -124,7 +183,8 @@
         }
       ],
       tips: null,
-      currentIdx: 1
+      currentIdx: -1,
+      userImage: []
     }
 
     async onLoad() {
@@ -132,7 +192,12 @@
     }
 
     onShow() {
+      this.industry = wepy.getStorageSync('shop').industry
       this.tips = wx.getStorageSync('tips')
+      wepy.setNavigationBarTitle({
+        title: wepy.getStorageSync('shop').shop_name
+      })
+      this.$apply()
       this.load()
     }
 
@@ -145,6 +210,7 @@
       let res = await this.$getUserInfo()
       this.loaded()
       this.userInfo = res
+      this.userImage = res.image
 //      let customerId = wx.getStorageSync('customerId')
 //      if (customerId) {
 //        this.isPhone = 1
@@ -160,6 +226,17 @@
     }
 
     methods = {
+      goShop() {
+        wx.navigateToMiniProgram({
+          appId: this.userInfo.app_id,
+          path: `pages/loading/loading?businessCircleId${this.userInfo.business_circle_id}`,
+          extraData: {},
+          envVersion: 'develop',
+          success(res) {
+            // 打开成功
+          }
+        })
+      },
       userLogin() {
 
       },
@@ -252,7 +329,7 @@
 
     .mine-head-arc
       width: 100%
-      height: 24rpx
+      height: 24 rpx
       margin: 0
       display: block
       background: $color-highlight-background
@@ -282,7 +359,8 @@
           align-items: center
 
           .mine-order-headTxt
-            font-size: $font-size-small
+            text-indent: 5px
+            font-size: $font-size-medium
             color: $color-text-d
 
           .red-block
@@ -312,7 +390,6 @@
           flex: 1
           text-align: center
           padding: 20px 0
-
 
           .mine-order-menuItem-image
             width: 22px
@@ -362,6 +439,63 @@
       view:last-child
         border-bottom: 0 none
 
+    .mine-shop
+      margin-top: 10px
+    .mine-main-under
+      background: $color-highlight-background
+      border-bottom: .5px solid $color-row-line
+      padding-left: 12px
+
+      .mine-serve-Item
+        height: 44px
+        display: flex
+        justify-content: space-between
+        align-items: center
+        border-bottom: .5px solid $color-row-line
+        padding-right: 12px
+
+        .mine-serve-Item-left
+          display: flex
+          height: 44px
+          align-items: center
+
+          .mine-serve-menuItem-image
+            width: 16px
+            height: 16px
+            margin-right: 11px
+
+          .mine-serve-menuItem-txt
+            font-size: $font-size-small
+            color: $color-text
+
+        .mine-serve-Item-right
+          display: flex
+          align-items: center
+          .mine-serve-avatar-box
+            display: flex
+            .mine-serve-avatarBox-item
+              border: 1px solid $color-white
+              width: 20px
+              height: 20px
+              border-radius: 50%
+              margin-right: -5px
+              .mine-serve-avatarBox-img
+                width: 20px
+                height: 20px
+                background: #ccc
+                border-radius: 50%
+
+          .shop-count
+            font-size: $font-size-medium
+            color: $color-text
+            margin: 0 5px 0px 8px
+
+          .mine-order-headIcon
+            width: 6px
+            height: 10px
+
+      view:last-child
+        border-bottom: 0 none
     .mine-logo
       text-align: center
       margin-top: 3vh

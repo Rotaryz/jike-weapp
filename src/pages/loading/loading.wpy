@@ -17,12 +17,13 @@
 <script>
   import wepy from 'wepy'
   import URIS from 'common/js/config'
-
+  import base from 'common/mixins/base'
+  import merchants from 'api/merchants'
   const INFOURL = '/pages/recommend/recommend'
   import users from 'common/mixins/users'
-
+  import {ERR_OK} from '@/api/base'
   export default class loading extends wepy.page {
-    mixins = [users]
+    mixins = [users, base]
     config = {
       navigationBarTitleText: '',
       navigationBarBackgroundColor: '#fff'
@@ -72,6 +73,16 @@
     }
 
     async onLoad(options) {
+      let id = options.merchantId ? options.merchantId : wepy.getStorageSync('merchantId')
+      let res = await merchants.showShop(id)
+      this.loaded()
+      if (res.error === ERR_OK) {
+        let shop = {
+          industry: res.data.code_name,
+          shop_name: res.data.shop_name
+        }
+        wepy.setStorageSync('shop', shop)
+      }
       await this.$getUserInfo(false)
 //        let data = options.param.split(',')
 //        let param = {}

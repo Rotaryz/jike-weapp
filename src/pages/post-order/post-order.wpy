@@ -34,7 +34,7 @@
         </view>
       </view>
     </view>
-    <view class="post-btn" @tap="postOrder">
+    <view class="post-btn {{industry}}-bg" @tap="postOrder">
       提交订单
     </view>
   </view>
@@ -51,7 +51,8 @@
     data = {
       orderInfo: {},
       count: 1,
-      total: 0
+      total: 0,
+      industry: wepy.getStorageSync('shop').industry
     }
 
     onLoad() {

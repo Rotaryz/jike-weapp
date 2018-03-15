@@ -130,9 +130,18 @@ export default class userMixin extends wepy.mixin {
     // } else {
     if (!res.customer.avatarUrl) {
       let resData = await this.$getUser()
-      user = Object.assign(res.customer, {avatarUrl: resData.avatarUrl})
+      user = Object.assign(res.customer, {
+        avatarUrl: resData.avatarUrl,
+        image: res.image,
+        app_id: res.app_id,
+        business_circle_id: res.business_circle_id
+      })
     } else {
-      user = res.customer
+      user = Object.assign(res.customer, {
+        image: res.image,
+        app_id: res.app_id,
+        business_circle_id: res.business_circle_id
+      })
     }
     // }
     this.$parent.updateGlobalData('user', user)

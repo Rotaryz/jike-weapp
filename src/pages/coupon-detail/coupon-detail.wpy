@@ -42,8 +42,7 @@
     </view>
     <view class="promotion-detail" wx:if="{{promotions.length > 0}}">
       <view class="header">
-        <view class="red-block"></view>
-        <view class="red-title">礼包详情</view>
+        <view class="red-title line-{{industry}}">礼包详情</view>
       </view>
       <view class="promotion-wrapper">
         <repeat for="{{promotions}}" key="index" index="index" item="item">
@@ -52,10 +51,10 @@
       </view>
     </view>
     <view wx:if="{{services.length > 0}}">
-      <service-detail :services.sync="services"></service-detail>
+      <service-detail :services.sync="services" :industry.sync="industry"></service-detail>
     </view>
     <view wx:if="{{type === 1}}">
-      <know-detail :note.sync="note" :notAllowTime.sync="notAllowTime"></know-detail>
+      <know-detail :note.sync="note" :notAllowTime.sync="notAllowTime" :industry.sync="industry"></know-detail>
     </view>
     <view class="buy-button-wrapper border-top-1px">
       <view class="button-group">
@@ -72,9 +71,9 @@
           客服
         </view>
       </view>
-      <view class="buy-btn {{stock === 0 ? 'disable' : ''}}" @tap="postOrder">立即购买</view>
+      <view class="buy-btn {{industry}}-bg {{stock === 0 ? 'disable' : ''}}" @tap="postOrder">立即购买</view>
     </view>
-    <phone-test @isPhoneOk.user="getSymbol"></phone-test>
+    <phone-test @isPhoneOk.user="getSymbol" :industry.sync="industry"></phone-test>
     <share :qrcode.sync="qrcode" :detail.sync="coupon" :promotionImages.sync="promotionImages"
            @sharePunchLine.user="sharePunchLine"></share>
     <share-modal>
@@ -95,7 +94,7 @@
         </view>
       </view>
     </share-modal>
-    <post-order :orderInfo.sync="orderInfo" @throw.user="postOrderFail"></post-order>
+    <post-order :orderInfo.sync="orderInfo" @throw.user="postOrderFail" :industry.sync="industry"></post-order>
     <toast></toast>
   </scroll-view>
 </template>
@@ -144,7 +143,8 @@
       currentMerchant: 0,
       qrcode: '',
       sharePrice: '',
-      orderInfo: {}
+      orderInfo: {},
+      industry: wepy.getStorageSync('shop').industry
     }
 
     onShareAppMessage(res) {
@@ -168,6 +168,7 @@
     }
 
     async onLoad(option) {
+      this.industry = wepy.getStorageSync('shop').industry
       if (option.scene) {
         let scene = decodeURIComponent(option.scene)
         const params = getParams(scene)
@@ -183,7 +184,7 @@
     }
 
     async load() {
-      this.currentMerchant = this.currentMerchant || this.$parent.globalData.merchantId || wepy.getStorageSync('merchantId')
+      this.currentMerchant = this.currentMerchant || wepy.getStorageSync('merchantId')
       this.currentPage = `/pages/coupon-detail/coupon-detail?type=${this.type}&id=${this.id}&merchantid=${this.currentMerchant}`
       if (this.type === COUPON_TYPE) {
         await this._getCouponDetail()
@@ -464,6 +465,7 @@
           background: $color-orange
           margin-right: 5px
         .red-title
+          text-indent :8px
           margin-top: 12px
           line-height: 14px
           font-size: $font-size-medium

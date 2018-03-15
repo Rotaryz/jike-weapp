@@ -1,33 +1,47 @@
 <template>
   <view class="withDraw">
     <view class="withDraw-head">
-      <view class="withDraw-headTxt">账户余额<text class="withDraw-head-money">{{packetTotal.remaining?packetTotal.remaining:0}}</text>元</view>
+      <view class="withDraw-headTxt">账户余额
+        <text class="withDraw-head-money">
+          {{packetTotal.remaining ? packetTotal.remaining : 0}}
+        </text>
+        元
+      </view>
       <view class="withDraw-headTxt">提现金额</view>
     </view>
 
     <view class="withDraw-inputBox">
       <view class="withDraw-inputBo-left">
         <text class="withDraw-inputBox-txt">￥</text>
-        <input type="digit" bindinput="moneyChange" class="withDraw-inputBox-input" value="{{drawMoney}}"/>
+        <input type="digit" bindinput="moneyChange"
+               class="withDraw-inputBox-input" value="{{drawMoney}}"/>
       </view>
 
-      <image wx:if="{{imageUrlHead}}" src="{{imageUrlHead + '/defaults/c-image/mine/icon-my_money_close.png'}}" class="withDraw-inputBox-btn" @tap="clear"></image>
+      <image wx:if="{{imageUrlHead}}"
+             src="{{imageUrlHead + '/defaults/c-image/mine/icon-my_money_close.png'}}"
+             class="withDraw-inputBox-btn" @tap="clear"></image>
     </view>
     <view class="withDraw-hint">
       <text>提现到微信钱包 (提现金额不能小于1元)</text>
       <view class="withDraw-hint-redTxt" @tap="allIn">全部提现</view>
     </view>
-    <view class="withDraw-btn {{drawMoney*1===0?'disab':''}}" @tap="submitMoney">提现</view>
+    <view class="withDraw-btn {{industry}}-bg {{drawMoney*1===0?'disab':''}}"
+          @tap="submitMoney">提现
+    </view>
     <view class="withDraw-time">1-5个工作日到账</view>
 
     <view class="withDraw-successCover" wx:if="{{coverShow}}">
       <view class="withDraw-success">
-        <image wx:if="{{imageUrlHead}}" src="{{imageUrlHead + '/defaults/c-image/mine/pic-my_unlucky.png'}}" class="withDraw-success-img"></image>
+        <image wx:if="{{imageUrlHead}}"
+               src="{{imageUrlHead + '/defaults/c-image/mine/pic-my_unlucky.png'}}"
+               class="withDraw-success-img"></image>
         <view class="withDraw-success-top">提现成功</view>
         <view class="withDraw-success-bottom">
           <text class="withDraw-success-bottom-txt">提现金额已经存入您的微信钱包中</text>
           <view class="withDraw-success-bottom-btn">返回</view>
-          <image wx:if="{{imageUrlHead}}" src="{{imageUrlHead + '/defaults/c-image/mine/icon-close_white.png'}}" class="withDraw-success-closeBtn" @tap="closeCover"></image>
+          <image wx:if="{{imageUrlHead}}"
+                 src="{{imageUrlHead + '/defaults/c-image/mine/icon-close_white.png'}}"
+                 class="withDraw-success-closeBtn" @tap="closeCover"></image>
         </view>
       </view>
     </view>
@@ -57,7 +71,8 @@
       drawMoney: '',
       coverShow: false,
       packetTotal: '',
-      isPhone: 0
+      isPhone: 0,
+      industry: wepy.getStorageSync('shop').industry
     }
 
     components = {
@@ -107,6 +122,7 @@
     }
 
     async onLoad() {
+      this.industry = wepy.getStorageSync('shop').industry
       await this.load()
     }
 
@@ -195,7 +211,7 @@
       .withDraw-hint-redTxt
         height: 43px
         line-height: 43px
-        color: $color-text-t
+        color: $color-orange
 
     .withDraw-btn
       height: 43px
@@ -210,7 +226,7 @@
         background: $color-button-act
 
     .withDraw-btn.disab
-        background: $color-button-dis
+      opacity: 0.5
 
     .withDraw-time
       font-size: $font-size-small-s

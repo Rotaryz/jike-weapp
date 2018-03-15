@@ -4,28 +4,42 @@
       <repeat>
         <Slider :list.sync="shopImages"></Slider>
       </repeat>
-      <image wx:if="{{imageUri}}" src="{{imageUri + '/defaults/c-image/recommend/pic-r_shadow@2x.png'}}" class="underImage"></image>
+      <image wx:if="{{imageUri}}"
+             src="{{imageUri + '/defaults/c-image/recommend/pic-r_shadow@2x.png'}}"
+             class="underImage"></image>
     </view>
     <form bindsubmit="submit" report-submit='true'>
       <view class="nav-wrapper">
-        <button form-type="submit" @tap="goToActivity('video_live', '/pages/live/live')" type="default" size="mini"
+        <button form-type="submit"
+                @tap="goToActivity('video_live', '/pages/live/live')"
+                type="default" size="mini"
                 class="content-wrapper">
-          <image class="icon" wx:if="{{imageUri}}" src="{{imageUri + '/defaults/c-image/recommend/icon-r_live@2x.png'}}"></image>
+          <image class="icon" wx:if="{{imageUri && industry.length}}"
+                 src="{{imageUri + '/defaults/c-image/recommend/icon-live_'+industry+'@2x.png'}}"></image>
           <view class="content">直播优惠</view>
         </button>
-        <button form-type="submit" @tap="goToActivity('share', '/pages/shareAndPrize/shareAndPrize')" type="default" size="mini"
+        <button form-type="submit"
+                @tap="goToActivity('share', '/pages/shareAndPrize/shareAndPrize')"
+                type="default" size="mini"
                 class="content-wrapper">
-          <image class="icon" wx:if="{{imageUri}}" src="{{imageUri + '/defaults/c-image/recommend/icon-r_share@2x.png'}}"></image>
+          <image class="icon" wx:if="{{imageUri && industry.length}}"
+                 src="{{imageUri + '/defaults/c-image/recommend/icon-share_'+industry+'@2x.png'}}"></image>
           <view class="content">分享有礼</view>
         </button>
-        <button form-type="submit" @tap="goToActivity('sign', '/pages/activity/activity?type=sign')" type="default" size="mini"
+        <button form-type="submit"
+                @tap="goToActivity('sign', '/pages/activity/activity?type=sign')"
+                type="default" size="mini"
                 class="content-wrapper">
-          <image class="icon" wx:if="{{imageUri}}" src="{{imageUri + '/defaults/c-image/recommend/icon-r_sign@2x.png'}}"></image>
+          <image class="icon" wx:if="{{imageUri && industry.length}}"
+                 src="{{imageUri + '/defaults/c-image/recommend/icon-sign_'+industry+'@2x.png'}}"></image>
           <view class="content">签到红包</view>
         </button>
-        <button form-type="submit" @tap="goToActivity('lucky_draw','/pages/activity/activity?type=wheel')" type="default" size="mini"
+        <button form-type="submit"
+                @tap="goToActivity('lucky_draw','/pages/activity/activity?type=wheel')"
+                type="default" size="mini"
                 class="content-wrapper">
-          <image class="icon" wx:if="{{imageUri}}" src="{{imageUri + '/defaults/c-image/recommend/icon-turntable@2x.png'}}"></image>
+          <image class="icon" wx:if="{{imageUri && industry.length}}"
+                 src="{{imageUri + '/defaults/c-image/recommend/icon-turntable_'+industry+'@2x.png'}}"></image>
           <view class="content">大转盘 </view>
         </button>
       </view>
@@ -34,38 +48,53 @@
       <view class="tab-wrapper">
         <view class="tab-content border-bottom-1px">
           <view class="tab-item" @tap="clickTab(1)">
-            <view class="tab-item-txt {{activeTab === '1' ? 'active' : ''}}">优惠券</view>
+            <view
+              class="tab-item-txt {{activeTab === '1' ? industry + '-border' : ''}}">优惠券
+            </view>
           </view>
           <view class="tab-item" @tap="clickTab(2)">
-            <view class="tab-item-txt {{activeTab === '2' ? 'active' : ''}}">发现</view>
+            <view
+              class="tab-item-txt {{activeTab === '2' ? industry + '-border' : ''}}">发现
+            </view>
           </view>
         </view>
         <view class="tab-line {{activeTab === '2' ? 'discover' : ''}}"></view>
       </view>
       <view class="tab-content-wrapper">
-        <view class="coupon-panel" style="display: {{activeTab === '1' ? 'block':''}}">
+        <view class="coupon-panel"
+              style="display: {{activeTab === '1' ? 'block':''}}">
           <repeat for="{{giftBags}}" key="index" index="index" item="item">
-            <package :giftbag.sync="item" @handleClick.user="goToCouponDetail" :index="index"></package>
+            <package :giftbag.sync="item" @handleClick.user="goToCouponDetail"
+                     :index="index"></package>
           </repeat>
           <repeat for="{{couponList}}" key="index" index="index" item="item">
-            <coupon :coupon.sync="item" @handleClick.user="goToCouponDetail"></coupon>
+            <coupon :coupon.sync="item" :industry.sync="industry"
+                    @handleClick.user="goToCouponDetail"></coupon>
           </repeat>
           <view class="nothing-box" wx:if="{{couponNothing}}">
-            <image src="{{imageUri + '/defaults/c-image/mine/pic-empty_coupon@2x.png'}}" wx:if="{{imageUri}}" class="nothing-img"></image>
+            <image
+              src="{{imageUri + '/defaults/c-image/mine/pic-empty_coupon@2x.png'}}"
+              wx:if="{{imageUri}}" class="nothing-img"></image>
             <view class="nothing-txt">暂无优惠券</view>
           </view>
           <underline1></underline1>
         </view>
-        <view class="discover-panel" style="display: {{activeTab === '2' ? 'block':''}}">
-          <navigator url="/pages/content-detail/content-detail?id={{item.id}}&currentMerchant={{item.merchant_id}}" class="ticky-wrapper"
-                     wx:for="{{contents}}" wx:key="unique">
+        <view class="discover-panel"
+              style="display: {{activeTab === '2' ? 'block':''}}">
+          <navigator
+            url="/pages/content-detail/content-detail?id={{item.id}}&currentMerchant={{item.merchant_id}}"
+            class="ticky-wrapper"
+            wx:for="{{contents}}" wx:key="unique">
             <view class="ticky">
-              <image src="{{item.image_url}}" class="full-image" mode="widthFix"></image>
+              <image src="{{item.image_url}}" class="full-image"
+                     mode="widthFix"></image>
               <view class="title">{{item.title}}</view>
             </view>
             <view class="collector">
               <view class="avatar-wrapper">
-                <view class="avatar" wx:for="{{item.customer_images}}" wx:key="unique" wx:for-item="avatar" wx:if="{{index < 5}}">
+                <view class="avatar" wx:for="{{item.customer_images}}"
+                      wx:key="unique" wx:for-item="avatar"
+                      wx:if="{{index < 5}}">
                   <image src="{{avatar}}" alt="" class="full-image"></image>
                 </view>
                 <view class="more" wx:if="{{item.customer_images.length > 5}}">
@@ -76,12 +105,14 @@
               </view>
               <view class="collect">
                 <view class="icon icon-collected">
-                  <image wx:if="{{imageUri}}" src="{{imageUri + '/defaults/c-image/mine/icon-r_collection@2x.png'}}"
+                  <image wx:if="{{imageUri}}"
+                         src="{{imageUri + '/defaults/c-image/mine/icon-r_collection@2x.png'}}"
                          class="full-image"></image>
                 </view>
                 <view class="font">{{item.favorite_count}}</view>
                 <view class="icon icon-collected last">
-                  <image wx:if="{{imageUri}}" src="{{imageUri + '/defaults/c-image/mine/icon-r_share1@2x.png'}}"
+                  <image wx:if="{{imageUri}}"
+                         src="{{imageUri + '/defaults/c-image/mine/icon-r_share1@2x.png'}}"
                          class="full-image"></image>
                 </view>
                 <view class="font">{{item.share_count}}</view>
@@ -89,7 +120,9 @@
             </view>
           </navigator>
           <view class="nothing-box" wx:if="{{contentNothing}}">
-            <image src="{{imageUri + '/defaults/c-image/mine/pic-empty_content@2x.png'}}" wx:if="{{imageUri}}" class="nothing-img"></image>
+            <image
+              src="{{imageUri + '/defaults/c-image/mine/pic-empty_content@2x.png'}}"
+              wx:if="{{imageUri}}" class="nothing-img"></image>
             <view class="nothing-txt">暂无内容</view>
           </view>
           <underline2></underline2>
@@ -108,9 +141,9 @@
   import Slider from '@/base/index-slider/index-slider'
   import Coupon from '@/base/coupon/coupon'
   import Toast from '@/base/toast/toast'
-//  import PhoneTest from '@/base/phoneTest/phoneTest'
+  //  import PhoneTest from '@/base/phoneTest/phoneTest'
   import {ERR_OK} from 'api/base'
-//  import CouponApi from 'api/coupon'
+  //  import CouponApi from 'api/coupon'
   import ContentsApi from 'api/contents'
   import Merchants from 'api/merchants'
   import Giftbag from '@/base/giftbag/giftbag'
@@ -143,7 +176,8 @@
       moreContent: true,
       couponNothing: false,
       contentNothing: false,
-      shopChange: true
+      shopChange: true,
+      industry: wepy.getStorageSync('shop')
     }
 
     onShareAppMessage(res) {
@@ -157,11 +191,11 @@
         path: '/pages/recommend/recommend',
         success: (res) => {
           // 转发成功
-          console.log(res)
+//          console.log(res)
         },
         fail: (res) => {
           // 转发失败
-          console.log(res)
+//          console.log(res)
         }
       }
     }
@@ -195,7 +229,8 @@
 
     async load() {
       let oldId = this.merchantId
-      this.merchantId = this.$parent.globalData.merchantId || wepy.getStorageSync('merchantId')
+      this.merchantId = wepy.getStorageSync('merchantId')
+//      console.log(this.merchantId)
       this.shopChange = !(oldId === this.merchantId)
       const isAuthorise = await this.isAuthorise(false)
       this.$parent.updateGlobalData('isAuthorise', isAuthorise)
@@ -235,6 +270,17 @@
     async _getMechantsMsg(loading = true) {
       let res = await Merchants.getMerchantsStatus(this.merchantId, {}, loading)
       if (res.error === ERR_OK) {
+        let shop = {
+          industry: res.data.merchant_data.industry,
+          shop_name: res.data.merchant_data.shop_name
+        }
+        wepy.setStorageSync('shop', shop)
+        this.industry = shop.industry
+        this.$apply()
+//        console.log(this.industry)
+        wepy.setNavigationBarTitle({
+          title: res.data.merchant_data.shop_name
+        })
         let data = res.data
         this.shopImages = this._checkPropety(data.merchant_data.shop_image)
         this.activities = data.activities || {}
@@ -294,14 +340,14 @@
 
     // 获取内容列表 (分页)
     async _getContents() {
-      let params
-      if (this.$parent.globalData.merchantId) {
-        params = {
-          current_merchant: this.$parent.globalData.merchantId
-        }
-      } else {
-        params = {}
-      }
+      let params = {}
+//      if (this.$parent.globalData.merchantId) {
+//        params = {
+//          current_merchant: this.$parent.globalData.merchantId
+//        }
+//      } else {
+//        params = {}
+//      }
       const res = await ContentsApi.getMerchantContents(params)
       if (res.error === ERR_OK) {
         this.contents = res.data
@@ -324,17 +370,21 @@
       } else {
         limit = Math.ceil(this.contents.length / 10) * 10 || 10
       }
-      if (this.$parent.globalData.merchantId) {
-        params = {
-          current_merchant: this.$parent.globalData.merchantId,
-          page: 1,
-          limit
-        }
-      } else {
-        params = {
-          page: 1,
-          limit
-        }
+//      if (this.$parent.globalData.merchantId) {
+//        params = {
+//          current_merchant: this.$parent.globalData.merchantId,
+//          page: 1,
+//          limit
+//        }
+//      } else {
+//        params = {
+//          page: 1,
+//          limit
+//        }
+//      }
+      params = {
+        page: 1,
+        limit
       }
       const res = await ContentsApi.getMerchantContents(params)
       if (res.error === ERR_OK) {
@@ -350,7 +400,7 @@
 
     // 加载更多优惠券
     async _getMoreCoupons() {
-      this.couponPage ++
+      this.couponPage++
       let params = {
         page: this.couponPage
       }
@@ -358,7 +408,7 @@
       if (res.error === ERR_OK) {
         if (!res.data.length) {
           this.moreCoupon = false
-          this.couponPage --
+          this.couponPage--
           this.$invoke('underline1', 'show')
           return
         }
@@ -369,18 +419,18 @@
 
     // 加载更多内容
     async _getMoreContents() {
-      this.contentPage ++
+      this.contentPage++
       let params = {
         page: this.contentPage
       }
-      if (this.$parent.globalData.merchantId) {
-        params.current_merchant = this.$parent.globalData.merchantId
-      }
+//      if (this.$parent.globalData.merchantId) {
+//        params.current_merchant = this.$parent.globalData.merchantId
+//      }
       let res = await ContentsApi.getMerchantContents(params)
       if (res.error === ERR_OK) {
         if (!res.data.length) {
           this.moreContent = false
-          this.contentPage --
+          this.contentPage--
           this.$invoke('underline2', 'show')
           return
         }
@@ -601,7 +651,7 @@
     }
 
     config = {
-      navigationBarTitleText: '推荐'
+      navigationBarTitleText: ''
     }
   }
 </script>
@@ -609,7 +659,6 @@
 <style lang="stylus">
   @import "../../common/stylus/variable"
   @import "../../common/stylus/mixin"
-
   .recommend
     width: 100%
     overflow: hidden

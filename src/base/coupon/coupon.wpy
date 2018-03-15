@@ -1,23 +1,33 @@
 <template>
   <view class="coupon">
-    <view class="couponList-item-head-container" @tap="handleClick({{coupon.id}})">
-      <image class="coupon-bc" wx:if="{{imageUrlHead}}" src="{{imageUrlHead + '/defaults/c-image/mine/pic-couponbg@2x.png'}}"></image>
+    <view class="couponList-item-head-container"
+          @tap="handleClick({{coupon.id}})">
+      <image class="coupon-bc" wx:if="{{imageUrlHead}}"
+             src="{{imageUrlHead + '/defaults/c-image/mine/pic-couponbg@2x.png'}}"></image>
       <view class="couponList-item-head-left">
-        <view class="border-line" wx:if="{{border!=='no'}}"></view>
+        <view class="{{industry}}-coupon" wx:if="{{border!=='no'}}"></view>
         <view class="couponList-itemPay">
-          <view><text class="couponList-midMoney">￥</text><text class="couponList-bigMoney">{{coupon.platform_price}}</text></view>
+          <view>
+            <text class="couponList-midMoney">￥</text>
+            <text class="couponList-bigMoney">{{coupon.platform_price}}</text>
+          </view>
         </view>
         <view class="couponList-itemMsg">
           <view class="couponList-item-title">{{coupon.title}}</view>
           <view class="underline"></view>
           <view class="couponList-item-time">{{coupon.not_allow_time}}</view>
-          <view class="couponList-item-time">有效期至{{coupon.end_at ? coupon.end_at : coupon.sell_end_at}}</view>
+          <view class="couponList-item-time">
+            有效期至{{coupon.end_at ? coupon.end_at : coupon.sell_end_at}}
+          </view>
         </view>
       </view>
       <view class="couponList-item-head-right">
-        <view class="couponList-item-head-right-btn" wx:if="{{avatar==='no'}}">立即购买</view>
+        <view class="couponList-item-head-right-btn {{industry}}"
+              wx:if="{{avatar==='no'}}">立即购买
+        </view>
         <view class="shopMsg" wx:if="{{avatar!=='no'}}">
-          <image src="{{coupon.shop_logo}}" class="shopLogo" mode="aspectFill"></image>
+          <image src="{{coupon.shop_logo}}" class="shopLogo"
+                 mode="aspectFill"></image>
           <view class="shopName">{{coupon.shop_name}}</view>
         </view>
       </view>
@@ -47,6 +57,10 @@
       border: {
         type: String,
         default: 'no'
+      },
+      industry: {
+        type: String,
+        default: ''
       }
     }
 
