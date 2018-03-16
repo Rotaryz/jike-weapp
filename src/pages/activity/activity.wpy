@@ -6,6 +6,8 @@
   import wepy from 'wepy'
   import users from 'common/mixins/users'
   import base from 'common/mixins/base'
+  import URIS from 'common/js/config'
+
   export default class Activity extends wepy.page {
     mixins = [users, base]
     data = {
@@ -41,9 +43,9 @@
       const token = wepy.getStorageSync('token')
       this.merchantId = wepy.getStorageSync('merchantId')
       if (this.type === 'wheel') {
-        this.webviewUrl = `https://h5.live.gytcrm.com/index.html?token=${token}&merchantId=${this.merchantId}#/wheel`
+        this.webviewUrl = `${URIS.webview}/index.html?token=${token}&merchantId=${this.merchantId}#/wheel`
       } else if (this.type === 'sign') {
-        this.webviewUrl = `https://h5.live.gytcrm.com/index.html?token=${token}&merchantId=${this.merchantId}#/registration`
+        this.webviewUrl = `${URIS.webview}/index.html?token=${token}&merchantId=${this.merchantId}#/registration`
       }
       this.$apply()
     }

@@ -24,6 +24,7 @@ const version = '/v2'
  */
 // const URLS = {
 //   image: 'https://img.jerryf.cn',
+//   webview: 'https://h5.jkweixin.net',
 //   login: 'https://dev.jike-jwt.jerryf.cn',
 //   api: 'https://dev.jike-wap-api.jerryf.cn' + version
 // }
@@ -34,6 +35,7 @@ const version = '/v2'
  */
 const URLS = {
   image: 'https://img.jkweixin.net',
+  webview: 'https://h5.jkweixin.net',
   login: 'https://jwt.jkweixin.net',
   api: 'https://wap-api.jkweixin.net' + version
 }
@@ -44,6 +46,7 @@ const URLS = {
  */
 // const URLS = {
 //   image: 'https://img.jkweixin.com',
+//   webview: 'https://h5.jkweixin.com',
 //   login: 'https://jwt.jkweixin.com',
 //   api: 'https://wap-api.jkweixin.com' + version
 // }
@@ -51,6 +54,7 @@ const URLS = {
 class URIS {
   constructor() {
     this.image = URLS.image
+    this.webview = URLS.webview
     this.login = URLS.login
     this.api = URLS.api
   }
