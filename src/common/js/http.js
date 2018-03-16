@@ -1,5 +1,6 @@
 import wepy from 'wepy'
 import Tips from './tips'
+import {SOLD_OUT} from 'api/base'
 
 // HTTP工具类
 export default class http {
@@ -21,6 +22,10 @@ export default class http {
     if (this.isSuccess(res)) {
       const result = res.data
       return result
+    } else if (this.isSoldOut(res)) {
+      const result = res.data
+      wepy.navigateTo(`pages/sold-out/sold-out?appId=${result.app_id}&businessCircleId=${result.business_circle_id}`)
+      throw this.requestException(res)
     } else {
       throw this.requestException(res)
     }
@@ -59,8 +64,19 @@ export default class http {
    */
   static isSuccess(res) {
     const wxCode = res.statusCode
-    // 微信请求错误
     if ((wxCode === 200 && res.data.code === 0) || wxCode === 422) {
+      return true
+    }
+    return false
+  }
+
+  /**
+   * 判断店铺是否下架
+   * @param res
+   */
+  static isSoldOut(res) {
+    const wxCode = res.statusCode
+    if (wxCode === 200 && res.data.code === SOLD_OUT) {
       return true
     }
     return false
@@ -74,12 +90,11 @@ export default class http {
     error.statusCode = res.statusCode
     const wxData = res.data
     if (wxData) {
-      error.error = wxData.error
+      error.code = wxData.code
       error.message = wxData.message
       error.serverData = wxData
-    } else {
-      Tips.loaded()
     }
+    Tips.loaded()
     return error
   }
 
