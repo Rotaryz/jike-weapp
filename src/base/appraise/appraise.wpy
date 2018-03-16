@@ -3,32 +3,49 @@
     <view class="appraise-Msg">
       <view class="appraise-Msg-head">
         <view class="appraise-Msg-closeBtn" @tap="closeCover">
-          <image wx:if="{{imageUrlHead}}" src="{{imageUrlHead + '/defaults/c-image/mine/icon-close_win.png'}}" class="appraise-Msg-closeIcon"></image>
+          <image wx:if="{{imageUrlHead}}"
+                 src="{{imageUrlHead + '/defaults/c-image/mine/icon-close_win.png'}}"
+                 class="appraise-Msg-closeIcon"></image>
         </view>
         <text>评价</text>
       </view>
       <view class="appraise-Msg-list" wx:if="{{!appraiseSuccess}}">
         <view class="appraise-Msg-list-star">
-          <view wx:for="{{[0,1,2,3,4]}}" wx:key="{{item}}" @tap="chioseStar({{index}})">
-            <image wx:if="{{imageUrlHead}}" src="{{imageUrlHead + (index <= starCount?'/defaults/c-image/mine/icon-evaluate_red.png':'/defaults/c-image/mine/icon-evaluate_gray.png')}}" class="starImg"></image>
+          <view wx:for="{{[0,1,2,3,4]}}" wx:key="{{item}}"
+                @tap="chioseStar({{index}})">
+            <image wx:if="{{imageUrlHead}}"
+                   src="{{imageUrlHead + (index <= starCount?'/defaults/c-image/mine/icon-evaluate_red.png':'/defaults/c-image/mine/icon-evaluate_gray.png')}}"
+                   class="starImg"></image>
           </view>
         </view>
 
         <view class="appraise-Msg-list-star-describe">{{starDescribe[starCount]}}</view>
         <checkbox-group bindchange="appraiseMsgChange">
           <view class="appraise-Msg-listBox">
-            <view class="appraise-Msg-items" wx:for="{{starCount===4||starCount===-1?appraiseGood:appraiseBad}}" wx:key="{{item}}">
+            <view class="appraise-Msg-items"
+                  wx:for="{{starCount===4||starCount===-1?appraiseGood:appraiseBad}}"
+                  wx:key="{{item}}">
               <label class="checkbox {{item.checked?'active':''}}">
-                <checkbox value="{{item.value}}" checked="{{item.checked}}" hidden="true" />{{item.txt}}
+                <checkbox value="{{item.value}}" checked="{{item.checked}}"
+                          hidden="true"/>
+                {{item.txt}}
               </label>
             </view>
-            <input type="text" max-length="200" class="appraise-Msg-input" placeholder="其他想说的" placeholder-class="appraise-Msg-input-holder" bindinput="appraiseMsginput" />
+            <input type="text" max-length="200" class="appraise-Msg-input"
+                   placeholder="其他想说的"
+                   placeholder-class="appraise-Msg-input-holder"
+                   bindinput="appraiseMsginput"/>
           </view>
         </checkbox-group>
-        <view class="appraise-submitBtn {{industry}}-bg {{btnDisabled?'disabled':''}}" @tap="appraiseSubmit">匿名提交</view>
+        <view
+          class="appraise-submitBtn {{industry}}-bg {{btnDisabled?'disabled':''}}"
+          @tap="appraiseSubmit">匿名提交
+        </view>
       </view>
       <view class="appraise-Msg-success" wx:if="{{appraiseSuccess}}">
-        <image wx:if="{{imageUrlHead}}" src="{{imageUrlHead + '/defaults/c-image/mine/pic-good@2x.png'}}" class="appraise-Msg-success-img"></image>
+        <image wx:if="{{imageUrlHead}}"
+               src="{{imageUrlHead + '/defaults/c-image/mine/pic-good@2x.png'}}"
+               class="appraise-Msg-success-img"></image>
         <text class="appraise-Msg-success-txt">评价成功</text>
       </view>
     </view>
@@ -89,6 +106,7 @@
 
     methods = {
       showCover() {
+        this.industry = wepy.getStorageSync('shop').industry
         this._init()
         this.appraiseCover = true
       },
@@ -326,7 +344,7 @@
           background: $color-button-act
 
       .appraise-submitBtn.disabled
-        opacity :0.6
+        opacity: 0.6
 
       .appraise-Msg-success
         display: flex
