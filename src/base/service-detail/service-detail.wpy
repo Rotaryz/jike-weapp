@@ -12,7 +12,7 @@
             <text class="font">{{item.servie}}</text>
           </view>
           <view class="content middle">{{item.number}}次</view>
-          <view class="content right">￥{{item.price}}</view>
+          <view class="content right">¥{{item.price}}</view>
         </view>
       </repeat>
     </view>

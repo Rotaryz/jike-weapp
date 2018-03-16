@@ -12,7 +12,7 @@
 
     <view class="withDraw-inputBox">
       <view class="withDraw-inputBo-left">
-        <text class="withDraw-inputBox-txt">￥</text>
+        <text class="withDraw-inputBox-txt">¥</text>
         <input type="digit" bindinput="moneyChange"
                class="withDraw-inputBox-input" value="{{drawMoney}}"/>
       </view>

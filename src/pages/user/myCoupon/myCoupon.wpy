@@ -19,7 +19,7 @@
           <view class="couponList-item-head-left">
             <view class="couponList-itemPay">
               <image src="{{item.imageUrl}}" class="promotion-image" wx:if="{{item.promotionType==='exchange' && imageUrlHead}}" mode="aspectFit"></image>
-              <view wx:if="{{item.promotionType!=='exchange'}}"><text class="couponList-midMoney">￥</text><text class="couponList-bigMoney">{{item.price?item.price:''}}</text></view>
+              <view wx:if="{{item.promotionType!=='exchange'}}"><text class="couponList-midMoney">¥</text><text class="couponList-bigMoney">{{item.price?item.price:''}}</text></view>
             </view>
             <view class="couponList-itemMsg">
               <view class="couponList-item-title">{{item.title}}</view>

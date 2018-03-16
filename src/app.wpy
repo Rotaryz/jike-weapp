@@ -76,6 +76,7 @@
       pages: [
         'pages/loading/loading',
         'pages/browse-shops/browse-shops',
+        'pages/sold-out/sold-out',
         'pages/square/square',
         'pages/live/live',
         'pages/recommend/recommend',

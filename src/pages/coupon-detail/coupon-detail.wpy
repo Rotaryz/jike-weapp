@@ -22,7 +22,7 @@
             <text class="rmb">¥</text>
             <text class="number">{{coupon.platform_price !== undefined ? coupon.platform_price : ''}}</text>
           </view>
-          <view class="origin-price">门市价:￥{{coupon.shop_price !== undefined ? coupon.shop_price : ''}}</view>
+          <view class="origin-price">门市价:¥{{coupon.shop_price !== undefined ? coupon.shop_price : ''}}</view>
           <view class="buy-number">
             <image class="icon" wx:if="{{imageUri}}"
                    src="{{imageUri + '/defaults/c-image/recommend/icon-many.png'}}"></image>

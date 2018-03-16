@@ -6,7 +6,7 @@
         <text class="refund-head-status-red">{{refundStatus[orderMsg.status]}}</text>
       </view>
       <view class="refund-head-money">
-        <view class="refund-head-money-item">退款金额: ￥{{orderMsg.money}}</view>
+        <view class="refund-head-money-item">退款金额: ¥{{orderMsg.money}}</view>
         <view class="refund-head-money-item">退回账户: 微信支付</view>
       </view>
     </view>

@@ -8,7 +8,7 @@
         <view class="{{industry}}-coupon" wx:if="{{border!=='no'}}"></view>
         <view class="couponList-itemPay">
           <view>
-            <text class="couponList-midMoney">￥</text>
+            <text class="couponList-midMoney">¥</text>
             <text class="couponList-bigMoney">{{coupon.platform_price}}</text>
           </view>
         </view>
