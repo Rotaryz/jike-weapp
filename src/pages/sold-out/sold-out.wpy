@@ -1,7 +1,7 @@
 <template>
   <view class="sold-out">
     <image class="sold-img" wx:if="{{imageUrl}}"
-           src="{{imageUrlHead + '/defaults/c-image/mine/icon-shopsoldout@2x.png'}}"></image>
+           src="{{imageUrl + '/defaults/c-image/mine/icon-shopsoldout@2x.png'}}"></image>
     <view class="sold-text">您访问的店铺已下架</view>
     <view class="sold-btn" @tap="goShop">随便逛逛</view>
   </view>
