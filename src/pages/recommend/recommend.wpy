@@ -177,7 +177,7 @@
       couponNothing: false,
       contentNothing: false,
       shopChange: true,
-      industry: wepy.getStorageSync('shop')
+      industry: wepy.getStorageSync('shop').industry
     }
 
     onShareAppMessage(res) {
