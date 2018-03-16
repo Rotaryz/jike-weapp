@@ -52,10 +52,10 @@
         <view class="money">
           <view class="money-init">
             <view class="money-detail">
-              <view class="money-ico">￥</view>
+              <view class="money-ico">¥</view>
               {{conDes.platform_price}}
             </view>
-            <view class="money-init-s">门市价:￥{{conDes.shop_price}}
+            <view class="money-init-s">门市价:¥{{conDes.shop_price}}
             </view>
           </view>
           <view class="buy-count">{{conDes.collected}}人已购买</view>
@@ -74,7 +74,7 @@
                 <view class="font">{{item.servie}}</view>
               </view>
               <view class="content middle">{{item.number}}次</view>
-              <view class="content right">￥{{item.price}}</view>
+              <view class="content right">¥{{item.price}}</view>
             </view>
           </view>
         </view>
@@ -394,7 +394,7 @@
       line-height: 4vw
       text-indent: 6px
       &::before
-        content: '￥'
+        content: '¥'
         color: #5D5D5D
         font-size: $font-size-small-s
         position: absolute

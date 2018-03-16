@@ -18,7 +18,7 @@
           <image class="coupon-bc" wx:if="{{imageUrlHead}}" src="{{imageUrlHead + '/defaults/c-image/mine/pic-couponbg@2x.png'}}"></image>
           <view class="couponList-item-head-left">
             <view class="couponList-itemPay">
-              <view ><text class="couponList-midMoney">￥</text><text class="couponList-bigMoney">{{item.price}}</text></view>
+              <view ><text class="couponList-midMoney">¥</text><text class="couponList-bigMoney">{{item.price}}</text></view>
             </view>
             <view class="couponList-itemMsg">
               <view class="couponList-item-title">{{item.title}}</view>
@@ -78,7 +78,7 @@
             <image class="coupon-bc" wx:if="{{imageUrlHead}}" src="{{imageUrlHead + '/defaults/c-image/mine/pic-couponbg@2x.png'}}"></image>
             <view class="couponList-item-head-left">
               <view class="couponList-itemPay">
-                <view ><text class="couponList-midMoney">￥</text><text class="couponList-bigMoney">{{item.gift_bag.platform_price}}</text></view>
+                <view ><text class="couponList-midMoney">¥</text><text class="couponList-bigMoney">{{item.gift_bag.platform_price}}</text></view>
               </view>
               <view class="couponList-itemMsg">
                 <view class="couponList-item-title">{{item.gift_bag.title}}</view>

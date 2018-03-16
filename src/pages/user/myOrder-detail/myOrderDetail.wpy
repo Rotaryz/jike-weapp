@@ -9,7 +9,7 @@
           <view class="orderDetail-head-msg">
             <view class="orderDetail-head-msg-title">{{orderMsg.promotion.title}}</view>
             <view class="orderDetail-head-msg-content">{{orderMsg.promotion.subhead}}</view>
-            <view class="orderDetail-head-msg-pay">￥<text class="orderDetail-head-msg-payMoney">{{orderMsg.price}}</text></view>
+            <view class="orderDetail-head-msg-pay">¥<text class="orderDetail-head-msg-payMoney">{{orderMsg.price}}</text></view>
           </view>
         </view>
 

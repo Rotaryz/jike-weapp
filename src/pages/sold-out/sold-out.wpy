@@ -1,0 +1,75 @@
+<template>
+  <view class="sold-out">
+    <image class="sold-img" wx:if="{{imageUrl}}"
+           src="{{imageUrlHead + '/defaults/c-image/mine/icon-shopsoldout@2x.png'}}"></image>
+    <view class="sold-text">您访问的店铺已下架</view>
+    <view class="sold-btn" @tap="goShop">随便逛逛</view>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import base from 'common/mixins/base'
+  import URIS from 'common/js/config'
+  export default class soldOut
+    extends wepy.page {
+    mixins = [base]
+
+    config = {
+      navigationBarTitleText: '店铺'
+    }
+    data = {
+      imageUrl: URIS.image,
+      appId: '',
+      businessCircleId: ''
+    }
+
+    onLoad(option) {
+      this.appId = option.addId || ''
+      this.businessCircleId = option.businessCircleId || ''
+    }
+
+    methods = {
+      goShop() {
+        wepy.navigateToMiniProgram({
+          appId: this.appId,
+          path: `pages/loading/loading?businessCircleId=${this.businessCircleId}`,
+          extraData: {},
+          envVersion: 'release',
+          success(res) {
+            // 打开成功
+          }
+        })
+      }
+    }
+  }
+</script>
+
+<style lang="stylus">
+  @import '../../common/stylus/variable'
+  @import '../../common/stylus/mixin'
+  .sold-out
+    height: 100vh
+    width: 100vw
+    display: flex
+    flex-direction: column
+    align-items: center
+    background: $color-white
+    padding-top: 28.19vh
+    font-size: $font-size-small
+    color: $color-text
+
+    .sold-img
+      width: 95px
+      height: 76px
+    .sold-text
+      margin-top: 8px
+    .sold-btn
+      margin-top: 39px
+      height: 24px
+      width: 88.5px
+      text-align: center
+      line-height: 24px
+      border-radius: 2px
+      border: 0.5px solid $color-col-line
+</style>
