@@ -16,29 +16,30 @@
 //   B端api地址   https://backend-api.jkweixin.com
 //   C端api地址   https://wap-api.jkweixin.com
 
-const version = '/v2'
+const version = '/v1'
+// const version = '/v2'
 
 /**
  * 研发环境
  * @type {{image: string, login: string, api: string}}
  */
-// const URLS = {
-//   image: 'https://img.jerryf.cn',
-//   webview: 'https://h5.jkweixin.net',
-//   login: 'https://dev.jike-jwt.jerryf.cn',
-//   api: 'https://dev.jike-wap-api.jerryf.cn' + version
-// }
+const URLS = {
+  image: 'https://img.jerryf.cn',
+  webview: 'https://h5.jkweixin.net',
+  login: 'https://dev.jike-jwt.jerryf.cn',
+  api: 'https://dev.jike-wap-api.jerryf.cn' + version
+}
 
 /**
  * 测试环境
  * @type {{image: string, login: string, api: string}}
  */
-const URLS = {
-  image: 'https://img.jkweixin.net',
-  webview: 'https://h5.jkweixin.net',
-  login: 'https://jwt.jkweixin.net',
-  api: 'https://wap-api.jkweixin.net' + version
-}
+// const URLS = {
+//   image: 'https://img.jkweixin.net',
+//   webview: 'https://h5.jkweixin.net',
+//   login: 'https://jwt.jkweixin.net',
+//   api: 'https://wap-api.jkweixin.net' + version
+// }
 
 /**
  * 生产环境 wx.qlogo.cn
