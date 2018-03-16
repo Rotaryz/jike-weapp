@@ -1,25 +1,40 @@
 <template>
   <view class="orderDetail">
     <view class="orderDetail-head">
-      <view class="orderDetail-head-detailBox"  @tap="couponDetail">
+      <view class="orderDetail-head-detailBox" @tap="couponDetail">
         <view class="orderDetail-head-left">
           <view class="orderDetail-head-img-box">
-            <image src="{{orderMsg.promotion_type == 1 ? orderMsg.promotion.promotion_images[0].image.url : orderMsg.promotion.gift_bag_images[0].image.url}}" mode="widthFix" class="orderDetail-head-img"></image>
+            <image
+              src="{{orderMsg.promotion_type == 1 ? orderMsg.promotion.promotion_images[0].image.url : orderMsg.promotion.gift_bag_images[0].image.url}}"
+              mode="widthFix" class="orderDetail-head-img"></image>
           </view>
           <view class="orderDetail-head-msg">
             <view class="orderDetail-head-msg-title">{{orderMsg.promotion.title}}</view>
-            <view class="orderDetail-head-msg-content">{{orderMsg.promotion.subhead}}</view>
-            <view class="orderDetail-head-msg-pay">¥<text class="orderDetail-head-msg-payMoney">{{orderMsg.price}}</text></view>
+            <view class="orderDetail-head-msg-content">
+              {{orderMsg.promotion.subhead}}
+            </view>
+            <view class="orderDetail-head-msg-pay">¥
+              <text class="orderDetail-head-msg-payMoney">{{orderMsg.price}}
+              </text>
+            </view>
           </view>
         </view>
 
         <view class="orderDetail-head-detailBtn">
-          <image wx:if="{{imageUrlHead}}" src="{{imageUrlHead + '/defaults/c-image/mine/icon-my_Rectangle.png'}}" class="orderDetail-head-detailBtnImg"></image>
+          <image wx:if="{{imageUrlHead}}"
+                 src="{{imageUrlHead + '/defaults/c-image/mine/icon-my_Rectangle.png'}}"
+                 class="orderDetail-head-detailBtnImg"></image>
         </view>
       </view>
       <view class="orderDetail-head-status">
-        <view class="orderDetail-head-statusTxt">{{statusTxt[orderMsg.status]}}</view>
-        <view class="orderDetail-head-statusBtn" @tap="followWork({{orderMsg.status}}, {{orderMsg.id}}, {{orderMsg.merchant_id}})" wx:if="{{orderMsg.promotion_type == 1 && orderMsg.status != 7}}">{{btnTxt[orderMsg.status]}}</view>
+        <view class="orderDetail-head-statusTxt">
+          {{statusTxt[orderMsg.status]}}
+        </view>
+        <view class="orderDetail-head-statusBtn {{industry}}-bg"
+              @tap="followWork({{orderMsg.status}}, {{orderMsg.id}}, {{orderMsg.merchant_id}})"
+              wx:if="{{orderMsg.promotion_type == 1 && orderMsg.status != 7}}">
+          {{btnTxt[orderMsg.status]}}
+        </view>
       </view>
     </view>
 
@@ -27,20 +42,30 @@
       <view class="orderDetail-merchant-title">商家信息</view>
       <view class="orderDetail-merchant-msgBox">
         <view class="orderDetail-merchant-logo-box">
-          <image src="{{orderMsg.merchant_data.logo_image}}" mode="aspectFill" class="orderDetail-merchant-logo"></image>
+          <image src="{{orderMsg.merchant_data.logo_image}}" mode="aspectFill"
+                 class="orderDetail-merchant-logo"></image>
         </view>
         <view class="orderDetail-merchant-msg">
-          <view class="orderDetail-merchant-msgName">{{orderMsg.merchant_data.name}}</view>
-          <view class="orderDetail-merchant-msgWork">{{orderMsg.merchant_data.describe}}</view>
+          <view class="orderDetail-merchant-msgName">
+            {{orderMsg.merchant_data.name}}
+          </view>
+          <view class="orderDetail-merchant-msgWork">
+            {{orderMsg.merchant_data.describe}}
+          </view>
         </view>
       </view>
       <view class="orderDetail-merchant-detail">
         <view class="orderDetail-merchant-detail-item" @tap="GPSbegin">
-          <image wx:if="{{imageUrlHead}}" src="{{imageUrlHead + '/defaults/c-image/mine/icon-navigation_1.png'}}" class="orderDetail-merchant-detailIcon"></image>
+          <image wx:if="{{imageUrlHead}}"
+                 src="{{imageUrlHead + '/defaults/c-image/mine/icon-navigation_1.png'}}"
+                 class="orderDetail-merchant-detailIcon"></image>
           <text>开始导航</text>
         </view>
-        <view class="orderDetail-merchant-detail-item" @tap="call({{orderMsg.merchant_data.mobile}})">
-          <image wx:if="{{imageUrlHead}}" src="{{imageUrlHead + '/defaults/c-image/mine/icon-call_1.png'}}" class="orderDetail-merchant-detailIcon"></image>
+        <view class="orderDetail-merchant-detail-item"
+              @tap="call({{orderMsg.merchant_data.mobile}})">
+          <image wx:if="{{imageUrlHead}}"
+                 src="{{imageUrlHead + '/defaults/c-image/mine/icon-call_1.png'}}"
+                 class="orderDetail-merchant-detailIcon"></image>
           <text>打电话</text>
         </view>
       </view>
@@ -49,9 +74,14 @@
     <view class="orderDetail-orderList">
       <view class="orderDetail-orderList-title">订单信息</view>
       <view class="orderDetail-orderList-msg">
-        <view class="orderDetail-orderList-msgItem">订单编号：{{orderMsg.order_sn}}</view>
-        <view class="orderDetail-orderList-msgItem">手机号码：{{orderMsg.customer_phone}}</view>
-        <view class="orderDetail-orderList-msgItem">下单时间：{{orderMsg.created_at}}</view>
+        <view class="orderDetail-orderList-msgItem">订单编号：{{orderMsg.order_sn}}
+        </view>
+        <view class="orderDetail-orderList-msgItem">
+          手机号码：{{orderMsg.customer_phone}}
+        </view>
+        <view class="orderDetail-orderList-msgItem">
+          下单时间：{{orderMsg.created_at}}
+        </view>
       </view>
       <view class="orderDetail-orderList-pay">
         <view class="orderDetail-orderList-msgItem">数量：{{orderMsg.count}}</view>
@@ -63,16 +93,22 @@
       <view class="orderDetail-refundCover-Msg">
         <view class="orderDetail-refundCover-Msghead">
           <view class="orderDetail-refundCover-closeBtn" @tap="closeRefund">
-            <image wx:if="{{imageUrlHead}}" src="{{imageUrlHead + '/defaults/c-image/mine/icon-close_win.png'}}" class="orderDetail-refundCover-closeIcon"></image>
+            <image wx:if="{{imageUrlHead}}"
+                   src="{{imageUrlHead + '/defaults/c-image/mine/icon-close_win.png'}}"
+                   class="orderDetail-refundCover-closeIcon"></image>
           </view>
           <text>选择退款原因</text>
         </view>
         <view class="orderDetail-refundCover-MsgList">
           <radio-group bindchange="serviceValChange">
-            <view class="orderDetail-refundCover-MsgList-item" wx:for="{{refundCause}}" wx:key="{{index}}">
+            <view class="orderDetail-refundCover-MsgList-item"
+                  wx:for="{{refundCause}}" wx:key="{{index}}">
               <label class="checkbox">
-                <radio value="{{item.value}}" checked="{{item.checked}}" hidden="{{true}}" />{{item.txt}}
-                <image class="checkbox-Icon" wx:if="{{imageUrlHead}}" src="{{imageUrlHead + (item.value===refundChecked?'/defaults/c-image/mine/icon-selected_green.png':'/defaults/c-image/mine/icon-selected_gray.png')}}"></image>
+                <radio value="{{item.value}}" checked="{{item.checked}}"
+                       hidden="{{true}}"/>
+                {{item.txt}}
+                <image class="checkbox-Icon" wx:if="{{imageUrlHead}}"
+                       src="{{imageUrlHead + (item.value===refundChecked?'/defaults/c-image/mine/icon-selected_green.png':'/defaults/c-image/mine/icon-selected_gray.png')}}"></image>
               </label>
             </view>
           </radio-group>
@@ -123,10 +159,12 @@
         {value: '3', txt: '预约不到'},
         {value: '4', txt: '评价不好'},
         {value: '5', txt: '后悔了不想要了'}],
-      refundChecked: ''
+      refundChecked: '',
+      industry: wepy.getStorageSync('shop').industry
     }
 
     async onLoad(option) {
+      this.industry = wepy.getStorageSync('shop').industry
       await this.load(option.id)
     }
 
@@ -453,7 +491,6 @@
               height: 10px
               left: 10px
               margin-top: 15px
-
 
         .orderDetail-refundCover-MsgList
           padding-left: 10px
