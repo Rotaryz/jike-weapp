@@ -1,6 +1,7 @@
 import wepy from 'wepy'
 import Tips from './tips'
-import {SOLD_OUT} from 'api/base'
+
+const SOLD_OUT = 10001
 
 // HTTP工具类
 export default class http {
@@ -14,7 +15,7 @@ export default class http {
     if (Authorization) {
       param.header = Object.assign({}, {Authorization}, {'X-Requested-With': 'XMLHttpRequest'})
     }
-    param.header = Object.assign({}, param.header, {'Current-merchant': wepy.getStorageSync('merchantId') || 100000})
+    param.header = Object.assign({}, param.header, {'Current-merchant': wepy.getStorageSync('merchantId')})
     if (loading) {
       Tips.loading()
     }
@@ -23,8 +24,8 @@ export default class http {
       const result = res.data
       return result
     } else if (this.isSoldOut(res)) {
-      const result = res.data
-      wepy.navigateTo(`pages/sold-out/sold-out?appId=${result.app_id}&businessCircleId=${result.business_circle_id}`)
+      const result = res.data.data
+      wepy.redirectTo({url: `/pages/sold-out/sold-out?appId=${result.app_id}&businessCircleId=${result.business_circle_id}`})
       throw this.requestException(res)
     } else {
       throw this.requestException(res)
@@ -93,8 +94,9 @@ export default class http {
       error.code = wxData.code
       error.message = wxData.message
       error.serverData = wxData
+    } else {
+      Tips.loaded()
     }
-    Tips.loaded()
     return error
   }
 

@@ -35,10 +35,7 @@
           appId: this.appId,
           path: `pages/loading/loading?businessCircleId=${this.businessCircleId}`,
           extraData: {},
-          envVersion: 'release',
-          success(res) {
-            // 打开成功
-          }
+          envVersion: 'release'
         })
       }
     }
