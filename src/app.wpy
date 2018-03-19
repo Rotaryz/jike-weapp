@@ -5,8 +5,6 @@
 <script>
   import wepy from 'wepy'
   import 'wepy-async-function'
-//  import wxUtils from 'common/js/wxUtils'
-  import URIS from 'common/js/config'
 
   export default class extends wepy.app {
     constructor() {
@@ -20,8 +18,16 @@
       if (!tips) {
         wepy.setStorageSync('tips', {order: false})
       }
+      const merchantId = wepy.getStorageSync('merchantId')
       let extConfig = wepy.getExtConfigSync()
-      wepy.setStorageSync('merchantId', extConfig.current_merchant ? extConfig.current_merchant : this.config.current_merchant)
+      if (!merchantId) {
+        wepy.setStorageSync('merchantId', extConfig.current_merchant ? extConfig.current_merchant : this.config.current_merchant)
+      }
+      this.globalData.env = extConfig.env
+      this.globalData.version = extConfig.version
+      console.log('商家ID：' + extConfig.current_merchant)
+      console.log('环境：' + extConfig.env)
+      console.log('版本：' + extConfig.version)
       const storageDate = wepy.getStorageSync('collectDate')
       const date = new Date()
       const collectDate = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate()
@@ -70,7 +76,7 @@
     }
 
     config = {
-      current_merchant: 100004,
+      current_merchant: 100000,
       pages: [
         'pages/loading/loading',
         'pages/browse-shops/browse-shops',
@@ -132,7 +138,6 @@
     }
 
     globalData = {
-      baseUrl: URIS.api,
       isAuthorise: false,
       user: null,
       orderInfo: {}

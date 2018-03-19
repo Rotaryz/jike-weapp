@@ -94,9 +94,8 @@ export default class http {
       error.code = wxData.code
       error.message = wxData.message
       error.serverData = wxData
-    } else {
-      Tips.loaded()
     }
+    Tips.loaded()
     return error
   }
 
