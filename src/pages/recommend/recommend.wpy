@@ -319,7 +319,7 @@
       if (!this.moreCoupon || this.couponList.length >= 100) {
         limit = 100
       } else {
-        limit = Math.ceil(this.couponList.length % 10) * 10 || 10
+        limit = Math.ceil(this.couponList.length / 10) * 10 || 10
       }
       if (this.shopChange) {
         params = {
