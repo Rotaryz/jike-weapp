@@ -19,6 +19,7 @@ export default class http {
     if (loading) {
       Tips.loading()
     }
+    console.log(url)
     const res = await wepy.request(param)
     if (this.isSuccess(res)) {
       const result = res.data

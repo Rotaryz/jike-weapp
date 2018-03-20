@@ -14,6 +14,7 @@
     }
 
     onLaunch() {
+      console.log('third v1.0')
       const tips = wepy.getStorageSync('tips')
       if (!tips) {
         wepy.setStorageSync('tips', {order: false})

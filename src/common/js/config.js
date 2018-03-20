@@ -20,10 +20,8 @@ import wepy from 'wepy'
 const env = wepy.$instance.globalData.env
 const extVersion = wepy.$instance.globalData.version
 
-const version = `/${extVersion}`
+const version = `/${extVersion || 'v1'}`
 
-console.log(env, version)
-//
 /**
  * 研发环境
  * @type {{image: string, login: string, api: string}}
