@@ -49,12 +49,14 @@
         <view class="tab-content border-bottom-1px">
           <view class="tab-item" @tap="clickTab(1)">
             <view
-              class="tab-item-txt {{activeTab === '1' ? industry + '-border' : ''}}">优惠券
+              class="tab-item-txt {{activeTab === '1' ? industry + '-border' : ''}}">
+              优惠券
             </view>
           </view>
           <view class="tab-item" @tap="clickTab(2)">
             <view
-              class="tab-item-txt {{activeTab === '2' ? industry + '-border' : ''}}">发现
+              class="tab-item-txt {{activeTab === '2' ? industry + '-border' : ''}}">
+              发现
             </view>
           </view>
         </view>
@@ -230,6 +232,7 @@
     async load() {
       let oldId = this.merchantId
       this.merchantId = wepy.getStorageSync('merchantId')
+
 //      console.log(this.merchantId)
       this.shopChange = !(oldId === this.merchantId)
       const isAuthorise = await this.isAuthorise(false)
@@ -319,7 +322,7 @@
       if (!this.moreCoupon || this.couponList.length >= 100) {
         limit = 100
       } else {
-        limit = Math.ceil(this.couponList.length % 10) * 10 || 10
+        limit = Math.ceil(this.couponList.length / 10) * 10 || 10
       }
       if (this.shopChange) {
         params = {
