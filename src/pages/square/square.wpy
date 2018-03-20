@@ -295,6 +295,7 @@
         this.merchants = res
         res.forEach((item) => {
           if (item.current_merchant) {
+            console.log(item)
             this.activeMarkerId = item.id
             this.longitude = item.longitude
 //            this.latitude = item.latitude
@@ -375,9 +376,13 @@
       if (json.error === ERR_OK) {
         const res = json.data
         this.currentMerchant = res
+        let shop = wepy.getStorageSync('shop')
+        shop.shop_name = res.shop_name
+        wepy.setStorageSync('shop', shop)
         this.promotions = res.promotions
         const starLevel = res.star_level === '0.0' ? 5 : res.star_level
         this.stars = new Array(Math.floor(starLevel))
+
         this.$apply()
         this.loaded()
         this._setTips()
@@ -588,9 +593,10 @@
 
     // 分享
     onShareAppMessage() {
+      let merchantId = wepy.getStorageSync('merchantId')
       return {
         title: wepy.getStorageSync('shop').shop_name,
-        path: '/pages/square/square'
+        path: `/pages/square/square?merchantId=${merchantId}`
       }
     }
 

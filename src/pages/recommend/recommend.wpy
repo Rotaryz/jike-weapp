@@ -183,6 +183,7 @@
     }
 
     onShareAppMessage(res) {
+      let merchantId = wepy.getStorageSync('merchantId')
       const user = this.$parent.globalData.user
       if (res.from === 'button') {
         // 来自页面内转发按钮
@@ -190,7 +191,7 @@
       }
       return {
         title: user.nickName + '邀请你购买优惠券',
-        path: '/pages/recommend/recommend',
+        path: `/pages/recommend/recommend?merchantId=${merchantId}`,
         success: (res) => {
           // 转发成功
 //          console.log(res)

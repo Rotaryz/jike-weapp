@@ -185,7 +185,7 @@
 
     async load() {
       this.currentMerchant = this.currentMerchant || wepy.getStorageSync('merchantId')
-      this.currentPage = `/pages/coupon-detail/coupon-detail?type=${this.type}&id=${this.id}&merchantid=${this.currentMerchant}`
+      this.currentPage = `/pages/coupon-detail/coupon-detail?type=${this.type}&id=${this.id}&merchantId=${this.currentMerchant}`
       if (this.type === COUPON_TYPE) {
         await this._getCouponDetail()
       } else if (this.type === PACKAGE_TYPE) {
