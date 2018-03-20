@@ -19,6 +19,7 @@ export default class http {
     if (loading) {
       Tips.loading()
     }
+    console.log(url)
     const res = await wepy.request(param)
     if (this.isSuccess(res)) {
       const result = res.data
@@ -94,9 +95,8 @@ export default class http {
       error.code = wxData.code
       error.message = wxData.message
       error.serverData = wxData
-    } else {
-      Tips.loaded()
     }
+    Tips.loaded()
     return error
   }
 

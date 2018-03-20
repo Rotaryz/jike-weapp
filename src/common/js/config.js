@@ -15,15 +15,18 @@
 //   单点登录地址  https://jwt.jkweixin.com
 //   B端api地址   https://backend-api.jkweixin.com
 //   C端api地址   https://wap-api.jkweixin.com
+import wepy from 'wepy'
 
-const version = '/v1'
-// const version = '/v2'
+const env = wepy.$instance.globalData.env
+const extVersion = wepy.$instance.globalData.version
+
+const version = `/${extVersion || 'v1'}`
 
 /**
  * 研发环境
  * @type {{image: string, login: string, api: string}}
  */
-const URLS = {
+const DEV = {
   image: 'https://img.jerryf.cn',
   webview: 'https://h5.jkweixin.net',
   login: 'https://dev.jike-jwt.jerryf.cn',
@@ -34,23 +37,25 @@ const URLS = {
  * 测试环境
  * @type {{image: string, login: string, api: string}}
  */
-// const URLS = {
-//   image: 'https://img.jkweixin.net',
-//   webview: 'https://h5.jkweixin.net',
-//   login: 'https://jwt.jkweixin.net',
-//   api: 'https://wap-api.jkweixin.net' + version
-// }
+const TEST = {
+  image: 'https://img.jkweixin.net',
+  webview: 'https://h5.jkweixin.net',
+  login: 'https://jwt.jkweixin.net',
+  api: 'https://wap-api.jkweixin.net' + version
+}
 
 /**
  * 生产环境 wx.qlogo.cn
  * @type {{image: string, login: string, api: string}}
  */
-// const URLS = {
-//   image: 'https://img.jkweixin.com',
-//   webview: 'https://h5.jkweixin.com',
-//   login: 'https://jwt.jkweixin.com',
-//   api: 'https://wap-api.jkweixin.com' + version
-// }
+const PROD = {
+  image: 'https://img.jkweixin.com',
+  webview: 'https://h5.jkweixin.com',
+  login: 'https://jwt.jkweixin.com',
+  api: 'https://wap-api.jkweixin.com' + version
+}
+
+export const URLS = env === 'test' ? TEST : env === 'prod' ? PROD : DEV
 
 class URIS {
   constructor() {

@@ -19,9 +19,11 @@
   import URIS from 'common/js/config'
   import base from 'common/mixins/base'
   import merchants from 'api/merchants'
-  const INFOURL = '/pages/recommend/recommend'
   import users from 'common/mixins/users'
   import {ERR_OK} from '@/api/base'
+
+  const INFOURL = '/pages/recommend/recommend'
+
   export default class loading extends wepy.page {
     mixins = [users, base]
     config = {
@@ -84,12 +86,6 @@
         wepy.setStorageSync('shop', shop)
       }
       await this.$getUserInfo(false)
-//        let data = options.param.split(',')
-//        let param = {}
-//        for (let item of data) {
-//          item = item.split(':')
-//          param[item[0]] = item[1]
-//        }
       if (options.merchantId) {
         if (this.$parent.globalData.merchantId) {
           this.$parent.updateGlobalData('merchantId', options.merchantId)
