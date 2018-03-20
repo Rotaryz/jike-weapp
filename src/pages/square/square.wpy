@@ -295,7 +295,6 @@
         this.merchants = res
         res.forEach((item) => {
           if (item.current_merchant) {
-            console.log(item)
             this.activeMarkerId = item.id
             this.longitude = item.longitude
 //            this.latitude = item.latitude
