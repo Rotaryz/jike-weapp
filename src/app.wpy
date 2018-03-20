@@ -5,7 +5,7 @@
 <script>
   import wepy from 'wepy'
   import 'wepy-async-function'
-//  import wxUtils from 'common/js/wxUtils'
+  //  import wxUtils from 'common/js/wxUtils'
   import URIS from 'common/js/config'
 
   export default class extends wepy.app {
@@ -21,7 +21,8 @@
         wepy.setStorageSync('tips', {order: false})
       }
       let extConfig = wepy.getExtConfigSync()
-      wepy.setStorageSync('merchantId', extConfig.current_merchant ? extConfig.current_merchant : this.config.current_merchant)
+      let merchantId = wepy.getStorageSync('merchantId') ? wepy.getStorageSync('merchantId') : extConfig.current_merchant ? extConfig.current_merchant : this.config.current_merchant
+      wepy.setStorageSync('merchantId', merchantId)
       const storageDate = wepy.getStorageSync('collectDate')
       const date = new Date()
       const collectDate = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate()

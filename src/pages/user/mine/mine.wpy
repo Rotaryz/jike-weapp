@@ -211,7 +211,6 @@
       this.loaded()
       this.userInfo = res
       this.userImage = res.image
-      console.log(this.userInfo)
 //      let customerId = wx.getStorageSync('customerId')
 //      if (customerId) {
 //        this.isPhone = 1

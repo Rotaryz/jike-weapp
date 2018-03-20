@@ -190,6 +190,7 @@
     }
 
     async onShow() {
+      this.activeMarkerId = ''
       this.clearTimer()
       await this.show()
       wepy.setNavigationBarTitle({
