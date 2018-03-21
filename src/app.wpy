@@ -83,7 +83,7 @@
 
     config = {
       scene: [1007, 1008, 1011, 1012, 1013, 1047, 1048, 1049, 1058, 1067, 1068, 1073, 1074],
-      current_merchant: 100004,
+      current_merchant: 100002,
       pages: [
         'pages/loading/loading',
         'pages/browse-shops/browse-shops',
