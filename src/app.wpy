@@ -25,8 +25,8 @@
       if (!merchantId) {
         wepy.setStorageSync('merchantId', extConfig.current_merchant ? extConfig.current_merchant : this.config.current_merchant)
       }
-      this.globalData.env = extConfig.env
-      this.globalData.version = extConfig.version
+      this.globalData.env = extConfig.env || 'prod'
+      this.globalData.version = extConfig.version || 'v2'
       console.log('商家ID：' + extConfig.current_merchant)
       console.log('环境：' + extConfig.env)
       console.log('版本：' + extConfig.version)
