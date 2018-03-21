@@ -45,7 +45,7 @@
       }
       return {
         title: user.nickName + '邀请你参与直播优惠',
-        path: `/pages/live/live?currentMerchant=${this.currentMerchant}`,
+        path: `/pages/live/live?merchantId=${this.currentMerchant}`,
         success: async () => {
           // 转发成功
           await this._getSharePrize()

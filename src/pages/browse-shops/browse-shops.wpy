@@ -3,7 +3,7 @@
     <scroll-view scroll-y class="container" @scrolltolower="loadMore">
       <view class="shop-item" wx:for="{{broList}}" wx:key="item"
             @tap="goRecommend({{item}})">
-        <view class="item-container {{item.expiration_time? 'dis':''}}">
+        <view class="item-container {{item.is_expiration? 'dis':''}}">
           <view class="shop-logo">
             <image class="logo" src="{{item.logo}}" mode="aspectFill"></image>
           </view>
@@ -18,7 +18,7 @@
               <view class="address">{{item.particular_address}}</view>
             </view>
           </view>
-          <view class="closed-box" wx:if="{{item.expiration_time}}">
+          <view class="closed-box" wx:if="{{item.is_expiration}}">
             <image class="closed-img" wx:if="{{imageUrlHead}}"
                    src="{{imageUrlHead + '/defaults/c-image/mine/icon_shop_soldout@2x.png'}}"></image>
           </view>
@@ -80,7 +80,7 @@
         }
       },
       goRecommend(res) {
-        if (res.expiration_time) {
+        if (res.is_expiration) {
           return
         }
         wepy.setStorageSync('merchantId', res.merchant_id)

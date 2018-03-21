@@ -35,7 +35,7 @@
           appId: this.appId,
           path: `pages/loading/loading?businessCircleId=${this.businessCircleId}`,
           extraData: {},
-          envVersion: 'release'
+          envVersion: 'develop' // release
         })
       }
     }
