@@ -231,7 +231,7 @@
           appId: this.userInfo.app_id,
           path: `pages/loading/loading?businessCircleId=${this.userInfo.business_circle_id}`,
           extraData: {},
-          envVersion: 'develop', // release
+          envVersion: 'release', // develop
           success(res) {
             // 打开成功
           }
