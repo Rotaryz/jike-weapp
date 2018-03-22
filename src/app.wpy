@@ -27,6 +27,7 @@
       }
       this.globalData.env = extConfig.env
       this.globalData.version = extConfig.version
+      this.globalData.envVersion = extConfig.env === 'prod' ? 'release' : 'develop'
       console.log('商家ID：' + extConfig.current_merchant)
       console.log('环境：' + extConfig.env)
       console.log('版本：' + extConfig.version)
