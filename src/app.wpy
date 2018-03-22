@@ -45,6 +45,7 @@
       wepy.setStorageSync('scene', scene)
       if (this.config.scene.includes(scene)) {
         const merchantId = options.query.merchantId
+        console.log(merchantId)
         wepy.setStorageSync('merchantId', merchantId)
       }
     }
