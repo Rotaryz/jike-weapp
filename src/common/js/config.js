@@ -56,13 +56,15 @@ const PROD = {
 }
 
 export const URLS = env === 'test' ? TEST : env === 'prod' ? PROD : DEV
-
+// trial--体验版   release---正式版  develop---开发版
+export const envVersion = env === 'test' ? 'trial' : env === 'prod' ? 'release' : 'develop'
 class URIS {
   constructor() {
     this.image = URLS.image
     this.webview = URLS.webview
     this.login = URLS.login
     this.api = URLS.api
+    this.envVersion = envVersion
   }
 }
 
