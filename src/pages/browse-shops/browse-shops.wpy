@@ -24,6 +24,12 @@
           </view>
         </view>
       </view>
+      <view class="nothing-box" wx:if="{{contentNothing}}">
+        <image
+          src="{{imageUrlHead + '/defaults/c-image/mine/pic-empty_order@2x.png'}}"
+          wx:if="{{imageUrlHead}}" class="nothing-img"></image>
+        <view class="nothing-txt">暂无浏览记录</view>
+      </view>
       <Underline></Underline>
     </scroll-view>
   </view>
@@ -49,7 +55,8 @@
       imageUrlHead: URIS.image,
       broList: [],
       page: 1,
-      isLoad: true
+      isLoad: true,
+      contentNothing: false
     }
 
     async _load() {
@@ -63,6 +70,9 @@
 
     async onLoad() {
       this.broList = await this._load()
+      if (!this.broList.length) {
+        this.contentNothing = true
+      }
       this.$apply()
     }
 
@@ -181,4 +191,19 @@
               .closed-img
                 width: 100%
                 height: 100%
+
+  .nothing-box
+    margin-top: 175px
+    height: 200px
+    display: flex
+    flex-direction: column
+    align-items: center
+    justify-content: center
+    .nothing-img
+      width: 100px
+      height: 80px
+      margin-bottom: 15px
+    .nothing-txt
+      font-size: $font-size-small
+      color: $color-text
 </style>

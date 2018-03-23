@@ -28,7 +28,7 @@
             </view>
           </view>
           <view class="couponList-item-head-right">
-            <view class="couponList-item-head-right-btn">立即购买</view>
+            <view class="couponList-item-head-right-btn {{industry}}">立即购买</view>
           </view>
         </view>
       </view>
@@ -87,7 +87,7 @@
               </view>
             </view>
             <view class="couponList-item-head-right">
-              <view class="couponList-item-head-right-btn">立即购买</view>
+              <view class="couponList-item-head-right-btn {{industry}}">立即购买</view>
               <view class="couponList-item-storechange" @tap.stop="showStore({{index}})">
                 <view class="couponList-item-storechange-txt">支持店铺</view>
                 <image wx:if="{{imageUrlHead}}" src="{{imageUrlHead + (item.checked?'/defaults/c-image/mine/icon-r_shrink@2x.png':'/defaults/c-image/mine/icon-r_open@2x.png')}}" class="couponList-item-storechange-icon"></image>

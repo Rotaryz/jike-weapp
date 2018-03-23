@@ -179,7 +179,7 @@
       couponNothing: false,
       contentNothing: false,
       shopChange: true,
-      industry: wepy.getStorageSync('shop').industry
+      industry: 'ktv'
     }
 
     onShareAppMessage(res) {
@@ -275,11 +275,11 @@
       let res = await Merchants.getMerchantsStatus(this.merchantId, {}, loading)
       if (res.error === ERR_OK) {
         let shop = {
-          industry: res.data.merchant_data.industry,
+          industry: res.data.merchant_data.industry || this.industry,
           shop_name: res.data.merchant_data.shop_name
         }
         wepy.setStorageSync('shop', shop)
-        this.industry = shop.industry
+        this.industry = shop.industry || this.industry
         this.$apply()
 //        console.log(this.industry)
         wepy.setNavigationBarTitle({

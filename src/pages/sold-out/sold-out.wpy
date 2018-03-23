@@ -31,11 +31,12 @@
 
     methods = {
       goShop() {
+        const version = this.$parent.globalData.envVersion
         wepy.navigateToMiniProgram({
           appId: this.appId,
           path: `pages/loading/loading?businessCircleId=${this.businessCircleId}`,
           extraData: {},
-          envVersion: 'release' // develop
+          envVersion: version // develop
         })
       }
     }
