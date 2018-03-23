@@ -18,12 +18,13 @@ export default class userMixin extends wepy.mixin {
 
   // get code
   async $getCode() {
-    let code = wepy.getStorageSync('code')
-    if (!code) {
-      await this.$setCode()
-    }
-    code = wepy.getStorageSync('code')
-    return code
+    // let code = wepy.getStorageSync('code')
+    // if (!code) {
+    //   await this.$setCode()
+    // }
+    // code = wepy.getStorageSync('code')
+    const res = await wepy.login()
+    return res.code
   }
 
   /**
@@ -123,7 +124,7 @@ export default class userMixin extends wepy.mixin {
     }
     const res = await this._getSqlUserInfo(token, loading)
     let user
-    wepy.setStorageSync('mobile', res.customer.mobile)
+    wepy.setStorageSync('mobile', res.customer ? res.customer.mobile : '')
     // wepy.setStorageSync('customerId', res.customer_id)
     // if (res.customer_id === 0) {
     //   user = await this.$getUser()
