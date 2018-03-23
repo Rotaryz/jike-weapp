@@ -31,7 +31,7 @@
 
     methods = {
       goShop() {
-        const version = this.$parent.globalData.envVersion
+        const version = URIS.envVersion
         wepy.navigateToMiniProgram({
           appId: this.appId,
           path: `pages/loading/loading?businessCircleId=${this.businessCircleId}`,

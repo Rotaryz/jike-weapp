@@ -20,14 +20,13 @@
         wepy.setStorageSync('tips', {order: false})
       }
       let extConfig = wepy.getExtConfigSync()
-//      判断是否由分享的场景值进入
+
       const merchantId = wepy.getStorageSync('merchantId')
       if (!merchantId) {
         wepy.setStorageSync('merchantId', extConfig.current_merchant ? extConfig.current_merchant : this.config.current_merchant)
       }
       this.globalData.env = extConfig.env
       this.globalData.version = extConfig.version
-      this.globalData.envVersion = extConfig.env === 'prod' ? 'release' : 'develop'
       console.log('商家ID：' + extConfig.current_merchant)
       console.log('环境：' + extConfig.env)
       console.log('版本：' + extConfig.version)
@@ -43,9 +42,9 @@
     onShow(options) {
       const scene = options.scene * 1
       wepy.setStorageSync('scene', scene)
+      //      判断是否由分享的场景值进入
       if (this.config.scene.includes(scene)) {
         const merchantId = options.query.merchantId
-        console.log(merchantId)
         wepy.setStorageSync('merchantId', merchantId)
       }
     }
