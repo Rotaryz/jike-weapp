@@ -66,7 +66,6 @@ export default class Merchants extends base {
    */
   static async showShop(id) {
     const url = `${this.baseUrl}/api/merchants/merchants-data/${id}`
-    console.log(url)
-    return await this.get(url)
+    return await this.get(url, '', false)
   }
 }

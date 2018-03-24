@@ -85,7 +85,7 @@
         }
         wepy.setStorageSync('shop', shop)
       }
-      await this.$getUserInfo(false)
+      await this.$getUserInfo(false, true)
       if (options.merchantId) {
         if (this.$parent.globalData.merchantId) {
           this.$parent.updateGlobalData('merchantId', options.merchantId)

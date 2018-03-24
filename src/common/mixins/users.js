@@ -88,10 +88,13 @@ export default class userMixin extends wepy.mixin {
    * 获取token
    * @returns {Promise.<*>}
    */
-  async $getToken() {
-    let token = wepy.getStorageSync('token')
-    if (token) {
-      return token
+  async $getToken(isFirst) {
+    let token
+    if (!isFirst) {
+      token = wepy.getStorageSync('token')
+      if (token) {
+        return token
+      }
     }
     const code = await this.$getCode()
     const wxUser = await wepy.getUserInfo({lang: 'zh_CN'})
@@ -116,8 +119,8 @@ export default class userMixin extends wepy.mixin {
    * 获取数据库用户信息
    * @returns {Promise.<*>}
    */
-  async $getUserInfo(loading) {
-    const token = await this.$getToken()
+  async $getUserInfo(loading, isFirst) {
+    const token = await this.$getToken(isFirst)
     if (!token) {
       console.log('not token')
       return
@@ -157,7 +160,6 @@ export default class userMixin extends wepy.mixin {
       return {}
     }
     const res = Json.data
-    wepy.setStorageSync('openId', res.openid)
     return res
   }
 
