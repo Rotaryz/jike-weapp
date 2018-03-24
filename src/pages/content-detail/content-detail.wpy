@@ -133,7 +133,11 @@
         let scene = decodeURIComponent(option.scene)
         const params = getParams(scene)
         this.id = params.id
-        this.currentMerchant = params.merchantid
+        this.currentMerchant = params.merchantId
+        wepy.setStorageSync('merchantId', this.currentMerchant)
+        if (!wepy.getStorageSync('token')) {
+          await this.$getUserInfo(false, true)
+        }
       } else {
         this.id = option.id
         this.currentMerchant = option.currentMerchant

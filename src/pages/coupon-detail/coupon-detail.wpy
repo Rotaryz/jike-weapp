@@ -174,7 +174,11 @@
         const params = getParams(scene)
         this.type = Math.floor(params.type)
         this.id = params.id
-        this.currentMerchant = params.merchantid
+        this.currentMerchant = params.merchantId
+        wepy.setStorageSync('merchantId', this.currentMerchant)
+        if (!wepy.getStorageSync('token')) {
+          await this._getUserInfo(false, true)
+        }
       } else {
         this.type = Math.floor(option.type)
         this.id = option.id
@@ -191,7 +195,6 @@
       } else if (this.type === PACKAGE_TYPE) {
         await this._getPackageDetail()
       }
-      await this._getUserInfo()
       await this._createQrcode()
       this.loaded()
     }
