@@ -149,7 +149,7 @@
       userInfo: {
         nickName: '加载中...',
         avatarUrl: null,
-        industry: wepy.getStorageSync('shop').industry
+        industry: ''
       },
       isPhone: 1,
       orderMenu: [
@@ -188,7 +188,8 @@
     }
 
     async onLoad() {
-
+      this.showIndustry()
+      console.log(this.industry)
     }
 
     onShow() {

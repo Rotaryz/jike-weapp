@@ -40,7 +40,7 @@
       const scene = options.scene * 1
       wepy.setStorageSync('scene', scene)
       //      判断是否由分享的场景值进入
-      if (this.config.scene.includes(scene)) {
+      if (options.query.merchantId) {
         const merchantId = options.query.merchantId
         wepy.setStorageSync('merchantId', merchantId)
       }
@@ -80,7 +80,7 @@
     }
 
     config = {
-      scene: [1007, 1008, 1011, 1012, 1013, 1047, 1048, 1049, 1058, 1067, 1068, 1073, 1074],
+      scene: [1007, 1008, 1011, 1012, 1013, 1047, 1048, 1049, 1058, 1067, 1068, 1073, 1074, 1037],
       current_merchant: 100002,
       pages: [
         'pages/loading/loading',
