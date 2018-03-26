@@ -268,6 +268,7 @@
           this.$apply()
           this.$navigate('../refund/refund?id=' + id)
         } else {
+          this.loaded()
           this.$invoke('Toast', 'show', res.message)
         }
       },
