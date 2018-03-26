@@ -73,7 +73,6 @@
         })
       }
     }
-
     async onLoad(options) {
       let id = options.merchantId ? options.merchantId : wepy.getStorageSync('merchantId')
       let res = await merchants.showShop(id)
@@ -86,12 +85,6 @@
         wepy.setStorageSync('shop', shop)
       }
       await this.$getUserInfo(false, true)
-      if (options.merchantId) {
-        if (this.$parent.globalData.merchantId) {
-          this.$parent.updateGlobalData('merchantId', options.merchantId)
-        }
-        wepy.setStorageSync('merchantId', options.merchantId)
-      }
       let url = INFOURL
       if (options.path) {
         url = decodeURIComponent(options.path)
