@@ -75,8 +75,7 @@
       couponList: [],
       page: 1,
       LowerLoading: false,
-      nothingAdd: false,
-      industry: wepy.getStorageSync('shop').industry
+      nothingAdd: false
     }
 
     methods = {
@@ -137,7 +136,7 @@
     }
 
     async onShow() {
-      this.industry = wepy.getStorageSync('shop').industry
+      await this.showIndustry()
       await this.load()
       const scene = wx.getStorageSync('scene')
       if (scene === 1014) {

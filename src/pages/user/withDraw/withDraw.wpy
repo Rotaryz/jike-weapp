@@ -71,7 +71,6 @@
       coverShow: false,
       packetTotal: '',
       isPhone: 0,
-      industry: wepy.getStorageSync('shop').industry
     }
 
     components = {
@@ -121,11 +120,11 @@
     }
 
     async onLoad() {
-      this.industry = wepy.getStorageSync('shop').industry
       await this.load()
     }
 
     async onShow() {
+      await this.showIndustry()
       let mobile = wepy.getStorageSync('mobile')
       if (mobile) {
         this.isPhone = 1

@@ -280,8 +280,6 @@
         }
         wepy.setStorageSync('shop', shop)
         this.industry = shop.industry || this.industry
-        this.$apply()
-//        console.log(this.industry)
         wepy.setNavigationBarTitle({
           title: res.data.merchant_data.shop_name
         })

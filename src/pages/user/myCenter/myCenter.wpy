@@ -19,7 +19,7 @@
         <view class="myCenter-msgList-item-title">手机号</view>
         <view class="myCenter-msgList-item-msg">{{phone?phone:'点击绑定手机'}}</view>
       </view>
-      <PhoneTest></PhoneTest>
+      <PhoneTest :industry.sync="industry"></PhoneTest>
       <view class="myCenter-msgList-item myCenter-msgList-name">
         <view class="myCenter-msgList-item-title">昵称</view>
         <view class="myCenter-msgList-item-msg">{{userInfo.nickName}}</view>
@@ -87,7 +87,8 @@
       now: '2017-01-01'
     }
 
-    onLoad() {
+    async onLoad() {
+      await this.showIndustry()
       this.userInfo = this.$parent.globalData.user
       this.avatar = this.userInfo.avatarUrl
       this.birth = this.userInfo.birth

@@ -51,11 +51,11 @@
     data = {
       orderInfo: {},
       count: 1,
-      total: 0,
-      industry: wepy.getStorageSync('shop').industry
+      total: 0
     }
 
-    onLoad() {
+    async onLoad() {
+      await this.showIndustry()
       this._setOrderInfo()
     }
 

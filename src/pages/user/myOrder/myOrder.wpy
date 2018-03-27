@@ -129,8 +129,7 @@
       orderList: [],
       page: 1,
       nothingAdd: false,
-      noOrder: false,
-      industry: wepy.getStorageSync('shop').industry
+      noOrder: false
     }
 
     methods = {
@@ -228,7 +227,7 @@
     }
 
     async onLoad(option) {
-      this.industry = wepy.getStorageSync('shop').industry
+      await this.showIndustry()
       this.menuIdx = option.idx * 1 + 1
       this.$apply()
     }
