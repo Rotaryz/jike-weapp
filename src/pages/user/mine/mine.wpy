@@ -206,8 +206,8 @@
       this.loaded()
     }
 
-    async _getUserInfo() {
-      let res = await this.$getUserInfo()
+    async _getUserInfo(loading = true) {
+      let res = await this.$getUserInfo(loading)
       this.loaded()
       this.userInfo = res
       this.userImage = res.image
@@ -255,7 +255,7 @@
 
     events = {
       'isPhoneOk': () => {
-        this._getUserInfo()
+        this._getUserInfo(false)
         this.isPhone = 1
         this.$apply()
       }

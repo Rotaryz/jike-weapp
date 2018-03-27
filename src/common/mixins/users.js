@@ -127,7 +127,9 @@ export default class userMixin extends wepy.mixin {
     }
     const res = await this._getSqlUserInfo(token, loading)
     let user
-    wepy.setStorageSync('mobile', res.customer ? res.customer.mobile : '')
+    if (res.customer.mobile) {
+      wepy.setStorageSync('mobile', res.customer.mobile ? res.customer.mobile : '')
+    }
     // wepy.setStorageSync('customerId', res.customer_id)
     // if (res.customer_id === 0) {
     //   user = await this.$getUser()
