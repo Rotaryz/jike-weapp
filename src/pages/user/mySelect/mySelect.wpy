@@ -137,8 +137,7 @@
       LowerLoading: false,
       page: 1,
       nothingAdd: false,
-      nothingBoxShow: true,
-      industry: wepy.getStorageSync('shop').industry
+      nothingBoxShow: true
     }
 
     components = {
@@ -298,7 +297,7 @@
     }
 
     async onShow() {
-      this.industry = wepy.getStorageSync('shop').industry
+      await this.showIndustry()
       await this.load()
     }
 
