@@ -2,9 +2,7 @@
   <view class="withDraw">
     <view class="withDraw-head">
       <view class="withDraw-headTxt">账户余额
-        <text class="withDraw-head-money">
-          {{packetTotal.remaining ? packetTotal.remaining : 0}}
-        </text>
+        <text class="withDraw-head-money">{{packetTotal.remaining ? packetTotal.remaining : 0}}</text>
         元
       </view>
       <view class="withDraw-headTxt">提现金额</view>
