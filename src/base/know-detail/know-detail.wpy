@@ -105,7 +105,7 @@
             border-radius: 50%
             background-color: $color-circle
           .value
-            height $font-size-small
+            height: $font-size-small
             display: inline-block
             vertical-align: middle
             font-size: $font-size-small
