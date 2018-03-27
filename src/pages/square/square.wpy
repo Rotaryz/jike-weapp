@@ -17,22 +17,29 @@
       </cover-view>
       <cover-view class="modal">
         <cover-view class="location">
-          <cover-image wx:if="{{imageUri}}" src="{{imageUri + '/defaults/c-image/square/icon-s_location@2x.png'}}"
+          <cover-image wx:if="{{imageUri}}"
+                       src="{{imageUri + '/defaults/c-image/square/icon-s_location@2x.png'}}"
                        mode="scaleToFill" class="icon-location"></cover-image>
-          <cover-view class="content">{{currentMerchant.particular_address}}</cover-view>
+          <cover-view class="content">{{currentMerchant.particular_address}}
+          </cover-view>
         </cover-view>
         <cover-view class="shop">
           <cover-view class="top" @tap="switchRecommend">
             <cover-view class="desc">
-              <cover-view class="title">{{currentMerchant.shop_name}}</cover-view>
-              <cover-view class="subhead">{{currentMerchant.describe}}</cover-view>
+              <cover-view class="title">{{currentMerchant.shop_name}}
+              </cover-view>
+              <cover-view class="subhead">{{currentMerchant.describe}}
+              </cover-view>
             </cover-view>
             <cover-view class="logo-wrapper">
-              <cover-image wx:if="{{imageUri}}" src="{{imageUri + '/defaults/c-image/square/pic-s_shopbg@2x.png'}}"
+              <cover-image wx:if="{{imageUri}}"
+                           src="{{imageUri + '/defaults/c-image/square/pic-s_shopbg@2x.png'}}"
                            class="image"></cover-image>
-              <cover-image wx:if="{{imageUri && currentMerchant.code_name}}" class="industry"
+              <cover-image wx:if="{{imageUri && currentMerchant.code_name}}"
+                           class="industry"
                            src="{{imageUri + '/defaults/c-image/square/icon-s_' + currentMerchant.code_name + '@2x.png'}}"></cover-image>
-              <cover-image wx:if="{{currentMerchant.logo_image}}" src="{{currentMerchant.logo_image}}"
+              <cover-image wx:if="{{currentMerchant.logo_image}}"
+                           src="{{currentMerchant.logo_image}}"
                            class="logo"></cover-image>
             </cover-view>
             <cover-view class="comment">
@@ -43,9 +50,13 @@
                                  src="{{imageUri + '/defaults/c-image/square/icon-s_evaluate@2x.png'}}"
                                  class="icon-star"></cover-image>
                   </repeat>
-                  <cover-view class="star-level">{{currentMerchant.star_level !== '0.0' ? currentMerchant.star_level : '5.0'}}</cover-view>
+                  <cover-view class="star-level">
+                    {{currentMerchant.star_level !== '0.0' ? currentMerchant.star_level : '5.0'}}
+                  </cover-view>
                 </cover-view>
-                <cover-view class="store">{{currentMerchant.favorite_count}}人已收藏</cover-view>
+                <cover-view class="store">
+                  {{currentMerchant.favorite_count}}人已收藏
+                </cover-view>
               </cover-view>
             </cover-view>
           </cover-view>
@@ -55,12 +66,14 @@
                          src="{{imageUri + '/defaults/c-image/square/pic-s_line@2x.png'}}"></cover-image>
             <cover-view class="content-wrapper">
               <cover-view class="item">
-                <cover-image wx:if="{{imageUri}}" src="{{imageUri + '/defaults/c-image/square/icon-s_distance@2x.png'}}"
+                <cover-image wx:if="{{imageUri}}"
+                             src="{{imageUri + '/defaults/c-image/square/icon-s_distance@2x.png'}}"
                              class="icon"></cover-image>
                 <cover-view class="content">距离{{distance}}米</cover-view>
               </cover-view>
               <cover-view class="item">
-                <cover-image wx:if="{{imageUri}}" src="{{imageUri + '/defaults/c-image/square/icon-s_swalk@2x.png'}}"
+                <cover-image wx:if="{{imageUri}}"
+                             src="{{imageUri + '/defaults/c-image/square/icon-s_swalk@2x.png'}}"
                              class="icon"></cover-image>
                 <cover-view class="content">步行{{duration}}分钟</cover-view>
               </cover-view>
@@ -71,7 +84,8 @@
                 <cover-view class="content">开始导航</cover-view>
               </cover-view>
               <cover-view class="item" @tap="makePhoneCall">
-                <cover-image wx:if="{{imageUri}}" src="{{imageUri + '/defaults/c-image/square/icon-s_tel@2x.png'}}"
+                <cover-image wx:if="{{imageUri}}"
+                             src="{{imageUri + '/defaults/c-image/square/icon-s_tel@2x.png'}}"
                              class="icon"></cover-image>
                 <cover-view class="content">打电话</cover-view>
               </cover-view>
@@ -281,9 +295,7 @@
         this.merchants = res
         res.forEach((item) => {
           if (item.current_merchant) {
-            if (!this.activeMarkerId) {
-              this.activeMarkerId = item.id
-            }
+            this.activeMarkerId = item.id
             this.longitude = item.longitude
 //            this.latitude = item.latitude
             this.latitude = item.latitude + 0.001
@@ -363,9 +375,13 @@
       if (json.error === ERR_OK) {
         const res = json.data
         this.currentMerchant = res
+        let shop = wepy.getStorageSync('shop')
+        shop.shop_name = res.shop_name
+        wepy.setStorageSync('shop', shop)
         this.promotions = res.promotions
         const starLevel = res.star_level === '0.0' ? 5 : res.star_level
         this.stars = new Array(Math.floor(starLevel))
+
         this.$apply()
         this.loaded()
         this._setTips()
@@ -576,9 +592,10 @@
 
     // 分享
     onShareAppMessage() {
+      let merchantId = wepy.getStorageSync('merchantId')
       return {
         title: wepy.getStorageSync('shop').shop_name,
-        path: '/pages/square/square'
+        path: `/pages/square/square?merchantId=${merchantId}`
       }
     }
 

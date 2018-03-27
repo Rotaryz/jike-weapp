@@ -6,7 +6,7 @@ export default class Merchants extends base {
    * @returns {Promise.<*>}
    */
   static async getPlazaMerchants() {
-    const url = `${this.baseUrl}/api/circles/plaza-merchants`
+    const url = `${this.baseUrl}/api/merchants/plaza-merchants`
     return await this.get(url)
   }
 
@@ -66,6 +66,6 @@ export default class Merchants extends base {
    */
   static async showShop(id) {
     const url = `${this.baseUrl}/api/merchants/merchants-data/${id}`
-    return await this.get(url)
+    return await this.get(url, '', false)
   }
 }

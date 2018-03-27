@@ -97,7 +97,7 @@
                 <image class="mine-serve-avatarBox-img" src="{{item}}"></image>
               </view>
             </view>
-            <view class="shop-count">100家</view>
+            <view class="shop-count">{{userInfo.count}}家</view>
             <image wx:if="{{imageUrlHead}}"
                    src="{{imageUrlHead + '/defaults/c-image/mine/icon-my_Rectangle.png'}}"
                    class="mine-order-headIcon"></image>
@@ -149,7 +149,7 @@
       userInfo: {
         nickName: '加载中...',
         avatarUrl: null,
-        industry: wepy.getStorageSync('shop').industry
+        industry: ''
       },
       isPhone: 1,
       orderMenu: [
@@ -188,7 +188,8 @@
     }
 
     async onLoad() {
-
+      this.showIndustry()
+      console.log(this.industry)
     }
 
     onShow() {
@@ -227,11 +228,12 @@
 
     methods = {
       goShop() {
+        const version = URIS.envVersion
         wx.navigateToMiniProgram({
           appId: this.userInfo.app_id,
-          path: `pages/loading/loading?businessCircleId${this.userInfo.business_circle_id}`,
+          path: `pages/loading/loading?businessCircleId=${this.userInfo.business_circle_id}`,
           extraData: {},
-          envVersion: 'develop',
+          envVersion: version, // develop
           success(res) {
             // 打开成功
           }

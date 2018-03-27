@@ -22,7 +22,7 @@
             <text class="rmb">¥</text>
             <text class="number">{{coupon.platform_price !== undefined ? coupon.platform_price : ''}}</text>
           </view>
-          <view class="origin-price">门市价:￥{{coupon.shop_price !== undefined ? coupon.shop_price : ''}}</view>
+          <view class="origin-price">门市价:¥{{coupon.shop_price !== undefined ? coupon.shop_price : ''}}</view>
           <view class="buy-number">
             <image class="icon" wx:if="{{imageUri}}"
                    src="{{imageUri + '/defaults/c-image/recommend/icon-many.png'}}"></image>
@@ -60,14 +60,14 @@
       <view class="button-group">
         <view class="collect border-right-1px" @tap="collectToggle">
           <image wx:if="{{imageUri && !isFavorite}}" class="icon"
-                 src="{{imageUri + '/defaults/c-image/recommend/icon-collection_1.png'}}"></image>
+                 src="{{imageUri + '/defaults/c-image/recommend/icon-r_collect32@2x.png'}}"></image>
           <image wx:if="{{imageUri && isFavorite}}" class="icon"
-                 src="{{imageUri + '/defaults/c-image/recommend/icon-collection_2.png'}}"></image>
+                 src="{{imageUri + '/defaults/c-image/recommend/icon-r_collection32@2x.png'}}"></image>
           收藏
         </view>
         <view class="customer-service">
           <image class="icon" wx:if="{{imageUri}}"
-                 src="{{imageUri + '/defaults/c-image/recommend/icon-my_service.png'}}"></image>
+                 src="{{imageUri + '/defaults/c-image/recommend/icon-r_service32@2x.png'}}"></image>
           客服
         </view>
       </view>
@@ -174,7 +174,11 @@
         const params = getParams(scene)
         this.type = Math.floor(params.type)
         this.id = params.id
-        this.currentMerchant = params.merchantid
+        this.currentMerchant = params.merchantId
+        wepy.setStorageSync('merchantId', this.currentMerchant)
+        if (!wepy.getStorageSync('token')) {
+          await this._getUserInfo(false, true)
+        }
       } else {
         this.type = Math.floor(option.type)
         this.id = option.id
@@ -185,13 +189,12 @@
 
     async load() {
       this.currentMerchant = this.currentMerchant || wepy.getStorageSync('merchantId')
-      this.currentPage = `/pages/coupon-detail/coupon-detail?type=${this.type}&id=${this.id}&merchantid=${this.currentMerchant}`
+      this.currentPage = `/pages/coupon-detail/coupon-detail?type=${this.type}&id=${this.id}&merchantId=${this.currentMerchant}`
       if (this.type === COUPON_TYPE) {
         await this._getCouponDetail()
       } else if (this.type === PACKAGE_TYPE) {
         await this._getPackageDetail()
       }
-      await this._getUserInfo()
       await this._createQrcode()
       this.loaded()
     }

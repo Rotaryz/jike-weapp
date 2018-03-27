@@ -5,8 +5,6 @@
 <script>
   import wepy from 'wepy'
   import 'wepy-async-function'
-  import wxUtils from 'common/js/wxUtils'
-  import URIS from 'common/js/config'
 
   export default class extends wepy.app {
     constructor() {
@@ -20,10 +18,15 @@
       if (!tips) {
         wepy.setStorageSync('tips', {order: false})
       }
+      const merchantId = wepy.getStorageSync('merchantId')
       let extConfig = wepy.getExtConfigSync()
-      wepy.setStorageSync('merchantId', extConfig.current_merchant ? extConfig.current_merchant : this.config.current_merchant)
-      // 校验SDK
-      wxUtils.checkSDK()
+      if (!merchantId) {
+        wepy.setStorageSync('merchantId', extConfig.current_merchant ? extConfig.current_merchant : this.config.current_merchant)
+      }
+      this.globalData.env = extConfig.env || 'prod'
+      this.globalData.version = extConfig.version || 'v2'
+      console.log('环境：' + this.globalData.env)
+      console.log('版本：' + this.globalData.version)
       const storageDate = wepy.getStorageSync('collectDate')
       const date = new Date()
       const collectDate = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate()
@@ -34,8 +37,13 @@
     }
 
     onShow(options) {
-      const scene = options.scene
+      const scene = options.scene * 1
       wepy.setStorageSync('scene', scene)
+      //      判断是否由分享的场景值进入
+      if (options.query.merchantId) {
+        const merchantId = options.query.merchantId
+        wepy.setStorageSync('merchantId', merchantId)
+      }
     }
 
     isObject(item) {
@@ -72,10 +80,11 @@
     }
 
     config = {
-      current_merchant: 100009,
+      current_merchant: 100004,
       pages: [
         'pages/loading/loading',
         'pages/browse-shops/browse-shops',
+        'pages/sold-out/sold-out',
         'pages/square/square',
         'pages/live/live',
         'pages/recommend/recommend',
@@ -133,7 +142,6 @@
     }
 
     globalData = {
-      baseUrl: URIS.api,
       isAuthorise: false,
       user: null,
       orderInfo: {}

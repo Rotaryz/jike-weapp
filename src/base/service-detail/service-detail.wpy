@@ -12,7 +12,7 @@
             <text class="font">{{item.servie}}</text>
           </view>
           <view class="content middle">{{item.number}}次</view>
-          <view class="content right">￥{{item.price}}</view>
+          <view class="content right">¥{{item.price}}</view>
         </view>
       </repeat>
     </view>
@@ -61,7 +61,7 @@
       .item-wrapper
         display: flex
         align-items: center
-        height: 28px
+        height: 31px
         padding-right: 12px
         &:last-child
           border-none()
@@ -74,9 +74,9 @@
             .circle
               display: inline-block
               vertical-align: middle
-              width: 4.5px
-              height: 4.5px
-              margin-right: 5.25px
+              width: 3px
+              height: 3px
+              margin-right: 4.5px
               border-radius: 50%
               background-color: $color-circle
             .font

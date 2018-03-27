@@ -49,12 +49,14 @@
         <view class="tab-content border-bottom-1px">
           <view class="tab-item" @tap="clickTab(1)">
             <view
-              class="tab-item-txt {{activeTab === '1' ? industry + '-border' : ''}}">优惠券
+              class="tab-item-txt {{activeTab === '1' ? industry + '-border' : ''}}">
+              优惠券
             </view>
           </view>
           <view class="tab-item" @tap="clickTab(2)">
             <view
-              class="tab-item-txt {{activeTab === '2' ? industry + '-border' : ''}}">发现
+              class="tab-item-txt {{activeTab === '2' ? industry + '-border' : ''}}">
+              发现
             </view>
           </view>
         </view>
@@ -177,10 +179,11 @@
       couponNothing: false,
       contentNothing: false,
       shopChange: true,
-      industry: wepy.getStorageSync('shop')
+      industry: 'ktv'
     }
 
     onShareAppMessage(res) {
+      let merchantId = wepy.getStorageSync('merchantId')
       const user = this.$parent.globalData.user
       if (res.from === 'button') {
         // 来自页面内转发按钮
@@ -188,7 +191,7 @@
       }
       return {
         title: user.nickName + '邀请你购买优惠券',
-        path: '/pages/recommend/recommend',
+        path: `/pages/recommend/recommend?merchantId=${merchantId}`,
         success: (res) => {
           // 转发成功
 //          console.log(res)
@@ -230,6 +233,7 @@
     async load() {
       let oldId = this.merchantId
       this.merchantId = wepy.getStorageSync('merchantId')
+
 //      console.log(this.merchantId)
       this.shopChange = !(oldId === this.merchantId)
       const isAuthorise = await this.isAuthorise(false)
@@ -271,11 +275,11 @@
       let res = await Merchants.getMerchantsStatus(this.merchantId, {}, loading)
       if (res.error === ERR_OK) {
         let shop = {
-          industry: res.data.merchant_data.industry,
+          industry: res.data.merchant_data.industry || this.industry,
           shop_name: res.data.merchant_data.shop_name
         }
         wepy.setStorageSync('shop', shop)
-        this.industry = shop.industry
+        this.industry = shop.industry || this.industry
         this.$apply()
 //        console.log(this.industry)
         wepy.setNavigationBarTitle({
@@ -319,7 +323,7 @@
       if (!this.moreCoupon || this.couponList.length >= 100) {
         limit = 100
       } else {
-        limit = Math.ceil(this.couponList.length % 10) * 10 || 10
+        limit = Math.ceil(this.couponList.length / 10) * 10 || 10
       }
       if (this.shopChange) {
         params = {

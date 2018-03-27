@@ -28,7 +28,11 @@
       if (option.scene) {
         let scene = decodeURIComponent(option.scene)
         const params = getParams(scene)
-        this.currentMerchant = params.merchantid
+        this.currentMerchant = params.merchantId
+        wepy.setStorageSync('merchantId', this.currentMerchant)
+        if (!wepy.getStorageSync('token')) {
+          await this.$getUserInfo(false, true)
+        }
       } else if (option.currentMerchant) {
         this.currentMerchant = option.currentMerchant
       } else {
@@ -45,7 +49,7 @@
       }
       return {
         title: user.nickName + '邀请你参与直播优惠',
-        path: `/pages/live/live?currentMerchant=${this.currentMerchant}`,
+        path: `/pages/live/live?merchantId=${this.currentMerchant}`,
         success: async () => {
           // 转发成功
           await this._getSharePrize()

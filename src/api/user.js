@@ -8,7 +8,7 @@ export default class User extends base {
    */
   static async authorise(data) {
     const url = `${this.baseUrl}/api/info/authorise`
-    return await this.post(url, data)
+    return await this.post(url, data, false)
   }
 
   /**

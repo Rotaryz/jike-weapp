@@ -52,10 +52,10 @@
         <view class="money">
           <view class="money-init">
             <view class="money-detail">
-              <view class="money-ico">￥</view>
+              <view class="money-ico">¥</view>
               {{conDes.platform_price}}
             </view>
-            <view class="money-init-s">门市价:￥{{conDes.shop_price}}
+            <view class="money-init-s">门市价:¥{{conDes.shop_price}}
             </view>
           </view>
           <view class="buy-count">{{conDes.collected}}人已购买</view>
@@ -74,7 +74,7 @@
                 <view class="font">{{item.servie}}</view>
               </view>
               <view class="content middle">{{item.number}}次</view>
-              <view class="content right">￥{{item.price}}</view>
+              <view class="content right">¥{{item.price}}</view>
             </view>
           </view>
         </view>
@@ -90,7 +90,7 @@
                 有效期：
               </view>
               <view class="content">
-                <view class="circle"></view>
+                <!--<view class="circle"></view>-->
                 <view class="value">
                   {{conDes.sell_start_at + ' 至 ' + conDes.sell_end_at}}
                 </view>
@@ -101,8 +101,8 @@
                 是否需要预约：
               </view>
               <view class="content">
-                <view
-                  class="circle "></view>
+                <!--<view-->
+                  <!--class="circle "></view>-->
                 <view class="value">
                   {{conDes.note.need_subscribe === 0 ? '不需要预约' : '需要预约'}}
                 </view>
@@ -112,7 +112,7 @@
               <view class="title ">使用人数：
               </view>
               <view class="content">
-                <view class="circle"></view>
+                <!--<view class="circle"></view>-->
                 <view class="value">
                   {{conDes.note.can_use_number === -1 ? '不限人数' :
                   '每张券限' + conDes.note.can_use_number + '人使用'}}
@@ -123,7 +123,7 @@
               <view class="title ">单人购买上限：
               </view>
               <view class="content">
-                <view class="circle"></view>
+                <!--<view class="circle"></view>-->
                 <view class="value">
                   {{conDes.note.buy_upper_limit === -1 ? '不限' :
                   '每人限购' + conDes.note.buy_upper_limit + '张优惠券'}}
@@ -134,7 +134,7 @@
               <view class="title ">备注：
               </view>
               <view class="content">
-                <view class="circle"></view>
+                <!--<view class="circle"></view>-->
                 <view class="value">
                   {{conDes.note.remarks ? conDes.note.remarks : ''}}
                 </view>
@@ -394,7 +394,7 @@
       line-height: 4vw
       text-indent: 6px
       &::before
-        content: '￥'
+        content: '¥'
         color: #5D5D5D
         font-size: $font-size-small-s
         position: absolute
@@ -600,6 +600,7 @@
             .circle_s
               margin-top: 11px
             .value
+              color :$color-text-9b
               display: inline-block
               vertical-align: middle
               font-size: $font-size-small

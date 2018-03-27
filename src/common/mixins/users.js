@@ -18,12 +18,13 @@ export default class userMixin extends wepy.mixin {
 
   // get code
   async $getCode() {
-    let code = wepy.getStorageSync('code')
-    if (!code) {
-      await this.$setCode()
-    }
-    code = wepy.getStorageSync('code')
-    return code
+    // let code = wepy.getStorageSync('code')
+    // if (!code) {
+    //   await this.$setCode()
+    // }
+    // code = wepy.getStorageSync('code')
+    const res = await wepy.login()
+    return res.code
   }
 
   /**
@@ -87,10 +88,13 @@ export default class userMixin extends wepy.mixin {
    * 获取token
    * @returns {Promise.<*>}
    */
-  async $getToken() {
-    let token = wepy.getStorageSync('token')
-    if (token) {
-      return token
+  async $getToken(isFirst) {
+    let token
+    if (!isFirst) {
+      token = wepy.getStorageSync('token')
+      if (token) {
+        return token
+      }
     }
     const code = await this.$getCode()
     const wxUser = await wepy.getUserInfo({lang: 'zh_CN'})
@@ -115,15 +119,15 @@ export default class userMixin extends wepy.mixin {
    * 获取数据库用户信息
    * @returns {Promise.<*>}
    */
-  async $getUserInfo(loading) {
-    const token = await this.$getToken()
+  async $getUserInfo(loading, isFirst) {
+    const token = await this.$getToken(isFirst)
     if (!token) {
       console.log('not token')
       return
     }
     const res = await this._getSqlUserInfo(token, loading)
     let user
-    wepy.setStorageSync('mobile', res.customer.mobile)
+    wepy.setStorageSync('mobile', res.customer ? res.customer.mobile : '')
     // wepy.setStorageSync('customerId', res.customer_id)
     // if (res.customer_id === 0) {
     //   user = await this.$getUser()
@@ -134,13 +138,15 @@ export default class userMixin extends wepy.mixin {
         avatarUrl: resData.avatarUrl,
         image: res.image,
         app_id: res.app_id,
-        business_circle_id: res.business_circle_id
+        business_circle_id: res.business_circle_id,
+        count: res.count
       })
     } else {
       user = Object.assign(res.customer, {
         image: res.image,
         app_id: res.app_id,
-        business_circle_id: res.business_circle_id
+        business_circle_id: res.business_circle_id,
+        count: res.count
       })
     }
     // }
@@ -154,7 +160,6 @@ export default class userMixin extends wepy.mixin {
       return {}
     }
     const res = Json.data
-    wepy.setStorageSync('openId', res.openid)
     return res
   }
 

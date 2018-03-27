@@ -154,7 +154,7 @@
 
         ctx.setFontSize(40)
         ctx.setFillStyle('#464646')
-        ctx.fillText(`门市价:￥${this.detail.shop_price}`, 328, 1074)
+        ctx.fillText(`门市价:¥${this.detail.shop_price}`, 328, 1074)
 
         ctx.drawImage(many, 738, 1045, 32, 30)
         ctx.fillText(this.detail.collected < 100 ? '100人已购买' : `${this.detail.collected}已购买`, 780, 1074)

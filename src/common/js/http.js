@@ -1,6 +1,8 @@
 import wepy from 'wepy'
 import Tips from './tips'
 
+const SOLD_OUT = 10001
+
 // HTTP工具类
 export default class http {
   static async request(method, url, data, loading = true) {
@@ -13,7 +15,7 @@ export default class http {
     if (Authorization) {
       param.header = Object.assign({}, {Authorization}, {'X-Requested-With': 'XMLHttpRequest'})
     }
-    param.header = Object.assign({}, param.header, {'Current-merchant': wepy.getStorageSync('merchantId') || 100000})
+    param.header = Object.assign({}, param.header, {'Current-merchant': wepy.getStorageSync('merchantId')})
     if (loading) {
       Tips.loading()
     }
@@ -21,6 +23,10 @@ export default class http {
     if (this.isSuccess(res)) {
       const result = res.data
       return result
+    } else if (this.isSoldOut(res)) {
+      const result = res.data.data
+      wepy.redirectTo({url: `/pages/sold-out/sold-out?appId=${result.app_id}&businessCircleId=${result.business_circle_id}`})
+      throw this.requestException(res)
     } else {
       throw this.requestException(res)
     }
@@ -53,13 +59,25 @@ export default class http {
       throw this.requestException(resData)
     }
   }
+
   /**
    * 判断请求是否成功
    */
   static isSuccess(res) {
     const wxCode = res.statusCode
-    // 微信请求错误
     if ((wxCode === 200 && res.data.code === 0) || wxCode === 422) {
+      return true
+    }
+    return false
+  }
+
+  /**
+   * 判断店铺是否下架
+   * @param res
+   */
+  static isSoldOut(res) {
+    const wxCode = res.statusCode
+    if (wxCode === 200 && res.data.code === SOLD_OUT) {
       return true
     }
     return false
@@ -73,12 +91,11 @@ export default class http {
     error.statusCode = res.statusCode
     const wxData = res.data
     if (wxData) {
-      error.error = wxData.error
+      error.code = wxData.code
       error.message = wxData.message
       error.serverData = wxData
-    } else {
-      Tips.loaded()
     }
+    Tips.loaded()
     return error
   }
 
@@ -102,7 +119,7 @@ export default class http {
     return this.request('DELETE', url, data, loading)
   }
 
-  static updateImg (url, name, loading = true) {
+  static updateImg(url, name, loading = true) {
     return this.update(url, name, loading)
   }
 }

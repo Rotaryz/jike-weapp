@@ -28,18 +28,20 @@
         </view>
       </repeat>
     </view>
-    <view class="fix-btn-wrapper">
-      <view class="collect" @tap="checkCustomer">
-        <image wx:if="{{imageUri && !isFavorite}}" src="{{imageUri + '/defaults/c-image/recommend/icon-collection1@2x.png'}}" class="full-image"></image>
-        <image wx:if="{{imageUri && isFavorite}}" src="{{imageUri + '/defaults/c-image/recommend/icon-collection2@2x.png'}}" class="full-image"></image>
-      </view>
-      <view class="share-btn" @tap="showShareModal">
-        <image wx:if="{{imageUri}}" src="{{imageUri + '/defaults/c-image/recommend/icon-sharepolite@2x.png'}}" class="full-image"></image>
-        <view class="red" wx:if="{{contents.activity_share}}">
-          <image wx:if="{{imageUri}}" src="{{imageUri + '/defaults/c-image/recommend/pic-openmoney@2x.png'}}" class="full-image"></image>
-        </view>
-      </view>
-    </view>
+
+    <cover-view class="fix-btn-wrapper">
+      <cover-view class="collect" @tap="checkCustomer">
+        <cover-image wx:if="{{imageUri && !isFavorite}}" src="{{imageUri + '/defaults/c-image/recommend/icon-collection1@2x.png'}}" class="full-image"></cover-image>
+        <cover-image wx:if="{{imageUri && isFavorite}}" src="{{imageUri + '/defaults/c-image/recommend/icon-collection2@2x.png'}}" class="full-image"></cover-image>
+      </cover-view>
+      <cover-view class="share-btn" @tap="showShareModal">
+        <cover-image wx:if="{{imageUri}}" src="{{imageUri + '/defaults/c-image/recommend/icon-sharepolite@2x.png'}}" class="full-image"></cover-image>
+        <cover-view class="red" wx:if="{{contents.activity_share}}">
+          <cover-image wx:if="{{imageUri}}" src="{{imageUri + '/defaults/c-image/recommend/pic-openmoney@2x.png'}}" class="full-image"></cover-image>
+        </cover-view>
+      </cover-view>
+    </cover-view>
+
     <!--<phone-test @isPhoneOk.user="storeToggle"></phone-test>-->
     <share :qrcode.sync="qrcode" :detail.sync="contents" @sharePunchLine.user="sharePunchLine"></share>
     <share-modal @hide.user="showVideoPlay">
@@ -131,12 +133,16 @@
         let scene = decodeURIComponent(option.scene)
         const params = getParams(scene)
         this.id = params.id
-        this.currentMerchant = params.merchantid
+        this.currentMerchant = params.merchantId
+        wepy.setStorageSync('merchantId', this.currentMerchant)
+        if (!wepy.getStorageSync('token')) {
+          await this.$getUserInfo(false, true)
+        }
       } else {
         this.id = option.id
         this.currentMerchant = option.currentMerchant
       }
-      this.currentPage = `/pages/content-detail/content-detail?id=${option.id}&merchantid=${this.currentMerchant}`
+      this.currentPage = `/pages/content-detail/content-detail?id=${option.id}&merchantId=${this.currentMerchant}`
       await this.load()
     }
 
