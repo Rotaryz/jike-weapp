@@ -40,8 +40,9 @@ export default class base extends wepy.mixin {
   async showIndustry() {
     let shop = wepy.getStorageSync('shop')
     let id = wepy.getStorageSync('merchantId')
-    if (!id) {
-      await this.$getToken()
+    let token = wepy.getStorageSync('token')
+    if (!token || !id) {
+      token = await this.$getToken()
     }
     if (!shop) {
       let res = await merchants.showShop(id)
@@ -55,10 +56,10 @@ export default class base extends wepy.mixin {
         wepy.setStorageSync('shop', shop)
         this.$apply()
       }
-    } else {
-      this.industry = shop.industry
-      this.shopName = shop.shop_name
+      return
     }
+    this.industry = shop.industry
+    this.shopName = shop.shop_name
   }
 
   methods = {

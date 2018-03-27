@@ -33,7 +33,7 @@
             <image class="couponList-noItemBtn" wx:if="{{menuIdx===1 && imageUrlHead}}" src="{{imageUrlHead + '/defaults/c-image/mine/pic-my_already .png'}}"></image>
             <image class="couponList-noItemBtn" wx:if="{{menuIdx===2 && imageUrlHead}}" src="{{imageUrlHead + '/defaults/c-image/mine/pic-my_overdue.png'}}"></image>
           </view>
-          <image class="exChange-img" src="{{imageUrlHead + '/defaults/c-image/mine/pic-m_certificate@2x.png'}}" wx:if="{{item.promotionType==='exchange' && imageUrlHead}}"></image>
+          <image class="exChange-img" src="{{imageUrlHead + '/defaults/c-image/mine/pic-m_'+industry+'@2x.png'}}" wx:if="{{item.promotionType==='exchange' && imageUrlHead}}"></image>
         </view>
       </view>
       <Underline></Underline>

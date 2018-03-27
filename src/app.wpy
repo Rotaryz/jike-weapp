@@ -80,7 +80,7 @@
     }
 
     config = {
-      current_merchant: 100004,
+      current_merchant: 100002,
       pages: [
         'pages/loading/loading',
         'pages/browse-shops/browse-shops',
