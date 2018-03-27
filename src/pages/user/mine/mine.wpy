@@ -188,15 +188,14 @@
     }
 
     async onLoad() {
-      this.showIndustry()
-      console.log(this.industry)
+
     }
 
-    onShow() {
-      this.industry = wepy.getStorageSync('shop').industry
+    async onShow() {
+      await this.showIndustry()
       this.tips = wx.getStorageSync('tips')
       wepy.setNavigationBarTitle({
-        title: wepy.getStorageSync('shop').shop_name
+        title: this.shopName
       })
       this.$apply()
       this.load()

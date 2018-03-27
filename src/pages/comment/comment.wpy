@@ -10,13 +10,8 @@
         </view>
       </repeat>
     </scroll-view>
-    <image class="btn_com btn_com-fi" wx:if="{{imageUrlHead}}"
-           src="{{imageUrlHead + '/defaults/c-image/live/icon-share-zhib.png'}}"
-           @tap="shares"/>
-    <image class="btn_com"
-           src="{{imageUrlHead + '/defaults/c-image/live/icon- info.png'}}"
-           wx:if="{{!showCom && imageUrlHead}}"
-           @tap="showInput"/>
+    <image class="btn_com btn_com-fi" wx:if="{{imageUrlHead}}" src="{{imageUrlHead + '/defaults/c-image/live/icon-share-zhib.png'}}" @tap="shares"></image>
+    <image class="btn_com" src="{{imageUrlHead + '/defaults/c-image/live/icon- info.png'}}" wx:if="{{!showCom && imageUrlHead}}" @tap="showInput"></image>
     <view class="inp_cpm" wx:if="{{showCom}}">
       <input type="text" placeholder="弹幕更容易引起主播的注意哦~" @input="bindTestInput"
              value="{{content}}" focus="true"

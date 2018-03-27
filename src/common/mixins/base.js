@@ -38,21 +38,28 @@ export default class base extends wepy.mixin {
 
   // 判断行业类型
   async showIndustry() {
-    let industry = wepy.getStorageSync('shop').industry
+    let shop = wepy.getStorageSync('shop')
     let id = wepy.getStorageSync('merchantId')
-    if (!id) {
-      await this.$getToken()
+    let token = wepy.getStorageSync('token')
+    if (!token || !id) {
+      token = await this.$getToken()
     }
-    if (!industry) {
+    if (!shop) {
       let res = await merchants.showShop(id)
       if (res.error === ERR_OK) {
         let shop = {
           industry: res.data.code_name,
           shop_name: res.data.shop_name
         }
+        this.industry = res.data.code_name ? res.data.code_name : 'ktv'
+        this.shopName = res.data.shop_name ? res.data.shop_name : ''
         wepy.setStorageSync('shop', shop)
+        this.$apply()
       }
+      return
     }
+    this.industry = shop.industry
+    this.shopName = shop.shop_name
   }
 
   methods = {

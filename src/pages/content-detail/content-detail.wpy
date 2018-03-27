@@ -48,7 +48,9 @@
       <view slot="content" class="base-modal-content">
         <view class="header-wrapper">
           <view class="title">现金红包</view>
-          <view class="cash">{{sharePrice}}<text class="yuan">元</text></view>
+          <view class="cash">{{sharePrice}}
+            <text class="yuan">元</text>
+          </view>
         </view>
         <view class="content">
           <view class="text">现金已经存放入您的账户</view>
@@ -103,8 +105,7 @@
         couponType: 1
       },
       qrcode: '',
-      currentMerchant: '',
-      industry: wepy.getStorageSync('shop').industry
+      currentMerchant: ''
     }
 
     onShareAppMessage(res) {
@@ -128,7 +129,7 @@
     }
 
     async onLoad(option) {
-      this.industry = wepy.getStorageSync('shop').industry
+      await this.showIndustry()
       if (option.scene) {
         let scene = decodeURIComponent(option.scene)
         const params = getParams(scene)
@@ -161,6 +162,7 @@
         this.qrcode = data.image_url
       }
     }
+
 //
 //    async _getUserInfo() {
 //      await this.$getUserInfo()

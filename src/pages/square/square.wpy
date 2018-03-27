@@ -204,10 +204,12 @@
     }
 
     async onShow() {
+      await this.showIndustry()
+      let shopName = wepy.getStorageSync('shop') ? wepy.getStorageSync('shop').shop_name : this.shopName
       this.clearTimer()
       await this.show()
       wepy.setNavigationBarTitle({
-        title: wepy.getStorageSync('shop').shop_name
+        title: shopName
       })
       this.loaded()
     }

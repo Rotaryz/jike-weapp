@@ -74,8 +74,7 @@
       packetTotalNum: ['0', '.00'],
       LowerLoading: false,
       page: 1,
-      nothingAdd: false,
-      industry: wepy.getStorageSync('shop').industry
+      nothingAdd: false
     }
 
     methods = {
@@ -106,7 +105,7 @@
     }
 
     async onLoad() {
-      this.industry = wepy.getStorageSync('shop').industry
+      await this.showIndustry()
       await this.load()
     }
 

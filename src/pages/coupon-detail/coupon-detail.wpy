@@ -143,8 +143,7 @@
       currentMerchant: 0,
       qrcode: '',
       sharePrice: '',
-      orderInfo: {},
-      industry: wepy.getStorageSync('shop').industry
+      orderInfo: {}
     }
 
     onShareAppMessage(res) {
@@ -168,7 +167,7 @@
     }
 
     async onLoad(option) {
-      this.industry = wepy.getStorageSync('shop').industry
+      await this.showIndustry()
       if (option.scene) {
         let scene = decodeURIComponent(option.scene)
         const params = getParams(scene)
