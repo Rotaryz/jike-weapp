@@ -30,7 +30,8 @@ const DEV = {
   image: 'https://img.jerryf.cn',
   webview: 'https://h5.jkweixin.net',
   login: 'https://dev.jike-jwt.jerryf.cn',
-  api: 'https://dev.jike-wap-api.jerryf.cn' + version
+  api: 'https://dev.jike-wap-api.jerryf.cn' + version,
+  envVersion: 'develop'
 }
 
 /**
@@ -41,7 +42,8 @@ const TEST = {
   image: 'https://img.jkweixin.net',
   webview: 'https://h5.jkweixin.net',
   login: 'https://jwt.jkweixin.net',
-  api: 'https://wap-api.jkweixin.net' + version
+  api: 'https://wap-api.jkweixin.net' + version,
+  envVersion: 'trial'
 }
 
 /**
@@ -52,20 +54,21 @@ const PROD = {
   image: 'https://img.jkweixin.com',
   webview: 'https://h5.jkweixin.com',
   login: 'https://jwt.jkweixin.com',
-  api: 'https://wap-api.jkweixin.com' + version
+  api: 'https://wap-api.jkweixin.com' + version,
+  envVersion: 'release'
 }
 
 export const URLS = env === 'test' ? TEST : env === 'prod' ? PROD : DEV
 // export const URLS = PROD
 // trial--体验版   release---正式版  develop---开发版
-export const envVersion = env === 'test' ? 'trial' : env === 'prod' ? 'release' : 'develop'
+// export const envVersion = env === 'test' ? 'trial' : env === 'prod' ? 'release' : 'develop'
 class URIS {
   constructor() {
     this.image = URLS.image
     this.webview = URLS.webview
     this.login = URLS.login
     this.api = URLS.api
-    this.envVersion = envVersion
+    this.envVersion = URLS.envVersion
   }
 }
 
