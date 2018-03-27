@@ -69,7 +69,7 @@
       drawMoney: '',
       coverShow: false,
       packetTotal: '',
-      isPhone: 0,
+      isPhone: 0
     }
 
     components = {
