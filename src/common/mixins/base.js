@@ -7,7 +7,8 @@ const COLLECT_COUNT = 20
 
 export default class base extends wepy.mixin {
   data = {
-    industry: ''
+    industry: '',
+    shopName: ''
   }
 
   loaded() {
