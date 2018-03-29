@@ -1,0 +1,97 @@
+<template>
+  <view class="pay-con">
+    <view class="pay-input">
+        <view class="all-money-con">
+          <input type="digit" placeholder="询问服务员后输入" class="all-money-input">
+          <view class="all-money-text">消费总额：</view>
+        </view>
+        <view class="select-discounts">
+              <image class="select-img" wx:if="{{imageUri}}"
+                     src="{{imageUri + '/defaults/c-image/pay/icon-notselect@2x.png'}}"></image>
+              <view class="select-text">输入不参与优惠金额(如酒水、套餐)</view>
+        </view>
+        <view class="all-money-con no-select-discounts">
+          <input type="digit" placeholder="询问服务员后输入" class="all-money-input">
+          <view class="all-money-text">不参与优惠金额：</view>
+        </view>
+    </view>
+    <view class="coupon-pay">
+          <view class="coupon-list">
+                <view class="coupon-list-left">代金券/折扣券/新手券</view>
+                <view></view>
+          </view>
+    </view>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import URIS from 'common/js/config'
+
+  export default class Pay extends wepy.page {
+    data = {
+      imageUri: URIS.image
+    }
+
+    methods = {}
+
+    components ={}
+
+    config = {
+      navigationBarTitleText: '买单'
+    }
+  }
+</script>
+
+<style lang="stylus">
+  @import "../../common/stylus/variable"
+  .pay-input
+    padding: 10px 12px 0
+    .no-select-discounts
+      margin-bottom: 10px
+    .all-money-con
+      border: 1px solid $color-pay-theme
+      background: $color-highlight-background
+      height: 47.5px
+      position: relative
+      .all-money-input
+        text-align: right
+        font-size: $font-size-medium
+        line-height: 47.5px
+        height: 47.5px
+        padding-right: 10px
+      .all-money-text
+        font-size: $font-size-medium
+        line-height: 49.5px
+        color: $color-text
+        position: absolute
+        left: 10px
+        top: 0px
+        height: 47.5px
+    .select-discounts
+      padding: 10px 0
+      display: flex
+      flex-direction: row
+      align-items: center
+      .select-img
+        width: 16px
+        display: block
+        height: 16px
+      .select-text
+        color: $color-text-d
+        margin-left: 5px
+        font-size: $font-size-medium
+  .coupon-pay
+    padding-left: 12px
+    background: $color-highlight-background
+    border-top: 1px solid $color-pay-theme
+    border-bottom: 1px solid $color-pay-theme
+    .coupon-list
+      border-bottom: 1px solid $color-pay-theme
+      padding-right: 12px
+      display: flex
+      flex-direction: row
+      .coupon-list-left
+        color: $color-text-d
+        font-size: $font-size-medium
+</style>
