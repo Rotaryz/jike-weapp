@@ -224,7 +224,6 @@
     }
 
     async load() {
-      await this.isAuthorise()
       await this._newMapContext()
     }
 
