@@ -128,11 +128,13 @@
       orderList: [],
       page: 1,
       nothingAdd: false,
-      noOrder: false
+      noOrder: false,
+      menuType: 4
     }
 
     methods = {
       async tabChange(type, idx) {
+        this.menuType = type
         this.menuIdx = idx
         this.orderList = []
         this.noOrder = false
@@ -155,7 +157,7 @@
         if (!this.LowerLoading && !this.nothingAdd) {
           this.LowerLoading = true
           this.page++
-          const res = await this._getOrderList(this.menuIdx, this.page)
+          const res = await this._getOrderList(this.menuType, this.page)
           if (res.error !== ERR_OK) {
             this.loaded()
             this.$invoke('Toast', 'show', res.message)
