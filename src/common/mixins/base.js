@@ -43,7 +43,7 @@ export default class base extends wepy.mixin {
     let id = wepy.getStorageSync('merchantId')
     let token = wepy.getStorageSync('token')
     if (!token || !id) {
-      token = await this.$getToken()
+      token = await this.$getToken(true)
     }
     if (!shop) {
       let res = await merchants.showShop(id)
