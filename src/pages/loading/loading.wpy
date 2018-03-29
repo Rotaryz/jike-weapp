@@ -74,16 +74,7 @@
       }
     }
     async onLoad(options) {
-      let id = options.merchantId ? options.merchantId : wepy.getStorageSync('merchantId')
-      let res = await merchants.showShop(id)
-      this.loaded()
-      if (res.error === ERR_OK) {
-        let shop = {
-          industry: res.data.code_name,
-          shop_name: res.data.shop_name
-        }
-        wepy.setStorageSync('shop', shop)
-      }
+      await this.showIndustry()
       await this.$getUserInfo(false, true)
       let url = INFOURL
       if (options.path) {
