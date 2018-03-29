@@ -65,11 +65,11 @@
                  src="{{imageUri + '/defaults/c-image/recommend/icon-r_collection32@2x.png'}}"></image>
           收藏
         </view>
-        <view class="customer-service">
+        <button class="customer-service" session-from="abc,123" open-type="contact">
           <image class="icon" wx:if="{{imageUri}}"
                  src="{{imageUri + '/defaults/c-image/recommend/icon-r_service32@2x.png'}}"></image>
           客服
-        </view>
+        </button>
       </view>
       <view class="buy-btn {{industry}}-bg {{stock === 0 ? 'disable' : ''}}" @tap="postOrder">立即购买</view>
     </view>
@@ -467,7 +467,7 @@
           background: $color-orange
           margin-right: 5px
         .red-title
-          text-indent :8px
+          text-indent: 8px
           margin-top: 12px
           line-height: 14px
           font-size: $font-size-medium
@@ -484,6 +484,7 @@
         flex: 1
         display: flex
         font-size: $font-size-small-s
+        border-top: 0.5px solid $color-col-line
         .collect
           flex: 1
           display: flex
@@ -495,14 +496,21 @@
             height: 16px
             margin-bottom: 3px
         .customer-service
+          background-color: transparent
           flex: 1
+          border-none()
           display: flex
           flex-direction: column
           align-items: center
           justify-content: center
+          line-height: 1
+          padding: 0
+          font-size: $font-size-small-s
+          color: $color-text
+          position: static
           .icon
-            width: 15.5px
-            height: 14px
+            width: 16px
+            height: 16px
             margin-bottom: 3px
       .buy-btn
         flex: 0 0 200px

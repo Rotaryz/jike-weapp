@@ -259,6 +259,8 @@
     }
 
     async load(option) {
+      this.nothingAdd = false
+      this.$invoke('Underline', 'hide')
       this.userInfo = this.$parent.globalData.user
       if (option.idx || option.idx === 0) {
         this.menuIdx = Number(option.idx)
@@ -269,7 +271,7 @@
       if (this.nothingAdd || this.orderList.length >= 100) {
         limit = 100
       } else {
-        limit = this.orderList.length ? this.orderList.length : 10
+        limit = Math.ceil(this.orderList.length / 10) * 10 || 10
       }
       let type = this.menuIdx === 0 ? 4 : this.menuIdx - 1
       let resList = await this._getOrderList(type, 1, limit)
