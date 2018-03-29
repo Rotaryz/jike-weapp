@@ -74,8 +74,8 @@
       }
     }
     async onLoad(options) {
-      await this.showIndustry()
       await this.$getUserInfo(false, true)
+      await this.showIndustry()
       let url = INFOURL
       if (options.path) {
         url = decodeURIComponent(options.path)
