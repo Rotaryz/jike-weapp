@@ -1,0 +1,309 @@
+<template>
+  <view class="pay-coupon">
+      <view class="no-use-coupon">
+          <view class="no-use-left">不使用优惠</view>
+          <view class="no-use-right">
+              <view class="image-wrapper">
+                <image class="no-use-img" wx:if="{{imageUri}}"
+                       src="{{imageUri + '/defaults/c-image/pay/icon-notselect_syyh@2x.png'}}"></image>
+              </view>
+          </view>
+      </view>
+      <view class="coupon-con">
+          <view class="can-coupon">可用的券</view>
+          <view class="select-coupon-list">
+              <view class="coupon-box">
+                  <image class="coupon-use-img" wx:if="{{imageUri}}"
+                       src="{{imageUri + '/defaults/c-image/pay/bg-coupon@2x.png'}}"></image>
+                  <view class="coupon-box-item-left">
+                      <view class="couponList-money">
+                        <view>
+                          <text class="couponList-midMoney">¥</text>
+                          <text class="couponList-bigMoney">100</text>
+                        </view>
+                        <!--<view>-->
+                          <!--<text class="couponList-bigMoney">5</text>-->
+                          <!--<text class="couponList-midDiscount">折</text>-->
+                        <!--</view>-->
+                        <view class="couponList-condition">满100可用</view>
+                      </view>
+                      <view class="couponList-info">
+                        <view class="couponList-infoPadding">
+                            <view class="info-title">
+                                    <view class="info-midSort">代金券</view><view class="info-midtitle">10元代金券</view>
+                            </view>
+                            <view class="info-data">
+                              <view>
+                                <text class="info-midMoney">¥</text>
+                                <text class="info-bigMoney">100</text>
+                                <!--<text class="info-midMoney">折</text>-->
+                              </view>
+                              <view class="info-dataed">
+                                2018-3-22到期
+                              </view>
+                            </view>
+                        </view>
+                      </view>
+                  </view>
+                  <view class="coupon-box-item-right">
+                    <image class="select-use" wx:if="{{imageUri}}"
+                           src="{{imageUri + '/defaults/c-image/pay/icon-notselect_syyh@2x.png'}}"></image>
+                  </view>
+              </view>
+          </view>
+          <view class="can-coupon">不可用的券</view>
+          <view class="select-coupon-list">
+            <view class="coupon-box">
+              <image class="coupon-use-img" wx:if="{{imageUri}}"
+                     src="{{imageUri + '/defaults/c-image/pay/bg-coupon_disable@2x.png'}}"></image>
+              <view class="coupon-box-item-left">
+                <view class="couponList-money">
+                  <view>
+                    <text class="couponList-midMoney">¥</text>
+                    <text class="couponList-bigMoney">100</text>
+                  </view>
+                  <!--<view>-->
+                  <!--<text class="couponList-bigMoney">5</text>-->
+                  <!--<text class="couponList-midDiscount">折</text>-->
+                  <!--</view>-->
+                  <view class="couponList-condition">满100可用</view>
+                </view>
+                <view class="couponList-info">
+                  <view class="couponList-infoPadding display-couponList">
+                    <view class="info-title">
+                      <view class="info-midSort">代金券</view><view class="info-midtitle">10元代金券</view>
+                    </view>
+                    <view class="info-data">
+                      <view>
+                        <text class="info-midMoney">¥</text>
+                        <text class="info-bigMoney">100</text>
+                        <!--<text class="info-midMoney">折</text>-->
+                      </view>
+                      <view class="info-dataed">
+                        2018-3-22到期
+                      </view>
+                    </view>
+                  </view>
+                </view>
+              </view>
+              <view class="coupon-box-item-right">
+                <image class="select-use" wx:if="{{imageUri}}"
+                       src="{{imageUri + '/defaults/c-image/pay/icon-select_disable@2x.png'}}"></image>
+              </view>
+            </view>
+          </view>
+          <view class="select-coupon-list">
+          <view class="coupon-box">
+            <image class="coupon-use-img" wx:if="{{imageUri}}"
+                   src="{{imageUri + '/defaults/c-image/pay/bg-coupon_disable@2x.png'}}"></image>
+            <view class="coupon-box-item-left">
+              <view class="couponList-money">
+                <!--<view>-->
+                  <!--<text class="couponList-midMoney">¥</text>-->
+                  <!--<text class="couponList-bigMoney">100</text>-->
+                <!--</view>-->
+                <view>
+                <text class="couponList-bigMoney">5</text>
+                <text class="couponList-midDiscount">折</text>
+                </view>
+                <view class="couponList-condition">满100可用</view>
+              </view>
+              <view class="couponList-info">
+                <view class="couponList-infoPadding display-couponList">
+                  <view class="info-title">
+                    <view class="info-midSort">代金券</view><view class="info-midtitle">10元代金券</view>
+                  </view>
+                  <view class="info-data">
+                    <view>
+                      <!--<text class="info-midMoney">¥</text>-->
+                      <text class="info-bigMoney">5</text>
+                      <text class="info-midMoney">折</text>
+                    </view>
+                    <view class="info-dataed">
+                      2018-3-22到期
+                    </view>
+                  </view>
+                </view>
+              </view>
+            </view>
+            <view class="coupon-box-item-right">
+              <image class="select-use" wx:if="{{imageUri}}"
+                     src="{{imageUri + '/defaults/c-image/pay/icon-select_disable@2x.png'}}"></image>
+            </view>
+          </view>
+        </view>
+      </view>
+      <view class="empty-wrapper">
+        <view class="image-wrapper">
+          <image class="full-image" wx:if="{{imageUri}}" src="{{imageUri + '/defaults/b-image/common/pic-empty_coupon@2x.png'}}"></image>
+        </view>
+        <view class="desc">没有该店铺优惠卷</view>
+      </view>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import URIS from 'common/js/config'
+
+  export default class PayCoupon extends wepy.page {
+    data = {
+      imageUri: URIS.image
+    }
+
+    methods = {}
+
+    components ={}
+
+    config = {
+      navigationBarTitleText: '使用优惠'
+    }
+  }
+</script>
+
+<style lang="stylus">
+  @import "../../common/stylus/variable"
+  .no-use-coupon
+    display: flex
+    flex-direction: row
+    align-items: center
+    background: $color-highlight-background
+    border-top: 1px solid $color-row-line
+    border-bottom: 1px solid $color-row-line
+    padding: 15px 12px
+    .no-use-left
+      width: 82%
+    .no-use-right
+      width: 18%
+      .no-use-img
+        display:block
+        margin: 0 auto
+        width: 17px
+        height: 17px
+  .coupon-con
+    .can-coupon
+      padding: 0 12px
+      color: $color-text
+      font-size: $font-size-medium
+      margin-top: 20px
+    .select-coupon-list
+      margin: 10px 12px 0
+      position: relative
+      padding-bottom: 28.49%
+      height: 0
+      .coupon-box
+        position: absolute
+        left: 0
+        top: 0
+        right: 0
+        bottom: 0
+        display: flex
+        .coupon-use-img
+          position: absolute
+          height: 100%
+          width: 100%
+        .coupon-box-item-left
+          width: 82%
+          height: 100%
+          display: flex
+          position: absolute
+          left: 0
+          .couponList-money
+            flex: 4
+            display: flex
+            align-items: center
+            justify-content: center
+            flex-direction: column
+            .couponList-midMoney
+              font-size: $font-size-large
+              color: $color-highlight-background
+            .couponList-bigMoney
+              font-size: 36px
+              color: $color-highlight-background
+              font-weight: bold
+            .couponList-condition
+              color: $color-highlight-background
+              font-size: $font-size-small
+              margin-top: 10px
+            .couponList-midDiscount
+              color: $color-highlight-background
+              font-size: $font-size-large
+              margin-left: 2px
+          .couponList-info
+            flex: 8
+            display: flex
+            justify-content: center
+            flex-direction: column
+            .couponList-infoPadding
+              padding-left: 25px
+              .info-title
+                display: flex
+                align-items: center
+                .info-midSort
+                  background: $color-car-theme
+                  font-size: $font-size-small-s
+                  color: $color-highlight-background
+                  padding: 2px
+                  margin-right: 3px
+                  border-radius: 2px
+                .info-midtitle
+                  color: $color-text
+                  font-size: $font-size-medium
+              .info-data
+                display: flex
+                align-items: center
+                margin-top: 25px
+                .info-midMoney
+                  font-size: $font-size-small
+                  color: $color-car-theme
+                .info-bigMoney
+                  color: $color-car-theme
+                  font-size: $font-size-large-xx
+                .info-dataed
+                  border-radius: 2px
+                  color: $color-car-theme
+                  font-size: $font-size-small-s
+                  background: rgba(255,36,0,.1)
+                  padding: 2px 3px
+                  margin-left: 3px
+            .display-couponList
+              .info-title
+                .info-midSort
+                  background: $color-pay-theme
+                .info-midtitle
+                  color: $color-pay-theme
+              .info-data
+                .info-midMoney
+                  color: $color-pay-theme
+                .info-bigMoney
+                  color: $color-pay-theme
+                .info-dataed
+                  color: $color-pay-theme
+                  background: rgba(219,219,219,.1)
+        .coupon-box-item-right
+          width: 18%
+          height: 100%
+          display: flex
+          position: absolute
+          align-items: center
+          justify-content: center
+          right: 0
+          .select-use
+            height: 17px
+            width: 17px
+  .empty-wrapper
+    margin-top: 70px
+    text-align: center
+    .image-wrapper
+      width: 100px
+      height: 80px
+      margin: 0 auto
+      .full-image
+        width: 100%
+        height: 100%
+        display:  block
+    .desc
+      color: $color-text-9b
+      font-size: $font-size-small
+      margin-top: 5px
+</style>

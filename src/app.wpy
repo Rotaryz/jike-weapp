@@ -80,7 +80,7 @@
     }
 
     config = {
-      current_merchant: 100004,
+      current_merchant: 100002,
       pages: [
         'pages/loading/loading',
         'pages/browse-shops/browse-shops',
@@ -105,7 +105,9 @@
         'pages/post-order/post-order',
         'pages/shareAndPrize/shareAndPrize',
         'pages/net-error/net-error',
-        'pages/pay/pay'
+        'pages/pay/pay',
+        'pages/pay-coupon/pay-coupon',
+        'pages/pay-success/pay-success'
       ],
       window: {
         backgroundColor: '#F9F9F9',

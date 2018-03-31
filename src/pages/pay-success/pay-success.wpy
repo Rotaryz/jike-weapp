@@ -1,0 +1,69 @@
+<template>
+  <view class="paySuccess-con">
+      <view class="paySuccess-order">
+            <image  class="paySuccess-img"  wx:if="{{imageUri}}"
+                   src="{{imageUri + '/defaults/c-image/pay/icon-pay@2x.png'}}"></image>
+        <view class="order-info">
+          <text class="text">订单金额:</text><text class="money"> 75.55</text><text class="bigtext">元</text>
+        </view>
+        <view class="look-order">查看订单</view>
+      </view>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import URIS from 'common/js/config'
+
+  export default class PaySuccess extends wepy.page {
+    data = {
+      imageUri: URIS.image
+    }
+
+    onLoad() {
+    }
+
+    onShow() {
+    }
+    methods = {}
+
+    components ={}
+
+    config = {
+      navigationBarTitleText: '支付成功'
+    }
+  }
+</script>
+
+<style lang="stylus">
+  @import "../../common/stylus/variable"
+  .paySuccess-order
+    background: $color-highlight-background
+    padding: 15px 0 30px
+    .paySuccess-img
+      width: 64px
+      height: 64px
+      margin: 0 auto 10px
+      display: block
+    .order-info
+      text-align: center
+      .text
+        color: $color-text
+        font-size: $font-size-medium-x
+      .money
+        color: $color-car-theme
+        font-size: $font-size-large
+      .bigtext
+        color: $color-car-theme
+        font-size: $font-size-small-s
+    .look-order
+      width: 40%
+      margin: 15px auto 0
+      text-align: center
+      border: 1px solid $color-row-line
+      font-size: $font-size-medium
+      color: $color-text-d
+      padding: 8px 0
+      border-radius: 2px
+      background: $color-row-line
+</style>
