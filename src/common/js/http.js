@@ -23,6 +23,9 @@ export default class http {
     if (this.isSuccess(res)) {
       const result = res.data
       return result
+    } else if (this.isError(res)) {
+      let status = this.isError(res)
+      wepy.redirectTo({url: `/pages/error/error?status=${status}`})
     } else if (this.isSoldOut(res)) {
       const result = res.data.data
       wepy.redirectTo({url: `/pages/sold-out/sold-out?appId=${result.app_id}&businessCircleId=${result.business_circle_id}`})
@@ -81,6 +84,20 @@ export default class http {
       return true
     }
     return false
+  }
+
+  /**
+   * 异常页面
+   * @param res
+   */
+  static isError(res) {
+    const wxCode = res.statusCode
+    if (wxCode === 404) {
+      return 1
+    } else if (wxCode >= 500) {
+      return 2
+    }
+    return 0
   }
 
   /**
