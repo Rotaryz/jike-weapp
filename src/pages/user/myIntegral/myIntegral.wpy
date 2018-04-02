@@ -20,7 +20,7 @@
         </view>
       </view>
     </view>
-    <view class="integral-list" wx:if="{{integralList === []}}">
+    <view class="integral-list" wx:if="{{integralList !== []}}">
       <view class="list-box" wx:for="{{integralList}}" wx:key="{{index}}">
         <view class="list-box-dsc">
           <view class="title">{{item.remark}}</view>
@@ -33,7 +33,7 @@
         </view>
       </view>
     </view>
-    <view class="integral-null" wx:if="{{integralList !== []}}">
+    <view class="integral-null" wx:if="{{integralList === []}}">
       <image class="integral-null-img" wx:if="{{imageUri}}"
              src="{{imageUri + '/defaults/c-image/mine/pic-dou_empty@2x.png'}}"></image>
       <view class="integral-null-text">赶快去赚取播豆</view>
