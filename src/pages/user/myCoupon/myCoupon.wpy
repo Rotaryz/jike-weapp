@@ -155,11 +155,13 @@
     }
 
     async load() {
+      this.nothingAdd = false
+      this.$invoke('Underline', 'hide')
       let limit
       if (this.nothingAdd || this.couponList.length >= 100) {
         limit = 100
       } else {
-        limit = this.couponList.length ? this.couponList.length : 10
+        limit = Math.ceil(this.couponList.length / 10) * 10 || 10
       }
       let resList = await this._getCouponList(this.menuIdx, 1, limit)
       if (resList.error !== ERR_OK) {
