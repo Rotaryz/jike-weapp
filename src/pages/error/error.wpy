@@ -1,0 +1,38 @@
+<template>
+    <view class="error">
+        <Toast></Toast>
+    </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import base from 'common/mixins/base'
+  import URIS from 'common/js/config'
+  import {ERR_OK} from 'api/base'
+  import Toast from '@/base/toast/toast'
+  export default class error extends wepy.page {
+    mixins = [base]
+
+    config = {
+      navigationBarTitleText: '报错'
+    }
+    data = {
+      imageUrl: URIS.image
+    }
+
+    infoRes(res) {
+      if (res.error === ERR_OK) {
+        return res.data
+      }
+    }
+
+    components = {
+      Toast: Toast
+    }
+  }
+</script>
+
+<style lang="stylus">
+    @import '../../common/stylus/variable'
+    @import '../../common/stylus/mixin'
+</style>
