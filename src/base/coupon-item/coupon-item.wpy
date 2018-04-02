@@ -1,0 +1,666 @@
+<template>
+  <view class="coupon">
+    <view class="coupon-item">
+      <view>{{type}}</view>
+      <image class="coupon-bc" wx:if="{{imageUrlHead && type === 'buy'}}" src="{{imageUrlHead + '/defaults/c-image/mine/bg-coupon_yhq@2x.png'}}"></image>
+      <image class="coupon-bc" wx:if="{{imageUrlHead && type === 'pay' && false}}" src="{{imageUrlHead + '/defaults/c-image/mine/bg-coupon_syyh@2x.png'}}"></image>
+      <image class="coupon-bc" wx:if="{{imageUrlHead && type === 'pay'}}" src="{{imageUrlHead + '/defaults/c-image/mine/bg-coupon_sxsyyh@2x.png'}}"></image>
+      <image class="coupon-bc" wx:if="{{imageUrlHead && type === 'mine' && coupon.promotion.promotion_type !== 'exchange' && coupon.promotion.status === 0}}" src="{{imageUrlHead + '/defaults/c-image/mine/bg-coupon_usable@2x.png'}}"></image>
+      <image class="coupon-bc" wx:if="{{imageUrlHead && type === 'mine' && coupon.promotion.promotion_type !== 'exchange' && coupon.promotion.status !== 0}}" src="{{imageUrlHead + '/defaults/c-image/mine/bg-coupon_disable@2x.png'}}"></image>
+      <image class="coupon-bc" wx:if="{{imageUrlHead && type === 'mine' && coupon.promotion.promotion_type === 'exchange'}}" src="{{imageUrlHead + '/defaults/c-image/mine/bg-coupon-dhq@2x.png'}}"></image>
+      <view class="coupon-content" wx:if="{{type === 'buy'}}" @tap="buyCouponClick">
+        <view class="coupon-left">
+          <view class="coupon-left-first">
+            <image class="shop-img" src="{{coupon.promotion.image_url}}" wx:if="{{coupon.promotion.image_url}}" mode="aspectFill"></image>
+            <image class="shop-img" wx:if="{{imageUrlHead && !coupon.promotion.image_url && coupon.promotion.promotion_type === 'reduction'}}" src="{{imageUrlHead + '/defaults/c-image/mine/pic-coupon_mjq@2x.png'}}"></image>
+            <image class="shop-img" wx:if="{{imageUrlHead && !coupon.promotion.image_url && coupon.promotion.promotion_type === 'discount'}}" src="{{imageUrlHead + '/defaults/c-image/mine/pic-coupon_zkq@2x.png'}}"></image>
+          </view>
+          <view class="coupon-left-second">
+            <view class="coupon-left-second-top">
+              <view class="top-shopName">
+                <text class="top-label">{{coupon.promotion.promotion_type_cn}}</text><text class="top-name">{{coupon.promotion.merchant_data.shop_name}}</text>
+              </view>
+              <view class="top-title">{{coupon.promotion.title}}</view>
+            </view>
+            <view class="coupon-left-second-down">
+              <view class="down-sub" wx:if="{{coupon.promotion.promotion_type === 'reduction' || coupon.promotion.promotion_type === 'discount'}}">全品类可使用</view>
+              <view class="down-money" wx:if="{{coupon.promotion.promotion_type === 'voucher' || coupon.promotion.promotion_type === 'cash'}}">
+                <view class="small-money">¥</view>
+                <view class="big-money">50</view>
+                <view class="del-money" wx:if="{{coupon.promotion.promotion_type === 'voucher'}}">100元</view>
+              </view>
+            </view>
+          </view>
+        </view>
+        <view class="coupon-right">
+          <view class="right-txt">已抢{{coupon.promotion.percentage}}%</view>
+          <view class="progress-box">
+            <progress percent="{{coupon.promotion.percentage}}" stroke-width="6" activeColor="#FF4E00" backgroundColor="#DBDBDB" class="progress" active="{{true}}"></progress>
+          </view>
+          <view class="coupon-btn getBtn" wx:if="{{!coupon.promotion.is_get}}">{{coupon.promotion.promotion_type === 'voucher' || coupon.promotion.promotion_type === 'cash' ? '立即购买' : '立即领取'}}</view>
+          <view class="coupon-btn useBtn" wx:if="{{coupon.promotion.is_get}}">去使用</view>
+        </view>
+      </view>
+
+      <view class="pay-coupon-content dis" wx:if="{{type === 'pay'}}" @tap="buyCouponClick">
+        <view class="coupon-left">
+          <view class="left-money">
+            <view class="small-money" style="font-size:{{coupon.promotion.flag.length > 4 ?'10px' : '18px'}}">¥</view>
+            <view class="big-money" style="font-size:{{coupon.promotion.flag.length > 4 ?'18px' : '30px'}}">{{coupon.promotion.flag}}</view>
+          </view>
+          <view class="left-sub">满1000可用</view>
+        </view>
+        <view class="coupon-middle">
+          <view class="coupon-middle-top">
+            <view class="top-shopName">
+              <text class="top-label">{{coupon.promotion.promotion_type_cn}}</text><text class="top-name">{{coupon.promotion.merchant_data.shop_name}}</text>
+            </view>
+            <view class="top-title">{{coupon.promotion.title}}</view>
+          </view>
+          <view class="coupon-middle-down">
+            <text class="down-time">2018-03-21到期</text>
+          </view>
+        </view>
+        <view class="coupon-right">
+          <image class="right-img" wx:if="{{imageUrlHead && coupon.checked}}" src="{{imageUrlHead + '/defaults/c-image/pay/icon-select_syyh@2x.png'}}"></image>
+          <image class="right-img" wx:if="{{imageUrlHead && !coupon.checked}}" src="{{imageUrlHead + '/defaults/c-image/pay/icon-notselect_syyh@2x.png'}}"></image>
+          <image class="right-img" wx:if="{{imageUrlHead}}" src="{{imageUrlHead + '/defaults/c-image/pay/icon-notselect@2x.png'}}"></image>
+        </view>
+      </view>
+
+      <view class="mine-coupon-content {{coupon.promotion.status === 0 ? '' : 'dis'}}" wx:if="{{type === 'mine' && coupon.promotion.promotion_type !== 'exchange'}}" @tap="buyCouponClick">
+        <view class="coupon-left">
+          <view class="left-money">
+            <view class="small-money" style="font-size: {{coupon.promotion.flag.length>4?'10px' : '18px'}}">¥</view>
+            <view class="big-money" style="font-size: {{coupon.promotion.flag.length>4?'18px' : '30px'}}">{{coupon.promotion.flag}}</view>
+          </view>
+          <view class="left-sub">满1000可用</view>
+        </view>
+        <view class="coupon-middle">
+          <view class="coupon-middle-top">
+            <view class="top-shopName">
+              <text class="top-label">{{coupon.promotion.promotion_type_cn}}</text><text class="top-name">{{coupon.promotion.merchant_data.shop_name}}</text>
+            </view>
+            <view class="top-title">{{coupon.promotion.title}}</view>
+          </view>
+          <view class="coupon-middle-down">
+            <text class="down-time">{{coupon.promotion.end_at}}到期</text>
+          </view>
+        </view>
+        <view class="coupon-right">
+          <view class="use-btn" wx:if="{{coupon.promotion.status === 0}}">立即使用</view>
+          <image class="right-img" wx:if="{{imageUrlHead && coupon.promotion.status === 1}}" src="{{imageUrlHead + '/defaults/c-image/mine/pic-my_already .png'}}"></image>
+          <image class="right-img" wx:if="{{imageUrlHead && coupon.promotion.status === 2}}" src="{{imageUrlHead + '/defaults/c-image/mine/icon_overdue@2x.png'}}"></image>
+        </view>
+      </view>
+
+      <view class="mine-exchange-content {{coupon.promotion.status === 0 ? '' : 'dis'}}" wx:if="{{type === 'mine' && coupon.promotion.promotion_type === 'exchange'}}" @tap="buyCouponClick">
+        <view class="coupon-left">
+          <view class="shop-img-box">
+            <image class="shop-img" src="{{coupon.promotion.image_url}}" wx:if="{{coupon.promotion.image_url}}" mode="aspectFill"></image>
+          </view>
+        </view>
+        <view class="coupon-middle">
+          <view class="coupon-middle-top">
+            <view class="top-shopName">
+              <text class="top-label">{{coupon.promotion.promotion_type_cn}}</text><text class="top-name">{{coupon.promotion.merchant_data.shop_name}}</text>
+            </view>
+            <view class="top-title">{{coupon.promotion.title}}</view>
+          </view>
+          <view class="coupon-middle-down">
+            <text class="down-time">{{coupon.promotion.end_at}}到期</text>
+          </view>
+        </view>
+        <view class="coupon-right">
+          <view class="use-btn" wx:if="{{coupon.promotion.status === 0}}">立即使用</view>
+          <image class="right-img" wx:if="{{imageUrlHead && coupon.promotion.status === 1}}" src="{{imageUrlHead + '/defaults/c-image/mine/pic-my_already .png'}}"></image>
+          <image class="right-img" wx:if="{{imageUrlHead && coupon.promotion.status === 2}}" src="{{imageUrlHead + '/defaults/c-image/mine/icon_overdue@2x.png'}}"></image>
+        </view>
+      </view>
+    </view>
+    <view class="coupon-flag" wx:if="{{type === 'pay'}}">
+      临时文字，请联系卖家核销
+    </view>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import URIS from 'common/js/config'
+
+  export default class Coupon extends wepy.component {
+    props = {
+      coupon: {
+        type: Object,
+        default: {},
+        twoWay: true
+      },
+      // 热销优惠‘buy’,买单‘pay’,我的‘mine’
+      type: {
+        type: String,
+        default: ''
+      }
+    }
+
+    methods = {
+      // 点击优惠券事件(根据需求读取不同数据再进行下一步操作)
+      buyCouponClick() {
+        switch (this.coupon) {
+          case 'buy':
+            if (this.coupon.promotion.promotion_type === 'voucher' || this.coupon.promotion.promotion_type === 'cash') {
+              this.$emit('buy', this.coupon) // 立即购买
+            } else if ((this.coupon.promotion.promotion_type === 'reduction' || this.coupon.promotion.promotion_type === 'discount') && !this.coupon.promotion.is_get) {
+              this.$emit('get', this.coupon) // 立即领取
+            } else if ((this.coupon.promotion.promotion_type === 'reduction' || this.coupon.promotion.promotion_type === 'discount') && this.coupon.promotion.is_get) {
+              this.$emit('use', this.coupon) // 去使用
+            }
+            break
+          case 'pay':
+            // 前面需要进行可用不可用判断，对接时自行添加
+            this.$emit('choice', this.coupon)
+            break
+          case 'mine':
+            if (this.coupon.promotion.status === 0 && (this.coupon.promotion.promotion_type === 'reduction' || this.coupon.promotion.promotion_type === 'discount')) {
+              this.$emit('payUse', this.coupon) // 折扣券，满减券跳详情
+            } else if (this.coupon.promotion.status === 0 && (this.coupon.promotion.promotion_type === 'voucher' || this.coupon.promotion.promotion_type === 'cash' || this.coupon.promotion.promotion_type === 'exchange')) {
+              this.$emit('showQrcord', this.coupon) // 套餐券，代金券，兑换券跳二维码
+            }
+            break
+        }
+      }
+    }
+
+    data = {
+      imageUrlHead: URIS.image
+    }
+  }
+</script>
+
+<style lang="stylus">
+  @import "../../common/stylus/variable"
+
+  .coupon
+    width: 100%
+    .coupon-item
+      width: 100%
+      position: relative
+      padding-bottom: 28.49%
+      height: 0
+
+      .coupon-bc
+        position: absolute
+        left: 0
+        top: 0
+        height: 100%
+        width: 100%
+
+      .coupon-content
+        position: absolute
+        left: 0
+        top: 0
+        width: 100%
+        height: 100%
+        display: flex
+
+        .coupon-left
+          width: 71.22%
+          height: 100%
+          display: flex
+          align-items: center
+
+          .coupon-left-first
+            width: 18.66666666666vw
+            height: 18.66666666666vw
+            border-radius: 3px
+            box-sizing: border-box
+            border: 0.5px solid #e5e5e5
+            margin: 0 4vw
+            .shop-img
+              width: 100%
+              height: 100%
+              border-radius: 3px
+          .coupon-left-second
+            width: 36vw
+            height: 18.66666666666vw
+            display: flex
+            flex-direction: column
+            justify-content: space-between
+
+            .coupon-left-second-top
+              .top-shopName
+                line-height: 18px
+                overflow: hidden
+                text-overflow: ellipsis
+                white-space: nowrap
+
+                .top-label
+                  display: inline-block
+                  width: 31px
+                  height: 14px
+                  border: 1px solid #5D596F
+                  border-radius: 1.5px
+                  font-family: PingFang-SC-Regular
+                  font-size: 9px
+                  color: #706B82
+                  text-align: center
+                  line-height: 14px
+                  margin-right: 4px
+                  vertical-align: middle
+                .top-name
+                  font-size: $font-size-small
+                  color: $color-text
+                  font-family: PingFang-SC-Regular
+
+              .top-title
+                font-family: PingFang-SC-Medium
+                font-size: $font-size-medium
+                color: $color-text
+                margin-top: 6px
+                overflow: hidden
+                text-overflow: ellipsis
+                white-space: nowrap
+
+            .coupon-left-second-down
+              overflow: hidden
+              text-overflow: ellipsis
+              white-space: nowrap
+              .down-sub
+                font-family: PingFang-SC-Medium
+                font-size: $font-size-small
+                color: $color-text
+              .down-money
+                display: flex
+                align-items: flex-end
+                font-size: 0
+                .small-money
+                  font-family: PingFang-SC-Medium
+                  font-size: $font-size-small
+                  color: $color-orange
+                .big-money
+                  font-family: PingFangSC-Semibold
+                  font-size: $font-size-large-xx
+                  color: $color-orange
+                  line-height: 24px
+                  margin-bottom: -3px
+                  margin-left: 1px
+                  margin-right: 5px
+                .del-money
+                  font-family: PingFangSC-Light
+                  font-size: $font-size-small
+                  color: $color-text-d
+                  text-decoration: line-through
+
+        .coupon-right
+          width: 28.78%
+          display: flex
+          flex-direction: column
+          justify-content: flex-end
+          align-items: center
+
+          .right-txt
+            text-align: center
+            font-family: PingFang-SC-Medium
+            font-size: $font-size-small-s
+            color: $color-text
+            margin-bottom: 7.5px
+
+          .progress-box
+            width: 70px
+            height: 6px
+            border-radius: 3px
+            overflow: hidden
+            margin-bottom: 4.933333333vw
+            .progress
+              width: 70px
+
+          .coupon-btn
+            width: 72px
+            height: 20px
+            box-sizing: border-box
+            border-radius: 10px
+            font-family: PingFangSC-Regular
+            font-size: $font-size-small
+            text-align: center
+            margin-bottom: 4.133333333vw
+
+          .getBtn
+            line-height: 20px
+            background: $color-orange
+            color: $color-white
+
+          .useBtn
+            line-height: 18px
+            border: 1px solid $color-orange
+            background: $color-white
+            color: $color-orange
+
+      .pay-coupon-content
+        position: absolute
+        left: 0
+        top: 0
+        width: 100%
+        height: 100%
+        display: flex
+        .coupon-left
+          width: 29.91%
+          display: flex
+          flex-direction: column
+          align-items: center
+          justify-content: center
+          overflow: hidden
+          .left-money
+            display: flex
+            align-items: flex-end
+            .small-money
+              font-family: PingFang-SC-Medium
+              color: $color-white
+            .big-money
+              font-family: PingFangSC-Semibold
+              color: $color-white
+              margin-bottom: -2px
+          .left-sub
+            font-family: PingFang-SC-Medium
+            font-size: $font-size-small
+            color: $color-white
+            margin-top: 8px
+        .coupon-middle
+          width: 52.5%
+          height: 100%
+          display: flex
+          flex-direction: column
+          justify-content: space-between
+          box-sizing: border-box
+          padding: 4.13333vw 3.6vw
+
+          .coupon-middle-top
+            .top-shopName
+              line-height: 18px
+              overflow: hidden
+              text-overflow: ellipsis
+              white-space: nowrap
+
+              .top-label
+                display: inline-block
+                width: 31px
+                height: 14px
+                border: 1px solid #5D596F
+                border-radius: 1.5px
+                font-family: PingFang-SC-Regular
+                font-size: 9px
+                color: #706B82
+                text-align: center
+                line-height: 14px
+                margin-right: 4px
+                vertical-align: middle
+              .top-name
+                font-size: $font-size-small
+                color: $color-text
+                font-family: PingFang-SC-Regular
+
+            .top-title
+              font-family: PingFang-SC-Medium
+              font-size: $font-size-medium
+              color: $color-text
+              margin-top: 6px
+              overflow: hidden
+              text-overflow: ellipsis
+              white-space: nowrap
+          .coupon-middle-down
+            .down-time
+              padding: 3px
+              background: rgba(255,78,0,0.1)
+              font-family: PingFangSC-Light
+              font-size: $font-size-small-s
+              color: $color-orange
+        .coupon-right
+          width: 17.59%
+          display: flex
+          justify-content: center
+          align-items: center
+          .right-img
+            width: 17px
+            height: 17px
+      .pay-coupon-content.dis
+        .coupon-middle
+          .coupon-middle-top
+            .top-shopName
+              .top-label
+                border: 1px solid #DBDBDB
+                color: #DBDBDB
+              .top-name
+                color: #DBDBDB
+            .top-title
+              color: #DBDBDB
+          .coupon-middle-down
+            .down-time
+              color: #DBDBDB
+              background: rgba(219,219,219,0.1)
+
+      .mine-coupon-content
+        position: absolute
+        left: 0
+        top: 0
+        width: 100%
+        height: 100%
+        display: flex
+        .coupon-left
+          width: 29.91%
+          display: flex
+          flex-direction: column
+          align-items: center
+          justify-content: center
+          overflow: hidden
+          .left-money
+            display: flex
+            align-items: flex-end
+            .small-money
+              font-family: PingFang-SC-Medium
+              color: $color-white
+            .big-money
+              font-family: PingFangSC-Semibold
+              color: $color-white
+              margin-bottom: -2px
+          .left-sub
+            font-family: PingFang-SC-Medium
+            font-size: $font-size-small
+            color: $color-white
+            margin-top: 8px
+        .coupon-middle
+          width: 45.37%
+          height: 100%
+          display: flex
+          flex-direction: column
+          justify-content: space-between
+          box-sizing: border-box
+          padding: 4.13333vw 3.6vw
+
+          .coupon-middle-top
+            .top-shopName
+              line-height: 18px
+              overflow: hidden
+              text-overflow: ellipsis
+              white-space: nowrap
+
+              .top-label
+                display: inline-block
+                width: 31px
+                height: 14px
+                border: 1px solid #5D596F
+                border-radius: 1.5px
+                font-family: PingFang-SC-Regular
+                font-size: 9px
+                color: #706B82
+                text-align: center
+                line-height: 14px
+                margin-right: 4px
+                vertical-align: middle
+              .top-name
+                font-size: $font-size-small
+                color: $color-text
+                font-family: PingFang-SC-Regular
+
+            .top-title
+              font-family: PingFang-SC-Medium
+              font-size: $font-size-medium
+              color: $color-text
+              margin-top: 6px
+              overflow: hidden
+              text-overflow: ellipsis
+              white-space: nowrap
+          .coupon-middle-down
+            .down-time
+              padding: 3px
+              background: rgba(255,78,0,0.1)
+              font-family: PingFangSC-Light
+              font-size: $font-size-small-s
+              color: $color-orange
+        .coupon-right
+          width: 24.72%
+          display: flex
+          justify-content: center
+          align-items: center
+          .use-btn
+            width: 72px
+            height: 20px
+            border-radius: 10px
+            font-family: PingFangSC-Regular
+            font-size: $font-size-small
+            text-align: center
+            line-height: 20px
+            background: $color-orange
+            color: $color-white
+          .right-img
+            width: 60px
+            height: 60px
+      .mine-coupon-content.dis
+        .coupon-middle
+          .coupon-middle-top
+            .top-shopName
+              .top-label
+                border: 1px solid #DBDBDB
+                color: #DBDBDB
+              .top-name
+                color: #DBDBDB
+            .top-title
+              color: #DBDBDB
+          .coupon-middle-down
+            .down-time
+              color: #DBDBDB
+              background: rgba(219,219,219,0.1)
+
+      .mine-exchange-content
+        position: absolute
+        left: 0
+        top: 0
+        width: 100%
+        height: 100%
+        display: flex
+        .coupon-left
+          width: 28.63%
+          display: flex
+          align-items: center
+          justify-content: flex-end
+          overflow: hidden
+          .shop-img-box
+            width: 18.66666666666vw
+            height: 18.66666666666vw
+            border-radius: 3px
+            box-sizing: border-box
+            border: 0.5px solid #e5e5e5
+            .shop-img
+              width: 100%
+              height: 100%
+              border-radius: 3px
+        .coupon-middle
+          width: 46.65%
+          height: 100%
+          display: flex
+          flex-direction: column
+          justify-content: space-between
+          box-sizing: border-box
+          padding: 4.13333vw 3.6vw
+          .coupon-middle-top
+            .top-shopName
+              line-height: 18px
+              overflow: hidden
+              text-overflow: ellipsis
+              white-space: nowrap
+
+              .top-label
+                display: inline-block
+                width: 31px
+                height: 14px
+                border: 1px solid #5D596F
+                border-radius: 1.5px
+                font-family: PingFang-SC-Regular
+                font-size: 9px
+                color: #706B82
+                text-align: center
+                line-height: 14px
+                margin-right: 4px
+                vertical-align: middle
+              .top-name
+                font-size: $font-size-small
+                color: $color-text
+                font-family: PingFang-SC-Regular
+
+            .top-title
+              font-family: PingFang-SC-Medium
+              font-size: $font-size-medium
+              color: $color-text
+              margin-top: 6px
+              overflow: hidden
+              text-overflow: ellipsis
+              white-space: nowrap
+          .coupon-middle-down
+            .down-time
+              padding: 3px
+              background: rgba(255,78,0,0.1)
+              font-family: PingFangSC-Light
+              font-size: $font-size-small-s
+              color: $color-orange
+        .coupon-right
+          width: 24.72%
+          display: flex
+          justify-content: center
+          align-items: center
+          .use-btn
+            width: 72px
+            height: 20px
+            border-radius: 10px
+            font-family: PingFangSC-Regular
+            font-size: $font-size-small
+            text-align: center
+            line-height: 20px
+            background: $color-orange
+            color: $color-white
+          .right-img
+            width: 60px
+            height: 60px
+      .mine-exchange-content.dis
+        .coupon-middle
+          .coupon-middle-top
+            .top-shopName
+              .top-label
+                border: 1px solid #DBDBDB
+                color: #DBDBDB
+              .top-name
+                color: #DBDBDB
+            .top-title
+              color: #DBDBDB
+          .coupon-middle-down
+            .down-time
+              color: #DBDBDB
+              background: rgba(219,219,219,0.1)
+    .coupon-flag
+      height: 28px
+      box-sizing: border-box
+      border: 1px solid $color-col-line
+      font-size: $font-size-small
+      color: #dbdbdb
+      font-family: PingFang-SC-Medium
+      line-height: 28px
+      text-align: center
+      border-top: 0 none
+      background: $color-white
+</style>
