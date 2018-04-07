@@ -1,0 +1,65 @@
+<template>
+  <view class="recom-buy">
+    <image class="icon" wx:if="{{imageUri}}" src="{{imageUri + '/defaults/c-image/recom/pic-md_tj@2x.png'}}"></image>
+    <view class="content">每满200减88元</view>
+    <view class="btn-toBuy">去买单</view>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import URIS from 'common/js/config'
+
+  export default class RecomBuy extends wepy.component {
+    data = {
+      imageUri: URIS.image
+    }
+  }
+</script>
+
+<style lang='stylus'>
+  @import "../../common/stylus/variable"
+  @import "../../common/stylus/mixin"
+
+  .recom-buy
+    layout(row)
+    position: relative
+    width: 100vw
+    height: 60.5px
+    align-items: center
+    background-color: $color-white
+    margin-top: 10px
+    &::after
+      content: ""
+      position: absolute
+      left: 55.75px
+      col-center()
+      width: 1px
+      height: 19.5px
+      border-left: 1px solid $color-col-line
+    .icon
+      display: inline-block
+      width: 37px
+      height: 19px
+      margin: 0 16.5px 0 11.5px
+    .content
+      font-family: PingFang-SC-Regular
+      font-size: $font-size-medium
+      color: $color-text
+      letter-spacing: 0.42px
+      line-height: $font-size-medium
+    .btn-toBuy
+      position :absolute
+      right :25px
+      col-center()
+      width: 72.5px
+      height: 25px
+      background-color: $color-orange
+      border-radius: 100px
+      text-align: center
+      font-family: PingFang-SC-Medium
+      font-size: $font-size-small
+      color: $color-white
+      letter-spacing: 0
+      line-height: 25px
+</style>

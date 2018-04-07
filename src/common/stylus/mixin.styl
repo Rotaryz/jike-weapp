@@ -115,3 +115,9 @@ all-center()
   left:50%
   transform :translate(-50%,-50%)
 
+//布局
+layout($direction = column, $inline = block, $wrap = wrap)
+  display: $inline == block ? flex:inline-flex
+  flex-direction: $direction
+  flex-wrap: $wrap
+

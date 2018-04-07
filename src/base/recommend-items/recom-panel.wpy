@@ -1,0 +1,142 @@
+<template>
+  <view class="recom-panel">
+    <view class="header">
+      <view class="title">{{title}}</view>
+      <view class="more" wx:if="{{isShowMore}}" @tap.stop="toMore({{targetUrl}})">
+        <text class="info" wx:if="{{isShowInfo}}">全部22个</text>
+        <image class="arrow-right" wx:if="{{imageUri}}"
+               src="{{imageUri + '/defaults/c-image/square/icon-s_right2@2x.png'}}"></image>
+      </view>
+    </view>
+    <view class="article">
+      <swiper
+        class="swiper-box"
+        indicator-dots="{{indicatorDots}}"
+        autoplay="{{auto}}"
+        interval="{{interVal}}"
+        duration="{{duration}}"
+        circular="{{circular}}"
+        current="{{swiperCurrent}}"
+        @change="changeVal"
+      >
+        <slot></slot>
+      </swiper>
+      <view class="dot-box">
+        <block wx:for="{{list}}" wx:key="{{index}}">
+          <view class="dot {{index == swiperCurrent ? 'active' : ''}}"></view>
+        </block>
+      </view>
+    </view>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import URIS from 'common/js/config'
+  /* eslint-disable no-undef */
+  export default class RecomPanel extends wepy.component {
+    props = {
+      list: {
+        type: Array,
+        default: []
+      },
+      title: {
+        type: String,
+        default: ''
+      },
+      isShowMore: {
+        type: Boolean,
+        default: false
+      },
+      isShowInfo: {
+        type: Boolean,
+        default: false
+      },
+      targetUrl: {
+        type: String,
+        default: ''
+      }
+    }
+
+    data = {
+      imageUri: URIS.image,
+      indicatorDots: false,
+      auto: false,
+      circular: true,
+      interVal: 5000,
+      duration: 1000,
+      swiperCurrent: 1
+    }
+
+    methods = {
+      changeVal(e) {
+        this.swiperCurrent = e.detail.current
+      },
+      toMore(url) {
+        console.log(111, this)
+        wx.navigateTo({
+          url
+        })
+      }
+    }
+  }
+</script>
+
+<style lang='stylus'>
+  @import "../../common/stylus/variable"
+  @import "../../common/stylus/mixin"
+
+  .recom-panel
+    margin-top: 10px
+    background-color: $color-white
+    .header
+      layout(row)
+      justify-content: space-between
+      align-items: flex-end
+      width: 100vw
+      padding: 15px 12px
+      box-sizing: border-box
+      .title
+        font-family: PingFang-SC-Medium
+        font-size: $font-size-medium-x
+        color: $color-text
+        letter-spacing: 0
+        line-height: $font-size-medium-x
+      .more
+        layout(row)
+        justify-content: flex-end
+        align-items: flex-end
+        .info
+          font-family: PingFang-SC-Medium
+          font-size: $font-size-small
+          color: #A1A1A1
+          letter-spacing: 0
+          line-height: $font-size-small
+        .arrow-right
+          width: 7px
+          height: 12px
+          margin-left: 5px
+    .article
+      width: 100vw
+      box-sizing: border-box
+      padding: 0 12px 10px
+      position: relative
+      .dot-box
+        position: absolute
+        bottom: 12px
+        left: 0
+        right: 0
+        layout(row)
+        justify-content: center
+      .dot
+        width: 3px
+        height: 3px
+        border-radius: 50%
+        background-color: $color-button-dis
+        margin: 0 4px
+        transition: all .3s
+        &.active
+          width: 11px
+          border-radius: 100px
+          background-color: $color-text-t
+</style>

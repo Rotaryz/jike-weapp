@@ -15,7 +15,7 @@
                 type="default" size="mini"
                 class="content-wrapper">
           <image class="icon" wx:if="{{imageUri && industry.length}}"
-                 src="{{imageUri + '/defaults/c-image/recommend/icon-live_'+industry+'@2x.png'}}"></image>
+                 src="{{imageUri + '/defaults/c-image/recom/icon-r_live@2x.png'}}"></image>
           <view class="content">直播优惠</view>
         </button>
         <button form-type="submit"
@@ -23,7 +23,7 @@
                 type="default" size="mini"
                 class="content-wrapper">
           <image class="icon" wx:if="{{imageUri && industry.length}}"
-                 src="{{imageUri + '/defaults/c-image/recommend/icon-share_'+industry+'@2x.png'}}"></image>
+                 src="{{imageUri + '/defaults/c-image/recom/icon-r_share@2x.png'}}"></image>
           <view class="content">分享有礼</view>
         </button>
         <button form-type="submit"
@@ -31,7 +31,7 @@
                 type="default" size="mini"
                 class="content-wrapper">
           <image class="icon" wx:if="{{imageUri && industry.length}}"
-                 src="{{imageUri + '/defaults/c-image/recommend/icon-sign_'+industry+'@2x.png'}}"></image>
+                 src="{{imageUri + '/defaults/c-image/recom/icon-r_sign@2x.png'}}"></image>
           <view class="content">签到红包</view>
         </button>
         <button form-type="submit"
@@ -39,98 +39,102 @@
                 type="default" size="mini"
                 class="content-wrapper">
           <image class="icon" wx:if="{{imageUri && industry.length}}"
-                 src="{{imageUri + '/defaults/c-image/recommend/icon-turntable_'+industry+'@2x.png'}}"></image>
-          <view class="content">大转盘 </view>
+                 src="{{imageUri + '/defaults/c-image/recom/icon-turntable@2x.png'}}"></image>
+          <view class="content">大转盘</view>
         </button>
       </view>
     </form>
-    <view class="tab-container">
-      <view class="tab-wrapper">
-        <view class="tab-content border-bottom-1px">
-          <view class="tab-item" @tap="clickTab(1)">
-            <view
-              class="tab-item-txt {{activeTab === '1' ? industry + '-border' : ''}}">
-              优惠券
-            </view>
-          </view>
-          <view class="tab-item" @tap="clickTab(2)">
-            <view
-              class="tab-item-txt {{activeTab === '2' ? industry + '-border' : ''}}">
-              发现
-            </view>
-          </view>
-        </view>
-        <view class="tab-line {{activeTab === '2' ? 'discover' : ''}}"></view>
-      </view>
-      <view class="tab-content-wrapper">
-        <view class="coupon-panel"
-              style="display: {{activeTab === '1' ? 'block':''}}">
-          <repeat for="{{giftBags}}" key="index" index="index" item="item">
-            <package :giftbag.sync="item" @handleClick.user="goToCouponDetail"
-                     :index="index"></package>
-          </repeat>
-          <repeat for="{{couponList}}" key="index" index="index" item="item">
-            <coupon :coupon.sync="item" :industry.sync="industry"
-                    @handleClick.user="goToCouponDetail"></coupon>
-          </repeat>
-          <view class="nothing-box" wx:if="{{couponNothing}}">
-            <image
-              src="{{imageUri + '/defaults/c-image/mine/pic-empty_coupon@2x.png'}}"
-              wx:if="{{imageUri}}" class="nothing-img"></image>
-            <view class="nothing-txt">暂无优惠券</view>
-          </view>
-          <underline1></underline1>
-        </view>
-        <view class="discover-panel"
-              style="display: {{activeTab === '2' ? 'block':''}}">
-          <navigator
-            url="/pages/content-detail/content-detail?id={{item.id}}&currentMerchant={{item.merchant_id}}"
-            class="ticky-wrapper"
-            wx:for="{{contents}}" wx:key="unique">
-            <view class="ticky">
-              <image src="{{item.image_url}}" class="full-image"
-                     mode="widthFix"></image>
-              <view class="title">{{item.title}}</view>
-            </view>
-            <view class="collector">
-              <view class="avatar-wrapper">
-                <view class="avatar" wx:for="{{item.customer_images}}"
-                      wx:key="unique" wx:for-item="avatar"
-                      wx:if="{{index < 5}}">
-                  <image src="{{avatar}}" alt="" class="full-image"></image>
-                </view>
-                <view class="more" wx:if="{{item.customer_images.length > 5}}">
-                  <view class="dot"></view>
-                  <view class="dot"></view>
-                  <view class="dot"></view>
-                </view>
-              </view>
-              <view class="collect">
-                <view class="icon icon-collected">
-                  <image wx:if="{{imageUri}}"
-                         src="{{imageUri + '/defaults/c-image/mine/icon-r_collection@2x.png'}}"
-                         class="full-image"></image>
-                </view>
-                <view class="font">{{item.favorite_count}}</view>
-                <view class="icon icon-collected last">
-                  <image wx:if="{{imageUri}}"
-                         src="{{imageUri + '/defaults/c-image/mine/icon-r_share1@2x.png'}}"
-                         class="full-image"></image>
-                </view>
-                <view class="font">{{item.share_count}}</view>
-              </view>
-            </view>
-          </navigator>
-          <view class="nothing-box" wx:if="{{contentNothing}}">
-            <image
-              src="{{imageUri + '/defaults/c-image/mine/pic-empty_content@2x.png'}}"
-              wx:if="{{imageUri}}" class="nothing-img"></image>
-            <view class="nothing-txt">暂无内容</view>
-          </view>
-          <underline2></underline2>
-        </view>
-      </view>
-    </view>
+    <recom-buy></recom-buy>
+    <recom-giftbat></recom-giftbat>
+    <recom-hot></recom-hot>
+    <recom-discovery></recom-discovery>
+    <!--<view class="tab-container">-->
+    <!--<view class="tab-wrapper">-->
+    <!--<view class="tab-content border-bottom-1px">-->
+    <!--<view class="tab-item" @tap="clickTab(1)">-->
+    <!--<view-->
+    <!--class="tab-item-txt {{activeTab === '1' ? industry + '-border' : ''}}">-->
+    <!--优惠券-->
+    <!--</view>-->
+    <!--</view>-->
+    <!--<view class="tab-item" @tap="clickTab(2)">-->
+    <!--<view-->
+    <!--class="tab-item-txt {{activeTab === '2' ? industry + '-border' : ''}}">-->
+    <!--发现-->
+    <!--</view>-->
+    <!--</view>-->
+    <!--</view>-->
+    <!--<view class="tab-line {{activeTab === '2' ? 'discover' : ''}}"></view>-->
+    <!--</view>-->
+    <!--<view class="tab-content-wrapper">-->
+    <!--<view class="coupon-panel"-->
+    <!--style="display: {{activeTab === '1' ? 'block':''}}">-->
+    <!--<repeat for="{{giftBags}}" key="index" index="index" item="item">-->
+    <!--<package :giftbag.sync="item" @handleClick.user="goToCouponDetail"-->
+    <!--:index="index"></package>-->
+    <!--</repeat>-->
+    <!--<repeat for="{{couponList}}" key="index" index="index" item="item">-->
+    <!--<coupon :coupon.sync="item" :industry.sync="industry"-->
+    <!--@handleClick.user="goToCouponDetail"></coupon>-->
+    <!--</repeat>-->
+    <!--<view class="nothing-box" wx:if="{{couponNothing}}">-->
+    <!--<image-->
+    <!--src="{{imageUri + '/defaults/c-image/mine/pic-empty_coupon@2x.png'}}"-->
+    <!--wx:if="{{imageUri}}" class="nothing-img"></image>-->
+    <!--<view class="nothing-txt">暂无优惠券</view>-->
+    <!--</view>-->
+    <!--<underline1></underline1>-->
+    <!--</view>-->
+    <!--<view class="discover-panel"-->
+    <!--style="display: {{activeTab === '2' ? 'block':''}}">-->
+    <!--<navigator-->
+    <!--url="/pages/content-detail/content-detail?id={{item.id}}&currentMerchant={{item.merchant_id}}"-->
+    <!--class="ticky-wrapper"-->
+    <!--wx:for="{{contents}}" wx:key="unique">-->
+    <!--<view class="ticky">-->
+    <!--<image src="{{item.image_url}}" class="full-image"-->
+    <!--mode="widthFix"></image>-->
+    <!--<view class="title">{{item.title}}</view>-->
+    <!--</view>-->
+    <!--<view class="collector">-->
+    <!--<view class="avatar-wrapper">-->
+    <!--<view class="avatar" wx:for="{{item.customer_images}}"-->
+    <!--wx:key="unique" wx:for-item="avatar"-->
+    <!--wx:if="{{index < 5}}">-->
+    <!--<image src="{{avatar}}" alt="" class="full-image"></image>-->
+    <!--</view>-->
+    <!--<view class="more" wx:if="{{item.customer_images.length > 5}}">-->
+    <!--<view class="dot"></view>-->
+    <!--<view class="dot"></view>-->
+    <!--<view class="dot"></view>-->
+    <!--</view>-->
+    <!--</view>-->
+    <!--<view class="collect">-->
+    <!--<view class="icon icon-collected">-->
+    <!--<image wx:if="{{imageUri}}"-->
+    <!--src="{{imageUri + '/defaults/c-image/mine/icon-r_collection@2x.png'}}"-->
+    <!--class="full-image"></image>-->
+    <!--</view>-->
+    <!--<view class="font">{{item.favorite_count}}</view>-->
+    <!--<view class="icon icon-collected last">-->
+    <!--<image wx:if="{{imageUri}}"-->
+    <!--src="{{imageUri + '/defaults/c-image/mine/icon-r_share1@2x.png'}}"-->
+    <!--class="full-image"></image>-->
+    <!--</view>-->
+    <!--<view class="font">{{item.share_count}}</view>-->
+    <!--</view>-->
+    <!--</view>-->
+    <!--</navigator>-->
+    <!--<view class="nothing-box" wx:if="{{contentNothing}}">-->
+    <!--<image-->
+    <!--src="{{imageUri + '/defaults/c-image/mine/pic-empty_content@2x.png'}}"-->
+    <!--wx:if="{{imageUri}}" class="nothing-img"></image>-->
+    <!--<view class="nothing-txt">暂无内容</view>-->
+    <!--</view>-->
+    <!--<underline2></underline2>-->
+    <!--</view>-->
+    <!--</view>-->
+    <!--</view>-->
     <toast></toast>
   </view>
 </template>
@@ -148,6 +152,10 @@
   import Giftbag from '@/base/giftbag/giftbag'
   import URIS from 'common/js/config'
   import Underline from '@/base/underline-block/underline-block'
+  import RecomBuy from '@/base/recommend-items/recom-buy'
+  import RecomGiftbag from '@/base/recommend-items/recom-merchant-giftbag'
+  import RecomHot from '@/base/recommend-items/recom-hot'
+  import RecomDiscovery from '@/base/recommend-items/recom-discovery'
 
   const COUPON_TYPE = 1
   const PACKAGE_TYPE = 2
@@ -481,7 +489,11 @@
       coupon: Coupon,
       toast: Toast,
       underline1: Underline,
-      underline2: Underline
+      underline2: Underline,
+      'recom-buy': RecomBuy,
+      'recom-giftbat': RecomGiftbag,
+      'recom-hot': RecomHot,
+      'recom-discovery': RecomDiscovery
 //      'phone-test': PhoneTest
     }
 
@@ -562,6 +574,7 @@
             display: flex
             justify-content: center
             .tab-item-txt
+              font-family: PingFangSC-Light
               font-size: $font-size-medium
               text-align: center
               line-height: 42px
