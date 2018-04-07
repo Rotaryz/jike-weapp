@@ -527,7 +527,7 @@
 
       .underImage
         width: 90%
-        height: 5vw
+        height: 9.6vw
         position: absolute
         bottom: -3vw
         left: 50%
