@@ -23,22 +23,22 @@
               <view class="top-title">{{coupon.promotion.title}}</view>
             </view>
             <view class="coupon-left-second-down">
-              <view class="down-sub" wx:if="{{coupon.promotion.promotion_type === 'reduction' || coupon.promotion.promotion_type === 'discount'}}">全品类可使用</view>
+              <view class="down-sub" wx:if="{{coupon.promotion.promotion_type === 'reduction' || coupon.promotion.promotion_type === 'discount'}}">{{coupon.promotion.note.scope_application}}</view>
               <view class="down-money" wx:if="{{coupon.promotion.promotion_type === 'voucher' || coupon.promotion.promotion_type === 'cash'}}">
                 <view class="small-money">¥</view>
-                <view class="big-money">50</view>
-                <view class="del-money" wx:if="{{coupon.promotion.promotion_type === 'voucher'}}">100元</view>
+                <view class="big-money">{{coupon.promotion.platform_price}}</view>
+                <view class="del-money" wx:if="{{coupon.promotion.promotion_type === 'voucher'}}">{{coupon.promotion.shop_price}}元</view>
               </view>
             </view>
           </view>
         </view>
         <view class="coupon-right">
-          <view class="right-txt">已抢{{coupon.promotion.percentage}}%</view>
+          <view class="right-txt">{{coupon.promotion.init_stock === -1 ? '已抢1%' : coupon.promotion.percentage === 100 ? '已抢光' : '已抢' + coupon.promotion.percentage + '%'}}</view>
           <view class="progress-box">
-            <progress percent="{{coupon.promotion.percentage}}" stroke-width="6" activeColor="#FF4E00" backgroundColor="#DBDBDB" class="progress" active="{{true}}"></progress>
+            <progress percent="{{coupon.promotion.init_stock === -1 ? 1 : coupon.promotion.percentage}}" stroke-width="6" activeColor="#FF4E00" backgroundColor="#DBDBDB" class="progress" active="{{true}}"></progress>
           </view>
-          <view class="coupon-btn getBtn" wx:if="{{!coupon.promotion.is_get}}">{{coupon.promotion.promotion_type === 'voucher' || coupon.promotion.promotion_type === 'cash' ? '立即购买' : '立即领取'}}</view>
-          <view class="coupon-btn useBtn" wx:if="{{coupon.promotion.is_get}}">去使用</view>
+          <view class="coupon-btn getBtn" wx:if="{{(coupon.promotion.promotion_type === 'voucher' || coupon.promotion.promotion_type === 'cash') || ((coupon.promotion.promotion_type === 'reduction' || coupon.promotion.promotion_type === 'discount') && coupon.promotion.can_buy)}}">{{coupon.promotion.promotion_type === 'voucher' || coupon.promotion.promotion_type === 'cash' ? '立即购买' : '立即领取'}}</view>
+          <view class="coupon-btn useBtn" wx:if="{{(coupon.promotion.promotion_type === 'reduction' || coupon.promotion.promotion_type === 'discount') && !coupon.promotion.can_buy}}">去使用</view>
         </view>
       </view>
 
@@ -48,7 +48,7 @@
             <view class="small-money" style="font-size:{{coupon.promotion.flag.length > 4 ?'10px' : '18px'}}">¥</view>
             <view class="big-money" style="font-size:{{coupon.promotion.flag.length > 4 ?'18px' : '30px'}}">{{coupon.promotion.flag}}</view>
           </view>
-          <view class="left-sub">满1000可用</view>
+          <view class="left-sub" wx:if="{{coupon.promotion.promotion_type === 'reduction' || coupon.promotion.promotion_type === 'discount}}">满{{coupon.promotion.config.meet_money}}可用</view>
         </view>
         <view class="coupon-middle">
           <view class="coupon-middle-top">
@@ -74,7 +74,7 @@
             <view class="small-money" style="font-size: {{coupon.promotion.flag.length>4?'10px' : '18px'}}">¥</view>
             <view class="big-money" style="font-size: {{coupon.promotion.flag.length>4?'18px' : '30px'}}">{{coupon.promotion.flag}}</view>
           </view>
-          <view class="left-sub">满1000可用</view>
+          <view class="left-sub" wx:if="{{coupon.promotion.promotion_type === 'reduction' || coupon.promotion.promotion_type === 'discount}}">满{{coupon.promotion.config.meet_money}}可用</view>
         </view>
         <view class="coupon-middle">
           <view class="coupon-middle-top">
@@ -261,9 +261,11 @@
                 white-space: nowrap
 
             .coupon-left-second-down
-              overflow: hidden
+              overflow : hidden
               text-overflow: ellipsis
-              white-space: nowrap
+              display: -webkit-box
+              -webkit-line-clamp: 2
+              -webkit-box-orient: vertical
               .down-sub
                 font-family: PingFang-SC-Medium
                 font-size: $font-size-small
