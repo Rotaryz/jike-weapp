@@ -37,7 +37,7 @@
           <view class="progress-box">
             <progress percent="{{coupon.promotion.init_stock === -1 ? 1 : coupon.promotion.percentage}}" stroke-width="6" activeColor="#FF4E00" backgroundColor="#DBDBDB" class="progress" active="{{true}}"></progress>
           </view>
-          <view class="coupon-btn getBtn" wx:if="{{(coupon.promotion.promotion_type === 'voucher' || coupon.promotion.promotion_type === 'cash') || ((coupon.promotion.promotion_type === 'reduction' || coupon.promotion.promotion_type === 'discount') && coupon.promotion.can_buy)}}">{{coupon.promotion.promotion_type === 'voucher' || coupon.promotion.promotion_type === 'cash' ? '立即购买' : '立即领取'}}</view>
+          <view class="coupon-btn getBtn" wx:if="{{(coupon.promotion.promotion_type === 'voucher' || coupon.promotion.promotion_type === 'cash') || ((coupon.promotion.promotion_type === 'reduction' || coupon.promotion.promotion_type === 'discount') && coupon.promotion.can_buy)}}">{{coupon.promotion.promotion_type === 'voucher' || coupon.promotion.promotion_type === 'cash' ? '立即抢购' : '立即领取'}}</view>
           <view class="coupon-btn useBtn" wx:if="{{(coupon.promotion.promotion_type === 'reduction' || coupon.promotion.promotion_type === 'discount') && !coupon.promotion.can_buy}}">去使用</view>
         </view>
       </view>
