@@ -1,21 +1,27 @@
 <template>
   <view class="recom-hot">
-    <coupon-item type="buy"></coupon-item>
     <recom-panel
       title="热销优惠券"
       :isShowMore.sync="isShowMore"
-      :isShowInfo.sync="isShowInfo"
-      :list.sync="list"
+      :isShowInfo.sync="length*1"
       :targetUrl.sync="targetUrl"
+      :length.sync="length"
     >
-      <repeat for="{{list}}" wx:key="{{item}}">
-        <swiper-item>
-          <view class="content-item">
-            <coupon-item type="buy"></coupon-item>
-
-          </view>
-        </swiper-item>
-      </repeat>
+      <view class="swiper-wrapper" slot="panel">
+        <recom-swiper :list.sync="list">
+          <block wx:for="{{list}}" wx:key="index" slot="swiper">
+            <swiper-item wx:if="{{item.length}}">
+              <repeat for="{{item}}" key="index" index="index" item="item2">
+                <view class="content">
+                  <view class="content-item">
+                    <coupon-item :type="type" :coupon.sync="item2"></coupon-item>
+                  </view>
+                </view>
+              </repeat>
+            </swiper-item>
+          </block>
+        </recom-swiper>
+      </view>
     </recom-panel>
   </view>
 </template>
@@ -23,31 +29,54 @@
 <script>
   import wepy from 'wepy'
   import RecomPanel from '@/base/recommend-items/recom-panel'
+  import RecomSwiper from '@/base/recommend-items/recom-swiper'
   import CouponItem from '@/base/coupon-item/coupon-item'
 
   export default class Template extends wepy.component {
+    props = {
+      list: {
+        type: Object,
+        default: {}
+      },
+      length: {
+        type: String,
+        default: '0'
+      }
+    }
     data = {
       isShowInfo: true,
       isShowMore: true,
       targetUrl: '/pages/hot-sale/hot-sale',
-      list: [
-        'http://img02.tooopen.com/images/20150928/tooopen_sy_143912755726.jpg',
-        'http://img06.tooopen.com/images/20160818/tooopen_sy_175866434296.jpg',
-        'http://img06.tooopen.com/images/20160818/tooopen_sy_175833047715.jpg'
-      ]
+      type: 'buy'
+    }
+    methods = {
+      test() {
+        console.log(this.list)
+      }
     }
     components = {
       'recom-panel': RecomPanel,
+      'recom-swiper': RecomSwiper,
       'coupon-item': CouponItem
     }
   }
 </script>
 
 <style lang='stylus' scoped>
-  .recom-hot
-    height :67.55319vw
+  @import "../../common/stylus/variable"
+  @import "../../common/stylus/mixin"
 
-    .content-item
-      width: 93.6vw
-      height: 26.595744vw
+  .swiper-wrapper
+    height: 63.297872vw
+
+    .content
+      layout()
+      justify-content: flex-start
+      align-items: center
+      width: 100%
+      .content-item
+        width: 93.6vw
+        margin-bottom: 2.659574vw
+        &:last-child
+          margin-bottom: 3.989vw
 </style>

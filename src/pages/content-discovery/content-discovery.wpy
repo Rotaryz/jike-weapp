@@ -2,9 +2,9 @@
   <view class="hot-sale">
     <view class="article">
       <repeat for="{{list}}" key="index" index="index" item="item">
-          <view class="content-item">
-            <coupon-item :type="type" :coupon.sync="item"></coupon-item>
-          </view>
+        <view class="content-item">
+          <content-item :type="type" :content.sync="item"></content-item>
+        </view>
       </repeat>
     </view>
     <underline></underline>
@@ -20,20 +20,20 @@
   import base from 'common/mixins/base'
   import users from 'common/mixins/users'
   import {ERR_OK} from 'api/base'
-  import Merchants from 'api/merchants'
-  import CouponItem from '@/base/coupon-item/coupon-item'
+  import ContentsApi from 'api/contents'
+  import ContentItem from '@/base/content-item/content-item'
 
   export default class HotSale extends wepy.page {
     mixins = [base, users]
     data = {
       imageUri: URIS.image,
       list: [],
-      type: 'buy',
+      type: 'mine',
       merchantId: wepy.getStorageSync('merchantId')
     }
 
     async onShow() {
-      const list = await this._getCouponsAll()
+      const list = await this._getContentsAll()
       this.list = list
       console.log(list)
       this.loaded()
@@ -41,13 +41,9 @@
       this.$invoke('underline', 'show')
     }
 
-    // 获取推荐优惠券列表（所有）+
-    async _getCouponsAll() {
-      let params = {
-        page: 1,
-        limit: 10
-      }
-      let res = await Merchants.getCoupons(this.merchantId, params)
+    // 获取内容列表 (all)+
+    async _getContentsAll() {
+      const res = await ContentsApi.getMerchantContents()
       if (res.error === ERR_OK) {
         return res.data
       } else {
@@ -58,11 +54,11 @@
     components = {
       toast: Toast,
       underline: Underline,
-      'coupon-item': CouponItem
+      'content-item': ContentItem
     }
 
     config = {
-      navigationBarTitleText: '热销优惠券'
+      navigationBarTitleText: '内容探店'
     }
   }
 
@@ -75,8 +71,8 @@
   .hot-sale
     .article
       layout()
-      align-items :center
+      align-items: center
       .content-item
-        width: 93.6vw
-        margin: 2.8vw
+        width: 100vw
+        margin-bottom: 2.8vw
 </style>

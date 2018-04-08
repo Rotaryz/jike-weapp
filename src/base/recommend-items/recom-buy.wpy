@@ -1,7 +1,23 @@
 <template>
   <view class="recom-buy">
     <image class="icon" wx:if="{{imageUri}}" src="{{imageUri + '/defaults/c-image/recom/pic-md_tj@2x.png'}}"></image>
-    <view class="content">每满200减88元</view>
+    <view class="content" wx:if="{{list.length<=0}}">{{content}}</view>
+    <swiper
+      wx:else
+      class="content"
+      indicator-dots="{{indicatorDots}}"
+      autoplay="{{autoplay}}"
+      interval="{{interval}}"
+      duration="{{duration}}"
+      circular="{{circular}}"
+      vertical="{{vertical}}"
+    >
+      <block wx:for="{{list}}" wx:key="index">
+        <swiper-item>
+          <view>{{item}}</view>
+        </swiper-item>
+      </block>
+    </swiper>
     <view class="btn-toBuy">去买单</view>
   </view>
 </template>
@@ -11,8 +27,20 @@
   import URIS from 'common/js/config'
 
   export default class RecomBuy extends wepy.component {
+    props = {
+      list: {
+        type: Object,
+        default: {}
+      }
+    }
     data = {
-      imageUri: URIS.image
+      imageUri: URIS.image,
+      content: '小程序买单优惠',
+      autoplay: true,
+      interval: 3000,
+      duration: 1000,
+      circular: true,
+      vertical: true
     }
   }
 </script>
@@ -43,14 +71,17 @@
       height: 19px
       margin: 0 16.5px 0 11.5px
     .content
+      width: 53vw
+      height: $font-size-medium
       font-family: PingFang-SC-Regular
       font-size: $font-size-medium
       color: $color-text
       letter-spacing: 0.42px
       line-height: $font-size-medium
+      no-wrap()
     .btn-toBuy
-      position :absolute
-      right :25px
+      position: absolute
+      right: 25px
       col-center()
       width: 72.5px
       height: 25px

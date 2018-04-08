@@ -2,17 +2,23 @@
   <view class="recom-discovery">
     <recom-panel
       title="内容探店"
-      :list.sync="list"
       :isShowMore.sync="isShowMore"
       :isShowInfo.sync="isShowInfo"
+      :targetUrl.sync="targetUrl"
     >
-      <block wx:for="{{list}}" wx:key="{{item}}">
-        <swiper-item>
-          <view class="content">
-            <image src="{{item}}" class="slide-image"/>
-          </view>
-        </swiper-item>
-      </block>
+      <view class="swiper-wrapper" slot="panel">
+        <recom-swiper :list.sync="list">
+          <repeat for="{{list}}" key="index" index="index" item="item" slot="swiper">
+            <swiper-item>
+              <view class="content">
+                <view class="content-item">
+                  <content-item :type="type" :content.sync="item"></content-item>
+                </view>
+              </view>
+            </swiper-item>
+          </repeat>
+        </recom-swiper>
+      </view>
     </recom-panel>
   </view>
 </template>
@@ -20,34 +26,46 @@
 <script>
   import wepy from 'wepy'
   import RecomPanel from '@/base/recommend-items/recom-panel'
+  import RecomSwiper from '@/base/recommend-items/recom-swiper'
+  import ContentItem from '@/base/content-item/content-item'
 
   export default class Template extends wepy.component {
+    props = {
+      list: {
+        type: Object,
+        default: {}
+      }
+    }
     data = {
       isShowInfo: false,
       isShowMore: true,
-      list: [
-        'http://img02.tooopen.com/images/20150928/tooopen_sy_143912755726.jpg',
-        'http://img06.tooopen.com/images/20160818/tooopen_sy_175866434296.jpg',
-        'http://img06.tooopen.com/images/20160818/tooopen_sy_175833047715.jpg'
-      ]
+      targetUrl: '/pages/content-discovery/content-discovery',
+      type: 'buy'
     }
     components = {
-      'recom-panel': RecomPanel
+      'recom-panel': RecomPanel,
+      'recom-swiper': RecomSwiper,
+      'content-item': ContentItem
     }
   }
 </script>
 
 <style lang='stylus' scoped>
-  .recom-discovery
-    margin-bottom: 24px
+  @import "../../common/stylus/variable"
+  @import "../../common/stylus/mixin"
 
-  .content
-    width: 100%
-    height: 135px
-    padding-bottom: 18.5px
-    border: .5px solid $color-pay-theme
-    border-radius: 2px
-    .slide-image
+  .recom-discovery
+    margin-bottom: 6.3829vw
+
+    .swiper-wrapper
+      height: 35.77127vw
+
+    .content
+      layout()
+      justify-content: flex-start
+      align-items: center
       width: 100%
-      height: 100%
+      .content-item
+        width: 93.6vw
+        margin-bottom: 2.659574vw
 </style>

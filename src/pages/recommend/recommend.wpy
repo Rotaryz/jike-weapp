@@ -44,10 +44,10 @@
         </button>
       </view>
     </form>
-    <recom-buy></recom-buy>
-    <!--<recom-giftbat></recom-giftbat>-->
-    <recom-hot></recom-hot>
-    <!--<recom-discovery></recom-discovery>-->
+    <recom-buy :list.sync="userCouponsList"></recom-buy>
+    <recom-giftbat :list.sync="giftbagList"></recom-giftbat>
+    <recom-hot :list.sync="hotCouponsList" :length.sync="hotListLen"></recom-hot>
+    <recom-discovery :list.sync="contentList"></recom-discovery>
     <!--<view class="tab-container">-->
     <!--<view class="tab-wrapper">-->
     <!--<view class="tab-content border-bottom-1px">-->
@@ -156,6 +156,7 @@
   import RecomGiftbag from '@/base/recommend-items/recom-merchant-giftbag'
   import RecomHot from '@/base/recommend-items/recom-hot'
   import RecomDiscovery from '@/base/recommend-items/recom-discovery'
+  import CouponApi from 'api/coupon'
 
   const COUPON_TYPE = 1
   const PACKAGE_TYPE = 2
@@ -184,7 +185,12 @@
       couponNothing: false,
       contentNothing: false,
       shopChange: true,
-      industry: 'ktv'
+      industry: 'ktv',
+      hotCouponsList: [],
+      giftbagList: [],
+      contentList: [],
+      userCouponsList: [],
+      hotListLen: '0'
     }
 
     onShareAppMessage(res) {
@@ -223,6 +229,9 @@
 
     async onShow() {
       await this.load()
+      // 初始化
+      await this._init()
+      // last
       if (this.shopImages.length) {
         this.$invoke('Slider', 'init', this.shopImages.length)
       }
@@ -261,6 +270,106 @@
           await this._getShowContents()
         }
       }
+    }
+
+    // 数据初始化
+    async _init() {
+      let hotCouponsList = await this._getCouponsAll()
+      let giftbagList = await this._getGiftBagsAll()
+      let contentList = await this._getContentsAll()
+      let userCouponsList = await this._getUserCouponListAll()
+      this.hotListLen = hotCouponsList.length.toString()
+      hotCouponsList = this._test(hotCouponsList)
+      hotCouponsList = this._formatHotList(hotCouponsList)
+      contentList = this._formatList(contentList)
+      userCouponsList = this._formatList(userCouponsList)
+      this.hotCouponsList = hotCouponsList
+      this.giftbagList = giftbagList
+      this.contentList = contentList
+      this.userCouponsList = userCouponsList
+      console.log(hotCouponsList, contentList, this.hotListLen)
+      this.$apply()
+    }
+
+    _formatList(res) {
+      if (res.length > 3) {
+        res = res.slice(0, 3)
+      }
+      return res
+    }
+
+    // 转化二维数组
+    _formatHotList(res) {
+      let first = res.slice(0, 2)
+      let second = res.slice(2, 4)
+      let third = res.slice(4, 6)
+      let newArrr = [first, second, third].filter((item) => {
+        return item.length > 0
+      })
+      return newArrr
+    }
+
+    _test(arr) {
+      for (let i = 0; i < 4; i++) {
+        arr.push(arr[0])
+      }
+      return arr
+    }
+
+    // 获取推荐优惠券列表（所有）+
+    async _getCouponsAll() {
+      let params = {
+        page: 1,
+        limit: 10
+      }
+      let res = await Merchants.getCoupons(this.merchantId, params)
+      if (res.error === ERR_OK) {
+        return res.data
+      } else {
+        return []
+      }
+    }
+
+    // 获取礼包列表(全部)+
+    async _getGiftBagsAll() {
+      let res = await Merchants.getGiftBags(this.merchantId)
+      if (res.error === ERR_OK) {
+        return res.data
+      } else {
+        return []
+      }
+    }
+
+    // 获取内容列表 (all)+
+    async _getContentsAll() {
+      const res = await ContentsApi.getMerchantContents()
+      if (res.error === ERR_OK) {
+        return res.data
+      } else {
+        return []
+      }
+    }
+
+    // 获取用户优惠券列表all+
+    async _getUserCouponListAll() {
+      let res = await CouponApi.getUserCouponList(0, 'all', -1)
+      if (res.error === ERR_OK) {
+        let resInfo = this._formatUserCouponList(res)
+        return resInfo
+      } else {
+        return []
+      }
+    }
+
+    // 格式化用户优惠券数据
+    _formatUserCouponList(res) {
+      let arr = []
+      if (res.data) {
+        res.data.map(val => {
+          arr.push(val.promotion.title)
+        })
+      }
+      return arr
     }
 
     async _saveLog() {
