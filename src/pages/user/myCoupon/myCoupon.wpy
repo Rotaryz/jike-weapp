@@ -12,36 +12,12 @@
       <view class="myCoupon-nothingBtn" @tap="toRecommend">随便逛逛</view>
     </view>
 
-    <scroll-view scroll-y class="{{menuIdx===0?'myCoupon-couponList':'myCoupon-couponList-ccc'}}" bindscrolltolower="couponLower" wx:if="{{couponList.length>0}}">
-      <!--<view class="myCoupon-couponList-item" wx:for="{{couponList}}" wx:key="{{index}}" @tap="couponDetail({{item.id}},{{item.promotionType}},{{item.codeId}},{{item.merchantId}})">-->
-        <!--<view class="couponList-item-head-container">-->
-          <!--<image class="coupon-bc" wx:if="{{imageUrlHead}}" src="{{imageUrlHead + '/defaults/c-image/mine/pic-couponbg@2x.png'}}"></image>-->
-          <!--<view class="couponList-item-head-left">-->
-            <!--<view class="couponList-itemPay">-->
-              <!--<image src="{{item.imageUrl}}" class="promotion-image" wx:if="{{item.promotionType==='exchange' && imageUrlHead}}" mode="aspectFit"></image>-->
-              <!--<view wx:if="{{item.promotionType!=='exchange'}}"><text class="couponList-midMoney">¥</text><text class="couponList-bigMoney">{{item.price?item.price:''}}</text></view>-->
-            <!--</view>-->
-            <!--<view class="couponList-itemMsg">-->
-              <!--<view class="couponList-item-title">{{item.title}}</view>-->
-              <!--<view class="underline"></view>-->
-              <!--<view class="couponList-item-time">{{item.notAllowTime}}</view>-->
-              <!--<view class="couponList-item-time">有效期至{{item.endAt}}</view>-->
-            <!--</view>-->
-          <!--</view>-->
-          <!--<view class="couponList-item-head-right">-->
-            <!--<view class="couponList-item-head-right-btn {{industry}}" wx:if="{{menuIdx===0}}" catchtap="useCoupon({{item.codeId}}, 'coupon')">进店使用</view>-->
-            <!--<image class="couponList-noItemBtn" wx:if="{{menuIdx===1 && imageUrlHead}}" src="{{imageUrlHead + '/defaults/c-image/mine/pic-my_already .png'}}"></image>-->
-            <!--<image class="couponList-noItemBtn" wx:if="{{menuIdx===2 && imageUrlHead}}" src="{{imageUrlHead + '/defaults/c-image/mine/pic-my_overdue.png'}}"></image>-->
-          <!--</view>-->
-          <!--<image class="exChange-img" src="{{imageUrlHead + '/defaults/c-image/mine/pic-m_'+industry+'@2x.png'}}" wx:if="{{item.promotionType==='exchange' && imageUrlHead}}"></image>-->
-        <!--</view>-->
-      <!--</view>-->
+    <scroll-view scroll-y class="myCoupon-couponList" bindscrolltolower="couponLower" wx:if="{{couponList.length>0}}">
       <repeat for="{{couponList}}" key="index" index="index" item="item">
-        <view class="test">
-          <coupon :coupon="item" :type="type"></coupon>
+        <view class="myCoupon-couponList-box">
+          <coupon :coupon.sync="item" :type="type"></coupon>
         </view>
       </repeat>
-
       <Underline></Underline>
     </scroll-view>
 
@@ -189,10 +165,11 @@
 
     events = {
       payUse(item) {
-        console.log(item)
+        console.log(item, 1)
       },
       showQrcord(item) {
-        console.log(item)
+        console.log(item, 2)
+//        this.$navigate('/pages/coupon-use/couponUse?type=' + type + '&id=' + codeId)
       }
     }
   }
@@ -272,7 +249,7 @@
     max-height: 92vh
     color: $color-text-n
 
-    .myCoupon-couponList-item
+    .myCoupon-couponList-box
       padding: 0 12px
       margin-top: 10px
 

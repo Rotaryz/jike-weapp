@@ -1,6 +1,6 @@
 <template>
   <view class="giftbag">
-    <view class="giftBag-container" @tap="handleClick">
+    <view class="giftBag-container" @tap="giftbagClick">
       <image class="giftBag-bc" wx:if="{{imageUrlHead}}" src="{{imageUrlHead + '/defaults/c-image/recom/bg-coupon_lb@2x.png'}}"></image>
       <view class="giftBag-content">
         <view class="giftBag-top">
@@ -9,24 +9,24 @@
               <image class="giftBag-top-img" wx:if="{{imageUrlHead}}" src="{{imageUrlHead + '/defaults/c-image/recom/pic-coupon_lb@2x.png'}}"></image>
             </view>
             <view class="giftBag-top-msg">
-              <view class="giftBag-top-title">{{giftBag.title}}</view>
+              <view class="giftBag-top-title">{{giftbag.title}}</view>
               <view class="giftBag-top-money">
                 <view class="small-money">¥</view>
-                <view class="big-money">{{giftBag.platform_price}}</view>
-                <view class="count-txt">共{{giftBag.promotion_count}}张券</view>
+                <view class="big-money">{{giftbag.platform_price}}</view>
+                <view class="count-txt">共{{giftbag.promotion_count}}张券</view>
               </view>
             </view>
           </view>
           <view class="giftBag-top-right">
-            <view class="right-txt">{{giftBag.init_stock === -1 ? '已抢1%' : giftBag.percentage === 100 ? '已抢光' : '已抢' + giftBag.percentage + '%'}}</view>
+            <view class="right-txt">{{giftbag.init_stock === -1 ? '已抢1%' : giftbag.percentage === 100 ? '已抢光' : '已抢' + giftbag.percentage + '%'}}</view>
             <view class="progress-box">
-              <progress percent="{{giftBag.init_stock === -1 ? 1 : giftBag.percentage}}" stroke-width="6" activeColor="#FF4E00" backgroundColor="#DBDBDB" class="progress" active="{{true}}"></progress>
+              <progress percent="{{giftbag.init_stock === -1 ? 1 : giftbag.percentage}}" stroke-width="6" activeColor="#FF4E00" backgroundColor="#DBDBDB" class="progress" active="{{true}}"></progress>
             </view>
             <view class="giftBag-btn">立即抢购</view>
           </view>
         </view>
         <view class="giftBag-down">
-          <view class="giftBag-shop" wx:for="{{giftBag.gift_bag_details}}" wx:key="{{index}}" wx:if="{{index <= 2}}">
+          <view class="giftBag-shop" wx:for="{{giftbag.gift_bag_details}}" wx:key="{{index}}" wx:if="{{index <= 2}}">
             <image class="giftBag-shop-icon" wx:if="{{imageUrlHead}}" src="{{imageUrlHead + '/defaults/c-image/recom/icon-coupon_tj@2x.png'}}"></image>
             <view class="giftBag-shop-txt">{{item.merchant_data.shop_name}}</view>
           </view>
@@ -54,8 +54,9 @@
     }
 
     methods = {
-      handleClick() {
-        this.$emit('handleClick', 2, this.giftbag.id)
+      giftbagClick() {
+        console.log(this.giftbag)
+        this.$emit('giftbagClick', 2, this.giftbag.id)
       }
     }
   }
