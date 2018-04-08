@@ -2,8 +2,8 @@
   <view class="coupon">
     <view class="coupon-item">
       <image class="coupon-bc" wx:if="{{imageUrlHead && type === 'buy'}}" src="{{imageUrlHead + '/defaults/c-image/mine/bg-coupon_yhq@2x.png'}}"></image>
-      <image class="coupon-bc" wx:if="{{imageUrlHead && type === 'pay' && false}}" src="{{imageUrlHead + '/defaults/c-image/mine/bg-coupon_syyh@2x.png'}}"></image>
-      <image class="coupon-bc" wx:if="{{imageUrlHead && type === 'pay'}}" src="{{imageUrlHead + '/defaults/c-image/mine/bg-coupon_sxsyyh@2x.png'}}"></image>
+      <image class="coupon-bc" wx:if="{{imageUrlHead && type === 'pay' && coupon.canUsePay}}" src="{{imageUrlHead + '/defaults/c-image/mine/bg-coupon_syyh@2x.png'}}"></image>
+      <image class="coupon-bc" wx:if="{{imageUrlHead && type === 'pay' && !coupon.canUsePay}}" src="{{imageUrlHead + '/defaults/c-image/mine/bg-coupon_sxsyyh@2x.png'}}"></image>
       <image class="coupon-bc" wx:if="{{imageUrlHead && type === 'mine' && coupon.promotion.promotion_type !== 'exchange' && coupon.promotion.status * 1 === 0}}" src="{{imageUrlHead + '/defaults/c-image/mine/bg-coupon_usable@2x.png'}}"></image>
       <image class="coupon-bc" wx:if="{{imageUrlHead && type === 'mine' && coupon.promotion.promotion_type !== 'exchange' && coupon.promotion.status * 1 !== 0}}" src="{{imageUrlHead + '/defaults/c-image/mine/bg-coupon_disable@2x.png'}}"></image>
       <image class="coupon-bc" wx:if="{{imageUrlHead && type === 'mine' && coupon.promotion.promotion_type === 'exchange'}}" src="{{imageUrlHead + '/defaults/c-image/mine/bg-coupon-dhq@2x.png'}}"></image>
@@ -78,7 +78,7 @@
         <view class="coupon-middle">
           <view class="coupon-middle-top">
             <view class="top-shopName">
-              <text class="top-label">{{coupon.promotion.promotion_type_cn}}</text><text class="top-name">{{coupon.promotion.merchant_data.shop_name}}</text>
+              <text class="top-label">{{coupon.promotion.promotion_type_cn}}</text><text class="top-name">{{coupon.merchant_data.shop_name}}</text>
             </view>
             <view class="top-title">{{coupon.promotion.title}}</view>
           </view>
@@ -102,7 +102,7 @@
         <view class="coupon-middle">
           <view class="coupon-middle-top">
             <view class="top-shopName">
-              <text class="top-label">{{coupon.promotion.promotion_type_cn}}</text><text class="top-name">{{coupon.promotion.merchant_data.shop_name}}</text>
+              <text class="top-label">{{coupon.promotion.promotion_type_cn}}</text><text class="top-name">{{coupon.merchant_data.shop_name}}</text>
             </view>
             <view class="top-title">{{coupon.promotion.title}}</view>
           </view>

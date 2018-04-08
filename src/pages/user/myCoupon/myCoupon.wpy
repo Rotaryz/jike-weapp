@@ -168,8 +168,9 @@
         console.log(item, 1)
       },
       showQrcord(item) {
-        console.log(item, 2)
-//        this.$navigate('/pages/coupon-use/couponUse?type=' + type + '&id=' + codeId)
+        let type = item.promotion.promotion_type
+        let id = item.id
+        this.$navigate('/pages/coupon-use/couponUse?type=' + type + '&id=' + id)
       }
     }
   }
