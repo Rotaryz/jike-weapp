@@ -1,5 +1,6 @@
 <template>
   <view class="recom-hot">
+    <coupon-item type="buy"></coupon-item>
     <recom-panel
       title="热销优惠券"
       :isShowMore.sync="isShowMore"
@@ -7,13 +8,14 @@
       :list.sync="list"
       :targetUrl.sync="targetUrl"
     >
-      <block wx:for="{{list}}" wx:key="{{item}}">
+      <repeat for="{{list}}" wx:key="{{item}}">
         <swiper-item>
-          <view class="content">
-            <image src="{{item}}" class="slide-image"/>
+          <view class="content-item">
+            <coupon-item type="buy"></coupon-item>
+
           </view>
         </swiper-item>
-      </block>
+      </repeat>
     </recom-panel>
   </view>
 </template>
@@ -21,6 +23,7 @@
 <script>
   import wepy from 'wepy'
   import RecomPanel from '@/base/recommend-items/recom-panel'
+  import CouponItem from '@/base/coupon-item/coupon-item'
 
   export default class Template extends wepy.component {
     data = {
@@ -34,22 +37,17 @@
       ]
     }
     components = {
-      'recom-panel': RecomPanel
+      'recom-panel': RecomPanel,
+      'coupon-item': CouponItem
     }
   }
 </script>
 
 <style lang='stylus' scoped>
   .recom-hot
-    height :500px
+    height :67.55319vw
 
-    .content
-      width: 100%
-      height: 135px
-      padding-bottom: 18.5px
-      border: .5px solid $color-pay-theme
-      border-radius: 2px
-      .slide-image
-        width: 100%
-        height: 100%
+    .content-item
+      width: 93.6vw
+      height: 26.595744vw
 </style>

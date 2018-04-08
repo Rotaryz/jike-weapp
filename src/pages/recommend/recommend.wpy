@@ -45,9 +45,9 @@
       </view>
     </form>
     <recom-buy></recom-buy>
-    <recom-giftbat></recom-giftbat>
+    <!--<recom-giftbat></recom-giftbat>-->
     <recom-hot></recom-hot>
-    <recom-discovery></recom-discovery>
+    <!--<recom-discovery></recom-discovery>-->
     <!--<view class="tab-container">-->
     <!--<view class="tab-wrapper">-->
     <!--<view class="tab-content border-bottom-1px">-->
@@ -144,12 +144,12 @@
   import base from 'common/mixins/base'
   import users from 'common/mixins/users'
   import Slider from '@/base/index-slider/index-slider'
-  import Coupon from '@/base/coupon/coupon'
+  // import Coupon from '@/base/coupon/coupon'
   import Toast from '@/base/toast/toast'
   import {ERR_OK} from 'api/base'
   import ContentsApi from 'api/contents'
   import Merchants from 'api/merchants'
-  import Giftbag from '@/base/giftbag/giftbag'
+  // import Giftbag from '@/base/giftbag/giftbag'
   import URIS from 'common/js/config'
   import Underline from '@/base/underline-block/underline-block'
   import RecomBuy from '@/base/recommend-items/recom-buy'
@@ -485,8 +485,6 @@
 
     components = {
       Slider,
-      package: Giftbag,
-      coupon: Coupon,
       toast: Toast,
       underline1: Underline,
       underline2: Underline,

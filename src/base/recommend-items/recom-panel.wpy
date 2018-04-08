@@ -120,9 +120,8 @@
           margin-left: 5px
     .article
       width: 100vw
-      height: 100%
+      height: 83.8028169%
       box-sizing: border-box
-      padding: 0px 12px 10px
       position: relative
       .swiper-box
         width: 100%
