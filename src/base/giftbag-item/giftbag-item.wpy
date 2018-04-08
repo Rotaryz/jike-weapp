@@ -1,0 +1,196 @@
+<template>
+  <view class="giftbag">
+    <view class="giftBag-container" @tap="handleClick">
+      <image class="giftBag-bc" wx:if="{{imageUrlHead}}" src="{{imageUrlHead + '/defaults/c-image/recom/bg-coupon_lb@2x.png'}}"></image>
+      <view class="giftBag-content">
+        <view class="giftBag-top">
+          <view class="giftBag-top-left">
+            <view class="giftBag-top-imgBox">
+              <image class="giftBag-top-img" wx:if="{{imageUrlHead}}" src="{{imageUrlHead + '/defaults/c-image/recom/pic-coupon_lb@2x.png'}}"></image>
+            </view>
+            <view class="giftBag-top-msg">
+              <view class="giftBag-top-title">{{giftBag.title}}</view>
+              <view class="giftBag-top-money">
+                <view class="small-money">¥</view>
+                <view class="big-money">{{giftBag.platform_price}}</view>
+                <view class="count-txt">共{{giftBag.promotion_count}}张券</view>
+              </view>
+            </view>
+          </view>
+          <view class="giftBag-top-right">
+            <view class="right-txt">{{giftBag.init_stock === -1 ? '已抢1%' : giftBag.percentage === 100 ? '已抢光' : '已抢' + giftBag.percentage + '%'}}</view>
+            <view class="progress-box">
+              <progress percent="{{giftBag.init_stock === -1 ? 1 : giftBag.percentage}}" stroke-width="6" activeColor="#FF4E00" backgroundColor="#DBDBDB" class="progress" active="{{true}}"></progress>
+            </view>
+            <view class="giftBag-btn">立即抢购</view>
+          </view>
+        </view>
+        <view class="giftBag-down">
+          <view class="giftBag-shop" wx:for="{{giftBag.gift_bag_details}}" wx:key="{{index}}" wx:if="{{index <= 2}}">
+            <image class="giftBag-shop-icon" wx:if="{{imageUrlHead}}" src="{{imageUrlHead + '/defaults/c-image/recom/icon-coupon_tj@2x.png'}}"></image>
+            <view class="giftBag-shop-txt">{{item.merchant_data.shop_name}}</view>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import URIS from 'common/js/config'
+
+  export default class Giftbag extends wepy.component {
+    props = {
+      giftbag: {
+        type: Object,
+        default: {},
+        twoWay: true
+      }
+    }
+
+    data = {
+      imageUrlHead: URIS.image
+    }
+
+    methods = {
+      handleClick() {
+        this.$emit('handleClick', 2, this.giftbag.id)
+      }
+    }
+  }
+</script>
+
+<style lang="stylus">
+  @import "../../common/stylus/variable"
+
+  .giftbag
+    width: 100%
+
+    .giftBag-container
+      position: relative
+      width: 100%
+      padding-bottom: 38.46%
+      height: 0
+
+      .giftBag-bc
+        position: absolute
+        left: 0
+        top: 0
+        width: 100%
+        height: 100%
+
+      .giftBag-content
+        position: absolute
+        left: 0
+        top: 0
+        width: 100%
+        height: 100%
+
+        .giftBag-top
+          height: 71.66%
+          width: 100%
+          padding-left: 3.666vw
+          box-sizing: border-box
+          display: flex
+          .giftBag-top-left
+            width: 70.2%
+            height: 100%
+            display: flex
+            align-items: center
+            .giftBag-top-imgBox
+              width: 18.266666vw
+              height: 18.533333vw
+              margin-right: 4vw
+              .giftBag-top-img
+                width: 18.266666vw
+                height: 18.533333vw
+            .giftBag-top-msg
+              width: 60%
+              height: 18.533333vw
+              display: flex
+              flex-direction: column
+              justify-content: space-between
+              .giftBag-top-title
+                font-family: PingFang-SC-Medium
+                font-size: $font-size-medium
+                color: $color-gold
+              .giftBag-top-money
+                display: flex
+                align-items: flex-end
+                .small-money
+                  font-family: PingFang-SC-Medium
+                  font-size: $font-size-small
+                  color: $color-gold
+                .big-money
+                  font-family: PingFangSC-Semibold
+                  font-size: 24px
+                  color: $color-gold
+                  margin-bottom: -2px
+                  margin-right: 5px
+                .count-txt
+                  padding: 3px
+                  font-family: PingFangSC-Light
+                  font-size: $font-size-small-s
+                  color: $color-gold
+                  background: rgba(184,155,104,.1)
+          .giftBag-top-right
+            width: 29.8%
+            height: 100%
+            display: flex
+            flex-direction: column
+            justify-content: flex-end
+            align-items: center
+
+            .right-txt
+              text-align: center
+              font-family: PingFang-SC-Medium
+              font-size: $font-size-small-s
+              color: $color-text
+              margin-bottom: 7.5px
+
+            .progress-box
+              width: 70px
+              height: 6px
+              border-radius: 3px
+              overflow: hidden
+              margin-bottom: 4.933333333vw
+              .progress
+                width: 70px
+
+            .giftBag-btn
+              width: 72px
+              height: 20px
+              box-sizing: border-box
+              border-radius: 10px
+              font-family: PingFangSC-Regular
+              font-size: $font-size-small
+              text-align: center
+              margin-bottom: 3.13vw
+              line-height: 20px
+              background: $color-gold
+              color: $color-white
+        .giftBag-down
+          height: 28.34%
+          padding-left: 3.666vw
+          display: flex
+          align-items: center
+          .giftBag-shop
+            height: 12.5px
+            display: flex
+            align-items: center
+            margin-right: 15px
+            .giftBag-shop-icon
+              width: 17.5px
+              height: 12.5px
+              margin-right: 4px
+            .giftBag-shop-txt
+              width: 50px
+              font-family: PingFang-SC-Regular
+              font-size: $font-size-small
+              color: $color-gold
+              overflow: hidden
+              text-overflow: ellipsis
+              white-space: nowrap
+
+</style>
