@@ -18,8 +18,8 @@
         <view class="all-money-text">不参与优惠金额：</view>
       </view>
     </view>
-    <view class="coupon-pay" @tap="choiceCoupon">
-      <view class="coupon-list">
+    <view class="coupon-pay">
+      <view class="coupon-list" @tap="choiceCoupon">
         <view class="coupon-list-left">代金券/折扣券/新手券</view>
         <view class="coupon-list-right">
           <view claass="coupon-list-money" wx:if="{{usableCoupon}}">
@@ -41,13 +41,14 @@
       </view>
     </view>
     <view class="pay-submit">
-      <button class="submit-btn {{needPayMoney !== 0 ? 'success-btn' : ''}}">
+      <button class="submit-btn {{needPayMoney !== 0 ? 'success-btn' : ''}}" @tap="payOrder">
         <text class="end-moeny" wx:if="{{needPayMoney !== 0}}">{{needPayMoney}}元</text>
         确定买单
       </button>
     </view>
     <view>{{usableDiscountsMoney}}</view>
   </view>
+  <Toast></Toast>
 </template>
 
 <script>
@@ -56,6 +57,7 @@
   import base from 'common/mixins/base'
   import Toast from '@/base/toast/toast'
   import Coupon from 'api/coupon'
+  import Payorder from 'api/pay'
   import {ERR_OK} from '@/api/base'
 
   export default class Pay extends wepy.page {
@@ -75,8 +77,29 @@
       usableDiscountsMoney: 0
     }
 
-    async onLoad(options) {
+    async onLoad() {
       await this._setGlobaCouponList()
+    }
+
+    onShow() {
+      console.log(this.discountType)
+      var usableList = wepy.getStorageSync('choiceCoupon')
+      if (wepy.getStorageSync('discountType') === 'you') {
+        this.discountType = wepy.getStorageSync('discountType')
+        this.usableCoupon = usableList
+        this._youUsableCouponList()
+        this._calculateMoney()
+        console.log('usableList', usableList)
+        console.log('discountType', this.discountType)
+        this.$apply()
+      }
+    }
+
+    onHide() {
+      wepy.removeStorageSync('choiceCoupon')
+      wepy.removeStorageSync('discountType')
+      this.discountType = 'self'
+      this.$apply()
     }
 
     async _setGlobaCouponList() {
@@ -122,6 +145,7 @@
                 this.usableCoupon = arr[i]
               }
             }
+            this.$apply()
             break
           case 'reduction':
             if (this.usableCoupon === '') {
@@ -138,12 +162,13 @@
                 this.usableCoupon = arr[i]
               }
             }
+            this.$apply()
             break
         }
       }
       console.log(this.usableCoupon)
       this.usableDiscountsMoney = this.usableDiscountsMoney.toFixed(2)
-      console.log(this.usableDiscountsMoney)
+      console.log('usableCoupon', this.usableDiscountsMoney)
       this.$apply()
     }
 
@@ -151,6 +176,42 @@
       console.log('suable11', this.usableDiscountsMoney)
       this.needPayMoney = this.allMoneyInput - this.usableDiscountsMoney || 0
       console.log('needmoney', this.needPayMoney)
+      this.$apply()
+    }
+
+    _youUsableCouponList() {
+      let youDiscountMoney = this.allMoneyInput - this.noDiscountInput
+      console.log('you', youDiscountMoney)
+      var youStorage = wepy.getStorageSync('choiceCoupon')
+      switch (youStorage.promotion.promotion_type) {
+        case 'discount':
+          if (parseFloat(youStorage.promotion.config.meet_money) <= youDiscountMoney) {
+            let discountMoney = 0
+            if (youDiscountMoney * (parseFloat(youStorage.promotion.config.discount) / 10) > parseFloat(youStorage.promotion.config.max_reduction)) {
+              discountMoney = parseFloat(youStorage.promotion.config.max_reduction)
+            } else {
+              discountMoney = youDiscountMoney * (parseFloat(youStorage.promotion.config.discount) / 10)
+            }
+            this.usableDiscountsMoney = discountMoney
+            this.usableCoupon = youStorage
+            this.$apply()
+          } else {
+            this.usableDiscountsMoney = 0
+            this.usableCoupon = ''
+          }
+          break
+        case 'reduction':
+          if (parseFloat(youStorage.promotion.config.meet_money) <= youDiscountMoney) {
+            this.usableDiscountsMoney = parseFloat(youStorage.promotion.config.reduction)
+            this.usableCoupon = youStorage
+          } else {
+            this.usableDiscountsMoney = 0
+            this.usableCoupon = ''
+          }
+          break
+      }
+      console.log('youChooice', this.usableCoupon)
+      this.usableDiscountsMoney = this.usableDiscountsMoney.toFixed(2)
       this.$apply()
     }
 
@@ -163,7 +224,7 @@
           this._getUsableCouponList(discountMoney)
           break
         case 'you':
-          console.log('you')
+          this._youUsableCouponList()
           break
       }
     }
@@ -232,6 +293,44 @@
         let discountMoney = this.allMoneyInput - this.noDiscountInput
         let url = '/pages/pay-coupon/pay-coupon?discountMoney=' + discountMoney
         this.$navigate(url)
+      },
+
+      async payOrder() {
+        if (this.needPayMoney <= 0) {
+          return
+        }
+        if (this.noDiscountInput) {
+          this.noDiscountInput = 0
+          this.$apply()
+        }
+        let data = {
+          form: 'offline',
+          offline_total: this.allMoneyInput,
+          offline_no_discount_total: this.noDiscountInput,
+          offline_coupon_id: this.usableCoupon.id || '',
+          total: this.needPayMoney
+        }
+        let res = await Payorder.createorder(data)
+        if (res.error === ERR_OK) {
+          this.loaded()
+          console.log(res.data.pay_info)
+          this.loaded()
+          const {timestamp, nonceStr, signType, paySign} = res.data.pay_info
+          const pay = await wepy.requestPayment({
+            timeStamp: timestamp,
+            nonceStr,
+            package: res.data.pay_info.package,
+            signType,
+            paySign
+          })
+          if (pay.errMsg === 'requestPayment:ok') {
+            let url = '/pages/pay-success/pay-success'
+            this.$navigate(url)
+          }
+        } else if (res.error === 1) {
+          this.loaded()
+          this.$invoke('Toast', 'show', res.message)
+        }
       }
     }
 
@@ -326,10 +425,8 @@
           position: absolute
           width: 48px
           padding: 1px 0
-          left: 0
           bottom: -14px
-          right: 0
-          margin: 0 auto
+          right: 19px
           text-align: center
         .coupon-list-img
           display: block
