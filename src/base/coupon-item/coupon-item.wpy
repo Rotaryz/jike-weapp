@@ -17,9 +17,8 @@
           <view class="coupon-left-second">
             <view class="coupon-left-second-top">
               <view class="top-shopName">
-                <text class="top-label">{{coupon.promotion.promotion_type_cn}}</text><text class="top-name">{{coupon.promotion.merchant_data.shop_name}}</text>
+                <text class="top-label">{{coupon.promotion.promotion_type_cn}}</text><text class="top-title">{{coupon.promotion.title}}</text>
               </view>
-              <view class="top-title">{{coupon.promotion.title}}</view>
             </view>
             <view class="coupon-left-second-down">
               <view class="down-sub" wx:if="{{coupon.promotion.promotion_type === 'reduction' || coupon.promotion.promotion_type === 'discount'}}">{{coupon.promotion.note.scope_application}}</view>
