@@ -24,7 +24,7 @@
         wepy.setStorageSync('merchantId', extConfig.current_merchant ? extConfig.current_merchant : this.config.current_merchant)
       }
       this.globalData.env = extConfig.env || 'dev'
-      this.globalData.version = extConfig.version || 'v2'
+      this.globalData.version = extConfig.version || 'v1'
       console.log('环境：' + this.globalData.env)
       console.log('版本：' + this.globalData.version)
       const storageDate = wepy.getStorageSync('collectDate')
@@ -84,6 +84,7 @@
       pages: [
         'pages/loading/loading',
         'pages/error/error',
+        'pages/coupon-particulars/coupon-particulars',
         'pages/browse-shops/browse-shops',
         'pages/sold-out/sold-out',
         'pages/square/square',

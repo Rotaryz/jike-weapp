@@ -59,6 +59,7 @@ export default class Merchants extends base {
     const url = `${this.baseUrl}/api/merchants/save-log`
     return await this.post(url, data, loading)
   }
+
   /**
    * 商家信息
    * @param data
@@ -67,5 +68,15 @@ export default class Merchants extends base {
   static async showShop(id) {
     const url = `${this.baseUrl}/api/merchants/merchants-data/${id}`
     return await this.get(url, '', false)
+  }
+
+  /**
+   * 优惠券详情
+   * @param data
+   * @returns {Promise.<*>}
+   */
+  static async coupons(id, data) {
+    const url = `${this.baseUrl}/api/merchants/coupons/${id}`
+    return await this.get(url, data)
   }
 }
