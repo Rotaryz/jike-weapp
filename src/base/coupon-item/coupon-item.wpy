@@ -144,7 +144,6 @@
     methods = {
       // 点击优惠券事件(根据需求读取不同数据再进行下一步操作)
       buyCouponClick() {
-        console.log(this.coupon)
         switch (this.type) {
           case 'buy':
             if (this.coupon.promotion.promotion_type === 'voucher' || this.coupon.promotion.promotion_type === 'cash') {
@@ -160,9 +159,9 @@
             this.$emit('choice', this.coupon)
             break
           case 'mine':
-            if (this.coupon.promotion.status === 0 && (this.coupon.promotion.promotion_type === 'reduction' || this.coupon.promotion.promotion_type === 'discount')) {
+            if (this.coupon.promotion.status * 1 === 0 && (this.coupon.promotion.promotion_type === 'reduction' || this.coupon.promotion.promotion_type === 'discount')) {
               this.$emit('payUse', this.coupon) // 折扣券，满减券跳详情
-            } else if (this.coupon.promotion.status === 0 && (this.coupon.promotion.promotion_type === 'voucher' || this.coupon.promotion.promotion_type === 'cash' || this.coupon.promotion.promotion_type === 'exchange')) {
+            } else if (this.coupon.promotion.status * 1 === 0 && (this.coupon.promotion.promotion_type === 'voucher' || this.coupon.promotion.promotion_type === 'cash' || this.coupon.promotion.promotion_type === 'exchange')) {
               this.$emit('showQrcord', this.coupon) // 套餐券，代金券，兑换券跳二维码
             }
             break

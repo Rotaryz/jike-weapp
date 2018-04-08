@@ -38,7 +38,7 @@
       <!--</view>-->
       <repeat for="{{couponList}}" key="index" index="index" item="item">
         <view class="test">
-          <coupon :coupon="item" :type="'mine'"></coupon>
+          <coupon :coupon="item" :type="type"></coupon>
         </view>
       </repeat>
 
@@ -83,7 +83,8 @@
       couponList: [],
       page: 1,
       LowerLoading: false,
-      nothingAdd: false
+      nothingAdd: false,
+      type: 'mine'
     }
 
     methods = {
