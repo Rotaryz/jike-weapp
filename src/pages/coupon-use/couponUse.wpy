@@ -69,7 +69,8 @@
     async load(id, type) {
       let resList
       switch (type) {
-        case 'coupon':
+        case 'voucher':
+        case 'cash':
         case 'exchange':
           resList = await Coupon.getUserCouponDetail(id)
           break
