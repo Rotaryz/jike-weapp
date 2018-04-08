@@ -41,18 +41,19 @@
         </view>
       </view>
 
-      <view class="pay-coupon-content dis" wx:if="{{type === 'pay'}}" @tap="buyCouponClick">
+      <view class="pay-coupon-content {{coupon.canUsePay ? '' : 'dis'}}" wx:if="{{type === 'pay'}}" @tap="buyCouponClick">
         <view class="coupon-left">
           <view class="left-money">
-            <view class="small-money" style="font-size:{{coupon.promotion.flag.length > 4 ?'10px' : '18px'}}">¥</view>
+            <view class="small-money" style="font-size:{{coupon.promotion.flag.length > 4 ?'10px' : '18px'}}" wx:if="{{coupon.promotion.promotion_type !== 'discount'}}">¥</view>
             <view class="big-money" style="font-size:{{coupon.promotion.flag.length > 4 ?'18px' : '30px'}}">{{coupon.promotion.flag}}</view>
+            <view class="small-money" style="font-size:18px" wx:if="{{coupon.promotion.promotion_type === 'discount'}}">折</view>
           </view>
           <view class="left-sub" wx:if="{{coupon.promotion.promotion_type === 'reduction' || coupon.promotion.promotion_type === 'discount'}}">满{{coupon.promotion.config.meet_money}}可用</view>
         </view>
         <view class="coupon-middle">
           <view class="coupon-middle-top">
             <view class="top-shopName">
-              <text class="top-label">{{coupon.promotion.promotion_type_cn}}</text><text class="top-name">{{coupon.promotion.merchant_data.shop_name}}</text>
+              <text class="top-label">{{coupon.promotion.promotion_type_cn}}</text><text class="top-name">{{coupon.merchant_data.shop_name}}</text>
             </view>
             <view class="top-title">{{coupon.promotion.title}}</view>
           </view>
@@ -70,8 +71,9 @@
       <view class="mine-coupon-content {{coupon.promotion.status * 1 === 0 ? '' : 'dis'}}" wx:if="{{type === 'mine' && coupon.promotion.promotion_type !== 'exchange'}}" @tap="buyCouponClick">
         <view class="coupon-left">
           <view class="left-money">
-            <view class="small-money" style="font-size: {{coupon.promotion.flag.length>4?'10px' : '18px'}}">¥</view>
-            <view class="big-money" style="font-size: {{coupon.promotion.flag.length>4?'18px' : '30px'}}">{{coupon.promotion.flag}}</view>
+            <view class="small-money" style="font-size:{{coupon.promotion.flag.length > 4 ?'10px' : '18px'}}" wx:if="{{coupon.promotion.promotion_type !== 'discount'}}">¥</view>
+            <view class="big-money" style="font-size:{{coupon.promotion.flag.length > 4 ?'18px' : '30px'}}">{{coupon.promotion.flag}}</view>
+            <view class="small-money" style="font-size:18px" wx:if="{{coupon.promotion.promotion_type === 'discount'}}">折</view>
           </view>
           <view class="left-sub" wx:if="{{coupon.promotion.promotion_type === 'reduction' || coupon.promotion.promotion_type === 'discount'}}">满{{coupon.promotion.config.meet_money}}可用</view>
         </view>
