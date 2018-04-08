@@ -112,7 +112,7 @@
 
     data = {
       imageUrlHead: URIS.image,
-      menuIdx: 0,
+      menuIdx: -2,
       menuItems: [{title: '全部', type: 4}, {
         title: '待付款',
         type: 0
@@ -230,6 +230,8 @@
     async onLoad(option) {
       await this.showIndustry()
       this.menuIdx = option.idx * 1 + 1
+      this.menuType = option.idx * 1 === -1 ? 4 : option.idx * 1 + 1
+      this.load({idx: this.menuIdx})
       this.$apply()
     }
 
@@ -246,7 +248,9 @@
       } else {
         this.$invoke('BackHome', 'hide')
       }
-      this.load({idx: this.menuIdx})
+      if (this.menuIdx !== -2) {
+        this.load({idx: this.menuIdx})
+      }
       this.$apply()
     }
 
