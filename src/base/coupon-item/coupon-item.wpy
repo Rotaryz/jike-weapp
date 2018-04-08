@@ -149,9 +149,9 @@
           case 'buy':
             if (this.coupon.promotion.promotion_type === 'voucher' || this.coupon.promotion.promotion_type === 'cash') {
               this.$emit('buy', this.coupon) // 立即购买
-            } else if ((this.coupon.promotion.promotion_type === 'reduction' || this.coupon.promotion.promotion_type === 'discount') && !this.coupon.promotion.is_get) {
+            } else if ((this.coupon.promotion.promotion_type === 'reduction' || this.coupon.promotion.promotion_type === 'discount') && !this.coupon.promotion.can_buy) {
               this.$emit('get', this.coupon) // 立即领取
-            } else if ((this.coupon.promotion.promotion_type === 'reduction' || this.coupon.promotion.promotion_type === 'discount') && this.coupon.promotion.is_get) {
+            } else if ((this.coupon.promotion.promotion_type === 'reduction' || this.coupon.promotion.promotion_type === 'discount') && this.coupon.promotion.can_buy) {
               this.$emit('use', this.coupon) // 去使用
             }
             break
