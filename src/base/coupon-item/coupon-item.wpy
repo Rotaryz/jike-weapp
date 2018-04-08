@@ -2,8 +2,8 @@
   <view class="coupon">
     <view class="coupon-item">
       <image class="coupon-bc" wx:if="{{imageUrlHead && type === 'buy'}}" src="{{imageUrlHead + '/defaults/c-image/mine/bg-coupon_yhq@2x.png'}}"></image>
-      <image class="coupon-bc" wx:if="{{imageUrlHead && type === 'pay' && false}}" src="{{imageUrlHead + '/defaults/c-image/mine/bg-coupon_syyh@2x.png'}}"></image>
-      <image class="coupon-bc" wx:if="{{imageUrlHead && type === 'pay'}}" src="{{imageUrlHead + '/defaults/c-image/mine/bg-coupon_sxsyyh@2x.png'}}"></image>
+      <image class="coupon-bc" wx:if="{{imageUrlHead && type === 'pay' && coupon.canUsePay}}" src="{{imageUrlHead + '/defaults/c-image/mine/bg-coupon_syyh@2x.png'}}"></image>
+      <image class="coupon-bc" wx:if="{{imageUrlHead && type === 'pay' && !coupon.canUsePay}}" src="{{imageUrlHead + '/defaults/c-image/mine/bg-coupon_sxsyyh@2x.png'}}"></image>
       <image class="coupon-bc" wx:if="{{imageUrlHead && type === 'mine' && coupon.promotion.promotion_type !== 'exchange' && coupon.promotion.status * 1 === 0}}" src="{{imageUrlHead + '/defaults/c-image/mine/bg-coupon_usable@2x.png'}}"></image>
       <image class="coupon-bc" wx:if="{{imageUrlHead && type === 'mine' && coupon.promotion.promotion_type !== 'exchange' && coupon.promotion.status * 1 !== 0}}" src="{{imageUrlHead + '/defaults/c-image/mine/bg-coupon_disable@2x.png'}}"></image>
       <image class="coupon-bc" wx:if="{{imageUrlHead && type === 'mine' && coupon.promotion.promotion_type === 'exchange'}}" src="{{imageUrlHead + '/defaults/c-image/mine/bg-coupon-dhq@2x.png'}}"></image>
@@ -61,9 +61,9 @@
           </view>
         </view>
         <view class="coupon-right">
-          <image class="right-img" wx:if="{{imageUrlHead && coupon.checked}}" src="{{imageUrlHead + '/defaults/c-image/pay/icon-select_syyh@2x.png'}}"></image>
-          <image class="right-img" wx:if="{{imageUrlHead && !coupon.checked}}" src="{{imageUrlHead + '/defaults/c-image/pay/icon-notselect_syyh@2x.png'}}"></image>
-          <image class="right-img" wx:if="{{imageUrlHead}}" src="{{imageUrlHead + '/defaults/c-image/pay/icon-notselect@2x.png'}}"></image>
+          <image class="right-img" wx:if="{{imageUrlHead && coupon.canUsePay && coupon.checked}}" src="{{imageUrlHead + '/defaults/c-image/pay/icon-select_syyh@2x.png'}}"></image>
+          <image class="right-img" wx:if="{{imageUrlHead && coupon.canUsePay && !coupon.checked}}" src="{{imageUrlHead + '/defaults/c-image/pay/icon-notselect_syyh@2x.png'}}"></image>
+          <image class="right-img" wx:if="{{imageUrlHead && !coupon.canUsePay}}" src="{{imageUrlHead + '/defaults/c-image/pay/icon-notselect@2x.png'}}"></image>
         </view>
       </view>
 
@@ -78,7 +78,7 @@
         <view class="coupon-middle">
           <view class="coupon-middle-top">
             <view class="top-shopName">
-              <text class="top-label">{{coupon.promotion.promotion_type_cn}}</text><text class="top-name">{{coupon.promotion.merchant_data.shop_name}}</text>
+              <text class="top-label">{{coupon.promotion.promotion_type_cn}}</text><text class="top-name">{{coupon.merchant_data.shop_name}}</text>
             </view>
             <view class="top-title">{{coupon.promotion.title}}</view>
           </view>
@@ -102,7 +102,7 @@
         <view class="coupon-middle">
           <view class="coupon-middle-top">
             <view class="top-shopName">
-              <text class="top-label">{{coupon.promotion.promotion_type_cn}}</text><text class="top-name">{{coupon.promotion.merchant_data.shop_name}}</text>
+              <text class="top-label">{{coupon.promotion.promotion_type_cn}}</text><text class="top-name">{{coupon.merchant_data.shop_name}}</text>
             </view>
             <view class="top-title">{{coupon.promotion.title}}</view>
           </view>
@@ -117,8 +117,8 @@
         </view>
       </view>
     </view>
-    <view class="coupon-flag" wx:if="{{type === 'pay'}}">
-      临时文字，请联系卖家核销
+    <view class="coupon-flag" wx:if="{{type === 'pay' && !coupon.canUsePay}}">
+      {{coupon.nocanUsecondtion}}
     </view>
   </view>
 </template>
@@ -156,7 +156,9 @@
             break
           case 'pay':
             // 前面需要进行可用不可用判断，对接时自行添加
-            this.$emit('choice', this.coupon)
+            if (this.coupon.canUsePay) {
+              this.$emit('choice', this.coupon)
+            }
             break
           case 'mine':
             if (this.coupon.promotion.status * 1 === 0 && (this.coupon.promotion.promotion_type === 'reduction' || this.coupon.promotion.promotion_type === 'discount')) {
