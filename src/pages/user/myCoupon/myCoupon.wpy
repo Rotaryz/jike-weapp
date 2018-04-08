@@ -13,29 +13,35 @@
     </view>
 
     <scroll-view scroll-y class="{{menuIdx===0?'myCoupon-couponList':'myCoupon-couponList-ccc'}}" bindscrolltolower="couponLower" wx:if="{{couponList.length>0}}">
-      <view class="myCoupon-couponList-item" wx:for="{{couponList}}" wx:key="{{index}}" @tap="couponDetail({{item.id}},{{item.promotionType}},{{item.codeId}},{{item.merchantId}})">
-        <view class="couponList-item-head-container">
-          <image class="coupon-bc" wx:if="{{imageUrlHead}}" src="{{imageUrlHead + '/defaults/c-image/mine/pic-couponbg@2x.png'}}"></image>
-          <view class="couponList-item-head-left">
-            <view class="couponList-itemPay">
-              <image src="{{item.imageUrl}}" class="promotion-image" wx:if="{{item.promotionType==='exchange' && imageUrlHead}}" mode="aspectFit"></image>
-              <view wx:if="{{item.promotionType!=='exchange'}}"><text class="couponList-midMoney">¥</text><text class="couponList-bigMoney">{{item.price?item.price:''}}</text></view>
-            </view>
-            <view class="couponList-itemMsg">
-              <view class="couponList-item-title">{{item.title}}</view>
-              <view class="underline"></view>
-              <view class="couponList-item-time">{{item.notAllowTime}}</view>
-              <view class="couponList-item-time">有效期至{{item.endAt}}</view>
-            </view>
-          </view>
-          <view class="couponList-item-head-right">
-            <view class="couponList-item-head-right-btn {{industry}}" wx:if="{{menuIdx===0}}" catchtap="useCoupon({{item.codeId}}, 'coupon')">进店使用</view>
-            <image class="couponList-noItemBtn" wx:if="{{menuIdx===1 && imageUrlHead}}" src="{{imageUrlHead + '/defaults/c-image/mine/pic-my_already .png'}}"></image>
-            <image class="couponList-noItemBtn" wx:if="{{menuIdx===2 && imageUrlHead}}" src="{{imageUrlHead + '/defaults/c-image/mine/pic-my_overdue.png'}}"></image>
-          </view>
-          <image class="exChange-img" src="{{imageUrlHead + '/defaults/c-image/mine/pic-m_'+industry+'@2x.png'}}" wx:if="{{item.promotionType==='exchange' && imageUrlHead}}"></image>
+      <!--<view class="myCoupon-couponList-item" wx:for="{{couponList}}" wx:key="{{index}}" @tap="couponDetail({{item.id}},{{item.promotionType}},{{item.codeId}},{{item.merchantId}})">-->
+        <!--<view class="couponList-item-head-container">-->
+          <!--<image class="coupon-bc" wx:if="{{imageUrlHead}}" src="{{imageUrlHead + '/defaults/c-image/mine/pic-couponbg@2x.png'}}"></image>-->
+          <!--<view class="couponList-item-head-left">-->
+            <!--<view class="couponList-itemPay">-->
+              <!--<image src="{{item.imageUrl}}" class="promotion-image" wx:if="{{item.promotionType==='exchange' && imageUrlHead}}" mode="aspectFit"></image>-->
+              <!--<view wx:if="{{item.promotionType!=='exchange'}}"><text class="couponList-midMoney">¥</text><text class="couponList-bigMoney">{{item.price?item.price:''}}</text></view>-->
+            <!--</view>-->
+            <!--<view class="couponList-itemMsg">-->
+              <!--<view class="couponList-item-title">{{item.title}}</view>-->
+              <!--<view class="underline"></view>-->
+              <!--<view class="couponList-item-time">{{item.notAllowTime}}</view>-->
+              <!--<view class="couponList-item-time">有效期至{{item.endAt}}</view>-->
+            <!--</view>-->
+          <!--</view>-->
+          <!--<view class="couponList-item-head-right">-->
+            <!--<view class="couponList-item-head-right-btn {{industry}}" wx:if="{{menuIdx===0}}" catchtap="useCoupon({{item.codeId}}, 'coupon')">进店使用</view>-->
+            <!--<image class="couponList-noItemBtn" wx:if="{{menuIdx===1 && imageUrlHead}}" src="{{imageUrlHead + '/defaults/c-image/mine/pic-my_already .png'}}"></image>-->
+            <!--<image class="couponList-noItemBtn" wx:if="{{menuIdx===2 && imageUrlHead}}" src="{{imageUrlHead + '/defaults/c-image/mine/pic-my_overdue.png'}}"></image>-->
+          <!--</view>-->
+          <!--<image class="exChange-img" src="{{imageUrlHead + '/defaults/c-image/mine/pic-m_'+industry+'@2x.png'}}" wx:if="{{item.promotionType==='exchange' && imageUrlHead}}"></image>-->
+        <!--</view>-->
+      <!--</view>-->
+      <repeat for="{{couponList}}" key="index" index="index" item="item">
+        <view class="test">
+          <coupon :coupon="item" :type="'mine'"></coupon>
         </view>
-      </view>
+      </repeat>
+
       <Underline></Underline>
     </scroll-view>
 
@@ -54,6 +60,7 @@
   import {ERR_OK} from '@/api/base'
   import Underline from '@/base/underline-block/underline-block'
   import BackHome from '@/base/back-home/back-home'
+  import coupon from '@/base/coupon-item/coupon-item'
 
   export default class MyCoupon extends wepy.page {
     mixins = [base]
@@ -65,7 +72,8 @@
     components = {
       Toast,
       Underline,
-      BackHome
+      BackHome,
+      coupon
     }
 
     data = {
@@ -89,7 +97,7 @@
         this.page = 1
         this.nothingAdd = false
         this.$invoke('Underline', 'hide')
-        this.couponList = this._computed(resList.data)
+        this.couponList = resList.data
         this.$apply()
         this.loaded()
       },
@@ -105,7 +113,7 @@
             this.nothingAdd = true
             this.$invoke('Underline', 'show')
           }
-          let resArr = this._computed(res.data)
+          let resArr = res.data
           this.couponList.push(...resArr)
           this.LowerLoading = false
           this.$apply()
@@ -168,7 +176,8 @@
         this.loaded()
         return
       }
-      this.couponList = this._computed(resList.data)
+      this.couponList = resList.data
+      console.log(this.couponList)
       this.loaded()
       this.$apply()
     }
@@ -177,32 +186,22 @@
       return await myCoupon.getUserCouponList(idx, page, limit)
     }
 
-    _computed(arr) {
-      return arr.map((item) => {
-        let beautyCode = item.code.replace(/(\d{4})/g, '$1 ')
-        return {
-          price: Math.floor(item.promotion.platform_price),
-          restriction: item.restriction,
-          title: item.promotion.title,
-          endAt: item.promotion.end_at,
-          notAllowTime: item.promotion.not_allow_time,
-          code: item.code,
-          beautyCode,
-          qrcodeUrl: item.qrcode_url,
-          id: item.promotion.id,
-          codeId: item.id,
-          type: item.gift_bag_id,
-          promotionType: item.promotion.promotion_type,
-          imageUrl: item.promotion.promotion_img || '',
-          merchantId: item.merchant_id
-        }
-      })
+    events = {
+      payUse(item) {
+        console.log(item)
+      },
+      showQrcord(item) {
+        console.log(item)
+      }
     }
   }
 </script>
 
 <style lang="stylus">
   @import "../../../common/stylus/variable"
+  .test
+    padding: 0 12px
+    margin-top: 10px
 
   .myCoupon-midMoney
     font-size: $font-size-medium
@@ -273,208 +272,7 @@
     color: $color-text-n
 
     .myCoupon-couponList-item
-      margin: 10px 12px
-      position: relative
-      padding-bottom: 28%
-      height: 0
-
-      .couponList-item-head-container
-        position: absolute
-        left: 0
-        top: 0
-        right: 0
-        bottom: 0
-        display: flex
-
-        .coupon-bc
-          position: absolute
-          height: 100%
-          width: 100%
-
-        .couponList-item-head-left
-          width: 74.4%
-          height: 100%
-          display: flex
-          position: absolute
-          left: 0
-
-          .couponList-itemPay
-            flex: 4
-            display: flex
-            align-items: center
-            justify-content: center
-
-            .promotion-image
-              width: 55px
-              height: 55px
-              border-radius: 2px
-
-            .couponList-midMoney
-              font-size: $font-size-small-s
-              font-family: PingFangSC-Semibold
-              color: $color-text-t
-
-            .couponList-bigMoney
-              color: $color-text-t
-              font-size: 25px
-              font-family: PingFangSC-Semibold
-
-          .couponList-itemMsg
-            flex: 7
-            display: flex
-            flex-direction: column
-            justify-content: center
-
-            .couponList-item-title
-              font-family: PingFangSC-Medium
-              font-size: $font-size-medium
-              padding-bottom: 10px
-
-            .underline
-              width: 90%
-              height: 10px
-              border-top: .5px solid $color-col-line
-
-            .couponList-item-time
-              font-size: $font-size-small-s
-              color: $color-text-d
-              line-height: 14px
-
-        .couponList-item-head-right
-          position: absolute
-          right: 0
-          width: 25.6%
-          height: 100%
-          display: flex
-          align-items: center
-          justify-content: center
-
-          .couponList-item-head-right-btn
-            width: 58px
-            height: 24px
-            display: flex
-            align-items: center
-            justify-content: center
-            border: 1px solid $color-orange
-            font-size: $font-size-small
-            color: $color-text-t
-            border-radius: 2px
-
-          .myCoupon-couponList-noItemBtn
-            width: 60px
-            height: 60px
-
-        .exChange-img
-          position: absolute
-          left: 0
-          top: 0
-          width: 44.5px
-          height: 46.5px
-
-
-  .myCoupon-couponList-ccc
-    max-height: 92vh
-    color: $color-text-n
-    filter: grayscale(100%)
-    filter: gray
-
-    .myCoupon-couponList-item
-      margin: 10px 12px 0
-      position: relative
-      padding-bottom: 28%
-      height: 0
-
-      .couponList-item-head-container
-        position: absolute
-        left: 0
-        top: 0
-        right: 0
-        bottom: 0
-        display: flex
-
-        .coupon-bc
-          position: absolute
-          height: 100%
-          width: 100%
-
-        .couponList-item-head-left
-          width: 74.4%
-          height: 100%
-          display: flex
-          position: absolute
-          left: 0
-
-          .couponList-itemPay
-            flex: 4
-            display: flex
-            align-items: center
-            justify-content: center
-
-            .promotion-image
-              width: 55px
-              height: 55px
-              border-radius: 2px
-
-            .couponList-midMoney
-              font-size: $font-size-small-s
-              font-family: PingFangSC-Semibold
-              color: #DBDBDB
-
-            .couponList-bigMoney
-              color: #DBDBDB
-              font-size: 25px
-              font-family: PingFangSC-Semibold
-
-          .couponList-itemMsg
-            flex: 7
-            display: flex
-            flex-direction: column
-            justify-content: center
-
-            .couponList-item-title
-              font-family: PingFangSC-Medium
-              font-size: $font-size-medium
-              padding-bottom: 10px
-              color: #DBDBDB
-            .underline
-              width: 90%
-              height: 10px
-              border-top: .5px solid $color-col-line
-
-            .couponList-item-time
-              font-size: $font-size-small-s
-              color: #DBDBDB
-              line-height: 14px
-
-        .couponList-item-head-right
-          position: absolute
-          right: 0
-          width: 25.6%
-          height: 100%
-          display: flex
-          align-items: center
-          justify-content: center
-
-          .couponList-item-head-right-btn
-            width: 58px
-            height: 24px
-            display: flex
-            align-items: center
-            justify-content: center
-            border: 1px solid #DBDBDB
-            font-size: $font-size-small
-            color: #DBDBDB
-            border-radius: 2px
-
-          .couponList-noItemBtn
-            width: 60px
-            height: 60px
-
-        .exChange-img
-          position: absolute
-          left: 0
-          top: 0
-          width: 13.75vw
-          height: 14.375vw
+      padding: 0 12px
+      margin-top: 10px
 
 </style>
