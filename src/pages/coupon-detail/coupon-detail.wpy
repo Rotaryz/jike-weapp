@@ -143,7 +143,8 @@
       currentMerchant: 0,
       qrcode: '',
       sharePrice: '',
-      orderInfo: {}
+      orderInfo: {},
+      showSoya: true
     }
 
     onShareAppMessage(res) {
@@ -203,17 +204,33 @@
         return
       }
       const json = await Shares.getSharePrize({current_merchant: this.currentMerchant})
-      this.loaded()
       if (json.error !== ERR_OK) {
+        this.loaded()
         return
       }
       const res = json.data
       this.sharePrice = res.price
       this.coupon.activity_share = false
-      this.$apply()
       if (this.sharePrice) {
         this.$invoke('share-modal', 'show')
+        this.showSoya = false
       }
+      this.showSoya = true
+      this.$apply()
+    }
+
+    async _getShareSoya() {
+      const resData = await Shares.getShareSoya()
+      if (resData.error !== ERR_OK) {
+        this.loaded()
+        this.$invoke('toast', 'show', resData.message)
+        return
+      }
+      if (resData.error === ERR_OK && resData.code === 10002) {
+        this.loaded()
+        return
+      }
+      const res = resData.data
     }
 
     async _createQrcode() {

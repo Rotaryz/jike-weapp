@@ -15,4 +15,14 @@ export default class share extends base {
     const url = `${this.baseUrl}/api/activity/share-prize`
     return await this.get(url, data)
   }
+
+  /**
+   * 分享后获取播豆
+   * @param
+   * @returns {Promise.<*>}
+   */
+  static async getShareSoya() {
+    const url = `${this.baseUrl}/api/scores/add-score?source=share`
+    return await this.get(url)
+  }
 }
