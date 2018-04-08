@@ -41,7 +41,7 @@
         </view>
       </view>
 
-      <view class="pay-coupon-content dis" wx:if="{{type === 'pay'}}" @tap="buyCouponClick">
+      <view class="pay-coupon-content {{coupon.canUsePay ? '' : 'dis'}}" wx:if="{{type === 'pay'}}" @tap="buyCouponClick">
         <view class="coupon-left">
           <view class="left-money">
             <view class="small-money" style="font-size:{{coupon.promotion.flag.length > 4 ?'10px' : '18px'}}" wx:if="{{coupon.promotion.promotion_type !== 'discount'}}">¥</view>
@@ -53,7 +53,7 @@
         <view class="coupon-middle">
           <view class="coupon-middle-top">
             <view class="top-shopName">
-              <text class="top-label">{{coupon.promotion.promotion_type_cn}}</text><text class="top-name">{{coupon.promotion.merchant_data.shop_name}}</text>
+              <text class="top-label">{{coupon.promotion.promotion_type_cn}}</text><text class="top-name">{{coupon.merchant_data.shop_name}}</text>
             </view>
             <view class="top-title">{{coupon.promotion.title}}</view>
           </view>
