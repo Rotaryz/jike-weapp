@@ -46,7 +46,6 @@
         确定买单
       </button>
     </view>
-    <view>{{usableDiscountsMoney}}</view>
   </view>
   <Toast></Toast>
 </template>
@@ -88,6 +87,9 @@
         this.discountType = wepy.getStorageSync('discountType')
         this.usableCoupon = usableList
         this._youUsableCouponList()
+        if (!this.usableCoupon) {
+          this.usableDiscountsMoney = 0
+        }
         this._calculateMoney()
         console.log('usableList', usableList)
         console.log('discountType', this.discountType)
@@ -183,36 +185,38 @@
       let youDiscountMoney = this.allMoneyInput - this.noDiscountInput
       console.log('you', youDiscountMoney)
       var youStorage = wepy.getStorageSync('choiceCoupon')
-      switch (youStorage.promotion.promotion_type) {
-        case 'discount':
-          if (parseFloat(youStorage.promotion.config.meet_money) <= youDiscountMoney) {
-            let discountMoney = 0
-            if (youDiscountMoney * (parseFloat(youStorage.promotion.config.discount) / 10) > parseFloat(youStorage.promotion.config.max_reduction)) {
-              discountMoney = parseFloat(youStorage.promotion.config.max_reduction)
+      if (youStorage.promotion) {
+        switch (youStorage.promotion.promotion_type) {
+          case 'discount':
+            if (parseFloat(youStorage.promotion.config.meet_money) <= youDiscountMoney) {
+              let discountMoney = 0
+              if (youDiscountMoney * (parseFloat(youStorage.promotion.config.discount) / 10) > parseFloat(youStorage.promotion.config.max_reduction)) {
+                discountMoney = parseFloat(youStorage.promotion.config.max_reduction)
+              } else {
+                discountMoney = youDiscountMoney * (parseFloat(youStorage.promotion.config.discount) / 10)
+              }
+              this.usableDiscountsMoney = discountMoney
+              this.usableCoupon = youStorage
+              this.$apply()
             } else {
-              discountMoney = youDiscountMoney * (parseFloat(youStorage.promotion.config.discount) / 10)
+              this.usableDiscountsMoney = 0
+              this.usableCoupon = ''
             }
-            this.usableDiscountsMoney = discountMoney
-            this.usableCoupon = youStorage
-            this.$apply()
-          } else {
-            this.usableDiscountsMoney = 0
-            this.usableCoupon = ''
-          }
-          break
-        case 'reduction':
-          if (parseFloat(youStorage.promotion.config.meet_money) <= youDiscountMoney) {
-            this.usableDiscountsMoney = parseFloat(youStorage.promotion.config.reduction)
-            this.usableCoupon = youStorage
-          } else {
-            this.usableDiscountsMoney = 0
-            this.usableCoupon = ''
-          }
-          break
+            break
+          case 'reduction':
+            if (parseFloat(youStorage.promotion.config.meet_money) <= youDiscountMoney) {
+              this.usableDiscountsMoney = parseFloat(youStorage.promotion.config.reduction)
+              this.usableCoupon = youStorage
+            } else {
+              this.usableDiscountsMoney = 0
+              this.usableCoupon = ''
+            }
+            break
+        }
+        console.log('youChooice', this.usableCoupon)
+        this.usableDiscountsMoney = this.usableDiscountsMoney.toFixed(2)
+        this.$apply()
       }
-      console.log('youChooice', this.usableCoupon)
-      this.usableDiscountsMoney = this.usableDiscountsMoney.toFixed(2)
-      this.$apply()
     }
 
     _payWay() {
@@ -324,7 +328,9 @@
             paySign
           })
           if (pay.errMsg === 'requestPayment:ok') {
-            let url = '/pages/pay-success/pay-success'
+            let total = this.needPayMoney
+            const status = 'success'
+            let url = `/pages/pay-result/pay-result?total=${total}&status=${status}`
             this.$navigate(url)
           }
         } else if (res.error === 1) {
