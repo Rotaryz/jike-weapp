@@ -24,7 +24,7 @@
     <scroll-view scroll-y class="mySelect-contentList" bindscrolltolower="contentLower" wx:if="{{contentList.length > 0}}">
       <repeat for="{{contentList}}" key="index" index="index" item="item">
         <view class="mySelect-contentList-box">
-          <content :content.sync="item" :type="type"></content>
+          <content :content.sync="item" :type="giftType"></content>
         </view>
       </repeat>
       <Underline></Underline>
@@ -73,7 +73,8 @@
       page: 1,
       nothingAdd: false,
       nothingBoxShow: true,
-      type: 'mine'
+      type: 'buy',
+      giftType: 'mine'
     }
 
     components = {
@@ -238,7 +239,7 @@
     }
 
     async load() {
-      this.nothingAdd = true
+      this.nothingAdd = false
       this.$invoke('Underline', 'hide')
       let limit
       switch (this.menuIdx * 1) {
@@ -321,8 +322,19 @@
       contentClick(id, merchantId) {
         this.$navigate('/pages/content-detail/content-detail?id=' + id + '&currentMerchant=' + merchantId)
       },
-      giftbagClick() {
-
+      giftbagClick(id, merchantId) {
+        this.$navigate('/pages/coupon-detail/coupon-detail?type=2&id=' + id + '&currentMerchant=' + merchantId)
+      },
+      buy(item) {
+        let id = item.promotion.id
+        let merchantId = item.merchant_id
+        this.$navigate('/pages/coupon-detail/coupon-detail?type=1&id=' + id + '&currentMerchant=' + merchantId)
+      },
+      get(item) {
+        console.log(item)
+      },
+      use(item) {
+        console.log(item)
       }
     }
   }

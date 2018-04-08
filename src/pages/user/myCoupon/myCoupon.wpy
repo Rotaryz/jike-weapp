@@ -154,7 +154,6 @@
         return
       }
       this.couponList = resList.data
-      console.log(this.couponList)
       this.loaded()
       this.$apply()
     }
@@ -178,9 +177,6 @@
 
 <style lang="stylus">
   @import "../../../common/stylus/variable"
-  .test
-    padding: 0 12px
-    margin-top: 10px
 
   .myCoupon-midMoney
     font-size: $font-size-medium

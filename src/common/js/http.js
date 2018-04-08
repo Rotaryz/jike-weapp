@@ -1,7 +1,7 @@
 import wepy from 'wepy'
 import Tips from './tips'
 
-const SOLD_OUT = 10001
+const SOLD_OUT = 10001 // 店铺下架
 
 // HTTP工具类
 export default class http {
