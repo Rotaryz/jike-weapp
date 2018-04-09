@@ -62,6 +62,7 @@
         </view>
       </view>
     </share-modal>
+    <popout></popout>
   </view>
 </template>
 
@@ -79,6 +80,7 @@
   import Info from 'api/info'
   import Shares from 'api/share'
   import {getParams} from 'common/js/data'
+  import Popout from '@/base/integral-popout/integral-popout'
 
   const IMAGE_TYPE = 0
   const TEXT_TYPE = 1
@@ -106,7 +108,8 @@
       },
       qrcode: '',
       currentMerchant: '',
-      couponType: 'buy'
+      couponType: 'buy',
+      showSoya: true
     }
 
     onShareAppMessage(res) {
@@ -121,6 +124,8 @@
         success: async () => {
           // 转发成功
           await this._getSharePrize()
+          await this._getShareSoya()
+          this.loaded()
         },
         fail: (res) => {
           // 转发失败
@@ -175,17 +180,39 @@
         return
       }
       const json = await Shares.getSharePrize({current_merchant: this.currentMerchant})
-      this.loaded()
       if (json.error !== ERR_OK) {
+        this.loaded()
         return
       }
       const res = json.data
       this.sharePrice = res.price
       this.showVideo = false
       this.contents.activity_share = false
-      this.$apply()
       if (this.sharePrice) {
+        this.loaded()
         this.$invoke('share-modal', 'show')
+        this.showSoya = false
+      }
+      this.showSoya = true
+      this.$apply()
+    }
+
+    async _getShareSoya() {
+      const resData = await Shares.getShareSoya('share')
+      if (resData.error !== ERR_OK) {
+        this.loaded()
+        this.$invoke('toast', 'show', resData.message)
+        return
+      }
+      if (resData.error === ERR_OK && resData.code === 10002) {
+        this.loaded()
+        return
+      }
+      const res = resData.data
+      let total = res.score_value
+      if (this.showSoya) {
+        this.loaded()
+        this.$invoke('popout', 'openPoput', 'share', total, '分享')
       }
     }
 
@@ -272,7 +299,8 @@
       'coupon': Coupon,
       'phone-test': PhoneTest,
       'share': Share,
-      'share-modal': BaseModal
+      'share-modal': BaseModal,
+      'popout': Popout
     }
   }
 </script>
