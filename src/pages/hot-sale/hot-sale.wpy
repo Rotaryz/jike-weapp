@@ -7,6 +7,12 @@
         </view>
       </repeat>
     </view>
+    <view class="nothing-box" wx:if="{{activeIsEmpty}}">
+      <image
+        src="{{imageUri + '/defaults/c-image/recom/icon-blank_coupon@2x.png'}}"
+        wx:if="{{imageUri}}" class="nothing-img"></image>
+      <view class="nothing-txt">无可用优惠券</view>
+    </view>
     <underline></underline>
     <toast></toast>
   </view>
@@ -29,16 +35,20 @@
       imageUri: URIS.image,
       list: [],
       type: 'buy',
-      merchantId: wepy.getStorageSync('merchantId')
+      merchantId: wepy.getStorageSync('merchantId'),
+      activeIsEmpty: true
     }
 
     async onShow() {
-      const list = await this._getCouponsAll()
-      this.list = list
-      console.log(list)
-      this.loaded()
+      await this._getCouponsAll()
+      this._checkIsEmpty()
+    }
+
+    // 检查活动内容是否为空
+    _checkIsEmpty() {
+      let flag = this.list.length
+      this.activeIsEmpty = !flag
       this.$apply()
-      this.$invoke('underline', 'show')
     }
 
     // 获取推荐优惠券列表（所有）+
@@ -49,17 +59,14 @@
       }
       let res = await Merchants.getCoupons(this.merchantId, params)
       if (res.error === ERR_OK) {
-        console.log(res.data)
-        return res.data
-      } else {
-        return []
+        this.list = res.data
+        this.$apply()
+        this.$invoke('underline', 'show')
       }
+      this.loaded()
     }
 
     methods = {
-      test(item) {
-        console.log(item)
-      }
     }
     events = {
       buy(coupon) {
@@ -105,4 +112,19 @@
       .content-item
         width: 93.6vw
         margin: 2.8vw
+    .nothing-box
+      height: 100vh
+      display: flex
+      flex-direction: column
+      align-items: center
+     .nothing-img
+       width: 95.5px
+       height: 75.5px
+       margin:170px 0 11.5px
+      .nothing-txt
+        font-family: PingFangSC-Light
+        letter-spacing: 0
+        line-height: $font-size-small
+        font-size: $font-size-small
+        color: $color-text
 </style>

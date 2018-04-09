@@ -7,20 +7,44 @@
       :targetUrl.sync="targetUrl"
       :length.sync="length"
     >
+
       <view class="swiper-wrapper {{isOnlyOneStyle}}" slot="panel">
-        <recom-swiper :list.sync="list">
-          <block wx:for="{{list}}" wx:key="index" slot="swiper">
+        <swiper
+          class="swiper-box"
+          current="{{swiperCurrent*1}}"
+          @change="changeVal"
+        >
+          <repeat for="{{list}}" key="index" index="index" item="item">
             <swiper-item wx:if="{{item.length}}">
-              <repeat for="{{item}}" key="index" index="index" item="item2">
                 <view class="content">
                   <view class="content-item">
-                    <coupon-item :type="type" :coupon.sync="item2"></coupon-item>
+                    <coupon-item :type="type" :coupon.sync="item[0]"></coupon-item>
+                  </view>
+                  <view class="content-item" wx:if="{{item.length}}">
+                    <coupon-item :type="type" :coupon.sync="item[1]"></coupon-item>
                   </view>
                 </view>
-              </repeat>
             </swiper-item>
+          </repeat>
+        </swiper>
+        <view class="dot-box" wx:if="{{list.length>1}}">
+          <block wx:for="{{list}}" wx:key="{{index}}">
+            <view class="dot {{index == swiperCurrent ? 'active' : ''}}"></view>
           </block>
-        </recom-swiper>
+        </view>
+        <!--<recom-swiper :list.sync="list">-->
+          <!--<block wx:for="{{list}}" wx:key="index" slot="swiper">-->
+            <!--<swiper-item wx:if="{{item.length}}">-->
+              <!--<repeat for="{{item}}" key="index" index="index" item="item2">-->
+                <!--<view class="content">-->
+                  <!--<view class="content-item">-->
+                    <!--<coupon-item :type="type" :coupon.sync="item2"></coupon-item>-->
+                  <!--</view>-->
+                <!--</view>-->
+              <!--</repeat>-->
+            <!--</swiper-item>-->
+          <!--</block>-->
+        <!--</recom-swiper>-->
       </view>
     </recom-panel>
   </view>
@@ -41,6 +65,10 @@
       length: {
         type: String,
         default: ''
+      },
+      swiperCurrent: {
+        type: String,
+        default: '0'
       }
     }
     data = {
@@ -76,7 +104,11 @@
         this.$parent.$navigate(url)
       }
     }
-    methods = {}
+    methods = {
+      changeVal(e) {
+        this.swiperCurrent = e.detail.current
+      }
+    }
     components = {
       'recom-panel': RecomPanel,
       'recom-swiper': RecomSwiper,
@@ -91,17 +123,42 @@
 
   .swiper-wrapper
     height: 63.297872vw
+    width: 100vw
+    box-sizing: border-box
+    position: relative
     &.only-one
       height: 34.04255vw
 
-    .content
-      layout()
-      justify-content: flex-start
-      align-items: center
+    .swiper-box
       width: 100%
-      .content-item
-        width: 93.6vw
-        margin-bottom: 2.659574vw
-        &:last-child
-          margin-bottom: 3.989vw
+      height: 100%
+      .content
+        layout()
+        justify-content: flex-start
+        align-items: center
+        width: 100%
+        .content-item
+          width: 93.6vw
+          margin-bottom: 2.659574vw
+          &:last-child
+            margin-bottom: 3.989vw
+    .dot-box
+      position: absolute
+      bottom: 3.19vw
+      left: 0
+      right: 0
+      layout(row)
+      justify-content: center
+    .dot
+      width: 0.8vw
+      height: 0.8vw
+      border-radius: 0.8vw
+      background-color: $color-button-dis
+      margin: 0 2.1vw
+      transition: all .3s
+      &.active
+        width: 2.9vw
+        border-radius: 26.5957vw
+        background-color: $color-text-t
+
 </style>

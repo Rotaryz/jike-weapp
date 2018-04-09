@@ -49,11 +49,50 @@
       :list.sync="giftbagList"
       wx:if="{{giftbagList.length>0}}"
     ></recom-giftbat>
-    <recom-hot
-      :list.sync="hotCouponsList"
-      :length.sync="hotListLen"
-      wx:if="{{hotCouponsList.length>0}}"
-    ></recom-hot>
+    <!--<recom-hot-->
+    <!--:list.sync="hotCouponsList"-->
+    <!--:length.sync="hotListLen"-->
+    <!--wx:if="{{hotCouponsList.length>0}}"-->
+    <!--&gt;</recom-hot>-->
+    <view class="recom-hot" wx:if="{{hotCouponsList.length>0}}">
+      <recom-panel
+        title="热销优惠券"
+        :isShowMore.sync="isShowMoreHot"
+        :isShowInfo.sync="isShowInfoStyle"
+        :targetUrl.sync="targetUrlHot"
+        :length.sync="hotListLen"
+      >
+        <view class="swiper-wrapper {{isOnlyOneStyle}}" slot="panel">
+          <swiper
+            class="swiper-box"
+            current="{{swiperCurrent*1}}"
+            @change="changeVal"
+          >
+            <block wx:for="{{hotCouponsList}}" wx:key="index" wx:for-item="itemList">
+              <swiper-item>
+                <view class="content">
+                  <repeat for="{{itemList}}" key="index" index="index" item="item">
+                    <view class="content-item" @tap="hotItemBtn({{item}})">
+                      <coupon-item :type="typeHot" :coupon.sync="item"></coupon-item>
+                    </view>
+                  </repeat>
+                  <!--<block wx:for="{{itemList}}" wx:key="index">-->
+                  <!--<view class="content-item">-->
+                  <!--<coupon-item :type="typeHot" :coupon.sync="item"></coupon-item>-->
+                  <!--</view>-->
+                  <!--</block>-->
+                </view>
+              </swiper-item>
+            </block>
+          </swiper>
+          <view class="dot-box" wx:if="{{hotCouponsList.length>1}}">
+            <block wx:for="{{hotCouponsList}}" wx:key="{{index}}">
+              <view class="dot {{index == swiperCurrent ? 'active' : ''}}"></view>
+            </block>
+          </view>
+        </view>
+      </recom-panel>
+    </view>
     <recom-discovery
       :list.sync="contentList"
       wx:if="{{contentList.length>0}}"
@@ -138,7 +177,7 @@
     <!--</navigator>-->
     <view class="nothing-box" wx:if="{{activeIsEmpty}}">
       <image
-        src="{{imageUri + '/defaults/c-image/mine/pic-empty_content@2x.png'}}"
+        src="{{imageUri + '/defaults/c-image/recom/icon-blank_tj@2x.png'}}"
         wx:if="{{imageUri}}" class="nothing-img"></image>
       <view class="nothing-txt">暂无内容</view>
     </view>
@@ -168,6 +207,8 @@
   import RecomHot from '@/base/recommend-items/recom-hot'
   import RecomDiscovery from '@/base/recommend-items/recom-discovery'
   import CouponApi from 'api/coupon'
+  import RecomPanel from '@/base/recommend-items/recom-panel'
+  import CouponItem from '@/base/coupon-item/coupon-item'
 
   const COUPON_TYPE = 1
   const PACKAGE_TYPE = 2
@@ -202,7 +243,12 @@
       contentList: [],
       userCouponsList: [],
       hotListLen: '0',
-      activeIsEmpty: true
+      activeIsEmpty: true,
+      isShowInfoHot: true,
+      isShowMoreHot: true,
+      targetUrlHot: '/pages/hot-sale/hot-sale',
+      typeHot: 'buy',
+      swiperCurrent: 0
     }
 
     onShareAppMessage(res) {
@@ -386,7 +432,7 @@
 
     // 测试伪代码
     _test(arr) {
-      for (let i = 0; i < 8; i++) {
+      for (let i = 0; i < 4; i++) {
         arr.push(arr[0])
       }
       return arr
@@ -565,6 +611,26 @@
     }
 
     methods = {
+      hotItemBtn(coupon) {
+        if (coupon.promotion.promotion_type === 'voucher' || coupon.promotion.promotion_type === 'cash') {
+          // this.$emit('buy', coupon) // 立即购买
+          let type = 1 // 1 优惠券 2 礼包
+          let merchantId = coupon.promotion.merchant_id
+          let url = `/pages/coupon-detail/coupon-detail?id=${coupon.promotion.id}&type=${type}&currentMerchant=${merchantId}`
+          this.$navigate(url)
+        } else if ((coupon.promotion.promotion_type === 'reduction' || coupon.promotion.promotion_type === 'discount') && !coupon.promotion.can_buy) {
+          // this.$emit('get', coupon) // 立即领取
+          let url = `/pages/coupon-particulars/coupon-particulars?id=${coupon.promotion.id}`
+          this.$navigate(url)
+        } else if ((coupon.promotion.promotion_type === 'reduction' || coupon.promotion.promotion_type === 'discount') && coupon.promotion.can_buy) {
+          // this.$emit('use', this.coupon) // 去使用
+          let url = `/pages/coupon-particulars/coupon-particulars?id=${coupon.promotion.id}`
+          this.$navigate(url)
+        }
+      },
+      changeVal(e) {
+        this.swiperCurrent = e.detail.current
+      },
       submit(e) {
         const formId = e.detail.formId
         this.collectFormIds(formId)
@@ -597,11 +663,34 @@
       return Math.floor(number)
     }
 
+    computed = {
+      isOnlyOneStyle() {
+        return this.hotCouponsList[0] && (this.hotCouponsList[0].length <= 1 ? 'only-one' : '')
+      },
+      isShowInfoStyle() {
+        return this.hotListLen * 1 && true
+      }
+    }
+
     events = {
       showStore(idx) {
         this._checked(this.giftBags, idx)
         this.$apply()
       }
+      // buy(coupon) {
+      //   let type = 1 // 1 优惠券 2 礼包
+      //   let merchantId = coupon.merchant_id
+      //   let url = `/pages/coupon-detail/coupon-detail?id=${coupon.promotion.id}&type=${type}&currentMerchant=${merchantId}`
+      //   this.$parent.$navigate(url)
+      // },
+      // get(coupon) {
+      //   let url = `/pages/coupon-particulars/coupon-particulars?id=${coupon.promotion.id}`
+      //   this.$parent.$navigate(url)
+      // },
+      // use(coupon) {
+      //   let url = `/pages/coupon-particulars/coupon-particulars?id=${coupon.promotion.id}`
+      //   this.$parent.$navigate(url)
+      // }
     }
 
     watch = {
@@ -620,7 +709,9 @@
       'recom-buy': RecomBuy,
       'recom-giftbat': RecomGiftbag,
       'recom-hot': RecomHot,
-      'recom-discovery': RecomDiscovery
+      'recom-discovery': RecomDiscovery,
+      'recom-panel': RecomPanel,
+      'coupon-item': CouponItem
 //      'phone-test': PhoneTest
     }
 
@@ -991,7 +1082,49 @@
                 .icon.last
                   margin-left: 22px
 
+  .recom-hot
+    .swiper-wrapper
+      height: 63.297872vw
+      width: 100vw
+      box-sizing: border-box
+      position: relative
+      &.only-one
+        height: 34.04255vw
+
+      .swiper-box
+        width: 100%
+        height: 100%
+        .content
+          layout()
+          justify-content: flex-start
+          align-items: center
+          width: 100%
+          .content-item
+            width: 93.6vw
+            margin-bottom: 2.659574vw
+            &:last-child
+              margin-bottom: 3.989vw
+      .dot-box
+        position: absolute
+        bottom: 3.19vw
+        left: 0
+        right: 0
+        layout(row)
+        justify-content: center
+      .dot
+        width: 0.8vw
+        height: 0.8vw
+        border-radius: 0.8vw
+        background-color: $color-button-dis
+        margin: 0 2.1vw
+        transition: all .3s
+        &.active
+          width: 2.9vw
+          border-radius: 26.5957vw
+          background-color: $color-text-t
+
   .nothing-box
+    margin-top: 10px
     height: 63.8vh
     background-color: $color-white
     display: flex
@@ -999,10 +1132,13 @@
     align-items: center
     justify-content: center
     .nothing-img
-      width: 100px
-      height: 80px
-      margin-bottom: 15px
+      width: 86px
+      height: 71px
+      margin-bottom: 10.5px
     .nothing-txt
+      font-family: PingFangSC-Light
+      letter-spacing: 0
+      line-height: $font-size-small
       font-size: $font-size-small
       color: $color-text
 </style>

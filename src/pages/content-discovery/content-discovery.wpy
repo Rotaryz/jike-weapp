@@ -7,6 +7,12 @@
         </view>
       </repeat>
     </view>
+    <view class="nothing-box" wx:if="{{activeIsEmpty}}">
+      <image
+        src="{{imageUri + '/defaults/c-image/recom/icon-blank_content@2x.png'}}"
+        wx:if="{{imageUri}}" class="nothing-img"></image>
+      <view class="nothing-txt">暂无内容</view>
+    </view>
     <underline></underline>
     <toast></toast>
   </view>
@@ -29,26 +35,31 @@
       imageUri: URIS.image,
       list: [],
       type: 'mine',
-      merchantId: wepy.getStorageSync('merchantId')
+      merchantId: wepy.getStorageSync('merchantId'),
+      activeIsEmpty: true
     }
 
     async onShow() {
-      const list = await this._getContentsAll()
-      this.list = list
-      console.log(list)
-      this.loaded()
+      await this._getContentsAll()
+      this._checkIsEmpty()
+    }
+
+    // 检查活动内容是否为空
+    _checkIsEmpty() {
+      let flag = this.list.length
+      this.activeIsEmpty = !flag
       this.$apply()
-      this.$invoke('underline', 'show')
     }
 
     // 获取内容列表 (all)+
     async _getContentsAll() {
       const res = await ContentsApi.getMerchantContents()
       if (res.error === ERR_OK) {
-        return res.data
-      } else {
-        return []
+        this.list = res.data
+        this.$apply()
+        this.$invoke('underline', 'show')
       }
+      this.loaded()
     }
 
     events = {
@@ -82,4 +93,19 @@
       .content-item
         width: 100vw
         margin-bottom: 2.8vw
+    .nothing-box
+      height: 100vh
+      display: flex
+      flex-direction: column
+      align-items: center
+      .nothing-img
+        width: 86px
+        height: 74.5px
+        margin: 170px 0 11.5px
+      .nothing-txt
+        font-family: PingFangSC-Light
+        letter-spacing: 0
+        line-height: $font-size-small
+        font-size: $font-size-small
+        color: $color-text
 </style>
