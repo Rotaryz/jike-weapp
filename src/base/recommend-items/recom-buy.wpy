@@ -1,0 +1,103 @@
+<template>
+  <view class="recom-buy">
+    <image class="icon" wx:if="{{imageUri}}" src="{{imageUri + '/defaults/c-image/recom/pic-md_tj@2x.png'}}"></image>
+    <view class="content" wx:if="{{list.length<=0}}">{{content}}</view>
+    <swiper
+      wx:else
+      class="content"
+      indicator-dots="{{indicatorDots}}"
+      autoplay="{{autoplay}}"
+      interval="{{interval}}"
+      duration="{{duration}}"
+      circular="{{circular}}"
+      vertical="{{vertical}}"
+    >
+      <block wx:for="{{list}}" wx:key="index">
+        <swiper-item>
+          <view>{{item}}</view>
+        </swiper-item>
+      </block>
+    </swiper>
+    <view class="btn-toBuy" @tap="toBuy">去买单</view>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import URIS from 'common/js/config'
+  /* eslint-disable no-undef */
+  export default class RecomBuy extends wepy.component {
+    props = {
+      list: {
+        type: Object,
+        default: {}
+      }
+    }
+    data = {
+      imageUri: URIS.image,
+      content: '小程序买单优惠',
+      autoplay: true,
+      interval: 3000,
+      duration: 1000,
+      circular: true,
+      vertical: true
+    }
+    methods = {
+      toBuy() {
+        wx.navigateTo({
+          url: '/pages/pay/pay'
+        })
+      }
+    }
+  }
+</script>
+
+<style lang='stylus'>
+  @import "../../common/stylus/variable"
+  @import "../../common/stylus/mixin"
+
+  .recom-buy
+    layout(row)
+    position: relative
+    width: 100vw
+    height: 60.5px
+    align-items: center
+    background-color: $color-white
+    margin-top: 10px
+    &::after
+      content: ""
+      position: absolute
+      left: 55.75px
+      col-center()
+      width: 1px
+      height: 19.5px
+      border-left: 1px solid $color-col-line
+    .icon
+      display: inline-block
+      width: 37px
+      height: 19px
+      margin: 0 16.5px 0 11.5px
+    .content
+      width: 53vw
+      height: $font-size-medium
+      font-family: PingFang-SC-Regular
+      font-size: $font-size-medium
+      color: $color-text
+      letter-spacing: 0.42px
+      line-height: $font-size-medium
+      no-wrap()
+    .btn-toBuy
+      position: absolute
+      right: 25px
+      col-center()
+      width: 72.5px
+      height: 25px
+      background-color: $color-orange
+      border-radius: 100px
+      text-align: center
+      font-family: PingFang-SC-Medium
+      font-size: $font-size-small
+      color: $color-white
+      letter-spacing: 0
+      line-height: 25px
+</style>

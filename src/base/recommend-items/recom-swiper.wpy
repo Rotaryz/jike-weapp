@@ -1,0 +1,71 @@
+<template>
+  <view class="recom-swiper">
+    <swiper
+      class="swiper-box"
+      current="{{swiperCurrent*1}}"
+      @change="changeVal"
+    >
+      <slot name="swiper"></slot>
+    </swiper>
+    <view class="dot-box" wx:if="{{list.length>1}}">
+      <block wx:for="{{list}}" wx:key="{{index}}">
+        <view class="dot {{index == swiperCurrent ? 'active' : ''}}"></view>
+      </block>
+    </view>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+
+  export default class Template extends wepy.page {
+    props = {
+      list: {
+        type: Object,
+        default: {}
+      },
+      swiperCurrent: {
+        type: String,
+        default: '0'
+      }
+    }
+    methods = {
+      changeVal(e) {
+        this.swiperCurrent = e.detail.current
+      }
+    }
+  }
+</script>
+
+<style lang='stylus' scoped>
+  @import "../../common/stylus/variable"
+  @import "../../common/stylus/mixin"
+
+  .recom-swiper
+    width: 100vw
+    height: 100%
+    box-sizing: border-box
+    position: relative
+    .swiper-box
+      width: 100%
+      height: 100%
+    .dot-box
+      position: absolute
+      bottom: 3.19vw
+      left: 0
+      right: 0
+      layout(row)
+      justify-content: center
+    .dot
+      width: 0.8vw
+      height: 0.8vw
+      border-radius: 0.8vw
+      background-color: $color-button-dis
+      margin: 0 2.1vw
+      transition: all .3s
+      &.active
+        width: 2.9vw
+        border-radius: 26.5957vw
+        background-color: $color-text-t
+
+</style>

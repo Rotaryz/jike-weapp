@@ -1,0 +1,133 @@
+<template>
+  <view class="hot-sale">
+    <view class="article">
+      <repeat for="{{list}}" key="index" index="index" item="item">
+        <view class="content-item">
+          <coupon-item :type="type" :coupon.sync="item"></coupon-item>
+        </view>
+      </repeat>
+    </view>
+    <view class="nothing-box" wx:if="{{activeIsEmpty}}">
+      <image
+        src="{{imageUri + '/defaults/c-image/recom/icon-blank_coupon@2x.png'}}"
+        wx:if="{{imageUri}}" class="nothing-img"></image>
+      <view class="nothing-txt">无可用优惠券</view>
+    </view>
+    <underline></underline>
+    <toast></toast>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import Underline from '@/base/underline-block/underline-block'
+  import URIS from 'common/js/config'
+  import Toast from '@/base/toast/toast'
+  import base from 'common/mixins/base'
+  import users from 'common/mixins/users'
+  import {ERR_OK} from 'api/base'
+  import Merchants from 'api/merchants'
+  import CouponItem from '@/base/coupon-item/coupon-item'
+
+  export default class HotSale extends wepy.page {
+    mixins = [base, users]
+    data = {
+      imageUri: URIS.image,
+      list: [],
+      type: 'buy',
+      merchantId: wepy.getStorageSync('merchantId'),
+      activeIsEmpty: true
+    }
+
+    async onShow() {
+      this.merchantId = wepy.getStorageSync('merchantId')
+      await this._getCouponsAll()
+      this._checkIsEmpty()
+      console.log(this.merchantId)
+    }
+
+    // 检查活动内容是否为空
+    _checkIsEmpty() {
+      let flag = this.list
+      this.activeIsEmpty = !flag
+      this.$apply()
+    }
+
+    // 获取推荐优惠券列表（所有）+
+    async _getCouponsAll() {
+      let params = {
+        page: 1,
+        limit: 10
+      }
+      let res = await Merchants.getCoupons(this.merchantId, params)
+      if (res.error === ERR_OK) {
+        this.list = res.data
+        this.$invoke('underline', 'show')
+        this.$apply()
+        console.log(this.list)
+      }
+      this.loaded()
+    }
+
+    methods = {
+    }
+    events = {
+      buy(coupon) {
+        console.log(coupon)
+        let type = 1 // 1 优惠券 2 礼包
+        let merchantId = coupon.merchant_id
+        let url = `/pages/coupon-detail/coupon-detail?id=${coupon.promotion.id}&type=${type}&currentMerchant=${merchantId}`
+        this.$navigate(url)
+      },
+      get(coupon) {
+        console.log(2)
+        let url = `/pages/coupon-particulars/coupon-particulars?id=${coupon.promotion.id}`
+        this.$navigate(url)
+      },
+      use(coupon) {
+        console.log(3)
+        let url = `/pages/coupon-particulars/coupon-particulars?id=${coupon.promotion.id}`
+        this.$navigate(url)
+      }
+    }
+
+    components = {
+      toast: Toast,
+      underline: Underline,
+      'coupon-item': CouponItem
+    }
+
+    config = {
+      navigationBarTitleText: '热销优惠券'
+    }
+  }
+
+</script>
+
+<style lang='stylus' scoped>
+  @import "../../common/stylus/variable"
+  @import "../../common/stylus/mixin"
+
+  .hot-sale
+    .article
+      layout()
+      align-items: center
+      .content-item
+        width: 93.6vw
+        margin: 2.8vw
+    .nothing-box
+      height: 100vh
+      display: flex
+      flex-direction: column
+      align-items: center
+     .nothing-img
+       width: 95.5px
+       height: 75.5px
+       margin:170px 0 11.5px
+      .nothing-txt
+        font-family: PingFangSC-Light
+        letter-spacing: 0
+        line-height: $font-size-small
+        font-size: $font-size-small
+        color: $color-text
+</style>

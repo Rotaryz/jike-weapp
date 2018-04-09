@@ -1,0 +1,77 @@
+<template>
+  <view class="recom-discovery">
+    <recom-panel
+      title="内容探店"
+      :isShowMore.sync="isShowMore"
+      :isShowInfo.sync="isShowInfo"
+      :targetUrl.sync="targetUrl"
+    >
+      <view class="swiper-wrapper" slot="panel">
+        <recom-swiper :list.sync="list">
+          <repeat for="{{list}}" key="index" index="index" item="item" slot="swiper">
+            <swiper-item>
+              <view class="content">
+                <view class="content-item">
+                  <content-item :type="type" :content.sync="item"></content-item>
+                </view>
+              </view>
+            </swiper-item>
+          </repeat>
+        </recom-swiper>
+      </view>
+    </recom-panel>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import RecomPanel from '@/base/recommend-items/recom-panel'
+  import RecomSwiper from '@/base/recommend-items/recom-swiper'
+  import ContentItem from '@/base/content-item/content-item'
+
+  export default class Template extends wepy.component {
+    props = {
+      list: {
+        type: Object,
+        default: {}
+      }
+    }
+    data = {
+      isShowInfo: false,
+      isShowMore: true,
+      targetUrl: `/pages/content-discovery/content-discovery`,
+      type: 'buy'
+    }
+    events = {
+      contentClick(id, merchantId) {
+        let url = `/pages/content-detail/content-detail?id=${id}&currentMerchant=${merchantId}`
+        this.$parent.$navigate(url)
+      }
+    }
+    components = {
+      'recom-panel': RecomPanel,
+      'recom-swiper': RecomSwiper,
+      'content-item': ContentItem
+    }
+  }
+</script>
+
+<style lang='stylus' scoped>
+  @import "../../common/stylus/variable"
+  @import "../../common/stylus/mixin"
+
+  .recom-discovery
+    margin-bottom: 0vw
+
+    .swiper-wrapper
+      height: 35.77127vw
+
+    .content
+      layout()
+      justify-content: flex-start
+      align-items: center
+      width: 100%
+      .content-item
+        width: 93.6vw
+        margin-bottom: 2.659574vw
+</style>

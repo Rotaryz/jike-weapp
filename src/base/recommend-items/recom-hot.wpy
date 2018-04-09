@@ -1,0 +1,164 @@
+<template>
+  <view class="recom-hot">
+    <recom-panel
+      title="热销优惠券"
+      :isShowMore.sync="isShowMore"
+      :isShowInfo.sync="isShowInfoStyle"
+      :targetUrl.sync="targetUrl"
+      :length.sync="length"
+    >
+
+      <view class="swiper-wrapper {{isOnlyOneStyle}}" slot="panel">
+        <swiper
+          class="swiper-box"
+          current="{{swiperCurrent*1}}"
+          @change="changeVal"
+        >
+          <repeat for="{{list}}" key="index" index="index" item="item">
+            <swiper-item wx:if="{{item.length}}">
+                <view class="content">
+                  <view class="content-item">
+                    <coupon-item :type="type" :coupon.sync="item[0]"></coupon-item>
+                  </view>
+                  <view class="content-item" wx:if="{{item.length}}">
+                    <coupon-item :type="type" :coupon.sync="item[1]"></coupon-item>
+                  </view>
+                </view>
+            </swiper-item>
+          </repeat>
+        </swiper>
+        <view class="dot-box" wx:if="{{list.length>1}}">
+          <block wx:for="{{list}}" wx:key="{{index}}">
+            <view class="dot {{index == swiperCurrent ? 'active' : ''}}"></view>
+          </block>
+        </view>
+        <!--<recom-swiper :list.sync="list">-->
+          <!--<block wx:for="{{list}}" wx:key="index" slot="swiper">-->
+            <!--<swiper-item wx:if="{{item.length}}">-->
+              <!--<repeat for="{{item}}" key="index" index="index" item="item2">-->
+                <!--<view class="content">-->
+                  <!--<view class="content-item">-->
+                    <!--<coupon-item :type="type" :coupon.sync="item2"></coupon-item>-->
+                  <!--</view>-->
+                <!--</view>-->
+              <!--</repeat>-->
+            <!--</swiper-item>-->
+          <!--</block>-->
+        <!--</recom-swiper>-->
+      </view>
+    </recom-panel>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import RecomPanel from '@/base/recommend-items/recom-panel'
+  import RecomSwiper from '@/base/recommend-items/recom-swiper'
+  import CouponItem from '@/base/coupon-item/coupon-item'
+
+  export default class Template extends wepy.component {
+    props = {
+      list: {
+        type: Object,
+        default: {}
+      },
+      length: {
+        type: String,
+        default: ''
+      },
+      swiperCurrent: {
+        type: String,
+        default: '0'
+      }
+    }
+    data = {
+      isShowInfo: true,
+      isShowMore: true,
+      targetUrl: '/pages/hot-sale/hot-sale',
+      type: 'buy'
+    }
+    computed = {
+      isOnlyOneStyle() {
+        return this.list[0] && (this.list[0].length <= 1 ? 'only-one' : '')
+      },
+      isShowInfoStyle() {
+        return this.length && true
+      }
+    }
+    events = {
+      buy(coupon) {
+        console.log(coupon)
+        let type = 1 // 1 优惠券 2 礼包
+        let merchantId = coupon.merchant_id
+        let url = `/pages/coupon-detail/coupon-detail?id=${coupon.promotion.id}&type=${type}&currentMerchant=${merchantId}`
+        this.$parent.$navigate(url)
+      },
+      get(coupon) {
+        console.log(2)
+        let url = `/pages/coupon-particulars/coupon-particulars?id=${coupon.promotion.id}`
+        this.$parent.$navigate(url)
+      },
+      use(coupon) {
+        console.log(3)
+        let url = `/pages/coupon-particulars/coupon-particulars?id=${coupon.promotion.id}`
+        this.$parent.$navigate(url)
+      }
+    }
+    methods = {
+      changeVal(e) {
+        this.swiperCurrent = e.detail.current
+      }
+    }
+    components = {
+      'recom-panel': RecomPanel,
+      'recom-swiper': RecomSwiper,
+      'coupon-item': CouponItem
+    }
+  }
+</script>
+
+<style lang='stylus' scoped>
+  @import "../../common/stylus/variable"
+  @import "../../common/stylus/mixin"
+
+  .swiper-wrapper
+    height: 63.297872vw
+    width: 100vw
+    box-sizing: border-box
+    position: relative
+    &.only-one
+      height: 34.04255vw
+
+    .swiper-box
+      width: 100%
+      height: 100%
+      .content
+        layout()
+        justify-content: flex-start
+        align-items: center
+        width: 100%
+        .content-item
+          width: 93.6vw
+          margin-bottom: 2.659574vw
+          &:last-child
+            margin-bottom: 3.989vw
+    .dot-box
+      position: absolute
+      bottom: 3.19vw
+      left: 0
+      right: 0
+      layout(row)
+      justify-content: center
+    .dot
+      width: 0.8vw
+      height: 0.8vw
+      border-radius: 0.8vw
+      background-color: $color-button-dis
+      margin: 0 2.1vw
+      transition: all .3s
+      &.active
+        width: 2.9vw
+        border-radius: 26.5957vw
+        background-color: $color-text-t
+
+</style>

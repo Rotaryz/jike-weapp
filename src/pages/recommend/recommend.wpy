@@ -1,5 +1,5 @@
 <template>
-  <view class="recommend" ref="recommend">
+  <view class="recommend {{activeIsEmpty? '':'has-something'}}" ref="recommend">
     <view class="slider-wrapper">
       <repeat>
         <Slider :list.sync="shopImages"></Slider>
@@ -15,7 +15,7 @@
                 type="default" size="mini"
                 class="content-wrapper">
           <image class="icon" wx:if="{{imageUri && industry.length}}"
-                 src="{{imageUri + '/defaults/c-image/recommend/icon-live_'+industry+'@2x.png'}}"></image>
+                 src="{{imageUri + '/defaults/c-image/recom/icon-r_live@2x.png'}}"></image>
           <view class="content">直播优惠</view>
         </button>
         <button form-type="submit"
@@ -23,7 +23,7 @@
                 type="default" size="mini"
                 class="content-wrapper">
           <image class="icon" wx:if="{{imageUri && industry.length}}"
-                 src="{{imageUri + '/defaults/c-image/recommend/icon-share_'+industry+'@2x.png'}}"></image>
+                 src="{{imageUri + '/defaults/c-image/recom/icon-r_share@2x.png'}}"></image>
           <view class="content">分享有礼</view>
         </button>
         <button form-type="submit"
@@ -31,7 +31,7 @@
                 type="default" size="mini"
                 class="content-wrapper">
           <image class="icon" wx:if="{{imageUri && industry.length}}"
-                 src="{{imageUri + '/defaults/c-image/recommend/icon-sign_'+industry+'@2x.png'}}"></image>
+                 src="{{imageUri + '/defaults/c-image/recom/icon-r_sign@2x.png'}}"></image>
           <view class="content">签到红包</view>
         </button>
         <button form-type="submit"
@@ -39,98 +39,152 @@
                 type="default" size="mini"
                 class="content-wrapper">
           <image class="icon" wx:if="{{imageUri && industry.length}}"
-                 src="{{imageUri + '/defaults/c-image/recommend/icon-turntable_'+industry+'@2x.png'}}"></image>
-          <view class="content">大转盘 </view>
+                 src="{{imageUri + '/defaults/c-image/recom/icon-turntable@2x.png'}}"></image>
+          <view class="content">大转盘</view>
         </button>
       </view>
     </form>
-    <view class="tab-container">
-      <view class="tab-wrapper">
-        <view class="tab-content border-bottom-1px">
-          <view class="tab-item" @tap="clickTab(1)">
-            <view
-              class="tab-item-txt {{activeTab === '1' ? industry + '-border' : ''}}">
-              优惠券
-            </view>
-          </view>
-          <view class="tab-item" @tap="clickTab(2)">
-            <view
-              class="tab-item-txt {{activeTab === '2' ? industry + '-border' : ''}}">
-              发现
-            </view>
+    <recom-buy :list.sync="userCouponsList"></recom-buy>
+    <recom-giftbat
+      :list.sync="giftbagList"
+      wx:if="{{giftbagList.length>0}}"
+    ></recom-giftbat>
+    <!--<recom-hot-->
+    <!--:list.sync="hotCouponsList"-->
+    <!--:length.sync="hotListLen"-->
+    <!--wx:if="{{hotCouponsList.length>0}}"-->
+    <!--&gt;</recom-hot>-->
+    <view class="recom-hot" wx:if="{{hotCouponsList.length>0}}">
+      <recom-panel
+        title="热销优惠券"
+        :isShowMore.sync="isShowMoreHot"
+        :isShowInfo.sync="isShowInfoStyle"
+        :targetUrl.sync="targetUrlHot"
+        :length.sync="hotListLen"
+      >
+        <view class="swiper-wrapper {{isOnlyOneStyle}}" slot="panel">
+          <swiper
+            class="swiper-box"
+            current="{{swiperCurrent*1}}"
+            @change="changeVal"
+          >
+            <block wx:for="{{hotCouponsList}}" wx:key="index" wx:for-item="itemList">
+              <swiper-item>
+                <view class="content">
+                  <repeat for="{{itemList}}" key="index" index="index" item="item">
+                    <view class="content-item" @tap="hotItemBtn({{item}})">
+                      <coupon-item :type="typeHot" :coupon.sync="item"></coupon-item>
+                    </view>
+                  </repeat>
+                  <!--<block wx:for="{{itemList}}" wx:key="index">-->
+                  <!--<view class="content-item">-->
+                  <!--<coupon-item :type="typeHot" :coupon.sync="item"></coupon-item>-->
+                  <!--</view>-->
+                  <!--</block>-->
+                </view>
+              </swiper-item>
+            </block>
+          </swiper>
+          <view class="dot-box" wx:if="{{hotCouponsList.length>1}}">
+            <block wx:for="{{hotCouponsList}}" wx:key="{{index}}">
+              <view class="dot {{index == swiperCurrent ? 'active' : ''}}"></view>
+            </block>
           </view>
         </view>
-        <view class="tab-line {{activeTab === '2' ? 'discover' : ''}}"></view>
-      </view>
-      <view class="tab-content-wrapper">
-        <view class="coupon-panel"
-              style="display: {{activeTab === '1' ? 'block':''}}">
-          <repeat for="{{giftBags}}" key="index" index="index" item="item">
-            <package :giftbag.sync="item" @handleClick.user="goToCouponDetail"
-                     :index="index"></package>
-          </repeat>
-          <repeat for="{{couponList}}" key="index" index="index" item="item">
-            <coupon :coupon.sync="item" :industry.sync="industry"
-                    @handleClick.user="goToCouponDetail"></coupon>
-          </repeat>
-          <view class="nothing-box" wx:if="{{couponNothing}}">
-            <image
-              src="{{imageUri + '/defaults/c-image/mine/pic-empty_coupon@2x.png'}}"
-              wx:if="{{imageUri}}" class="nothing-img"></image>
-            <view class="nothing-txt">暂无优惠券</view>
-          </view>
-          <underline1></underline1>
-        </view>
-        <view class="discover-panel"
-              style="display: {{activeTab === '2' ? 'block':''}}">
-          <navigator
-            url="/pages/content-detail/content-detail?id={{item.id}}&currentMerchant={{item.merchant_id}}"
-            class="ticky-wrapper"
-            wx:for="{{contents}}" wx:key="unique">
-            <view class="ticky">
-              <image src="{{item.image_url}}" class="full-image"
-                     mode="widthFix"></image>
-              <view class="title">{{item.title}}</view>
-            </view>
-            <view class="collector">
-              <view class="avatar-wrapper">
-                <view class="avatar" wx:for="{{item.customer_images}}"
-                      wx:key="unique" wx:for-item="avatar"
-                      wx:if="{{index < 5}}">
-                  <image src="{{avatar}}" alt="" class="full-image"></image>
-                </view>
-                <view class="more" wx:if="{{item.customer_images.length > 5}}">
-                  <view class="dot"></view>
-                  <view class="dot"></view>
-                  <view class="dot"></view>
-                </view>
-              </view>
-              <view class="collect">
-                <view class="icon icon-collected">
-                  <image wx:if="{{imageUri}}"
-                         src="{{imageUri + '/defaults/c-image/mine/icon-r_collection@2x.png'}}"
-                         class="full-image"></image>
-                </view>
-                <view class="font">{{item.favorite_count}}</view>
-                <view class="icon icon-collected last">
-                  <image wx:if="{{imageUri}}"
-                         src="{{imageUri + '/defaults/c-image/mine/icon-r_share1@2x.png'}}"
-                         class="full-image"></image>
-                </view>
-                <view class="font">{{item.share_count}}</view>
-              </view>
-            </view>
-          </navigator>
-          <view class="nothing-box" wx:if="{{contentNothing}}">
-            <image
-              src="{{imageUri + '/defaults/c-image/mine/pic-empty_content@2x.png'}}"
-              wx:if="{{imageUri}}" class="nothing-img"></image>
-            <view class="nothing-txt">暂无内容</view>
-          </view>
-          <underline2></underline2>
-        </view>
-      </view>
+      </recom-panel>
     </view>
+    <recom-discovery
+      :list.sync="contentList"
+      wx:if="{{contentList.length>0}}"
+    >
+    </recom-discovery>
+    <!--<view class="tab-container">-->
+    <!--<view class="tab-wrapper">-->
+    <!--<view class="tab-content border-bottom-1px">-->
+    <!--<view class="tab-item" @tap="clickTab(1)">-->
+    <!--<view-->
+    <!--class="tab-item-txt {{activeTab === '1' ? industry + '-border' : ''}}">-->
+    <!--优惠券-->
+    <!--</view>-->
+    <!--</view>-->
+    <!--<view class="tab-item" @tap="clickTab(2)">-->
+    <!--<view-->
+    <!--class="tab-item-txt {{activeTab === '2' ? industry + '-border' : ''}}">-->
+    <!--发现-->
+    <!--</view>-->
+    <!--</view>-->
+    <!--</view>-->
+    <!--<view class="tab-line {{activeTab === '2' ? 'discover' : ''}}"></view>-->
+    <!--</view>-->
+    <!--<view class="tab-content-wrapper">-->
+    <!--<view class="coupon-panel"-->
+    <!--style="display: {{activeTab === '1' ? 'block':''}}">-->
+    <!--<repeat for="{{giftBags}}" key="index" index="index" item="item">-->
+    <!--<package :giftbag.sync="item" @handleClick.user="goToCouponDetail"-->
+    <!--:index="index"></package>-->
+    <!--</repeat>-->
+    <!--<repeat for="{{couponList}}" key="index" index="index" item="item">-->
+    <!--<coupon :coupon.sync="item" :industry.sync="industry"-->
+    <!--@handleClick.user="goToCouponDetail"></coupon>-->
+    <!--</repeat>-->
+    <!--<view class="nothing-box" wx:if="{{couponNothing}}">-->
+    <!--<image-->
+    <!--src="{{imageUri + '/defaults/c-image/mine/pic-empty_coupon@2x.png'}}"-->
+    <!--wx:if="{{imageUri}}" class="nothing-img"></image>-->
+    <!--<view class="nothing-txt">暂无优惠券</view>-->
+    <!--</view>-->
+    <!--<underline1></underline1>-->
+    <!--</view>-->
+    <!--<view class="discover-panel"-->
+    <!--style="display: {{activeTab === '2' ? 'block':''}}">-->
+    <!--<navigator-->
+    <!--url="/pages/content-detail/content-detail?id={{item.id}}&currentMerchant={{item.merchant_id}}"-->
+    <!--class="ticky-wrapper"-->
+    <!--wx:for="{{contents}}" wx:key="unique">-->
+    <!--<view class="ticky">-->
+    <!--<image src="{{item.image_url}}" class="full-image"-->
+    <!--mode="widthFix"></image>-->
+    <!--<view class="title">{{item.title}}</view>-->
+    <!--</view>-->
+    <!--<view class="collector">-->
+    <!--<view class="avatar-wrapper">-->
+    <!--<view class="avatar" wx:for="{{item.customer_images}}"-->
+    <!--wx:key="unique" wx:for-item="avatar"-->
+    <!--wx:if="{{index < 5}}">-->
+    <!--<image src="{{avatar}}" alt="" class="full-image"></image>-->
+    <!--</view>-->
+    <!--<view class="more" wx:if="{{item.customer_images.length > 5}}">-->
+    <!--<view class="dot"></view>-->
+    <!--<view class="dot"></view>-->
+    <!--<view class="dot"></view>-->
+    <!--</view>-->
+    <!--</view>-->
+    <!--<view class="collect">-->
+    <!--<view class="icon icon-collected">-->
+    <!--<image wx:if="{{imageUri}}"-->
+    <!--src="{{imageUri + '/defaults/c-image/mine/icon-r_collection@2x.png'}}"-->
+    <!--class="full-image"></image>-->
+    <!--</view>-->
+    <!--<view class="font">{{item.favorite_count}}</view>-->
+    <!--<view class="icon icon-collected last">-->
+    <!--<image wx:if="{{imageUri}}"-->
+    <!--src="{{imageUri + '/defaults/c-image/mine/icon-r_share1@2x.png'}}"-->
+    <!--class="full-image"></image>-->
+    <!--</view>-->
+    <!--<view class="font">{{item.share_count}}</view>-->
+    <!--</view>-->
+    <!--</view>-->
+    <!--</navigator>-->
+    <view class="nothing-box" wx:if="{{activeIsEmpty}}">
+      <image
+        src="{{imageUri + '/defaults/c-image/recom/icon-blank_tj@2x.png'}}"
+        wx:if="{{imageUri}}" class="nothing-img"></image>
+      <view class="nothing-txt">暂无内容</view>
+    </view>
+    <!--<underline2></underline2>-->
+    <!--</view>-->
+    <!--</view>-->
+    <!--</view>-->
     <toast></toast>
   </view>
 </template>
@@ -140,14 +194,21 @@
   import base from 'common/mixins/base'
   import users from 'common/mixins/users'
   import Slider from '@/base/index-slider/index-slider'
-  import Coupon from '@/base/coupon/coupon'
+  // import Coupon from '@/base/coupon/coupon'
   import Toast from '@/base/toast/toast'
   import {ERR_OK} from 'api/base'
   import ContentsApi from 'api/contents'
   import Merchants from 'api/merchants'
-  import Giftbag from '@/base/giftbag/giftbag'
+  // import Giftbag from '@/base/giftbag/giftbag'
   import URIS from 'common/js/config'
   import Underline from '@/base/underline-block/underline-block'
+  import RecomBuy from '@/base/recommend-items/recom-buy'
+  import RecomGiftbag from '@/base/recommend-items/recom-merchant-giftbag'
+  import RecomHot from '@/base/recommend-items/recom-hot'
+  import RecomDiscovery from '@/base/recommend-items/recom-discovery'
+  import CouponApi from 'api/coupon'
+  import RecomPanel from '@/base/recommend-items/recom-panel'
+  import CouponItem from '@/base/coupon-item/coupon-item'
 
   const COUPON_TYPE = 1
   const PACKAGE_TYPE = 2
@@ -176,7 +237,18 @@
       couponNothing: false,
       contentNothing: false,
       shopChange: true,
-      industry: 'ktv'
+      industry: 'ktv',
+      hotCouponsList: [],
+      giftbagList: [],
+      contentList: [],
+      userCouponsList: [],
+      hotListLen: '0',
+      activeIsEmpty: true,
+      isShowInfoHot: true,
+      isShowMoreHot: true,
+      targetUrlHot: '/pages/hot-sale/hot-sale',
+      typeHot: 'buy',
+      swiperCurrent: 0
     }
 
     onShareAppMessage(res) {
@@ -215,6 +287,9 @@
 
     async onShow() {
       await this.load()
+      // 初始化
+      await this._init()
+      // last
       if (this.shopImages.length) {
         this.$invoke('Slider', 'init', this.shopImages.length)
       }
@@ -253,6 +328,122 @@
           await this._getShowContents()
         }
       }
+      // 切店存储对应的商家ID
+      if (this.shopChange) {
+        try {
+          wepy.setStorageSync('merchantId', this.merchantId)
+          console.log(wepy.getStorageSync('merchantId'),76666)
+        } catch (e) {
+        }
+      }
+    }
+
+    // 数据初始化
+    async _init() {
+      await Promise.all([
+        this._getCouponsAll(),
+        this._getContentsAll(),
+        this._getGiftBagsAll(),
+        this._getUserCouponListAll()
+      ])
+      this._checkIsEmpty()
+    }
+
+    // 检查活动内容是否为空
+    _checkIsEmpty() {
+      let flag = this.hotCouponsList && this.giftbagList && this.contentList
+      this.activeIsEmpty = !flag
+      this.$apply()
+    }
+
+    // 获取推荐优惠券列表（所有）+
+    async _getCouponsAll() {
+      let params = {
+        page: 1,
+        limit: 10
+      }
+      let res = await Merchants.getCoupons(this.merchantId, params)
+      if (res.error === ERR_OK) {
+        let hotCouponsList = res.data
+        this.hotListLen = hotCouponsList.length.toString()
+        // 测试伪代码
+        // hotCouponsList = this._test(hotCouponsList)
+        hotCouponsList = this._formatHotList(hotCouponsList)
+        hotCouponsList = this._formatList(hotCouponsList)
+        this.hotCouponsList = hotCouponsList
+        this.$apply()
+      }
+    }
+
+    // 获取礼包列表(全部)+
+    async _getGiftBagsAll() {
+      let res = await Merchants.getGiftBags(this.merchantId)
+      if (res.error === ERR_OK) {
+        let giftbagList = res.data
+        giftbagList = this._formatList(giftbagList)
+        this.giftbagList = giftbagList
+        this.$apply()
+      }
+    }
+
+    // 获取内容列表 (all)+
+    async _getContentsAll() {
+      const res = await ContentsApi.getMerchantContents()
+      if (res.error === ERR_OK) {
+        let contentList = res.data
+        contentList = this._formatList(contentList)
+        this.contentList = contentList
+        this.$apply()
+      }
+    }
+
+    // 获取用户优惠券列表all+
+    async _getUserCouponListAll() {
+      let res = await CouponApi.getUserCouponList(0, 'all', -1)
+      if (res.error === ERR_OK) {
+        let userCouponsList = this._formatUserCouponList(res)
+        userCouponsList = this._formatList(userCouponsList)
+        this.userCouponsList = userCouponsList
+        this.$apply()
+      }
+    }
+
+    // 取出前三页
+    _formatList(res) {
+      if (res.length > 3) {
+        res = res.slice(0, 3)
+      }
+      return res
+    }
+
+    // 热销优惠券转化二维数组
+    _formatHotList(res) {
+      let first = res.slice(0, 2)
+      let second = res.slice(2, 4)
+      let third = res.slice(4, 6)
+      let newArrr = [first, second, third].filter((item) => {
+        return item.length > 0
+      })
+      return newArrr
+    }
+
+    // 格式化用户优惠券数据
+    _formatUserCouponList(res) {
+      let arr = []
+      if (res.data) {
+        res.data.map(val => {
+          arr.push(val.promotion.title)
+        })
+      }
+      return arr
+    }
+
+    // 测试伪代码
+    _test(arr) {
+      for (let i = 0; i < 4; i++) {
+        arr.push(arr[0])
+      }
+      return arr
     }
 
     async _saveLog() {
@@ -428,6 +619,26 @@
     }
 
     methods = {
+      hotItemBtn(coupon) {
+        if (coupon.promotion.promotion_type === 'voucher' || coupon.promotion.promotion_type === 'cash') {
+          // this.$emit('buy', coupon) // 立即购买
+          let type = 1 // 1 优惠券 2 礼包
+          let merchantId = coupon.promotion.merchant_id
+          let url = `/pages/coupon-detail/coupon-detail?id=${coupon.promotion.id}&type=${type}&currentMerchant=${merchantId}`
+          this.$navigate(url)
+        } else if ((coupon.promotion.promotion_type === 'reduction' || coupon.promotion.promotion_type === 'discount') && !coupon.promotion.can_buy) {
+          // this.$emit('get', coupon) // 立即领取
+          let url = `/pages/coupon-particulars/coupon-particulars?id=${coupon.promotion.id}`
+          this.$navigate(url)
+        } else if ((coupon.promotion.promotion_type === 'reduction' || coupon.promotion.promotion_type === 'discount') && coupon.promotion.can_buy) {
+          // this.$emit('use', this.coupon) // 去使用
+          let url = `/pages/coupon-particulars/coupon-particulars?id=${coupon.promotion.id}`
+          this.$navigate(url)
+        }
+      },
+      changeVal(e) {
+        this.swiperCurrent = e.detail.current
+      },
       submit(e) {
         const formId = e.detail.formId
         this.collectFormIds(formId)
@@ -460,11 +671,34 @@
       return Math.floor(number)
     }
 
+    computed = {
+      isOnlyOneStyle() {
+        return this.hotCouponsList[0] && (this.hotCouponsList[0].length <= 1 ? 'only-one' : '')
+      },
+      isShowInfoStyle() {
+        return this.hotListLen * 1 && true
+      }
+    }
+
     events = {
       showStore(idx) {
         this._checked(this.giftBags, idx)
         this.$apply()
       }
+      // buy(coupon) {
+      //   let type = 1 // 1 优惠券 2 礼包
+      //   let merchantId = coupon.merchant_id
+      //   let url = `/pages/coupon-detail/coupon-detail?id=${coupon.promotion.id}&type=${type}&currentMerchant=${merchantId}`
+      //   this.$parent.$navigate(url)
+      // },
+      // get(coupon) {
+      //   let url = `/pages/coupon-particulars/coupon-particulars?id=${coupon.promotion.id}`
+      //   this.$parent.$navigate(url)
+      // },
+      // use(coupon) {
+      //   let url = `/pages/coupon-particulars/coupon-particulars?id=${coupon.promotion.id}`
+      //   this.$parent.$navigate(url)
+      // }
     }
 
     watch = {
@@ -477,11 +711,15 @@
 
     components = {
       Slider,
-      package: Giftbag,
-      coupon: Coupon,
       toast: Toast,
       underline1: Underline,
-      underline2: Underline
+      underline2: Underline,
+      'recom-buy': RecomBuy,
+      'recom-giftbat': RecomGiftbag,
+      'recom-hot': RecomHot,
+      'recom-discovery': RecomDiscovery,
+      'recom-panel': RecomPanel,
+      'coupon-item': CouponItem
 //      'phone-test': PhoneTest
     }
 
@@ -498,6 +736,8 @@
     width: 100%
     overflow: hidden
     background: $color-background
+    &.has-something
+      padding-bottom: 6.3829vw
     .slider-wrapper
       position: relative
       width: 100%
@@ -562,6 +802,7 @@
             display: flex
             justify-content: center
             .tab-item-txt
+              font-family: PingFangSC-Light
               font-size: $font-size-medium
               text-align: center
               line-height: 42px
@@ -849,17 +1090,63 @@
                 .icon.last
                   margin-left: 22px
 
+  .recom-hot
+    .swiper-wrapper
+      height: 63.297872vw
+      width: 100vw
+      box-sizing: border-box
+      position: relative
+      &.only-one
+        height: 34.04255vw
+
+      .swiper-box
+        width: 100%
+        height: 100%
+        .content
+          layout()
+          justify-content: flex-start
+          align-items: center
+          width: 100%
+          .content-item
+            width: 93.6vw
+            margin-bottom: 2.659574vw
+            &:last-child
+              margin-bottom: 3.989vw
+      .dot-box
+        position: absolute
+        bottom: 3.19vw
+        left: 0
+        right: 0
+        layout(row)
+        justify-content: center
+      .dot
+        width: 0.8vw
+        height: 0.8vw
+        border-radius: 0.8vw
+        background-color: $color-button-dis
+        margin: 0 2.1vw
+        transition: all .3s
+        &.active
+          width: 2.9vw
+          border-radius: 26.5957vw
+          background-color: $color-text-t
+
   .nothing-box
-    height: 200px
+    margin-top: 10px
+    height: 63.8vh
+    background-color: $color-white
     display: flex
     flex-direction: column
     align-items: center
     justify-content: center
     .nothing-img
-      width: 100px
-      height: 80px
-      margin-bottom: 15px
+      width: 86px
+      height: 71px
+      margin-bottom: 10.5px
     .nothing-txt
+      font-family: PingFangSC-Light
+      letter-spacing: 0
+      line-height: $font-size-small
       font-size: $font-size-small
       color: $color-text
 </style>

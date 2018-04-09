@@ -111,7 +111,9 @@
         'pages/user/getIntegral/getIntegral',
         'pages/pay/pay',
         'pages/pay-coupon/pay-coupon',
-        'pages/pay-success/pay-success'
+        'pages/pay-success/pay-success',
+        'pages/hot-sale/hot-sale',
+        'pages/content-discovery/content-discovery'
       ],
       window: {
         backgroundColor: '#F9F9F9',

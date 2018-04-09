@@ -1,0 +1,93 @@
+<template>
+  <view class="recom-panel">
+    <view class="header">
+      <view class="title">{{title}}</view>
+      <view class="more" wx:if="{{isShowMore}}" @tap.stop="toMore({{targetUrl}})">
+        <text class="info" wx:if="{{isShowInfo}}">全部{{length}}个</text>
+        <image class="arrow-right" wx:if="{{imageUri}}"
+               src="{{imageUri + '/defaults/c-image/square/icon-s_right2@2x.png'}}"></image>
+      </view>
+    </view>
+    <slot name="panel"></slot>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import URIS from 'common/js/config'
+  /* eslint-disable no-undef */
+  export default class RecomPanel extends wepy.component {
+    props = {
+      title: {
+        type: String,
+        default: ''
+      },
+      isShowMore: {
+        type: Boolean,
+        default: false
+      },
+      isShowInfo: {
+        type: Boolean,
+        default: false
+      },
+      targetUrl: {
+        type: String,
+        default: ''
+      },
+      length: {
+        type: String,
+        default: '0'
+      }
+    }
+
+    data = {
+      imageUri: URIS.image
+    }
+
+    methods = {
+      toMore(url) {
+        wx.navigateTo({
+          url
+        })
+      }
+    }
+  }
+</script>
+
+<style lang='stylus'>
+  @import "../../common/stylus/variable"
+  @import "../../common/stylus/mixin"
+
+  .recom-panel
+    width: 100vw
+    margin-top: 10px
+    background-color: $color-white
+    .header
+      layout(row)
+      justify-content: space-between
+      align-items: flex-end
+      width: 100vw
+      padding: 15px 12px
+      box-sizing: border-box
+      .title
+        font-family: PingFang-SC-Medium
+        font-size: $font-size-medium-x
+        color: $color-text
+        letter-spacing: 0
+        line-height: $font-size-medium-x
+      .more
+        layout(row)
+        justify-content: flex-end
+        align-items: flex-end
+        width: 60px
+        .info
+          font-family: PingFang-SC-Medium
+          font-size: $font-size-small
+          color: #A1A1A1
+          letter-spacing: 0
+          line-height: $font-size-small
+        .arrow-right
+          width: 7px
+          height: 12px
+          margin-left: 5px
+</style>
