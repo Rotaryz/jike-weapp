@@ -752,6 +752,11 @@
 <style lang="stylus">
   @import "../../common/stylus/variable"
   @import "../../common/stylus/mixin"
+  .recom-content-item
+    padding: 0 12px
+    margin-bottom: 2.659574vw
+    &:last-child
+      margin-bottom: 3.989vw
   .recommend
     width: 100%
     overflow: hidden
@@ -1109,12 +1114,6 @@
                     display: block
                 .icon.last
                   margin-left: 22px
-
-  .recom-content-item
-    width: 93.6vw
-    margin-bottom: 2.659574vw
-    &:last-child
-      margin-bottom: 3.989vw
 
   .recom-hot
     .swiper-wrapper
