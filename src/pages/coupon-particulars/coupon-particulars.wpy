@@ -8,7 +8,7 @@
         <view class="coupon-shop-name">{{coupon.merchant_data.shop_name}}</view>
         <view class="coupon-money">{{coupon.title}}</view>
         <view class="coupon-get">
-          <view class="get-btn new-btn" wx:if="{{!coupon.can_buy}}" @tap="getMore({{coupon.id}})">再领一张({{coupon.stock === -1 ? '99+' : coupon.stock}})</view>
+          <view class="get-btn new-btn" wx:if="{{!coupon.can_buy}}" @tap="getMore({{coupon.id}})">再领一张({{coupon.can_obtain === -1 ? '20' : coupon.can_obtain}})</view>
           <view class="get-btn {{coupon.can_buy ? '' : 'btn-small'}}" @tap="getCou({{coupon}})">{{getText}}</view>
         </view>
         <view class="coupon-time">有效期{{coupon.start_at}}至{{coupon.end_at}}</view>
@@ -54,7 +54,11 @@
 
     async onLoad(option) {
       const res = await wepy.getLocation({type: 'gcj02'})
-      this.couponId = option.id ? option.id : ''
+      this.couponId = option.id ? option.id : '' +
+        '' +
+        '' +
+        '' +
+        ''
       let longitude = res.longitude
       let latitude = res.latitude
       await this._load(longitude, latitude)
