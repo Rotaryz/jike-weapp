@@ -63,7 +63,7 @@
     height: 100%
     left: 0
     top: 0
-    z-index 10
+    z-index 1000
     .popout-bg
       position: fixed
       opacity: 0.8
