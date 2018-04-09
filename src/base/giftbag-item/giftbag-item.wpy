@@ -123,11 +123,11 @@
                   font-size: $font-size-small
                   color: $color-gold
                   margin-right: 1px
+                  margin-bottom: 2px
                 .big-money
                   font-family: PingFangSC-Semibold
                   font-size: 24px
                   color: $color-gold
-                  margin-bottom: -2px
                   margin-right: 5px
                 .count-txt
                   padding: 3px
@@ -135,6 +135,7 @@
                   font-size: $font-size-small-s
                   color: $color-gold
                   background: rgba(184,155,104,.1)
+                  margin-bottom: 2px
           .giftBag-top-right
             width: 29.8%
             height: 100%

@@ -72,7 +72,7 @@
     <BackHome></BackHome>
     <Appraise></Appraise>
     <Toast></Toast>
-
+    <popout></popout>
   </view>
 </template>
 
@@ -89,6 +89,8 @@
   import Toast from '@/base/toast/toast'
   import Underline from '@/base/underline-block/underline-block'
   import BackHome from '@/base/back-home/back-home'
+  import Popout from '@/base/integral-popout/integral-popout'
+  import Shares from 'api/share'
 
   export default class MyOrder extends wepy.page {
     mixins = [base]
@@ -107,7 +109,8 @@
       Appraise,
       Underline,
       Toast,
-      BackHome
+      BackHome,
+      'popout': Popout
     }
 
     data = {
@@ -202,6 +205,7 @@
             if (pay.errMsg === 'requestPayment:ok') {
               this.load({idx: '0'})
               wepy.setStorageSync('tips', {order: true})
+              this._getShareSoya(orderId)
             }
             break
           case 1:
@@ -303,6 +307,26 @@
 
     async _getOrderList(idx, page, limit = 10) {
       return await getMyOrder.getOrderList(idx, page, limit)
+    }
+
+    async _getShareSoya(id) {
+      const resData = await Shares.getShareSoya('pay', id)
+      if (resData.error !== ERR_OK) {
+        this.loaded()
+        this.$invoke('toast', 'show', resData.message)
+        return
+      }
+      if (resData.error === ERR_OK && resData.code === 10002) {
+        this.loaded()
+        return
+      }
+      const res = resData.data
+      let total = res.total
+      if (this.showSoya) {
+        this.loaded()
+        this.$invoke('popout', 'openPoput', 'pay', total, '下单')
+      }
+      this.loaded()
     }
 
     events = {

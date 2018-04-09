@@ -101,6 +101,7 @@
     </share-modal>
     <post-order :orderInfo.sync="orderInfo" @throw.user="postOrderFail" :industry.sync="industry"></post-order>
     <toast></toast>
+    <popout></popout>
   </scroll-view>
 </template>
 
@@ -124,6 +125,7 @@
   import Toast from '@/base/toast/toast'
   import URIS from 'common/js/config'
   import {getParams} from 'common/js/data'
+  import Popout from '@/base/integral-popout/integral-popout'
 
   const COUPON_TYPE = 1
   const PACKAGE_TYPE = 2
@@ -149,8 +151,8 @@
       qrcode: '',
       sharePrice: '',
       orderInfo: {},
-      showSoya: true,
-      shopImages: []
+      shopImages: [],
+      showSoya: false
     }
 
     onShareAppMessage(res) {
@@ -165,6 +167,8 @@
         success: async () => {
           // 转发成功
           await this._getSharePrize()
+          await this._getShareSoya()
+          this.loaded()
         },
         fail: (res) => {
           // 转发失败
@@ -218,6 +222,7 @@
       this.sharePrice = res.price
       this.coupon.activity_share = false
       if (this.sharePrice) {
+        this.loaded()
         this.$invoke('share-modal', 'show')
         this.showSoya = false
       }
@@ -226,7 +231,7 @@
     }
 
     async _getShareSoya() {
-      const resData = await Shares.getShareSoya()
+      const resData = await Shares.getShareSoya('share')
       if (resData.error !== ERR_OK) {
         this.loaded()
         this.$invoke('toast', 'show', resData.message)
@@ -237,6 +242,11 @@
         return
       }
       const res = resData.data
+      let total = res.total
+      if (this.showSoya) {
+        this.loaded()
+        this.$invoke('popout', 'openPoput', 'share', total, '分享')
+      }
     }
 
     async _createQrcode() {
@@ -255,7 +265,6 @@
       const res = await CouponApi.getShopCouponDetail(this.id)
       if (res.error === ERR_OK) {
         const data = res.data
-        console.log(data)
         wepy.setNavigationBarTitle({title: data.title})
         this.promotionImages = data.promotion_images
         data.platform_price = Math.floor(data.platform_price)
@@ -320,7 +329,8 @@
         current_merchant: this.currentMerchant,
         title: this.coupon.title,
         price: this.coupon.platform_price,
-        stock: this.coupon.stock
+        stock: this.coupon.stock,
+        peopleStock: this.coupon.note ? this.coupon.note.buy_upper_limit : -1
       }
       this.$apply()
       this.$invoke('post-order', 'show')
@@ -390,7 +400,8 @@
       'share': Share,
       'share-modal': BaseModal,
       'post-order': PostOrder,
-      'toast': Toast
+      'toast': Toast,
+      'popout': Popout
     }
 
     config = {

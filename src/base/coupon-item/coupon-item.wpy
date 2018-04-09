@@ -281,12 +281,12 @@
                   font-family: PingFang-SC-Medium
                   font-size: $font-size-small
                   color: $color-orange
+                  margin-bottom: 3px
                 .big-money
                   font-family: PingFangSC-Semibold
                   font-size: $font-size-large-xx
                   color: $color-orange
                   line-height: 24px
-                  margin-bottom: -3px
                   margin-left: 1px
                   margin-right: 5px
                 .del-money
@@ -294,6 +294,7 @@
                   font-size: $font-size-small
                   color: $color-text-d
                   text-decoration: line-through
+                  margin-bottom: 3px
 
         .coupon-right
           width: 28.78%
@@ -359,10 +360,10 @@
             .small-money
               font-family: PingFang-SC-Medium
               color: $color-white
+              margin-bottom: 2px
             .big-money
               font-family: PingFangSC-Semibold
               color: $color-white
-              margin-bottom: -2px
           .left-sub
             font-family: PingFang-SC-Medium
             font-size: $font-size-small
@@ -461,10 +462,10 @@
             .small-money
               font-family: PingFang-SC-Medium
               color: $color-white
+              margin-bottom: 2px
             .big-money
               font-family: PingFangSC-Semibold
               color: $color-white
-              margin-bottom: -2px
           .left-sub
             font-family: PingFang-SC-Medium
             font-size: $font-size-small
