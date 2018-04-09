@@ -34,7 +34,7 @@
       error: false
     }
 
-    onLoad (option) {
+    onLoad(option) {
       if (option.status) {
         switch (option.status) {
           case '1':
