@@ -1,0 +1,184 @@
+<template>
+  <view class="integral-con">
+    <view class="integral-top">
+      <view class="integral-number">{{currentScore}}</view>
+      <view class="integral-cur">
+        <image class="integral-cur-img" wx:if="{{imageUri}}"
+               src="{{imageUri + '/defaults/c-image/mine/icon-dou_dou@2x.png'}}"></image>
+        <view class="integral-cur-text">当前播豆</view>
+      </view>
+      <view class="integral-getbox">
+        <view class="getbox-btn" @tap="goToShop">
+          <image class="getbox-img" wx:if="{{imageUri}}"
+                 src="{{imageUri + '/defaults/c-image/mine/icon-dou_shop@2x.png'}}"></image>
+          <view class="getbox-text">兑换商城</view>
+        </view>
+        <view class="getbox-btn getbox-mrleft" @tap="getIntegral">
+          <image class="getbox-img" wx:if="{{imageUri}}"
+                 src="{{imageUri + '/defaults/c-image/mine/icon-dou_earn@2x.png'}}"></image>
+          <view class="getbox-text">赚取播豆</view>
+        </view>
+      </view>
+    </view>
+    <view class="integral-list" wx:if="{{integralList !== []}}">
+      <view class="list-box" wx:for="{{integralList}}" wx:key="{{index}}">
+        <view class="list-box-dsc">
+          <view class="title">{{item.remark}}</view>
+          <view class="data">{{item.created_at}}</view>
+        </view>
+        <view class="list-box-number">
+          <text wx:if="{{item.type === 1}}">+</text>
+          <text wx:if="{{item.type === 2}}">-</text>
+          {{item.score}}
+        </view>
+      </view>
+    </view>
+    <view class="integral-null" wx:if="{{integralList === []}}">
+      <image class="integral-null-img" wx:if="{{imageUri}}"
+             src="{{imageUri + '/defaults/c-image/mine/pic-dou_empty@2x.png'}}"></image>
+      <view class="integral-null-text">赶快去赚取播豆</view>
+      <view class="integral-null-text">播豆可以当人民币花哦！</view>
+    </view>
+  </view>
+  <toast></toast>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import Integral from 'api/integral'
+  import URIS from 'common/js/config'
+  import Toast from '@/base/toast/toast'
+  import {ERR_OK} from 'api/base'
+  import base from 'common/mixins/base'
+
+  export default class page extends wepy.page {
+    mixins = [base]
+    data = {
+      imageUri: URIS.image,
+      integralList: [],
+      currentScore: 0
+    }
+
+    async onLoad() {
+      await this._load()
+    }
+
+    async _load() {
+      let res = await Integral.getIntegralTotal()
+      if (res.error === ERR_OK) {
+        this.integralList = res.data || []
+        this.currentScore = res.currentScore || 0
+        this.$apply()
+      }
+      this.loaded()
+    }
+
+    methods = {
+      goToShop() {
+        this.$invoke('toast', 'show', '正在开发中')
+      },
+      getIntegral() {
+        let url = '/pages/user/getIntegral/getIntegral'
+        this.$navigate(url)
+      }
+    }
+
+    components = {
+      toast: Toast
+    }
+
+    config = {
+      navigationBarTitleText: '我的播豆'
+    }
+  }
+</script>
+
+<style lang="stylus">
+  @import "../../../common/stylus/variable"
+  .integral-top
+    background: $color-highlight-background
+    padding: 35px 0 25px
+    .integral-number
+      font-weight: bold
+      text-align: center
+      font-size: $font-size-large-xx
+      color: $color-theme
+    .integral-cur
+      display: flex
+      flex-direction: row
+      align-items: center
+      margin-top: 10px
+      justify-content: center
+      .integral-cur-img
+        display: block
+        height: 16px
+        width: 16px
+      .integral-cur-text
+        font-size: $font-size-small-s
+        color: $color-text
+        margin-left: 3px
+    .integral-getbox
+      display: flex
+      flex-direction: row
+      align-items: center
+      margin-top: 10px
+      justify-content: center
+      .getbox-btn
+        display: flex
+        flex-direction: row
+        align-items: center
+        margin-top: 10px
+        justify-content: center
+        border: 1px solid #DBDBDB
+        border-radius: 2px
+        padding: 5px 12px
+        .getbox-img
+          display: block
+          width: 20px
+          height: 20px
+          margin-right 10px
+        .getbox-text
+          font-size: $font-size-small
+          color: $color-text-t
+      .getbox-mrleft
+        margin-left: 60px
+
+  .integral-null
+    margin-top: 75px
+    .integral-null-img
+      display: block
+      width: 90px
+      height: 73px
+      margin: 0 auto 20px
+    .integral-null-text
+      font-size: $font-size-small
+      text-align: center
+      color: $color-text
+      margin-bottom: 10px
+
+  .integral-list
+    border-top: 1px solid $color-row-line
+    border-bottom: 1px solid $color-row-line
+    padding-left: 12px
+    background: $color-highlight-background
+    margin-top: 10px
+    .list-box
+      display: flex
+      flex-direction: row
+      padding: 15px 12px 15px 0
+      align-items: center
+      border-bottom: 1px solid $color-row-line
+      justify-content: space-between
+      &:last-child
+        border-bottom: 0
+      .title
+        color: $color-text
+        font-size: $font-size-small
+      .data
+        margin-top: 5px
+        color: $color-text-ddd
+        font-size: $font-size-small-s
+      .list-box-number
+        color: $color-orange
+        font-size: $font-size-small
+</style>

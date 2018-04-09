@@ -1,0 +1,143 @@
+<template>
+  <view class="getIntegral-con">
+    <view class="getIntegral-top">
+      <image class="getIntegral-img" wx:if="{{imageUri}}"
+             src="{{imageUri + '/defaults/c-image/mine/pic-dou_banner@2x.png'}}"></image>
+      <view class="getIntegral-text">
+        <text>100播豆=1元现金</text>
+      </view>
+    </view>
+    <view class="getIntegral-bottom">
+      <view class="integral-bottom-title">
+        <view class="bottom-title-line"></view>
+        <view class="bottom-title-text">播豆</view>
+      </view>
+      <view class="integral-bottom-des">播豆是赞播回馈买家推出的专属服务。买家可以使用获得的播豆，以更低的价格购买支持播豆专属的活动商品。</view>
+      <view class="integral-bottom-title bottom-title-mt">
+        <view class="bottom-title-line"></view>
+        <view class="bottom-title-text ">播豆获取</view>
+      </view>
+      <view class="integral-table">
+        <view class="table-title">
+          <view class="table-title-text textBorder-right">买家行为</view>
+          <view class="table-title-text">奖励播豆数</view>
+        </view>
+        <view class="table-con textBorder-top" wx:for="{{tableList}}" wx:key="{{index}}">
+          <view class="table-con-text table-con-left textBorder-right">{{item.text}}</view>
+          <view class="table-con-text table-con-right">{{item.number}}</view>
+        </view>
+      </view>
+      <view class="integral-bottom-title bottom-title-mt">
+        <view class="bottom-title-line"></view>
+        <view class="bottom-title-text">播豆的用途</view>
+      </view>
+      <view class="integral-bottom-des">首先，用播豆最大的好处就是能用便宜的价格买到实惠的商品，其次，播豆还可以参加各类活动，如：大转盘，签到等。</view>
+    </view>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import URIS from 'common/js/config'
+
+  export default class page extends wepy.page {
+    data = {
+      imageUri: URIS.image,
+      tableList: [
+        {
+          text: '成功登录',
+          number: '+10'
+        },
+        {
+          text: '成功分享',
+          number: '+10'
+        },
+        {
+          text: '成功完成订单',
+          number: '+100'
+        }
+      ]
+    }
+
+    methods = {}
+
+    components = {}
+
+    config = {
+      navigationBarTitleText: '获取播豆'
+    }
+  }
+</script>
+
+<style lang="stylus">
+  @import "../../../common/stylus/variable"
+  page
+    background: $color-highlight-background
+    .getIntegral-top
+      position: relative
+      padding-bottom: 30%
+      .getIntegral-img
+        position: absolute
+        height: 100%
+        display: block
+        width: 100%
+      .getIntegral-text
+        display: flex
+        align-items: center
+        position: absolute
+        font-size: $font-size-large
+        color: $color-orange
+        font-weight: 600
+        height: 100%
+        width: 100%
+        padding-left: 25px
+        top: 0
+        left: 0
+    .getIntegral-bottom
+      padding: 12px
+      .bottom-title-mt
+        margin-top: 30px
+      .integral-bottom-title
+        display: flex
+        align-items: center
+        flex-direction: row
+        margin-bottom: 12px
+        .bottom-title-line
+          background: $color-orange
+          width: 3px
+          height: 14px
+          margin-right: 5px
+        .bottom-title-text
+          color: $color-text
+          font-size: $font-size-medium
+      .integral-bottom-des
+        font-size: $font-size-small
+        line-height: 1.5
+        color: $color-text
+      .integral-table
+        border: 1px solid $color-text-dis
+        .textBorder-top
+          border-top: 1px solid  $color-text-dis
+        .textBorder-right
+          border-right: 1px solid  $color-text-dis
+        .table-title
+          display: flex
+          background: #f7f7f7
+          .table-title-text
+            padding: 11px 0 10px
+            text-align: center
+            width: 50%
+            color: #929292
+            font-size: $font-size-small
+        .table-con
+          display: flex
+          .table-con-text
+            padding: 11px 0 10px
+            text-align: center
+            width: 50%
+            font-size: $font-size-small
+          .table-con-left
+            color: $color-text
+          .table-con-right
+            color: $color-orange
+</style>
