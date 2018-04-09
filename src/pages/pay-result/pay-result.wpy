@@ -88,11 +88,11 @@
         switch (type.promotion.promotion_type) {
           case 'discount':
           case 'reduction':
-            this.$redirect(`/pages/coupon-detail/coupon-detail?type=${type}&id=${couponId}`)
+            this.$redirect(`/pages/coupon-particulars/coupon-particulars?id=${couponId}`)
             break
           case 'voucher':
           case 'cash':
-            this.$redirect(`/pages/coupon-detail/coupon-detail?type=${type}&id=${couponId}`)
+            this.$redirect(`/pages/coupon-detail/coupon-detail?type=1&id=${couponId}`)
             break
         }
       }
