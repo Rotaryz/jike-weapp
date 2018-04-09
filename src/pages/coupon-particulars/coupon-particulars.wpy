@@ -16,7 +16,8 @@
           <view class="coupon-msg-item">限买单使用</view>
           <view class="coupon-msg-item">单笔订单只能使用一张券</view>
           <view class="coupon-msg-item">使用后不可退</view>
-          <view class="coupon-msg-item">除美体外全场通用</view>
+          <view class="coupon-msg-item" wx:if="{{coupon.stock.restriction}}">{{coupon.stock.restriction}}</view>
+          <view class="coupon-msg-item">{{coupon.note.remarks}}</view>
           <view class="coupon-msg-item">{{coupon.not_allow_time}}</view>
         </view>
         <view class="coupon-shop" @tap="openLocation">
@@ -52,20 +53,19 @@
     }
 
     async onLoad(option) {
-      this.couponId = option.id ? option.id : '143'
-      let longitude = option.longitude ? option.longitude : 113.26496
-      let latitude = option.latitude ? option.latitude : 23.20583
+      const res = await wepy.getLocation({type: 'gcj02'})
+      this.couponId = option.id ? option.id : ''
+      let longitude = res.longitude
+      let latitude = res.latitude
       await this._load(longitude, latitude)
     }
 
     async _load(longitude, latitude) {
       let data = {longitude, latitude}
-      console.log(data)
       let res = await merchants.coupons(this.couponId, data)
       this.loaded()
       this.coupon = this.infoRes(res)
       this.getText = this.coupon.can_buy ? '免费领取' : '立即使用'
-      console.log(this.coupon)
       this.$apply()
     }
     async getMore() {

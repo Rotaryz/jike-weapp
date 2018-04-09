@@ -1,7 +1,7 @@
 <template>
   <view class="error" wx:if="{{error}}">
     <image class="error-img" wx:if="{{imageUrl}}"
-           src="{{imageUrl + '/defaults/b-image/page/pic-upgrade upgrade upgrade@2x.png'}}"></image>
+           src="{{imageUrl + '/defaults/c-image/mine/pic-upgrade upgrade upgrade@2x.png'}}"></image>
     <view class="error-text">咦…被发现啦！</view>
     <view class="error-title">
       为了更好的提高服务，我们正在努力升级中…
@@ -10,7 +10,7 @@
   </view>
   <view class="error" wx:if="{{!error}}">
     <image class="error-image" wx:if="{{imageUrl}}"
-           src="{{imageUrl + '/defaults/b-image/page/pic-404@2x.png'}}"></image>
+           src="{{imageUrl + '/defaults/c-image/mine/pic-404@2x.png'}}"></image>
     <view class="error-text">抱歉！您撞到了404页面…</view>
     <text class="error-title">可能原因：忘了信号不好；
       找不到请求页面；
