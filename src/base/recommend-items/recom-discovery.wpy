@@ -60,6 +60,12 @@
   @import "../../common/stylus/variable"
   @import "../../common/stylus/mixin"
 
+  .recom-content-item
+    width: 93.6vw
+    margin-bottom: 2.659574vw
+    &:last-child
+      margin-bottom: 3.989vw
+
   .recom-discovery
     margin-bottom: 0vw
 

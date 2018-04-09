@@ -1110,6 +1110,12 @@
                 .icon.last
                   margin-left: 22px
 
+  .recom-content-item
+    width: 93.6vw
+    margin-bottom: 2.659574vw
+    &:last-child
+      margin-bottom: 3.989vw
+
   .recom-hot
     .swiper-wrapper
       height: 63.297872vw
