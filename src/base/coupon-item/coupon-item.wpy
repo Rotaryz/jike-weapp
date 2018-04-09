@@ -7,7 +7,7 @@
       <image class="coupon-bc" wx:if="{{imageUrlHead && type === 'mine' && coupon.promotion.promotion_type !== 'exchange' && coupon.promotion.status * 1 === 0}}" src="{{imageUrlHead + '/defaults/c-image/mine/bg-coupon_usable@2x.png'}}"></image>
       <image class="coupon-bc" wx:if="{{imageUrlHead && type === 'mine' && coupon.promotion.promotion_type !== 'exchange' && coupon.promotion.status * 1 !== 0}}" src="{{imageUrlHead + '/defaults/c-image/mine/bg-coupon_disable@2x.png'}}"></image>
       <image class="coupon-bc" wx:if="{{imageUrlHead && type === 'mine' && coupon.promotion.promotion_type === 'exchange'}}" src="{{imageUrlHead + '/defaults/c-image/mine/bg-coupon-dhq@2x.png'}}"></image>
-      <view class="coupon-content" wx:if="{{type === 'buy'}}" @tap="buyCouponClick">
+      <view class="coupon-content" wx:if="{{type === 'buy'}}" @tap="buyCouponClick('buy', {{coupon}})">
         <view class="coupon-left">
           <view class="coupon-left-first">
             <image class="shop-img" src="{{coupon.promotion.image_url}}" wx:if="{{coupon.promotion.image_url}}" mode="aspectFill"></image>
@@ -40,7 +40,7 @@
         </view>
       </view>
 
-      <view class="pay-coupon-content {{coupon.canUsePay ? '' : 'dis'}}" wx:if="{{type === 'pay'}}" @tap="buyCouponClick">
+      <view class="pay-coupon-content {{coupon.canUsePay ? '' : 'dis'}}" wx:if="{{type === 'pay'}}" @tap="buyCouponClick('pay', {{coupon}})">
         <view class="coupon-left">
           <view class="left-money">
             <view class="small-money" style="font-size:{{coupon.promotion.flag.length > 4 ?'10px' : '18px'}}" wx:if="{{coupon.promotion.promotion_type !== 'discount'}}">¥</view>
@@ -67,7 +67,7 @@
         </view>
       </view>
 
-      <view class="mine-coupon-content {{coupon.promotion.status * 1 === 0 ? '' : 'dis'}}" wx:if="{{type === 'mine' && coupon.promotion.promotion_type !== 'exchange'}}" @tap="buyCouponClick">
+      <view class="mine-coupon-content {{coupon.promotion.status * 1 === 0 ? '' : 'dis'}}" wx:if="{{type === 'mine' && coupon.promotion.promotion_type !== 'exchange'}}" @tap="buyCouponClick('mine', {{coupon}})">
         <view class="coupon-left">
           <view class="left-money">
             <view class="small-money" style="font-size:{{coupon.promotion.flag.length > 4 ?'10px' : '18px'}}" wx:if="{{coupon.promotion.promotion_type !== 'discount'}}">¥</view>
@@ -94,7 +94,7 @@
         </view>
       </view>
 
-      <view class="mine-exchange-content {{coupon.promotion.status * 1 === 0 ? '' : 'dis'}}" wx:if="{{type === 'mine' && coupon.promotion.promotion_type === 'exchange'}}" @tap="buyCouponClick">
+      <view class="mine-exchange-content {{coupon.promotion.status * 1 === 0 ? '' : 'dis'}}" wx:if="{{type === 'mine' && coupon.promotion.promotion_type === 'exchange'}}" @tap="buyCouponClick('mine', {{coupon}})">
         <view class="coupon-left">
           <view class="shop-img-box">
             <image class="shop-img" src="{{coupon.promotion.image_url}}" wx:if="{{coupon.promotion.image_url}}" mode="aspectFill"></image>
@@ -144,29 +144,28 @@
 
     methods = {
       // 点击优惠券事件(根据需求读取不同数据再进行下一步操作)
-      buyCouponClick() {
-        console.log(this)
-        switch (this.type) {
+      buyCouponClick(type, coupon) {
+        switch (type) {
           case 'buy':
-            if (this.coupon.promotion.promotion_type === 'voucher' || this.coupon.promotion.promotion_type === 'cash') {
-              this.$emit('buy', this.coupon) // 立即购买
-            } else if ((this.coupon.promotion.promotion_type === 'reduction' || this.coupon.promotion.promotion_type === 'discount') && !this.coupon.promotion.can_buy) {
-              this.$emit('get', this.coupon) // 立即领取
-            } else if ((this.coupon.promotion.promotion_type === 'reduction' || this.coupon.promotion.promotion_type === 'discount') && this.coupon.promotion.can_buy) {
-              this.$emit('use', this.coupon) // 去使用
+            if (coupon.promotion.promotion_type === 'voucher' || coupon.promotion.promotion_type === 'cash') {
+              this.$emit('buy', coupon) // 立即购买
+            } else if ((coupon.promotion.promotion_type === 'reduction' || coupon.promotion.promotion_type === 'discount') && !coupon.promotion.can_buy) {
+              this.$emit('get', coupon) // 立即领取
+            } else if ((coupon.promotion.promotion_type === 'reduction' || coupon.promotion.promotion_type === 'discount') && coupon.promotion.can_buy) {
+              this.$emit('use', coupon) // 去使用
             }
             break
           case 'pay':
             // 前面需要进行可用不可用判断，对接时自行添加
-            if (this.coupon.canUsePay) {
-              this.$emit('choice', this.coupon)
+            if (coupon.canUsePay) {
+              this.$emit('choice', coupon)
             }
             break
           case 'mine':
-            if (this.coupon.promotion.status * 1 === 0 && (this.coupon.promotion.promotion_type === 'reduction' || this.coupon.promotion.promotion_type === 'discount')) {
-              this.$emit('payUse', this.coupon) // 折扣券，满减券跳详情
-            } else if (this.coupon.promotion.status * 1 === 0 && (this.coupon.promotion.promotion_type === 'voucher' || this.coupon.promotion.promotion_type === 'cash' || this.coupon.promotion.promotion_type === 'exchange')) {
-              this.$emit('showQrcord', this.coupon) // 套餐券，代金券，兑换券跳二维码
+            if (coupon.promotion.status * 1 === 0 && (coupon.promotion.promotion_type === 'reduction' || coupon.promotion.promotion_type === 'discount')) {
+              this.$emit('payUse', coupon) // 折扣券，满减券跳详情
+            } else if (coupon.promotion.status * 1 === 0 && (coupon.promotion.promotion_type === 'voucher' || coupon.promotion.promotion_type === 'cash' || coupon.promotion.promotion_type === 'exchange')) {
+              this.$emit('showQrcord', coupon) // 套餐券，代金券，兑换券跳二维码
             }
             break
         }
