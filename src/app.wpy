@@ -106,8 +106,7 @@
         'pages/shareAndPrize/shareAndPrize',
         'pages/net-error/net-error',
         'pages/user/myIntegral/myIntegral',
-        'pages/user/getIntegral/getIntegral'
-        'pages/net-error/net-error',
+        'pages/user/getIntegral/getIntegral',
         'pages/pay/pay',
         'pages/pay-coupon/pay-coupon',
         'pages/pay-success/pay-success'

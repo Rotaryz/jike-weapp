@@ -1,0 +1,134 @@
+<template>
+  <view class="popout-con" wx:if="{{popoutShow}}">
+    <view class="popout-bg"></view>
+    <view class="popout-box">
+      <view class="popout-top">
+        <image class="popout-top-img" wx:if="{{imageUri && type === 'login'}}"
+               src="{{imageUri + '/defaults/c-image/mine/pic-window_login@2x.png'}}"></image>
+        <image class="popout-top-img" wx:if="{{imageUri && type === 'pay'}}"
+               src="{{imageUri + '/defaults/c-image/mine/pic-window_order@2x.png'}}"></image>
+        <image class="popout-top-img" wx:if="{{imageUri && type === 'share'}}"
+               src="{{imageUri + '/defaults/c-image/mine/pic-window_share@2x.png'}}"></image>
+        <view class="popout-top-text">恭喜您{{typetext}}成功</view>
+      </view>
+      <view class="popout-getNumber">获得{{number}}个播豆</view>
+      <view class="popout-getText">{{typetext}}奖励已存人您的账户</view>
+      <view class="go-integral" @tap="goToIntegral">查看播豆</view>
+      <image class="popout-close" wx:if="{{imageUri}}"
+             src="{{imageUri + '/defaults/c-image/recommend/icon-delet@2x.png'}}" @tap="coslePoput"></image>
+    </view>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import URIS from 'common/js/config'
+
+  export default class Popout extends wepy.component {
+    data = {
+      imageUri: URIS.image,
+      popoutShow: false,
+      type: 'login',
+      number: 10,
+      typetext: '登录'
+    }
+
+    methods = {
+      goToIntegral() {
+        let url = '/pages/user/myIntegral/myIntegral'
+        this.$parent.$navigate(url)
+      },
+
+      coslePoput() {
+        this.popoutShow = false
+        this.$apply()
+      },
+
+      openPoput(type, number, typetext) {
+        this.popoutShow = true
+        this.type = type
+        this.number = number
+        this.typetext = typetext
+        this.$apply()
+      }
+    }
+  }
+</script>
+
+<style lang="stylus">
+  @import "../../common/stylus/variable"
+  .popout-con
+    position: fixed
+    width: 100%
+    height: 100%
+    left: 0
+    top: 0
+    z-index 10
+    .popout-bg
+      position: fixed
+      opacity: 0.8
+      width: 100%
+      height: 100%
+      left: 0
+      top: 0
+      background: #363547
+      z-index: 9
+    .popout-box
+      border-radius: 4px
+      background: #fff
+      z-index: 11
+      position: absolute
+      left: 0
+      right: 0
+      top: 0
+      bottom: 0
+      width: 250px
+      height: 300px
+      margin: auto
+      .popout-top
+        position: relative
+        .popout-top-img
+          width: 250px
+          height: 140px
+        .popout-top-text
+          position: absolute
+          text-align: center
+          width: 100%
+          top: 18px
+          font-family: PingFangSC-Medium
+          font-size: $font-size-medium
+          color: $color-white
+      .popout-getNumber
+        width: 100%
+        text-align: center
+        font-family: PingFangSC-Medium
+        font-size: 21px
+        margin-top: 32px
+        color: $color-orange
+      .popout-getText
+        margin-top: 10px
+        width: 100%
+        text-align: center
+        font-family: PingFangSC-Light
+        font-size: $font-size-small
+        color: $color-text-ddd
+      .go-integral
+        border: 1px solid #DDDDDD
+        border-radius: 2px
+        width: 230px
+        height: 40px
+        text-align: center
+        font-family: PingFangSC-Light
+        font-size: $font-size-small
+        color: $color-text
+        line-height: 40px
+        margin: 30px auto 0
+      .popout-close
+        width: 26px
+        height: 26px
+        bottom: -45px
+        left: 0
+        right: 0
+        margin: 0 auto
+        position: absolute
+</style>
