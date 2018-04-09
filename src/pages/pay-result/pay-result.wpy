@@ -104,7 +104,7 @@
 
     methods = {
       checkOrder() {
-        this.$redirect('/pages/user/myOrder/myOrder?idx=1')
+        this.$redirect('/pages/user/myOrder/myOrder?idx=2')
       },
       goToCouponDetail(type) {
         let couponId = type.promotion.id
