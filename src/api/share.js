@@ -21,8 +21,11 @@ export default class share extends base {
    * @param
    * @returns {Promise.<*>}
    */
-  static async getShareSoya() {
-    const url = `${this.baseUrl}/api/scores/add-score?source=share`
-    return await this.get(url)
+  static async getShareSoya(source, id) {
+    let data = {
+      order_id: id
+    }
+    const url = `${this.baseUrl}/api/scores/add-score?source=${source}`
+    return await this.get(url, data)
   }
 }

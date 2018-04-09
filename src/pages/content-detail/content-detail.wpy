@@ -23,7 +23,7 @@
             </view>
           </view>
           <view class="content coupon-wrapper" wx:if="{{item.type === type.coupon}}">
-            <coupon :coupon.sync="item.detail" :buy="buy" :border="yes" :industry.sync="industry"></coupon>
+            <coupon :coupon.sync="item" :type="couponType"></coupon>
           </view>
         </view>
       </repeat>
@@ -71,7 +71,7 @@
   import users from 'common/mixins/users'
   import {ERR_OK} from 'api/base'
   import ContentsApi from 'api/contents'
-  import Coupon from '@/base/coupon/coupon'
+  import Coupon from '@/base/coupon-item/coupon-item'
   import PhoneTest from '@/base/phoneTest/phoneTest'
   import Share from '@/base/share/share'
   import BaseModal from '@/base/base-modal/base-modal'
@@ -105,7 +105,8 @@
         couponType: 1
       },
       qrcode: '',
-      currentMerchant: ''
+      currentMerchant: '',
+      couponType: 'buy'
     }
 
     onShareAppMessage(res) {
@@ -199,7 +200,7 @@
         const data = json.data
         wepy.setNavigationBarTitle({title: data.title})
         this.contents = data
-        this.details = data.content_details
+        this.details = this._checkContentCoupon(data.content_details)
         this.isFavorite = data.is_favorite
       }
     }
@@ -238,9 +239,28 @@
       }
     }
 
+    _checkContentCoupon(arr) {
+      return arr.map((item) => {
+        if (item.type === COUPON_TYPE) {
+          item = Object.assign({}, item, item.detail)
+        }
+        return item
+      })
+    }
+
     events = {
-      handleClick(type, couponId) {
-        this.$navigate(`/pages/coupon-detail/coupon-detail?type=${type}&id=${couponId}&currentMerchant=${this.currentMerchant}`)
+      buy(item) {
+        let id = item.promotion.id
+        let merchantId = item.merchant_id
+        this.$navigate('/pages/coupon-detail/coupon-detail?type=1&id=' + id + '&currentMerchant=' + merchantId)
+      },
+      get(item) {
+        let id = item.promotion.id
+        this.$navigate('/pages/coupon-particulars/coupon-particulars?id=' + id)
+      },
+      use(item) {
+        let id = item.promotion.id
+        this.$navigate('/pages/coupon-particulars/coupon-particulars?id=' + id)
       }
     }
 
@@ -327,6 +347,7 @@
               width: 100%
               height: 100%
         &.coupon-wrapper
+          padding: 0 12px
           background-color: $color-white
     .fix-btn-wrapper
       position: fixed

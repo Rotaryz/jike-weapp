@@ -28,6 +28,7 @@
         </repeat>
       </view>
     </view>
+    <popout></popout>
   </view>
 </template>
 
@@ -38,6 +39,8 @@
   import Coupon from '@/base/coupon-item/coupon-item'
   import URIS from 'common/js/config'
   import Merchants from 'api/merchants'
+  import Popout from '@/base/integral-popout/integral-popout'
+  import Shares from 'api/share'
 
   export default class PayResult extends wepy.page {
     mixins = [base]
@@ -47,12 +50,14 @@
       coupons: [],
       total: '',
       icon: '',
-      type: 'buy'
+      type: 'buy',
+      orderId: 0
     }
 
     async onLoad(option) {
       this.total = option.total
       const status = option.status
+      this.orderId = option.orderId
       if (status === 'success') {
         wepy.setNavigationBarTitle({title: '支付成功'})
         this.icon = `${this.imageUri}/defaults/c-image/recommend/icon-success@2x.png`
@@ -61,6 +66,9 @@
         this.icon = `${this.imageUri}/defaults/c-image/recommend/icon-fail@2x.png`
       }
       await this._getCouponList()
+      if (status === 'success') {
+        await this._getShareSoya()
+      }
       this.loaded()
     }
 
@@ -75,6 +83,23 @@
           this.coupons = list.splice(0, 3)
         }
       }
+    }
+
+    async _getShareSoya() {
+      const resData = await Shares.getShareSoya('pay', this.orderId)
+      if (resData.error !== ERR_OK) {
+        this.loaded()
+        this.$invoke('toast', 'show', resData.message)
+        return
+      }
+      if (resData.error === ERR_OK && resData.code === 10002) {
+        this.loaded()
+        return
+      }
+      const res = resData.data
+      let total = res.total
+      this.loaded()
+      this.$invoke('popout', 'openPoput', 'pay', total, '下单')
     }
 
     methods = {
@@ -97,7 +122,8 @@
     }
 
     components = {
-      coupon: Coupon
+      coupon: Coupon,
+      'popout': Popout
     }
   }
 </script>
