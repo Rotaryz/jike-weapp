@@ -23,7 +23,6 @@
   import wepy from 'wepy'
   import URIS from 'common/js/config'
   export default class error extends wepy.page {
-
     config = {
       navigationBarTitleText: '报错',
       navigationBarBackgroundColor: '#ffffff',
