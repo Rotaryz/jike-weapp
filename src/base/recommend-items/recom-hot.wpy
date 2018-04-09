@@ -87,19 +87,16 @@
     }
     events = {
       buy(coupon) {
-        console.log(coupon)
         let type = 1 // 1 优惠券 2 礼包
         let merchantId = coupon.merchant_id
         let url = `/pages/coupon-detail/coupon-detail?id=${coupon.promotion.id}&type=${type}&currentMerchant=${merchantId}`
         this.$parent.$navigate(url)
       },
       get(coupon) {
-        console.log(2)
         let url = `/pages/coupon-particulars/coupon-particulars?id=${coupon.promotion.id}`
         this.$parent.$navigate(url)
       },
       use(coupon) {
-        console.log(3)
         let url = `/pages/coupon-particulars/coupon-particulars?id=${coupon.promotion.id}`
         this.$parent.$navigate(url)
       }

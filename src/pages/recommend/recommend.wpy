@@ -186,6 +186,7 @@
     <!--</view>-->
     <!--</view>-->
     <toast></toast>
+    <integral-popout></integral-popout>
   </view>
 </template>
 
@@ -209,6 +210,8 @@
   import CouponApi from 'api/coupon'
   import RecomPanel from '@/base/recommend-items/recom-panel'
   import CouponItem from '@/base/coupon-item/coupon-item'
+  import IntegralPopout from '@/base/integral-popout/integral-popout'
+  import ShareApi from 'api/share'
 
   const COUPON_TYPE = 1
   const PACKAGE_TYPE = 2
@@ -283,6 +286,7 @@
 
     async onLoad() {
       this.$invoke('Slider', 'init', this.shopImages.length)
+      await this._userAddScore()
     }
 
     async onShow() {
@@ -332,9 +336,27 @@
       if (this.shopChange) {
         try {
           wepy.setStorageSync('merchantId', this.merchantId)
-          console.log(wepy.getStorageSync('merchantId'),76666)
         } catch (e) {
         }
+      }
+    }
+
+    // 登录用户领取播豆
+    async _userAddScore() {
+      const isAuthorise = await this.isAuthorise()
+      if (isAuthorise) {
+        const json = await ShareApi.getShareSoya('login')
+        if (json.error !== ERR_OK) {
+          this.loaded()
+          return
+        }
+        if (json.error === ERR_OK && json.code === 10002) {
+          this.loaded()
+          return
+        }
+        let value = json.data.score_value
+        this.loaded()
+        value && this.$invoke('integral-popout', 'openPoput', 'login', value, '登录')
       }
     }
 
@@ -719,7 +741,8 @@
       'recom-hot': RecomHot,
       'recom-discovery': RecomDiscovery,
       'recom-panel': RecomPanel,
-      'coupon-item': CouponItem
+      'coupon-item': CouponItem,
+      'integral-popout': IntegralPopout
 //      'phone-test': PhoneTest
     }
 

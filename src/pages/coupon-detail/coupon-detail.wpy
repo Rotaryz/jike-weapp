@@ -265,7 +265,6 @@
       const res = await CouponApi.getShopCouponDetail(this.id)
       if (res.error === ERR_OK) {
         const data = res.data
-        console.log(data)
         wepy.setNavigationBarTitle({title: data.title})
         this.promotionImages = data.promotion_images
         data.platform_price = Math.floor(data.platform_price)

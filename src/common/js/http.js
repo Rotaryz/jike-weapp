@@ -68,7 +68,7 @@ export default class http {
    */
   static isSuccess(res) {
     const wxCode = res.statusCode
-    if ((wxCode === 200 && res.data.code === 0) || wxCode === 422) {
+    if ((wxCode === 200 && (res.data.code === 0 || res.data.code === 10002)) || wxCode === 422) {
       return true
     }
     return false
