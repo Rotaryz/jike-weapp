@@ -259,18 +259,15 @@
       const user = this.$parent.globalData.user
       if (res.from === 'button') {
         // 来自页面内转发按钮
-//        console.log(res.target)
       }
       return {
         title: user.nickName + '邀请你购买优惠券',
         path: `/pages/recommend/recommend?merchantId=${merchantId}`,
         success: (res) => {
           // 转发成功
-//          console.log(res)
         },
         fail: (res) => {
           // 转发失败
-//          console.log(res)
         }
       }
     }
