@@ -82,17 +82,15 @@
         this.$redirect('/pages/user/myOrder/myOrder?idx=1')
       },
       goToCouponDetail(type) {
-        console.log(type.promotion.promotion_type)
         let couponId = type.promotion.id
-        console.log(couponId)
         switch (type.promotion.promotion_type) {
           case 'discount':
           case 'reduction':
-            this.$redirect(`/pages/coupon-detail/coupon-detail?type=${type}&id=${couponId}`)
+            this.$redirect(`/pages/coupon-particulars/coupon-particulars?id=${couponId}`)
             break
           case 'voucher':
           case 'cash':
-            this.$redirect(`/pages/coupon-detail/coupon-detail?type=${type}&id=${couponId}`)
+            this.$redirect(`/pages/coupon-detail/coupon-detail?type=1&id=${couponId}`)
             break
         }
       }
@@ -156,4 +154,6 @@
           width: 67.5px
           margin: 0 6.25px
           border: 1px solid $color-col-line
+  .couponList-box
+    padding: 10px 12px 0
 </style>

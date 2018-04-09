@@ -73,8 +73,6 @@
       this.couponList = arr
       this.noCouponList = noarr
       this.$apply()
-      console.log('符合数组', this.couponList)
-      console.log('不符合数组', this.noCouponList)
     }
 
     async _setGlobaCouponList() {
@@ -82,7 +80,6 @@
       if (res.error === ERR_OK) {
         this.loaded()
         this.$parent.globalData.couponList = res.data
-        console.log(this.$parent.globalData.couponList)
       }
     }
 
@@ -107,7 +104,6 @@
 
     events = {
       choice(coupon) {
-        console.log(coupon)
         this.couponList.map((item) => {
           if (item.id === coupon.id) {
             item.checked = true
