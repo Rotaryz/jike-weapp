@@ -70,9 +70,9 @@
           >
             <block wx:for="{{hotCouponsList}}" wx:key="index" wx:for-item="itemList">
               <swiper-item>
-                <view class="content">
+                <view class="recom-content">
                   <repeat for="{{itemList}}" key="index" index="index" item="item">
-                    <view class="content-item" @tap="hotItemBtn({{item}})">
+                    <view class="recom-content-item" @tap="hotItemBtn({{item}})">
                       <coupon-item :type="typeHot" :coupon.sync="item"></coupon-item>
                     </view>
                   </repeat>
@@ -1122,12 +1122,12 @@
       .swiper-box
         width: 100%
         height: 100%
-        .content
+        .recom-content
           layout()
           justify-content: flex-start
           align-items: center
           width: 100%
-          .content-item
+          .recom-content-item
             width: 93.6vw
             margin-bottom: 2.659574vw
             &:last-child
