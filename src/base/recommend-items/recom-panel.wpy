@@ -46,7 +46,6 @@
 
     methods = {
       toMore(url) {
-        console.log(111, this)
         wx.navigateTo({
           url
         })
@@ -80,6 +79,7 @@
         layout(row)
         justify-content: flex-end
         align-items: flex-end
+        width: 60px
         .info
           font-family: PingFang-SC-Medium
           font-size: $font-size-small

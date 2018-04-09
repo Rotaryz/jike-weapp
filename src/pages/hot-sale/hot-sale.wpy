@@ -2,9 +2,9 @@
   <view class="hot-sale">
     <view class="article">
       <repeat for="{{list}}" key="index" index="index" item="item">
-          <view class="content-item">
-            <coupon-item :type="type" :coupon.sync="item"></coupon-item>
-          </view>
+        <view class="content-item">
+          <coupon-item :type="type" :coupon.sync="item"></coupon-item>
+        </view>
       </repeat>
     </view>
     <underline></underline>
@@ -49,9 +49,35 @@
       }
       let res = await Merchants.getCoupons(this.merchantId, params)
       if (res.error === ERR_OK) {
+        console.log(res.data)
         return res.data
       } else {
         return []
+      }
+    }
+
+    methods = {
+      test(item) {
+        console.log(item)
+      }
+    }
+    events = {
+      buy(coupon) {
+        console.log(coupon)
+        let type = 1 // 1 优惠券 2 礼包
+        let merchantId = coupon.merchant_id
+        let url = `/pages/coupon-detail/coupon-detail?id=${coupon.promotion.id}&type=${type}&currentMerchant=${merchantId}`
+        this.$navigate(url)
+      },
+      get(coupon) {
+        console.log(2)
+        let url = `/pages/coupon-particulars/coupon-particulars?id=${coupon.promotion.id}`
+        this.$navigate(url)
+      },
+      use(coupon) {
+        console.log(3)
+        let url = `/pages/coupon-particulars/coupon-particulars?id=${coupon.promotion.id}`
+        this.$navigate(url)
       }
     }
 
@@ -75,7 +101,7 @@
   .hot-sale
     .article
       layout()
-      align-items :center
+      align-items: center
       .content-item
         width: 93.6vw
         margin: 2.8vw

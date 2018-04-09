@@ -42,6 +42,12 @@
       targetUrl: '/pages/content-discovery/content-discovery',
       type: 'buy'
     }
+    events = {
+      contentClick(id, merchantId) {
+        let url = `/pages/content-detail/content-detail?id=${id}&currentMerchant=${merchantId}`
+        this.$parent.$navigate(url)
+      }
+    }
     components = {
       'recom-panel': RecomPanel,
       'recom-swiper': RecomSwiper,

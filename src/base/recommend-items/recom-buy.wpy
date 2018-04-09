@@ -18,14 +18,14 @@
         </swiper-item>
       </block>
     </swiper>
-    <view class="btn-toBuy">去买单</view>
+    <view class="btn-toBuy" @tap="toBuy">去买单</view>
   </view>
 </template>
 
 <script>
   import wepy from 'wepy'
   import URIS from 'common/js/config'
-
+  /* eslint-disable no-undef */
   export default class RecomBuy extends wepy.component {
     props = {
       list: {
@@ -41,6 +41,13 @@
       duration: 1000,
       circular: true,
       vertical: true
+    }
+    methods = {
+      toBuy() {
+        wx.navigateTo({
+          url: '/pages/pay/pay'
+        })
+      }
     }
   }
 </script>

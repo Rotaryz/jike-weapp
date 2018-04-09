@@ -42,6 +42,13 @@
       targetUrl: '/pages/hot-sale/hot-sale',
       type: 'buy'
     }
+    events = {
+      giftbagClick(id, merchantId) {
+        let type = 2 // 1 优惠券 2 礼包
+        let url = `/pages/coupon-detail/coupon-detail?id=${id}&type=${type}${merchantId ? '&currentMerchant=' + merchantId : ''}`
+        this.$parent.$navigate(url)
+      }
+    }
     components = {
       'recom-panel': RecomPanel,
       'recom-swiper': RecomSwiper,

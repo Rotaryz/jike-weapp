@@ -51,6 +51,13 @@
       }
     }
 
+    events = {
+      contentClick(id, merchantId) {
+        let url = `/pages/content-detail/content-detail?id=${id}&currentMerchant=${merchantId}`
+        this.$navigate(url)
+      }
+    }
+
     components = {
       toast: Toast,
       underline: Underline,

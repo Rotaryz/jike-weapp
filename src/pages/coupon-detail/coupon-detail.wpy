@@ -53,6 +53,11 @@
     <view wx:if="{{services.length > 0}}">
       <service-detail :services.sync="services" :industry.sync="industry"></service-detail>
     </view>
+    <view class="shop-image-box" wx:if="{{shopImages.length>0}}">
+      <block wx:for="{{shopImages}}" wx:key="{{item}}">
+        <image class="shop-image-item" src="{{item}}" mode="widthFix"></image>
+      </block>
+    </view>
     <view wx:if="{{type === 1}}">
       <know-detail :note.sync="note" :notAllowTime.sync="notAllowTime" :industry.sync="industry"></know-detail>
     </view>
@@ -144,7 +149,8 @@
       qrcode: '',
       sharePrice: '',
       orderInfo: {},
-      showSoya: true
+      showSoya: true,
+      shopImages: []
     }
 
     onShareAppMessage(res) {
@@ -249,6 +255,7 @@
       const res = await CouponApi.getShopCouponDetail(this.id)
       if (res.error === ERR_OK) {
         const data = res.data
+        console.log(data)
         wepy.setNavigationBarTitle({title: data.title})
         this.promotionImages = data.promotion_images
         data.platform_price = Math.floor(data.platform_price)
@@ -259,7 +266,20 @@
         this.notAllowTime = data.not_allow_time
         this.isFavorite = data.is_favorite
         this.stock = data.stock
+        // 添shop照片
+        this.shopImages = this._formatShopImages(data)
         this.$apply()
+      }
+    }
+
+    // 出来门店照片
+    _formatShopImages(data) {
+      let arr = []
+      if (data) {
+        data.promotion_detail_images.map(item => {
+          item.image && arr.push(item.image.url)
+        })
+        return arr
       }
     }
 
@@ -489,6 +509,21 @@
           line-height: 14px
           font-size: $font-size-medium
           color: $color-master
+
+    .shop-image-box
+      layout()
+      align-items: center
+      width: 100vw
+      background-color: $color-white
+      position: relative
+      margin: -10px 0 10px
+      padding: 14.75px 0 15px
+      .shop-image-item
+        width: 93.6vw
+        margin-bottom: 5px
+        &:last-child
+          margin-bottom: 0
+
     .buy-button-wrapper
       position: fixed
       bottom: 0
