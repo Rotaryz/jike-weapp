@@ -177,6 +177,10 @@
           text: '红包',
           url: '/pages/user/redPacket/redPacket'
         }, {
+          imgUrl: URIS.image + '/defaults/c-image/mine/icon-m_ dou@2x.png',
+          text: '播豆',
+          url: '/pages/user/myIntegral/myIntegral'
+        }, {
           imgUrl: URIS.image + '/defaults/c-image/mine/icon-m_ collect32.png',
           text: '收藏',
           url: '/pages/user/mySelect/mySelect'
