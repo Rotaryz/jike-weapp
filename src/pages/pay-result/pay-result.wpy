@@ -97,14 +97,14 @@
         return
       }
       const res = resData.data
-      let total = res.total
+      let total = res.score_value
       this.loaded()
       this.$invoke('popout', 'openPoput', 'pay', total, '下单')
     }
 
     methods = {
       checkOrder() {
-        this.$redirect('/pages/user/myOrder/myOrder?idx=1')
+        this.$redirect('/pages/user/myOrder/myOrder?idx=2')
       },
       goToCouponDetail(type) {
         let couponId = type.promotion.id

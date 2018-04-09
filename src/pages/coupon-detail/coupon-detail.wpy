@@ -151,8 +151,8 @@
       qrcode: '',
       sharePrice: '',
       orderInfo: {},
-      shopImages: [],
-      showSoya: false
+      showSoya: true,
+      shopImages: []
     }
 
     onShareAppMessage(res) {
@@ -242,7 +242,7 @@
         return
       }
       const res = resData.data
-      let total = res.total
+      let total = res.score_value
       if (this.showSoya) {
         this.loaded()
         this.$invoke('popout', 'openPoput', 'share', total, '分享')

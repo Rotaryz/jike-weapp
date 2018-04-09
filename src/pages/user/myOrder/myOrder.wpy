@@ -321,7 +321,7 @@
         return
       }
       const res = resData.data
-      let total = res.total
+      let total = res.score_value
       if (this.showSoya) {
         this.loaded()
         this.$invoke('popout', 'openPoput', 'pay', total, '下单')
