@@ -164,7 +164,8 @@
 
     events = {
       payUse(item) {
-        console.log(item, 1)
+        let id = item.promotion.id
+        this.$navigate('/pages/coupon-particulars/coupon-particulars?id=' + id)
       },
       showQrcord(item) {
         let type = item.promotion.promotion_type

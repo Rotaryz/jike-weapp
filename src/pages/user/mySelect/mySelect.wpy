@@ -331,10 +331,12 @@
         this.$navigate('/pages/coupon-detail/coupon-detail?type=1&id=' + id + '&currentMerchant=' + merchantId)
       },
       get(item) {
-        console.log(item)
+        let id = item.promotion.id
+        this.$navigate('/pages/coupon-particulars/coupon-particulars?id=' + id)
       },
       use(item) {
-        console.log(item)
+        let id = item.promotion.id
+        this.$navigate('/pages/coupon-particulars/coupon-particulars?id=' + id)
       }
     }
   }
