@@ -39,7 +39,7 @@
     data = {
       isShowInfo: false,
       isShowMore: true,
-      targetUrl: '/pages/content-discovery/content-discovery',
+      targetUrl: `/pages/content-discovery/content-discovery`,
       type: 'buy'
     }
     events = {

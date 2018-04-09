@@ -328,6 +328,14 @@
           await this._getShowContents()
         }
       }
+      // 切店存储对应的商家ID
+      if (this.shopChange) {
+        try {
+          wepy.setStorageSync('merchantId', this.merchantId)
+          console.log(wepy.getStorageSync('merchantId'),76666)
+        } catch (e) {
+        }
+      }
     }
 
     // 数据初始化
@@ -343,7 +351,7 @@
 
     // 检查活动内容是否为空
     _checkIsEmpty() {
-      let flag = this.hotCouponsList.length && this.giftbagList.length && this.contentList.length
+      let flag = this.hotCouponsList && this.giftbagList && this.contentList
       this.activeIsEmpty = !flag
       this.$apply()
     }

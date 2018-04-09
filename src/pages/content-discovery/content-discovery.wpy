@@ -40,13 +40,14 @@
     }
 
     async onShow() {
+      this.merchantId = wepy.getStorageSync('merchantId')
       await this._getContentsAll()
       this._checkIsEmpty()
     }
 
     // 检查活动内容是否为空
     _checkIsEmpty() {
-      let flag = this.list.length
+      let flag = this.list
       this.activeIsEmpty = !flag
       this.$apply()
     }

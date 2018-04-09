@@ -40,13 +40,15 @@
     }
 
     async onShow() {
+      this.merchantId = wepy.getStorageSync('merchantId')
       await this._getCouponsAll()
       this._checkIsEmpty()
+      console.log(this.merchantId)
     }
 
     // 检查活动内容是否为空
     _checkIsEmpty() {
-      let flag = this.list.length
+      let flag = this.list
       this.activeIsEmpty = !flag
       this.$apply()
     }
@@ -60,8 +62,9 @@
       let res = await Merchants.getCoupons(this.merchantId, params)
       if (res.error === ERR_OK) {
         this.list = res.data
-        this.$apply()
         this.$invoke('underline', 'show')
+        this.$apply()
+        console.log(this.list)
       }
       this.loaded()
     }
