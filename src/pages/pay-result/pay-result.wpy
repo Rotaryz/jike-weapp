@@ -5,7 +5,10 @@
         <image src="{{icon}}" class="full-image"></image>
       </view>
       <view class="desc">
-        <view class="price">订单金额: <text class="number">{{total}}</text><text class="yuan">元</text></view>
+        <view class="price">订单金额:
+          <text class="number">{{total}}</text>
+          <text class="yuan">元</text>
+        </view>
       </view>
       <view class="check-order" @tap="checkOrder">
         查看订单
@@ -19,7 +22,9 @@
       </view>
       <view class="coupons-wrapper">
         <repeat for="{{coupons}}" key="index" index="index" item="item">
-          <coupon :coupon.sync="item" @handleClick.user="goToCouponDetail"></coupon>
+          <view class="couponList-box">
+            <coupon :coupon.sync="item" @buy.user="goToCouponDetail" :type="type"></coupon>
+          </view>
         </repeat>
       </view>
     </view>
@@ -30,7 +35,7 @@
   import wepy from 'wepy'
   import base from 'common/mixins/base'
   import {ERR_OK} from 'api/base'
-  import Coupon from '@/base/coupon/coupon'
+  import Coupon from '@/base/coupon-item/coupon-item'
   import URIS from 'common/js/config'
   import Merchants from 'api/merchants'
 
@@ -41,7 +46,8 @@
       imageUri: URIS.image,
       coupons: [],
       total: '',
-      icon: ''
+      icon: '',
+      type: 'buy'
     }
 
     async onLoad(option) {
@@ -75,8 +81,20 @@
       checkOrder() {
         this.$redirect('/pages/user/myOrder/myOrder?idx=1')
       },
-      goToCouponDetail(type, couponId) {
-        this.$redirect(`/pages/coupon-detail/coupon-detail?type=${type}&id=${couponId}`)
+      goToCouponDetail(type) {
+        console.log(type.promotion.promotion_type)
+        let couponId = type.promotion.id
+        console.log(couponId)
+        switch (type.promotion.promotion_type) {
+          case 'discount':
+          case 'reduction':
+            this.$redirect(`/pages/coupon-detail/coupon-detail?type=${type}&id=${couponId}`)
+            break
+          case 'voucher':
+          case 'cash':
+            this.$redirect(`/pages/coupon-detail/coupon-detail?type=${type}&id=${couponId}`)
+            break
+        }
       }
     }
 

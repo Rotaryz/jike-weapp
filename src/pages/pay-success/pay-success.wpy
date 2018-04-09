@@ -1,33 +1,57 @@
 <template>
   <view class="paySuccess-con">
-      <view class="paySuccess-order">
-            <image  class="paySuccess-img"  wx:if="{{imageUri}}"
-                   src="{{imageUri + '/defaults/c-image/pay/icon-pay@2x.png'}}"></image>
-        <view class="order-info">
-          <text class="text">订单金额:</text><text class="money"> 75.55</text><text class="bigtext">元</text>
-        </view>
-        <view class="look-order">查看订单</view>
+    <view class="paySuccess-order">
+      <image class="paySuccess-img" wx:if="{{imageUri}}"
+             src="{{imageUri + '/defaults/c-image/pay/icon-pay@2x.png'}}"></image>
+      <view class="order-info">
+        <text class="text">订单金额:</text>
+        <text class="money"> 75.55</text>
+        <text class="bigtext">元</text>
       </view>
+      <view class="look-order">查看订单</view>
+    </view>
+    <view class="payBottom">
+      <repeat for="{{buyList}}" key="index" index="index" item="item">
+        <view class="couponList-box">
+          <coupon :coupon.sync="item" :type="type"></coupon>
+        </view>
+      </repeat>
+    </view>
   </view>
 </template>
 
 <script>
   import wepy from 'wepy'
   import URIS from 'common/js/config'
+  import base from 'common/mixins/base'
+  import coupon from '@/base/coupon-item/coupon-item'
+  import merchants from '@/api/merchants'
+  import {ERR_OK} from '@/api/base'
 
   export default class PaySuccess extends wepy.page {
+    mixins = [base]
     data = {
-      imageUri: URIS.image
+      imageUri: URIS.image,
+      type: 'buy',
+      buyList: []
     }
 
-    onLoad() {
+    async onLoad() {
+      let id = wepy.getStorageSync('merchantId')
+      console.log(id)
+      let res = await merchants.getCoupons(id)
+      if (res.error === ERR_OK) {
+        this.loaded()
+        this.buyList = res.data
+        console.log(this.buyList)
+      }
     }
 
-    onShow() {
-    }
     methods = {}
 
-    components ={}
+    components = {
+      coupon
+    }
 
     config = {
       navigationBarTitleText: '支付成功'
@@ -66,4 +90,7 @@
       padding: 8px 0
       border-radius: 2px
       background: $color-row-line
+
+  .payBottom
+    margin-top: 30px
 </style>
