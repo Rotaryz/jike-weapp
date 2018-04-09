@@ -7,7 +7,7 @@
       :targetUrl.sync="targetUrl"
       :length.sync="length"
     >
-      <view class="swiper-wrapper" slot="panel">
+      <view class="swiper-wrapper {{isOnlyOneStyle}}" slot="panel">
         <recom-swiper :list.sync="list">
           <block wx:for="{{list}}" wx:key="index" slot="swiper">
             <swiper-item wx:if="{{item.length}}">
@@ -49,11 +49,12 @@
       targetUrl: '/pages/hot-sale/hot-sale',
       type: 'buy'
     }
-    methods = {
-      test() {
-        console.log(this.list)
+    computed = {
+      isOnlyOneStyle() {
+        return this.list[0] && (this.list[0].length <= 1 ? 'only-one' : '')
       }
     }
+    methods = {}
     components = {
       'recom-panel': RecomPanel,
       'recom-swiper': RecomSwiper,
@@ -68,6 +69,8 @@
 
   .swiper-wrapper
     height: 63.297872vw
+    &.only-one
+      height: 34.04255vw
 
     .content
       layout()

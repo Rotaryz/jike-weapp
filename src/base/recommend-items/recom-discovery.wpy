@@ -55,7 +55,7 @@
   @import "../../common/stylus/mixin"
 
   .recom-discovery
-    margin-bottom: 6.3829vw
+    margin-bottom: 0vw
 
     .swiper-wrapper
       height: 35.77127vw

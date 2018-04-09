@@ -9,21 +9,6 @@
       </view>
     </view>
     <slot name="panel"></slot>
-    <!--<view class="article">-->
-    <!--<swiper-->
-    <!--class="swiper-box"-->
-    <!--current="{{swiperCurrent}}"-->
-    <!--@change="changeVal"-->
-    <!--&gt;-->
-    <!--<slot></slot>-->
-    <!--</swiper>-->
-
-    <!--<view class="dot-box">-->
-    <!--<block wx:for="{{list}}" wx:key="{{index}}">-->
-    <!--<view class="dot {{index == swiperCurrent ? 'active' : ''}}"></view>-->
-    <!--</block>-->
-    <!--</view>-->
-    <!--</view>-->
   </view>
 </template>
 

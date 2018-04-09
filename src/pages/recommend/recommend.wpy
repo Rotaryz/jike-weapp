@@ -1,5 +1,5 @@
 <template>
-  <view class="recommend" ref="recommend">
+  <view class="recommend {{activeIsEmpty? '':'has-something'}}" ref="recommend">
     <view class="slider-wrapper">
       <repeat>
         <Slider :list.sync="shopImages"></Slider>
@@ -45,9 +45,20 @@
       </view>
     </form>
     <recom-buy :list.sync="userCouponsList"></recom-buy>
-    <recom-giftbat :list.sync="giftbagList"></recom-giftbat>
-    <recom-hot :list.sync="hotCouponsList" :length.sync="hotListLen"></recom-hot>
-    <recom-discovery :list.sync="contentList"></recom-discovery>
+    <recom-giftbat
+      :list.sync="giftbagList"
+      wx:if="{{giftbagList.length>0}}"
+    ></recom-giftbat>
+    <recom-hot
+      :list.sync="hotCouponsList"
+      :length.sync="hotListLen"
+      wx:if="{{hotCouponsList.length>0}}"
+    ></recom-hot>
+    <recom-discovery
+      :list.sync="contentList"
+      wx:if="{{contentList.length>0}}"
+    >
+    </recom-discovery>
     <!--<view class="tab-container">-->
     <!--<view class="tab-wrapper">-->
     <!--<view class="tab-content border-bottom-1px">-->
@@ -125,12 +136,12 @@
     <!--</view>-->
     <!--</view>-->
     <!--</navigator>-->
-    <!--<view class="nothing-box" wx:if="{{contentNothing}}">-->
-    <!--<image-->
-    <!--src="{{imageUri + '/defaults/c-image/mine/pic-empty_content@2x.png'}}"-->
-    <!--wx:if="{{imageUri}}" class="nothing-img"></image>-->
-    <!--<view class="nothing-txt">暂无内容</view>-->
-    <!--</view>-->
+    <view class="nothing-box" wx:if="{{activeIsEmpty}}">
+      <image
+        src="{{imageUri + '/defaults/c-image/mine/pic-empty_content@2x.png'}}"
+        wx:if="{{imageUri}}" class="nothing-img"></image>
+      <view class="nothing-txt">暂无内容</view>
+    </view>
     <!--<underline2></underline2>-->
     <!--</view>-->
     <!--</view>-->
@@ -190,7 +201,8 @@
       giftbagList: [],
       contentList: [],
       userCouponsList: [],
-      hotListLen: '0'
+      hotListLen: '0',
+      activeIsEmpty: true
     }
 
     onShareAppMessage(res) {
@@ -274,46 +286,20 @@
 
     // 数据初始化
     async _init() {
-      let hotCouponsList = await this._getCouponsAll()
-      let giftbagList = await this._getGiftBagsAll()
-      let contentList = await this._getContentsAll()
-      let userCouponsList = await this._getUserCouponListAll()
-      this.hotListLen = hotCouponsList.length.toString()
-      hotCouponsList = this._test(hotCouponsList)
-      hotCouponsList = this._formatHotList(hotCouponsList)
-      contentList = this._formatList(contentList)
-      userCouponsList = this._formatList(userCouponsList)
-      this.hotCouponsList = hotCouponsList
-      this.giftbagList = giftbagList
-      this.contentList = contentList
-      this.userCouponsList = userCouponsList
-      console.log(hotCouponsList, contentList, this.hotListLen)
+      await Promise.all([
+        this._getCouponsAll(),
+        this._getContentsAll(),
+        this._getGiftBagsAll(),
+        this._getUserCouponListAll()
+      ])
+      this._checkIsEmpty()
+    }
+
+    // 检查活动内容是否为空
+    _checkIsEmpty() {
+      let flag = this.hotCouponsList.length && this.giftbagList.length && this.contentList.length
+      this.activeIsEmpty = !flag
       this.$apply()
-    }
-
-    _formatList(res) {
-      if (res.length > 3) {
-        res = res.slice(0, 3)
-      }
-      return res
-    }
-
-    // 转化二维数组
-    _formatHotList(res) {
-      let first = res.slice(0, 2)
-      let second = res.slice(2, 4)
-      let third = res.slice(4, 6)
-      let newArrr = [first, second, third].filter((item) => {
-        return item.length > 0
-      })
-      return newArrr
-    }
-
-    _test(arr) {
-      for (let i = 0; i < 4; i++) {
-        arr.push(arr[0])
-      }
-      return arr
     }
 
     // 获取推荐优惠券列表（所有）+
@@ -324,9 +310,14 @@
       }
       let res = await Merchants.getCoupons(this.merchantId, params)
       if (res.error === ERR_OK) {
-        return res.data
-      } else {
-        return []
+        let hotCouponsList = res.data
+        this.hotListLen = hotCouponsList.length.toString()
+        // 测试伪代码
+        // hotCouponsList = this._test(hotCouponsList)
+        hotCouponsList = this._formatHotList(hotCouponsList)
+        hotCouponsList = this._formatList(hotCouponsList)
+        this.hotCouponsList = hotCouponsList
+        this.$apply()
       }
     }
 
@@ -334,9 +325,10 @@
     async _getGiftBagsAll() {
       let res = await Merchants.getGiftBags(this.merchantId)
       if (res.error === ERR_OK) {
-        return res.data
-      } else {
-        return []
+        let giftbagList = res.data
+        giftbagList = this._formatList(giftbagList)
+        this.giftbagList = giftbagList
+        this.$apply()
       }
     }
 
@@ -344,9 +336,10 @@
     async _getContentsAll() {
       const res = await ContentsApi.getMerchantContents()
       if (res.error === ERR_OK) {
-        return res.data
-      } else {
-        return []
+        let contentList = res.data
+        contentList = this._formatList(contentList)
+        this.contentList = contentList
+        this.$apply()
       }
     }
 
@@ -354,11 +347,30 @@
     async _getUserCouponListAll() {
       let res = await CouponApi.getUserCouponList(0, 'all', -1)
       if (res.error === ERR_OK) {
-        let resInfo = this._formatUserCouponList(res)
-        return resInfo
-      } else {
-        return []
+        let userCouponsList = this._formatUserCouponList(res)
+        userCouponsList = this._formatList(userCouponsList)
+        this.userCouponsList = userCouponsList
+        this.$apply()
       }
+    }
+
+    // 取出前三页
+    _formatList(res) {
+      if (res.length > 3) {
+        res = res.slice(0, 3)
+      }
+      return res
+    }
+
+    // 热销优惠券转化二维数组
+    _formatHotList(res) {
+      let first = res.slice(0, 2)
+      let second = res.slice(2, 4)
+      let third = res.slice(4, 6)
+      let newArrr = [first, second, third].filter((item) => {
+        return item.length > 0
+      })
+      return newArrr
     }
 
     // 格式化用户优惠券数据
@@ -368,6 +380,14 @@
         res.data.map(val => {
           arr.push(val.promotion.title)
         })
+      }
+      return arr
+    }
+
+    // 测试伪代码
+    _test(arr) {
+      for (let i = 0; i < 8; i++) {
+        arr.push(arr[0])
       }
       return arr
     }
@@ -617,6 +637,8 @@
     width: 100%
     overflow: hidden
     background: $color-background
+    &.has-something
+      padding-bottom: 6.3829vw
     .slider-wrapper
       position: relative
       width: 100%
@@ -970,7 +992,8 @@
                   margin-left: 22px
 
   .nothing-box
-    height: 200px
+    height: 63.8vh
+    background-color: $color-white
     display: flex
     flex-direction: column
     align-items: center
