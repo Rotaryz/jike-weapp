@@ -1,0 +1,221 @@
+<template>
+  <view class="coupon-particulars">
+    <view class="coupon-box">
+      <image class="coupon-bg" wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/c-image/coupon/bg-coupon_yhqxq@2x.png'}}">
+      </image>
+      <view class="coupon-content">
+        <image class="coupon-logo" src="{{coupon.merchant_data.logoImage}}"></image>
+        <view class="coupon-shop-name">{{coupon.merchant_data.shop_name}}</view>
+        <view class="coupon-money">{{coupon.title}}</view>
+        <view class="coupon-get">
+          <view class="get-btn new-btn" wx:if="{{!coupon.can_buy}}" @tap="getMore({{coupon.id}})">再领一张({{coupon.stock === -1 ? '99+' : coupon.stock}})</view>
+          <view class="get-btn {{coupon.can_buy ? '' : 'btn-small'}}" @tap="getCou({{coupon}})">{{getText}}</view>
+        </view>
+        <view class="coupon-time">有效期{{coupon.start_at}}至{{coupon.end_at}}</view>
+        <view class="coupon-msg">
+          <view class="coupon-msg-item">限买单使用</view>
+          <view class="coupon-msg-item">单笔订单只能使用一张券</view>
+          <view class="coupon-msg-item">使用后不可退</view>
+          <view class="coupon-msg-item" wx:if="{{coupon.stock.restriction}}">{{coupon.stock.restriction}}</view>
+          <view class="coupon-msg-item">{{coupon.note.remarks}}</view>
+          <view class="coupon-msg-item">{{coupon.not_allow_time}}</view>
+        </view>
+        <view class="coupon-shop" @tap="openLocation">
+          <view class="coupon-shop-foot-name">{{coupon.merchant_data.shop_name}}</view>
+          <view class="coupon-address">{{coupon.distance}}米 | {{coupon.merchant_data.particular_address}}</view>
+          <image class="coupon-shop-way" wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/c-image/mine/icon-s_right1@2x.png'}}"></image>
+        </view>
+      </view>
+    </view>
+  </view>
+  <Toast></Toast>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import base from 'common/mixins/base'
+  import URIS from 'common/js/config'
+  import {ERR_OK} from 'api/base'
+  import Toast from '@/base/toast/toast'
+  import merchants from 'api/merchants'
+  import order from 'api/order'
+  export default class couponParticulars extends wepy.page {
+    mixins = [base]
+
+    config = {
+      navigationBarTitleText: '优惠券详情'
+    }
+    data = {
+      imageUrl: URIS.image,
+      couponId: '',
+      coupon: {},
+      getText: '免费领取'
+    }
+
+    async onLoad(option) {
+      const res = await wepy.getLocation({type: 'gcj02'})
+      this.couponId = option.id ? option.id : ''
+      let longitude = res.longitude
+      let latitude = res.latitude
+      await this._load(longitude, latitude)
+    }
+
+    async _load(longitude, latitude) {
+      let data = {longitude, latitude}
+      let res = await merchants.coupons(this.couponId, data)
+      this.loaded()
+      this.coupon = this.infoRes(res)
+      this.getText = this.coupon.can_buy ? '免费领取' : '立即使用'
+      this.$apply()
+    }
+    async getMore() {
+      let res = await order.getCoupon(this.coupon.id)
+      this.loaded()
+      this.$invoke('Toast', 'show', res.message)
+    }
+    methods = {
+      openLocation() {
+        wepy.openLocation({
+          latitude: this.coupon.merchant_data.latitude,
+          longitude: this.coupon.merchant_data.longitude,
+          scale: 28,
+          name: this.coupon.merchant_data.shop_name,
+          address: this.coupon.merchant_data.particular_address
+        })
+      },
+      async getCou(coupon) {
+        if (coupon.can_buy) {
+          await this.getMore()
+          this.coupon.can_buy = false
+          this.getText = this.coupon.can_buy ? '免费领取' : '立即使用'
+          this.$apply()
+        } else {
+//          立即去使用
+          this.$navigate('/pages/pay/pay')
+        }
+      }
+    }
+
+    infoRes(res) {
+      if (res.error !== ERR_OK) {
+        return
+      }
+      return res.data
+    }
+
+    components = {
+      Toast: Toast
+    }
+  }
+</script>
+
+<style lang="stylus">
+  @import '../../common/stylus/variable'
+  @import '../../common/stylus/mixin'
+  .coupon-particulars
+    height: 100vh
+    background: $color-main
+    overflow: hidden
+    .coupon-box
+      position: relative
+      margin: 25px auto 0
+      width: 93.6vw
+      height: 121.6vw
+      .coupon-bg
+        z-index: 1
+        height: 100%
+        width: 100%
+        position: absolute
+        top: 0
+        left: 0
+      .coupon-content
+        height: 100%
+        width: 100%
+        position: absolute
+        top: 0
+        z-index: 100
+      .coupon-logo
+        display: block
+        margin: 1.75px auto 0
+        width: 16vw
+        height: @width
+        border-radius: 50%
+        border: 0.5px solid #DBDBDB
+      .coupon-shop-name
+        text-align: center
+        color: $color-text-gray
+        font-size: $font-size-small
+        margin-top: 3.23%
+      .coupon-money
+        text-align: center
+        margin-top: 4.82%
+        font-size: $font-size-shop
+        font-family: PingFang-SC-Medium
+      .coupon-get
+        display: flex
+        justify-content: center
+        margin-top: 5.45%
+        .get-btn
+          background: $color-main
+          color: $color-white
+          text-align: center
+          width: 42.133vw
+          height: 9.33vw
+          font-size: $font-size-medium
+          line-height: 9.33vw
+          border-radius: 4px
+          box-sizing: border-box
+        .new-btn
+          border: 0.5px solid $color-main
+          background: $color-white
+          color: $color-main
+          width: 115px
+          margin-right: 15px
+        .btn-small
+          width: 115px
+      .coupon-time
+        text-align: center
+        color: $color-text-gray
+        font-size: $font-size-small
+        margin-top: 3.28%
+      .coupon-msg
+        margin-top: 13%
+        .coupon-msg-item
+          font-size: $font-size-small
+          line-height: 18px
+          color: $color-text
+          text-indent: 30px
+          position: relative
+          &:before
+            content: ''
+            height: 3px
+            background: $color-main
+            position: absolute
+            col-center()
+            left: 20px
+            font-family: PingFang-SC-Regular
+            border-radius: 50%
+            width: 3px
+      .coupon-shop
+        position: absolute
+        bottom: 20px
+        box-sizing: border-box
+        width: 88.6%
+        row-center()
+        padding-top: 14.5px
+        border-top 0.5px solid  #DBDBDB
+        .coupon-shop-foot-name
+          font-family: PingFang-SC-Regular
+          color: $color-text
+          font-size: $font-size-medium
+          margin-bottom: 5px
+        .coupon-address
+          color: $color-text-gray
+          font-size: $font-size-small
+        .coupon-shop-way
+          position: absolute
+          top: 25.5px
+          height: 12px
+          width: 7px
+          right: 20px
+</style>

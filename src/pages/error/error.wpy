@@ -1,0 +1,80 @@
+<template>
+  <view class="error" wx:if="{{error}}">
+    <image class="error-img" wx:if="{{imageUrl}}"
+           src="{{imageUrl + '/defaults/c-image/mine/pic-upgrade upgrade upgrade@2x.png'}}"></image>
+    <view class="error-text">咦…被发现啦！</view>
+    <view class="error-title">
+      为了更好的提高服务，我们正在努力升级中…
+      稍等一下下，马上回来！
+    </view>
+  </view>
+  <view class="error" wx:if="{{!error}}">
+    <image class="error-image" wx:if="{{imageUrl}}"
+           src="{{imageUrl + '/defaults/c-image/mine/pic-404@2x.png'}}"></image>
+    <view class="error-text">抱歉！您撞到了404页面…</view>
+    <text class="error-title">可能原因：忘了信号不好；
+      找不到请求页面；
+      没有微信号。
+    </text>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import URIS from 'common/js/config'
+  export default class error extends wepy.page {
+
+    config = {
+      navigationBarTitleText: '报错',
+      navigationBarBackgroundColor: '#ffffff',
+      navigationBarTextStyle: 'black'
+    }
+    data = {
+      imageUrl: URIS.image,
+      error: false
+    }
+
+    onLoad (option) {
+      if (option.status) {
+        switch (option.status) {
+          case '1':
+            this.error = false
+            break
+          case '2':
+            this.error = true
+            break
+        }
+        this.$apply()
+      }
+    }
+  }
+</script>
+
+<style lang="stylus">
+  @import '../../common/stylus/variable'
+  @import '../../common/stylus/mixin'
+  .error
+    background: $color-white
+    height: 100vh
+    display: flex
+    flex-direction: column
+    align-items: center
+    overflow-y: hidden
+    padding: 27.73vw 10.667vw 0
+    box-sizing: border-box
+    .error-img
+      height: 157px
+      width: 148px
+    .error-text
+      font-size: $font-size-large
+      color: $color-error
+      margin: 2px 0 15px
+    .error-title
+      line-height: 22.65px
+      color: $color-text-error
+      font-size: $font-size-medium
+    .error-image
+      height: 128px
+      width: 149px
+      margin-bottom: 31px
+</style>

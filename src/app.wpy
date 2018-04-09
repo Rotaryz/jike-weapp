@@ -83,6 +83,8 @@
       current_merchant: 100004,
       pages: [
         'pages/loading/loading',
+        'pages/error/error',
+        'pages/coupon-particulars/coupon-particulars',
         'pages/browse-shops/browse-shops',
         'pages/sold-out/sold-out',
         'pages/square/square',
