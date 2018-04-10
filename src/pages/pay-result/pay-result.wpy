@@ -10,7 +10,10 @@
           <text class="yuan">元</text>
         </view>
       </view>
-      <view class="check-order" @tap="checkOrder">
+      <view wx:if="{{payway === 'pay'}}" class="check-order" @tap="checkOrder(2)">
+        去评价
+      </view>
+      <view  wx:if="{{payway !== 'pay'}}"  class="check-order" @tap="checkOrder(1)">
         查看订单
       </view>
     </view>
@@ -51,13 +54,15 @@
       total: '',
       icon: '',
       type: 'buy',
-      orderId: 0
+      orderId: 0,
+      payway: ''
     }
 
     async onLoad(option) {
       this.total = option.total
       const status = option.status
       this.orderId = option.orderId
+      this.payway = option.payway
       if (status === 'success') {
         wepy.setNavigationBarTitle({title: '支付成功'})
         this.icon = `${this.imageUri}/defaults/c-image/recommend/icon-success@2x.png`
@@ -103,8 +108,8 @@
     }
 
     methods = {
-      checkOrder() {
-        this.$redirect('/pages/user/myOrder/myOrder?idx=2')
+      checkOrder(number) {
+        this.$redirect('/pages/user/myOrder/myOrder?idx=' + number)
       },
       goToCouponDetail(type) {
         let couponId = type.promotion.id
