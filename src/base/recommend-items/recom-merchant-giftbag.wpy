@@ -10,8 +10,8 @@
         <recom-swiper :list.sync="list">
           <repeat for="{{list}}" key="index" index="index" item="item" slot="swiper">
             <swiper-item>
-              <view class="content">
-                <view class="content-item">
+              <view class="recom-content">
+                <view class="recom-content-item">
                   <giftbag-item :type="type" :giftbag.sync="item"></giftbag-item>
                 </view>
               </view>
@@ -61,15 +61,22 @@
   @import "../../common/stylus/variable"
   @import "../../common/stylus/mixin"
 
+  .recom-content-item
+    width: 93.6vw
+    margin-bottom: 2.659574vw
+    &:last-child
+      margin-bottom: 3.989vw
+
+
   .swiper-wrapper
     height: 44.0159vw
 
-    .content
+    .recom-content
       layout()
       justify-content: flex-start
       align-items: center
       width: 100%
-      .content-item
+      .recom-content-item
         width: 93.6vw
         margin-bottom: 4.654vw
 </style>

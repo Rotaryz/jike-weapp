@@ -102,7 +102,7 @@
         return
       }
       const res = resData.data
-      let total = res.total
+      let total = res.score_value
       this.loaded()
       this.$invoke('popout', 'openPoput', 'pay', total, '下单')
     }

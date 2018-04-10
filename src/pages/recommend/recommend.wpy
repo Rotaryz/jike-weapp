@@ -70,9 +70,9 @@
           >
             <block wx:for="{{hotCouponsList}}" wx:key="index" wx:for-item="itemList">
               <swiper-item>
-                <view class="content">
+                <view class="recom-content">
                   <repeat for="{{itemList}}" key="index" index="index" item="item">
-                    <view class="content-item" @tap="hotItemBtn({{item}})">
+                    <view class="recom-content-item" @tap="hotItemBtn({{item}})">
                       <coupon-item :type="typeHot" :coupon.sync="item"></coupon-item>
                     </view>
                   </repeat>
@@ -259,18 +259,15 @@
       const user = this.$parent.globalData.user
       if (res.from === 'button') {
         // 来自页面内转发按钮
-//        console.log(res.target)
       }
       return {
         title: user.nickName + '邀请你购买优惠券',
         path: `/pages/recommend/recommend?merchantId=${merchantId}`,
         success: (res) => {
           // 转发成功
-//          console.log(res)
         },
         fail: (res) => {
           // 转发失败
-//          console.log(res)
         }
       }
     }
@@ -755,6 +752,11 @@
 <style lang="stylus">
   @import "../../common/stylus/variable"
   @import "../../common/stylus/mixin"
+  .recom-content-item
+    padding: 0 12px
+    margin-bottom: 2.659574vw
+    &:last-child
+      margin-bottom: 3.989vw
   .recommend
     width: 100%
     overflow: hidden
@@ -1125,12 +1127,12 @@
       .swiper-box
         width: 100%
         height: 100%
-        .content
+        .recom-content
           layout()
           justify-content: flex-start
           align-items: center
           width: 100%
-          .content-item
+          .recom-content-item
             width: 93.6vw
             margin-bottom: 2.659574vw
             &:last-child
