@@ -18,7 +18,7 @@
         </swiper-item>
       </block>
     </swiper>
-    <view class="btn-toBuy" @tap="toBuy">去买单</view>
+    <view class="btn-toBuy {{industry + '-bg'}}" @tap="toBuy">去买单</view>
   </view>
 </template>
 
@@ -31,6 +31,10 @@
       list: {
         type: Object,
         default: {}
+      },
+      industry: {
+        type: String,
+        default: ''
       }
     }
     data = {

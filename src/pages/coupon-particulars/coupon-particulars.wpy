@@ -1,5 +1,5 @@
 <template>
-  <view class="coupon-particulars">
+  <view class="coupon-particulars {{industry + '-bg'}}">
     <view class="coupon-box">
       <image class="coupon-bg" wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/c-image/coupon/bg-coupon_yhqxq@2x.png'}}">
       </image>
@@ -8,8 +8,8 @@
         <view class="coupon-shop-name">{{coupon.merchant_data.shop_name}}</view>
         <view class="coupon-money">{{coupon.title}}</view>
         <view class="coupon-get">
-          <view class="get-btn new-btn" wx:if="{{!coupon.can_buy}}" @tap="getMore({{coupon.id}})">再领一张({{coupon.can_obtain === -1 ? '20' : coupon.can_obtain}})</view>
-          <view class="get-btn {{coupon.can_buy ? '' : 'btn-small'}}" @tap="getCou({{coupon}})">{{getText}}</view>
+          <view class="get-btn new-btn {{industry}}" wx:if="{{!coupon.is_obtain}}" @tap="getMore({{coupon.id}})">再领一张({{coupon.can_obtain === -1 ? '20' : coupon.can_obtain}})</view>
+          <view class="get-btn {{industry + '-bg'}} {{coupon.is_obtain ? '' : 'btn-small'}}" @tap="getCou({{coupon}})">{{getText}}</view>
         </view>
         <view class="coupon-time">有效期{{coupon.start_at}}至{{coupon.end_at}}</view>
         <view class="coupon-msg">
@@ -49,15 +49,18 @@
       imageUrl: URIS.image,
       couponId: '',
       coupon: {},
-      getText: '免费领取'
+      getText: '免费领取',
+      longitude: '',
+      latitude: ''
     }
 
     async onLoad(option) {
+      await this.showIndustry()
       const res = await wepy.getLocation({type: 'gcj02'})
       this.couponId = option.id ? option.id : ''
-      let longitude = res.longitude
-      let latitude = res.latitude
-      await this._load(longitude, latitude)
+      this.longitude = res.longitude
+      this.latitude = res.latitude
+      await this._load(this.longitude, this.latitude)
     }
 
     async _load(longitude, latitude) {
@@ -65,7 +68,7 @@
       let res = await merchants.coupons(this.couponId, data)
       this.loaded()
       this.coupon = this.infoRes(res)
-      this.getText = this.coupon.can_buy ? '免费领取' : '立即使用'
+      this.getText = this.coupon.is_obtain ? '免费领取' : '立即使用'
       this.$apply()
     }
 
@@ -73,6 +76,7 @@
       let res = await order.getCoupon(this.coupon.id)
       this.loaded()
       this.$invoke('Toast', 'show', res.message)
+      await this._load(this.longitude, this.latitude)
     }
 
     methods = {
@@ -86,10 +90,10 @@
         })
       },
       async getCou(coupon) {
-        if (coupon.can_buy) {
+        if (coupon.is_obtain) {
           await this.getMore()
-          this.coupon.can_buy = false
-          this.getText = this.coupon.can_buy ? '免费领取' : '立即使用'
+          this.coupon.is_obtain = false
+          this.getText = this.coupon.is_obtain ? '免费领取' : '立即使用'
           this.$apply()
         } else {
 //          立即去使用
