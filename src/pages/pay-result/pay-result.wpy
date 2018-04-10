@@ -10,10 +10,10 @@
           <text class="yuan">元</text>
         </view>
       </view>
-      <view wx:if="{{payway === 'pay'}}" class="check-order" @tap="checkOrder(2)">
-        去评价
+      <view wx:if="{{payway === 'pay'}}" class="check-order" @tap="checkOrder('pay')">
+        查看订单
       </view>
-      <view  wx:if="{{payway !== 'pay'}}"  class="check-order" @tap="checkOrder(1)">
+      <view wx:if="{{payway !== 'pay'}}" class="check-order" @tap="checkOrder(1)">
         查看订单
       </view>
     </view>
@@ -23,15 +23,14 @@
         <text class="content">推荐</text>
         <view class="right-line"></view>
       </view>
-      <view class="coupons-wrapper">
-        <repeat for="{{coupons}}" key="index" index="index" item="item">
-          <view class="couponList-box">
-            <coupon :coupon.sync="item" @buy.user="goToCouponDetail" :type="type"></coupon>
-          </view>
-        </repeat>
-      </view>
+      <repeat for="{{coupons}}" key="index" index="index" item="item">
+        <view class="couponList-box">
+          <coupon :coupon.sync="item" @buy.user="goToCouponDetail" :type="type"></coupon>
+        </view>
+      </repeat>
     </view>
-    <popout></popout>
+  </view>
+  <popout></popout>
   </view>
 </template>
 
@@ -109,7 +108,11 @@
 
     methods = {
       checkOrder(number) {
-        this.$redirect('/pages/user/myOrder/myOrder?idx=' + number)
+        if (number === 'pay') {
+          this.$redirect('/pages/user/myOrder/myOrder')
+        } else {
+          this.$redirect('/pages/user/myOrder/myOrder?idx=1')
+        }
       },
       goToCouponDetail(type) {
         let couponId = type.promotion.id
@@ -185,6 +188,7 @@
           width: 67.5px
           margin: 0 6.25px
           border: 1px solid $color-col-line
+
   .couponList-box
     padding: 10px 12px 0
 </style>
