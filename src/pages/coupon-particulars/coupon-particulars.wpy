@@ -23,7 +23,7 @@
         <view class="coupon-shop" @tap="openLocation">
           <view class="coupon-shop-foot-name">{{coupon.merchant_data.shop_name}}</view>
           <view class="coupon-address">{{coupon.distance ? coupon.distance : 0}}米 | {{coupon.merchant_data.particular_address}}</view>
-          <image class="coupon-shop-way" wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/c-image/mine/icon-s_right1@2x.png'}}"></image>
+          <image class="coupon-shop-way" wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/c-image/square/icon-s_right1@2x.png'}}"></image>
         </view>
       </view>
     </view>
@@ -221,5 +221,5 @@
           top: 25.5px
           height: 12px
           width: 7px
-          right: 20px
+          right: 0px
 </style>
