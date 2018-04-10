@@ -1,8 +1,8 @@
 <template>
   <view class="hot-sale">
-    <view class="article">
+    <view class="hot-article">
       <repeat for="{{list}}" key="index" index="index" item="item">
-        <view class="content-item">
+        <view class="hot-content-item">
           <coupon-item :type="type" :coupon.sync="item"></coupon-item>
         </view>
       </repeat>
@@ -67,8 +67,7 @@
       this.loaded()
     }
 
-    methods = {
-    }
+    methods = {}
     events = {
       buy(coupon) {
         let type = 1 // 1 优惠券 2 礼包
@@ -104,21 +103,22 @@
   @import "../../common/stylus/mixin"
 
   .hot-sale
-    .article
+    .hot-article
       layout()
       align-items: center
-      .content-item
-        width: 93.6vw
-        margin: 2.8vw
+      width: 100vw
+      .hot-content-item
+        width: 93.6%
+        margin-top: 10px
     .nothing-box
       height: 100vh
       display: flex
       flex-direction: column
       align-items: center
-     .nothing-img
-       width: 95.5px
-       height: 75.5px
-       margin:170px 0 11.5px
+      .nothing-img
+        width: 95.5px
+        height: 75.5px
+        margin: 170px 0 11.5px
       .nothing-txt
         font-family: PingFangSC-Light
         letter-spacing: 0

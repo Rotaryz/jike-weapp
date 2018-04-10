@@ -7,50 +7,45 @@
       :targetUrl.sync="targetUrl"
       :length.sync="length"
     >
-
-      <view class="swiper-wrapper {{isOnlyOneStyle}}" slot="panel">
-        <swiper
-          class="swiper-box"
-          current="{{swiperCurrent*1}}"
-          @change="changeVal"
-        >
-          <repeat for="{{list}}" key="index" index="index" item="item">
-            <swiper-item wx:if="{{item.length}}">
-                <view class="content">
-                  <view class="content-item">
-                    <coupon-item :type="type" :coupon.sync="item[0]"></coupon-item>
+      <view class="swiper-wrapper" slot="panel">
+        <recom-swiper :list.sync="list">
+          <view slot="swiper">
+            <swiper-item wx:if="{{first}}">
+              <view class="recom-content">
+                <repeat for="{{first}}" key="index" index="index" item="item">
+                  <view class="recom-content-item">
+                    <coupon-item :type="type" :coupon.sync="item"></coupon-item>
                   </view>
-                  <view class="content-item" wx:if="{{item.length}}">
-                    <coupon-item :type="type" :coupon.sync="item[1]"></coupon-item>
-                  </view>
-                </view>
+                </repeat>
+              </view>
             </swiper-item>
-          </repeat>
-        </swiper>
-        <view class="dot-box" wx:if="{{list.length>1}}">
-          <block wx:for="{{list}}" wx:key="{{index}}">
-            <view class="dot {{index == swiperCurrent ? 'active' : ''}}"></view>
-          </block>
-        </view>
-        <!--<recom-swiper :list.sync="list">-->
-          <!--<block wx:for="{{list}}" wx:key="index" slot="swiper">-->
-            <!--<swiper-item wx:if="{{item.length}}">-->
-              <!--<repeat for="{{item}}" key="index" index="index" item="item2">-->
-                <!--<view class="content">-->
-                  <!--<view class="content-item">-->
-                    <!--<coupon-item :type="type" :coupon.sync="item2"></coupon-item>-->
-                  <!--</view>-->
-                <!--</view>-->
-              <!--</repeat>-->
-            <!--</swiper-item>-->
-          <!--</block>-->
-        <!--</recom-swiper>-->
+            <swiper-item wx:if="{{second}}">
+              <view class="recom-content">
+                <repeat for="{{second}}" key="index" index="index" item="item">
+                  <view class="recom-content-item">
+                    <coupon-item :type="type" :coupon.sync="item"></coupon-item>
+                  </view>
+                </repeat>
+              </view>
+            </swiper-item>
+            <swiper-item wx:if="{{third}}">
+              <view class="recom-content">
+                <repeat for="{{third}}" key="index" index="index" item="item">
+                  <view class="recom-content-item">
+                    <coupon-item :type="type" :coupon.sync="item"></coupon-item>
+                  </view>
+                </repeat>
+              </view>
+            </swiper-item>
+          </view>
+        </recom-swiper>
       </view>
     </recom-panel>
   </view>
 </template>
 
 <script>
+  /* eslint-disable no-undef */
   import wepy from 'wepy'
   import RecomPanel from '@/base/recommend-items/recom-panel'
   import RecomSwiper from '@/base/recommend-items/recom-swiper'
@@ -69,41 +64,76 @@
       swiperCurrent: {
         type: String,
         default: '0'
+      },
+      hotFirst: {
+        type: Object,
+        default: []
+      },
+      hotSecond: {
+        type: Object,
+        default: []
+      },
+      hotThird: {
+        type: Object,
+        default: []
       }
     }
     data = {
       isShowInfo: true,
       isShowMore: true,
       targetUrl: '/pages/hot-sale/hot-sale',
-      type: 'buy'
+      type: 'buy',
+      buttonClicked: true
     }
+
     computed = {
       isOnlyOneStyle() {
         return this.list[0] && (this.list[0].length <= 1 ? 'only-one' : '')
       },
       isShowInfoStyle() {
         return this.length && true
+      },
+      first() {
+        return this.hotFirst || []
+      },
+      second() {
+        return this.hotSecond || []
+      },
+      third() {
+        return this.hotThird || []
       }
     }
+
+    _navTo(url) {
+      if (this.buttonClicked) {
+        wx.navigateTo({
+          url
+        })
+        this.buttonClicked = false
+        this.$apply()
+        setTimeout(() => {
+          this.buttonClicked = true
+          this.$apply()
+        }, 200)
+      }
+    }
+
     events = {
       buy(coupon) {
         let type = 1 // 1 优惠券 2 礼包
         let merchantId = coupon.merchant_id
         let url = `/pages/coupon-detail/coupon-detail?id=${coupon.promotion.id}&type=${type}&currentMerchant=${merchantId}`
-        this.$parent.$navigate(url)
+        this._navTo(url)
       },
       get(coupon) {
+        console.log(coupon)
         let url = `/pages/coupon-particulars/coupon-particulars?id=${coupon.promotion.id}`
-        this.$parent.$navigate(url)
+        this._navTo(url)
       },
       use(coupon) {
+        console.log(coupon, 2)
         let url = `/pages/coupon-particulars/coupon-particulars?id=${coupon.promotion.id}`
-        this.$parent.$navigate(url)
-      }
-    }
-    methods = {
-      changeVal(e) {
-        this.swiperCurrent = e.detail.current
+        this._navTo(url)
       }
     }
     components = {
@@ -118,6 +148,12 @@
   @import "../../common/stylus/variable"
   @import "../../common/stylus/mixin"
 
+  .recom-content-item
+    width: 93.6%
+    margin-bottom: 2.659574vw
+    &:last-child
+      margin-bottom: 3.989vw
+
   .swiper-wrapper
     height: 63.297872vw
     width: 100vw
@@ -126,36 +162,15 @@
     &.only-one
       height: 34.04255vw
 
-    .swiper-box
+    .recom-content
+      layout()
+      justify-content: flex-start
+      align-items: center
       width: 100%
-      height: 100%
-      .content
-        layout()
-        justify-content: flex-start
-        align-items: center
-        width: 100%
-        .content-item
-          width: 93.6vw
-          margin-bottom: 2.659574vw
-          &:last-child
-            margin-bottom: 3.989vw
-    .dot-box
-      position: absolute
-      bottom: 3.19vw
-      left: 0
-      right: 0
-      layout(row)
-      justify-content: center
-    .dot
-      width: 0.8vw
-      height: 0.8vw
-      border-radius: 0.8vw
-      background-color: $color-button-dis
-      margin: 0 2.1vw
-      transition: all .3s
-      &.active
-        width: 2.9vw
-        border-radius: 26.5957vw
-        background-color: $color-text-t
+      .recom-content-item
+        padding: 0 12px
+        margin-bottom: 2.659574vw
+        &:last-child
+          margin-bottom: 3.989vw
 
 </style>
