@@ -70,7 +70,7 @@
                  src="{{imageUri + '/defaults/c-image/recommend/icon-r_collection32@2x.png'}}"></image>
           收藏
         </view>
-        <button class="customer-service" session-from="abc,123" open-type="contact">
+        <button class="customer-service" session-from="{{currentMerchant}}" open-type="contact">
           <image class="icon" wx:if="{{imageUri}}"
                  src="{{imageUri + '/defaults/c-image/recommend/icon-r_service32@2x.png'}}"></image>
           客服
