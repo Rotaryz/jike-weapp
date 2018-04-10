@@ -272,14 +272,14 @@
       }
     }
 
-    async onReachBottom() {
-      if (this.activeTab === COUPON_TAB && this.moreCoupon) {
-        await this._getMoreCoupons()
-      } else if (this.activeTab === DISCOVER_TAB && this.moreContent) {
-        await this._getMoreContents()
-      }
-      this.loaded()
-    }
+    // async onReachBottom() {
+    //   if (this.activeTab === COUPON_TAB && this.moreCoupon) {
+    //     await this._getMoreCoupons()
+    //   } else if (this.activeTab === DISCOVER_TAB && this.moreContent) {
+    //     await this._getMoreContents()
+    //   }
+    //   this.loaded()
+    // }
 
     async onLoad() {
       this.$invoke('Slider', 'init', this.shopImages.length)
@@ -421,7 +421,6 @@
       let res = await CouponApi.getUserCouponList(0, 'all', -1)
       if (res.error === ERR_OK) {
         let userCouponsList = this._formatUserCouponList(res)
-        userCouponsList = this._formatList(userCouponsList)
         this.userCouponsList = userCouponsList
         this.$apply()
       }
@@ -451,7 +450,11 @@
       let arr = []
       if (res.data) {
         res.data.map(val => {
-          arr.push(val.promotion.title)
+          // 减免和折扣券用于买单
+          let flag = val.promotion_type.trim() === 'reduction' || val.promotion_type.trim() === 'discount'
+          if (flag) {
+            arr.push(val.promotion.title)
+          }
         })
       }
       return arr
@@ -639,6 +642,8 @@
 
     methods = {
       hotItemBtn(coupon) {
+        console.log(this, '=================')
+        console.log(CouponItem)
         if (coupon.promotion.promotion_type === 'voucher' || coupon.promotion.promotion_type === 'cash') {
           // this.$emit('buy', coupon) // 立即购买
           let type = 1 // 1 优惠券 2 礼包
@@ -757,6 +762,7 @@
     margin-bottom: 2.659574vw
     &:last-child
       margin-bottom: 3.989vw
+
   .recommend
     width: 100%
     overflow: hidden
@@ -1139,21 +1145,22 @@
               margin-bottom: 3.989vw
       .dot-box
         position: absolute
-        bottom: 3.19vw
+        width: 100%
+        bottom: 10px
         left: 0
         right: 0
         layout(row)
         justify-content: center
       .dot
-        width: 0.8vw
-        height: 0.8vw
-        border-radius: 0.8vw
+        width: 3px
+        height: 3px
+        border-radius: 1.5px
         background-color: $color-button-dis
-        margin: 0 2.1vw
+        margin: 0 4px
         transition: all .3s
         &.active
-          width: 2.9vw
-          border-radius: 26.5957vw
+          width: 11px
+          border-radius: 100px
           background-color: $color-text-t
 
   .nothing-box
