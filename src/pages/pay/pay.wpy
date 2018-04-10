@@ -277,8 +277,14 @@
       },
 
       choiceCoupon() {
+        let couponId
+        if (this.usableCoupon) {
+          couponId = this.usableCoupon.id
+        } else {
+          couponId = 0
+        }
         let discountMoney = this.allMoneyInput - this.noDiscountInput
-        let url = '/pages/pay-coupon/pay-coupon?discountMoney=' + discountMoney
+        let url = `/pages/pay-coupon/pay-coupon?discountMoney=${discountMoney}&couponId=${couponId}`
         this.$navigate(url)
       },
 

@@ -53,10 +53,15 @@
 
     async onLoad(options) {
       let ids = options.discountMoney
+      let couponId = options.couponId
       let arr = []
       let noarr = []
       this.$parent.globalData.couponList.map((item) => {
-        if (parseInt(item.promotion.config.meet_money) <= parseInt(ids) && item.promotion.promotion_type !== 'cash') {
+        if (parseInt(item.promotion.config.meet_money) <= parseInt(ids) && item.promotion.promotion_type !== 'cash' && parseInt(item.id) === parseInt(couponId)) {
+          item.canUsePay = true
+          item.checked = true
+          arr.push(item)
+        } else if (parseInt(item.promotion.config.meet_money) <= parseInt(ids) && item.promotion.promotion_type !== 'cash' && parseInt(item.id) !== parseInt(couponId)) {
           item.canUsePay = true
           item.checked = false
           arr.push(item)
@@ -115,9 +120,11 @@
         this.$apply()
         wepy.setStorageSync('choiceCoupon', coupon)
         wepy.setStorageSync('discountType', 'you')
-        wepy.navigateBack({
-          delta: 1
-        })
+        setTimeout(() => {
+          wepy.navigateBack({
+            delta: 1
+          })
+        }, 500)
       }
     }
   }
