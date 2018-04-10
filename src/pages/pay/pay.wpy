@@ -311,7 +311,8 @@
           if (pay.errMsg === 'requestPayment:ok') {
             let total = this.needPayMoney
             const status = 'success'
-            let url = `/pages/pay-result/pay-result?total=${total}&status=${status}`
+            const payway = 'pay'
+            let url = `/pages/pay-result/pay-result?total=${total}&status=${status}&payway=${payway}`
             this.$navigate(url)
           }
         } else if (res.error === 1) {
@@ -376,10 +377,10 @@
   .coupon-pay
     padding-left: 12px
     background: $color-highlight-background
-    border-top: 1px solid $color-pay-theme
-    border-bottom: 1px solid $color-pay-theme
+    border-top: 0.5px solid $color-pay-theme
+    border-bottom: 0.5px solid $color-pay-theme
     .coupon-list
-      border-bottom: 1px solid $color-pay-theme
+      border-bottom: 0.5px solid $color-pay-theme
       padding: 15px 12px 15px 0
       display: flex
       flex-direction: row
@@ -435,7 +436,6 @@
         font-weight: 600
         .pay-minus
           font-size: $font-size-small
-          margin-right: 2px
 
   .pay-submit
     padding: 15px 10px
