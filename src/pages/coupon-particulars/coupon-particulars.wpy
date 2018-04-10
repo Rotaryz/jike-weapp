@@ -17,12 +17,12 @@
           <view class="coupon-msg-item">单笔订单只能使用一张券</view>
           <view class="coupon-msg-item">使用后不可退</view>
           <view class="coupon-msg-item" wx:if="{{coupon.stock.restriction}}">{{coupon.stock.restriction}}</view>
-          <view class="coupon-msg-item">{{coupon.note.remarks}}</view>
-          <view class="coupon-msg-item">{{coupon.not_allow_time}}</view>
+          <view class="coupon-msg-item" wx:if="{{coupon.note.remarks}}">{{coupon.note.remarks}}</view>
+          <view class="coupon-msg-item" wx:if="{{coupon.not_allow_time}}">{{coupon.not_allow_time}}</view>
         </view>
         <view class="coupon-shop" @tap="openLocation">
           <view class="coupon-shop-foot-name">{{coupon.merchant_data.shop_name}}</view>
-          <view class="coupon-address">{{coupon.distance}}米 | {{coupon.merchant_data.particular_address}}</view>
+          <view class="coupon-address">{{coupon.distance ? coupon.distance : 0}}米 | {{coupon.merchant_data.particular_address}}</view>
           <image class="coupon-shop-way" wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/c-image/mine/icon-s_right1@2x.png'}}"></image>
         </view>
       </view>
@@ -147,11 +147,13 @@
         text-align: center
         color: $color-text-gray
         font-size: $font-size-small
+        min-height :$font-size-small
         margin-top: 3.23%
       .coupon-money
         text-align: center
         margin-top: 4.82%
         font-size: $font-size-shop
+        min-height: $font-size-shop
         font-family: PingFang-SC-Medium
       .coupon-get
         display: flex
