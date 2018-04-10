@@ -20,7 +20,7 @@
         </view>
       </view>
     </view>
-    <view class="integral-list" wx:if="{{integralList !== []}}">
+    <view class="integral-list" wx:if="{{integralList.length !== 0}}">
       <view class="list-box" wx:for="{{integralList}}" wx:key="{{index}}">
         <view class="list-box-dsc">
           <view class="title">{{item.remark}}</view>
@@ -33,7 +33,7 @@
         </view>
       </view>
     </view>
-    <view class="integral-null" wx:if="{{integralList === []}}">
+    <view class="integral-null" wx:if="{{integralList.length === 0}}">
       <image class="integral-null-img" wx:if="{{imageUri}}"
              src="{{imageUri + '/defaults/c-image/mine/pic-dou_empty@2x.png'}}"></image>
       <view class="integral-null-text">赶快去赚取播豆</view>
@@ -129,7 +129,7 @@
         align-items: center
         margin-top: 10px
         justify-content: center
-        border: 1px solid #DBDBDB
+        border: 0.5px solid #DBDBDB
         border-radius: 2px
         padding: 5px 12px
         .getbox-img
@@ -157,8 +157,6 @@
       margin-bottom: 10px
 
   .integral-list
-    border-top: 1px solid $color-row-line
-    border-bottom: 1px solid $color-row-line
     padding-left: 12px
     background: $color-highlight-background
     margin-top: 10px
@@ -167,7 +165,7 @@
       flex-direction: row
       padding: 15px 12px 15px 0
       align-items: center
-      border-bottom: 1px solid $color-row-line
+      border-bottom: 0.5px solid $color-row-line
       justify-content: space-between
       &:last-child
         border-bottom: 0
