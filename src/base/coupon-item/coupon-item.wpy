@@ -294,6 +294,7 @@
                   color: $color-text-d
                   text-decoration: line-through
                   margin-bottom: 3px
+                  white-space: nowrap
 
         .coupon-right
           width: 28.78%
