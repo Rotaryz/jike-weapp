@@ -6,7 +6,7 @@
       wx:else
       class="content"
       indicator-dots="{{indicatorDots}}"
-      autoplay="{{autoplay}}"
+      autoplay="{{isPlay}}"
       interval="{{interval}}"
       duration="{{duration}}"
       circular="{{circular}}"
@@ -36,11 +36,15 @@
     data = {
       imageUri: URIS.image,
       content: '小程序买单优惠',
-      autoplay: true,
       interval: 3000,
       duration: 1000,
       circular: true,
       vertical: true
+    }
+    computed = {
+      isPlay() {
+        return this.list && this.list.length > 1
+      }
     }
     methods = {
       toBuy() {

@@ -288,8 +288,6 @@
       second && (this.hotSecond = second)
       third && (this.hotThird = third)
       this.$apply()
-      console.log('============')
-      console.log(this.hotFirst, this.hotSecond, this.hotThird)
       return newArr
     }
 
@@ -299,12 +297,13 @@
       if (res.data) {
         res.data.map(val => {
           // 减免和折扣券用于买单
-          let flag = val.promotion_type === 'reduction' || val.promotion_type === 'discount'
+          let flag = val.promotion.promotion_type === 'reduction' || val.promotion.promotion_type === 'discount'
           if (flag) {
             arr.push(val.promotion.title)
           }
         })
       }
+      arr = [...new Set(arr)]
       return arr
     }
 
