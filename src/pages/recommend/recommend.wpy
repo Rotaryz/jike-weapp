@@ -154,8 +154,6 @@
         this.$invoke('Slider', 'init', this.shopImages.length)
       }
       this.loaded()
-
-      console.log(this.hotThird, this.hotSecond, this.hotThird)
     }
 
     onHide() {
@@ -280,14 +278,19 @@
       let first = res.slice(0, 2)
       let second = res.slice(2, 4)
       let third = res.slice(4, 6)
-      let newArrr = [first, second, third].filter((item) => {
+      let newArr = [first, second, third].filter((item) => {
         return item.length > 0
       })
-      this.hotFirst = first
-      this.hotSecond = second
-      this.hotThird = third
+      first = newArr[0]
+      second = newArr[1]
+      third = newArr[2]
+      first && (this.hotFirst = first)
+      second && (this.hotSecond = second)
+      third && (this.hotThird = third)
       this.$apply()
-      return newArrr
+      console.log('============')
+      console.log(this.hotFirst, this.hotSecond, this.hotThird)
+      return newArr
     }
 
     // 格式化用户优惠券数据
@@ -302,7 +305,6 @@
           }
         })
       }
-      console.log(arr)
       return arr
     }
 
