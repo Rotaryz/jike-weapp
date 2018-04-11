@@ -14,7 +14,7 @@
               <view class="recom-content">
                 <repeat for="{{first}}" key="index" index="index" item="item">
                   <view class="recom-content-item">
-                    <coupon-item :type="type" :coupon.sync="item"></coupon-item>
+                    <coupon-item :type="type" :coupon.sync="item" :industryColor.sync="industryColor" :industry.sync="industry"></coupon-item>
                   </view>
                 </repeat>
               </view>
@@ -23,7 +23,7 @@
               <view class="recom-content">
                 <repeat for="{{second}}" key="index" index="index" item="item">
                   <view class="recom-content-item">
-                    <coupon-item :type="type" :coupon.sync="item"></coupon-item>
+                    <coupon-item :type="type" :coupon.sync="item" :industryColor.sync="industryColor" :industry.sync="industry"></coupon-item>
                   </view>
                 </repeat>
               </view>
@@ -32,7 +32,7 @@
               <view class="recom-content">
                 <repeat for="{{third}}" key="index" index="index" item="item">
                   <view class="recom-content-item">
-                    <coupon-item :type="type" :coupon.sync="item"></coupon-item>
+                    <coupon-item :type="type" :coupon.sync="item" :industryColor.sync="industryColor" :industry.sync="industry"></coupon-item>
                   </view>
                 </repeat>
               </view>
@@ -83,7 +83,16 @@
       isShowMore: true,
       targetUrl: '/pages/hot-sale/hot-sale',
       type: 'buy',
-      buttonClicked: true
+      buttonClicked: true,
+      industry: '',
+      industryColor: ''
+    }
+
+    methods={
+      setIndustry(industry, industryColor) {
+        this.industry = industry
+        this.industryColor = industryColor
+      }
     }
 
     computed = {

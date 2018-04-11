@@ -18,6 +18,9 @@
                  src="{{imageUri + '/defaults/c-image/recommend/icon-live_'+ industry +'@2x.png'}}"></image>
           <view class="content">直播优惠</view>
         </button>
+
+
+
         <button form-type="submit"
                 @tap="goToActivity('share', '/pages/shareAndPrize/shareAndPrize')"
                 type="default" size="mini"
@@ -45,8 +48,7 @@
       </view>
     </form>
     <recom-buy
-      :list.sync="userCouponsList"
-    ></recom-buy>
+      :list.sync="userCouponsList" :industryHot.sync="industry"></recom-buy>
     <recom-giftbat
       wx:if="{{giftbagList.length>0}}"
       :list.sync="giftbagList"
@@ -58,6 +60,8 @@
       :hotFirst.sync="hotFirst"
       :hotSecond.sync="hotSecond"
       :hotThird.sync="hotThird"
+      :industryColorHot.sync="industryColor"
+      :industryHot.sync="industry"
     ></recom-hot>
     <recom-discovery
       wx:if="{{contentList.length>0}}"
@@ -328,6 +332,7 @@
         wepy.setStorageSync('shop', shop)
         this.industry = shop.industry || this.industry
         this.setColor(this.industry)
+        this.$invoke('recom-hot', 'setIndustry', this.industry, this.industryColor)
         wepy.setNavigationBarTitle({
           title: res.data.merchant_data.shop_name
         })
