@@ -2,8 +2,8 @@
   <view class="pay-con">
     <view class="pay-input">
       <view class="all-money-con">
-        <input type="digit" placeholder="询问服务员后输入" class="all-money-input {{allMoney ? 'all-money-select' : '' }}"
-               value="{{allMoney}}" bindinput="putAllMoney" maxlength="8"/>
+        <input type="digit" placeholder="询问服务员后输入" class="all-money-input"
+               value="{{allMoney}}" bindinput="putAllMoney" maxlength="8" placeholder-class="input-placeholder"/>
         <view class="all-money-text">消费总额：</view>
       </view>
       <view class="select-discounts" @tap="noUseDiscount">
@@ -13,8 +13,8 @@
       </view>
       <view class="all-money-con no-select-discounts" wx:if="{{useDiscount}}">
         <input type="digit" placeholder="询问服务员后输入" bindinput="putNoDiscount"
-               class="all-money-input {{noDiscountMoney ? 'all-money-select' : '' }}" maxlength="8"
-               value="{{noDiscountMoney}}"/>
+               class="all-money-input " maxlength="8"
+               value="{{noDiscountMoney}}" placeholder-class="input-placeholder"/>
         <view class="all-money-text">不参与优惠金额：</view>
       </view>
     </view>
@@ -35,8 +35,7 @@
       <view class="pay-list">
         <view class="pay-list-left">实付金额</view>
         <view class="pay-list-right">
-          <text class="pay-minus">¥</text>
-          {{needPayMoney}}
+          ¥{{needPayMoney}}
         </view>
       </view>
     </view>
@@ -308,6 +307,8 @@
         if (res.error === ERR_OK) {
           this.loaded()
           const {timestamp, nonceStr, signType, paySign} = res.data.pay_info
+          console.log(timestamp, nonceStr)
+          console.log(res.data.pay_info)
           const pay = await wepy.requestPayment({
             timeStamp: timestamp,
             nonceStr,
@@ -351,14 +352,17 @@
       height: 47.5px
       position: relative
       .all-money-input
+        font-family:  PingFang-SC-Regular
         text-align: right
-        font-size: $font-size-medium
+        font-size: $font-size-large-xx
+        color: $color-pay-input-theme
         line-height: 47.5px
         height: 47.5px
         padding-right: 10px
-      .all-money-select
-        font-size: $font-size-large-xx
-        color: $color-pay-input-theme
+      .input-placeholder
+        font-family: PingFang-SC-Regular
+        color: $color-text-error
+        font-size: $font-size-medium
       .all-money-text
         font-size: $font-size-medium
         line-height: 49.5px
@@ -394,6 +398,7 @@
       justify-content: space-between
       align-items: center
       .coupon-list-left
+        font-family: PingFangSC-Light
         color: $color-text-d
         font-size: $font-size-medium
       .coupon-list-right
@@ -435,6 +440,7 @@
       justify-content: space-between
       align-items: center
       .pay-list-left
+        font-family: PingFangSC-Light
         color: $color-text-d
         font-size: $font-size-medium
       .pay-list-right
@@ -452,7 +458,7 @@
       font-size: $font-size-medium
       color: $color-highlight-background
       border-color: $color-button-dis
-      border-radius: 0
+      border-radius: 2px
       &::after
         border: none
       .end-moeny

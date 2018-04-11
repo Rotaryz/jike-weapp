@@ -5,7 +5,7 @@
       <view class="no-use-right">
         <view class="image-wrapper">
           <image class="no-use-img" wx:if="{{imageUri}}"
-                 src="{{imageUri + '/defaults/c-image/pay/icon-notselect_syyh@2x.png'}}"></image>
+                 src="{{noUseDiscountBtn ? imageUri + '/defaults/c-image/template/icon-select_'+industry+'@2x.png' : imageUri +'/defaults/c-image/pay/icon-notselect_syyh@2x.png'}}"></image>
         </view>
       </view>
     </view>
@@ -48,7 +48,8 @@
       imageUri: URIS.image,
       couponList: [],
       noCouponList: [],
-      type: 'pay'
+      type: 'pay',
+      noUseDiscountBtn: false
     }
 
     async onLoad(options) {
@@ -81,6 +82,13 @@
       this.$apply()
     }
 
+    onShow() {
+      if (this.$parent.globalData.noUseDiscountBtn) {
+        this.noUseDiscountBtn = this.$parent.globalData.noUseDiscountBtn
+        this.$apply()
+      }
+    }
+
     async _setGlobaCouponList() {
       let res = await Coupon.getUserCouponList(3, null, -1, 'offline')
       if (res.error === ERR_OK) {
@@ -91,11 +99,23 @@
 
     methods = {
       noUseDiscount() {
+        if (this.couponList.length === 0 && this.noCouponList.length === 0) {
+          return
+        }
+        this.couponList.map((item) => {
+          item.checked = false
+          return item
+        })
+        this.noUseDiscountBtn = true
+        this.$apply()
         wepy.removeStorageSync('choiceCoupon')
         wepy.setStorageSync('discountType', 'you')
-        wepy.navigateBack({
-          delta: 1
-        })
+        this.$parent.globalData.noUseDiscountBtn = true
+        setTimeout(() => {
+          wepy.navigateBack({
+            delta: 1
+          })
+        }, 500)
       }
     }
 
@@ -110,6 +130,7 @@
 
     events = {
       choice(coupon) {
+        this.noUseDiscountBtn = false
         this.couponList.map((item) => {
           if (item.id === coupon.id) {
             item.checked = true
@@ -119,6 +140,7 @@
           return item
         })
         this.$apply()
+        this.$parent.globalData.noUseDiscountBtn = false
         wepy.setStorageSync('choiceCoupon', coupon)
         wepy.setStorageSync('discountType', 'you')
         setTimeout(() => {
