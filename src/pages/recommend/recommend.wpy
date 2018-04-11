@@ -20,7 +20,6 @@
         </button>
 
 
-
         <button form-type="submit"
                 @tap="goToActivity('share', '/pages/shareAndPrize/shareAndPrize')"
                 type="default" size="mini"
