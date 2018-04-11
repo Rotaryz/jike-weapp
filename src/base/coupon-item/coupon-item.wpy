@@ -57,7 +57,7 @@
             <view class="top-title">{{coupon.promotion.title}}</view>
           </view>
           <view class="coupon-middle-down">
-            <text class="down-time">{{coupon.promotion.end_at}}到期</text>
+            <text class="down-time {{industry + '-opacity'}}">{{coupon.promotion.end_at}}到期</text>
           </view>
         </view>
         <view class="coupon-right">
