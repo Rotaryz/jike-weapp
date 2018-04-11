@@ -192,8 +192,9 @@
         this.loaded()
         this.$invoke('share-modal', 'show')
         this.showSoya = false
+      } else {
+        this.showSoya = true
       }
-      this.showSoya = true
       this.$apply()
     }
 
