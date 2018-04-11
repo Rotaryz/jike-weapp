@@ -10,12 +10,6 @@
       </view>
     </view>
     <view class="coupon-con">
-      <view class="can-coupon" wx:if="{{couponList.length !== 0}}">可用的券</view>
-      <repeat for="{{couponList}}" key="index" index="index" item="item">
-        <view class="couponList-box">
-          <coupon :coupon.sync="item" :type="type"></coupon>
-        </view>
-      </repeat>
         <view class="can-coupon" wx:if="{{couponList.length !== 0}}">可用的券</view>
         <repeat for="{{couponList}}" key="index" index="index" item="item" >
           <view class="couponList-box">
