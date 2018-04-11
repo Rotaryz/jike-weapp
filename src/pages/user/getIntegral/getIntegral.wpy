@@ -89,10 +89,8 @@
         color: $color-orange
         font-weight: 600
         height: 100%
-        width: 100%
-        padding-left: 25px
         top: 0
-        left: 0
+        left: 25px
     .getIntegral-bottom
       padding: 12px
       .bottom-title-mt
@@ -115,11 +113,11 @@
         line-height: 1.5
         color: $color-text
       .integral-table
-        border: 1px solid $color-text-dis
+        border: 0.5px solid $color-text-dis
         .textBorder-top
-          border-top: 1px solid  $color-text-dis
+          border-top: 0.5px solid  $color-text-dis
         .textBorder-right
-          border-right: 1px solid  $color-text-dis
+          border-right: 0.5px solid  $color-text-dis
         .table-title
           display: flex
           background: #f7f7f7

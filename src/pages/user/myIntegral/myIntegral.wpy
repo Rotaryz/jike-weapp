@@ -111,8 +111,8 @@
       justify-content: center
       .integral-cur-img
         display: block
-        height: 16px
-        width: 16px
+        height: 11px
+        width: 11px
       .integral-cur-text
         font-size: $font-size-small-s
         color: $color-text
@@ -121,27 +121,27 @@
       display: flex
       flex-direction: row
       align-items: center
-      margin-top: 10px
+      margin-top: 29.5px
       justify-content: center
       .getbox-btn
         display: flex
         flex-direction: row
         align-items: center
-        margin-top: 10px
         justify-content: center
         border: 0.5px solid #DBDBDB
         border-radius: 2px
-        padding: 5px 12px
+        padding: 5px 8px
         .getbox-img
           display: block
-          width: 20px
-          height: 20px
-          margin-right 10px
+          width: 17px
+          height: 17px
+          margin-right 5.5px
         .getbox-text
+          font-family: PingFangSC-Light
           font-size: $font-size-small
           color: $color-text-t
       .getbox-mrleft
-        margin-left: 60px
+        margin-left: 45px
 
   .integral-null
     margin-top: 75px
