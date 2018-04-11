@@ -44,147 +44,32 @@
         </button>
       </view>
     </form>
-    <recom-buy :list.sync="userCouponsList" :industry.sync="industry"></recom-buy>
+    <recom-buy
+      :list.sync="userCouponsList"
+    ></recom-buy>
     <recom-giftbat
-      :list.sync="giftbagList"
       wx:if="{{giftbagList.length>0}}"
+      :list.sync="giftbagList"
     ></recom-giftbat>
-    <!--<recom-hot-->
-    <!--:list.sync="hotCouponsList"-->
-    <!--:length.sync="hotListLen"-->
-    <!--wx:if="{{hotCouponsList.length>0}}"-->
-    <!--&gt;</recom-hot>-->
-    <view class="recom-hot" wx:if="{{hotCouponsList.length>0}}">
-      <recom-panel
-        title="热销优惠券"
-        :isShowMore.sync="isShowMoreHot"
-        :isShowInfo.sync="isShowInfoStyle"
-        :targetUrl.sync="targetUrlHot"
-        :length.sync="hotListLen"
-      >
-        <view class="swiper-wrapper {{isOnlyOneStyle}}" slot="panel">
-          <swiper
-            class="swiper-box"
-            current="{{swiperCurrent*1}}"
-            @change="changeVal"
-          >
-            <block wx:for="{{hotCouponsList}}" wx:key="index" wx:for-item="itemList">
-              <swiper-item>
-                <view class="recom-content">
-                  <repeat for="{{itemList}}" key="index" index="index" item="item">
-                    <view class="recom-content-item" @tap="hotItemBtn({{item}})">
-                      <coupon-item :type="typeHot" :coupon.sync="item" :industryColor.sync="industryColor" :industry.sync="industry"></coupon-item>
-                    </view>
-                  </repeat>
-                  <!--<block wx:for="{{itemList}}" wx:key="index">-->
-                  <!--<view class="content-item">-->
-                  <!--<coupon-item :type="typeHot" :coupon.sync="item"></coupon-item>-->
-                  <!--</view>-->
-                  <!--</block>-->
-                </view>
-              </swiper-item>
-            </block>
-          </swiper>
-          <view class="dot-box" wx:if="{{hotCouponsList.length>1}}">
-            <block wx:for="{{hotCouponsList}}" wx:key="{{index}}">
-              <view class="dot {{index == swiperCurrent ? 'active' : ''}}"></view>
-            </block>
-          </view>
-        </view>
-      </recom-panel>
-    </view>
+    <recom-hot
+      wx:if="{{hotCouponsList.length>0}}"
+      :list.sync="hotCouponsList"
+      :length.sync="hotListLen"
+      :hotFirst.sync="hotFirst"
+      :hotSecond.sync="hotSecond"
+      :hotThird.sync="hotThird"
+    ></recom-hot>
     <recom-discovery
-      :list.sync="contentList"
       wx:if="{{contentList.length>0}}"
+      :list.sync="contentList"
     >
     </recom-discovery>
-    <!--<view class="tab-container">-->
-    <!--<view class="tab-wrapper">-->
-    <!--<view class="tab-content border-bottom-1px">-->
-    <!--<view class="tab-item" @tap="clickTab(1)">-->
-    <!--<view-->
-    <!--class="tab-item-txt {{activeTab === '1' ? industry + '-border' : ''}}">-->
-    <!--优惠券-->
-    <!--</view>-->
-    <!--</view>-->
-    <!--<view class="tab-item" @tap="clickTab(2)">-->
-    <!--<view-->
-    <!--class="tab-item-txt {{activeTab === '2' ? industry + '-border' : ''}}">-->
-    <!--发现-->
-    <!--</view>-->
-    <!--</view>-->
-    <!--</view>-->
-    <!--<view class="tab-line {{activeTab === '2' ? 'discover' : ''}}"></view>-->
-    <!--</view>-->
-    <!--<view class="tab-content-wrapper">-->
-    <!--<view class="coupon-panel"-->
-    <!--style="display: {{activeTab === '1' ? 'block':''}}">-->
-    <!--<repeat for="{{giftBags}}" key="index" index="index" item="item">-->
-    <!--<package :giftbag.sync="item" @handleClick.user="goToCouponDetail"-->
-    <!--:index="index"></package>-->
-    <!--</repeat>-->
-    <!--<repeat for="{{couponList}}" key="index" index="index" item="item">-->
-    <!--<coupon :coupon.sync="item" :industry.sync="industry"-->
-    <!--@handleClick.user="goToCouponDetail"></coupon>-->
-    <!--</repeat>-->
-    <!--<view class="nothing-box" wx:if="{{couponNothing}}">-->
-    <!--<image-->
-    <!--src="{{imageUri + '/defaults/c-image/mine/pic-empty_coupon@2x.png'}}"-->
-    <!--wx:if="{{imageUri}}" class="nothing-img"></image>-->
-    <!--<view class="nothing-txt">暂无优惠券</view>-->
-    <!--</view>-->
-    <!--<underline1></underline1>-->
-    <!--</view>-->
-    <!--<view class="discover-panel"-->
-    <!--style="display: {{activeTab === '2' ? 'block':''}}">-->
-    <!--<navigator-->
-    <!--url="/pages/content-detail/content-detail?id={{item.id}}&currentMerchant={{item.merchant_id}}"-->
-    <!--class="ticky-wrapper"-->
-    <!--wx:for="{{contents}}" wx:key="unique">-->
-    <!--<view class="ticky">-->
-    <!--<image src="{{item.image_url}}" class="full-image"-->
-    <!--mode="widthFix"></image>-->
-    <!--<view class="title">{{item.title}}</view>-->
-    <!--</view>-->
-    <!--<view class="collector">-->
-    <!--<view class="avatar-wrapper">-->
-    <!--<view class="avatar" wx:for="{{item.customer_images}}"-->
-    <!--wx:key="unique" wx:for-item="avatar"-->
-    <!--wx:if="{{index < 5}}">-->
-    <!--<image src="{{avatar}}" alt="" class="full-image"></image>-->
-    <!--</view>-->
-    <!--<view class="more" wx:if="{{item.customer_images.length > 5}}">-->
-    <!--<view class="dot"></view>-->
-    <!--<view class="dot"></view>-->
-    <!--<view class="dot"></view>-->
-    <!--</view>-->
-    <!--</view>-->
-    <!--<view class="collect">-->
-    <!--<view class="icon icon-collected">-->
-    <!--<image wx:if="{{imageUri}}"-->
-    <!--src="{{imageUri + '/defaults/c-image/mine/icon-r_collection@2x.png'}}"-->
-    <!--class="full-image"></image>-->
-    <!--</view>-->
-    <!--<view class="font">{{item.favorite_count}}</view>-->
-    <!--<view class="icon icon-collected last">-->
-    <!--<image wx:if="{{imageUri}}"-->
-    <!--src="{{imageUri + '/defaults/c-image/mine/icon-r_share1@2x.png'}}"-->
-    <!--class="full-image"></image>-->
-    <!--</view>-->
-    <!--<view class="font">{{item.share_count}}</view>-->
-    <!--</view>-->
-    <!--</view>-->
-    <!--</navigator>-->
     <view class="nothing-box" wx:if="{{activeIsEmpty}}">
       <image
         src="{{imageUri + '/defaults/c-image/recom/icon-blank_tj@2x.png'}}"
         wx:if="{{imageUri}}" class="nothing-img"></image>
       <view class="nothing-txt">暂无内容</view>
     </view>
-    <!--<underline2></underline2>-->
-    <!--</view>-->
-    <!--</view>-->
-    <!--</view>-->
     <toast></toast>
     <integral-popout></integral-popout>
   </view>
@@ -195,43 +80,29 @@
   import base from 'common/mixins/base'
   import users from 'common/mixins/users'
   import Slider from '@/base/index-slider/index-slider'
-  // import Coupon from '@/base/coupon/coupon'
   import Toast from '@/base/toast/toast'
   import {ERR_OK} from 'api/base'
   import ContentsApi from 'api/contents'
   import Merchants from 'api/merchants'
-  // import Giftbag from '@/base/giftbag/giftbag'
   import URIS from 'common/js/config'
-  import Underline from '@/base/underline-block/underline-block'
   import RecomBuy from '@/base/recommend-items/recom-buy'
   import RecomGiftbag from '@/base/recommend-items/recom-merchant-giftbag'
   import RecomHot from '@/base/recommend-items/recom-hot'
   import RecomDiscovery from '@/base/recommend-items/recom-discovery'
   import CouponApi from 'api/coupon'
-  import RecomPanel from '@/base/recommend-items/recom-panel'
-  import CouponItem from '@/base/coupon-item/coupon-item'
   import IntegralPopout from '@/base/integral-popout/integral-popout'
   import ShareApi from 'api/share'
-
-  const COUPON_TYPE = 1
-  const PACKAGE_TYPE = 2
-
-  const COUPON_TAB = '1'
-  const DISCOVER_TAB = '2'
 
   export default class Index extends wepy.page {
     mixins = [users, base]
 
     data = {
       imageUri: URIS.image,
-      couponType: COUPON_TYPE,
-      packageType: PACKAGE_TYPE,
       merchantId: wepy.getStorageSync('merchantId'),
       activities: {},
       shopImages: [],
       couponList: [],
       giftBags: [],
-      activeTab: COUPON_TAB,
       contents: [],
       couponPage: 1,
       contentPage: 1,
@@ -246,12 +117,9 @@
       contentList: [],
       userCouponsList: [],
       hotListLen: '0',
-      activeIsEmpty: true,
-      isShowInfoHot: true,
-      isShowMoreHot: true,
-      targetUrlHot: '/pages/hot-sale/hot-sale',
-      typeHot: 'buy',
-      swiperCurrent: 0
+      hotFirst: [],
+      hotSecond: [],
+      hotThird: []
     }
 
     onShareAppMessage(res) {
@@ -272,17 +140,7 @@
       }
     }
 
-    async onReachBottom() {
-      if (this.activeTab === COUPON_TAB && this.moreCoupon) {
-        await this._getMoreCoupons()
-      } else if (this.activeTab === DISCOVER_TAB && this.moreContent) {
-        await this._getMoreContents()
-      }
-      this.loaded()
-    }
-
     async onLoad() {
-      console.log(this.industryColor)
       this.$invoke('Slider', 'init', this.shopImages.length)
       await this._userAddScore()
     }
@@ -295,8 +153,6 @@
       if (this.shopImages.length) {
         this.$invoke('Slider', 'init', this.shopImages.length)
       }
-      this.couponNothing = this.couponList.length === 0 && this.giftBags.length === 0
-      this.contentNothing = this.contents.length === 0
       this.loaded()
     }
 
@@ -312,24 +168,6 @@
       this.$parent.updateGlobalData('isAuthorise', isAuthorise)
       await this._saveLog()
       await this._getMechantsMsg()
-      if (this.activeTab === COUPON_TAB) {
-        this.$invoke('underline1', 'hide')
-        this.moreCoupon = true
-        await this._getGiftBags()
-        if (this.shopChange) {
-          await this._getCoupons()
-        } else {
-          await this._getShowCoupons()
-        }
-      } else if (this.activeTab === DISCOVER_TAB) {
-        this.$invoke('underline2', 'hide')
-        this.moreContent = true
-        if (this.shopChange) {
-          await this._getContents()
-        } else {
-          await this._getShowContents()
-        }
-      }
       // 切店存储对应的商家ID
       if (this.shopChange) {
         try {
@@ -376,7 +214,7 @@
       this.$apply()
     }
 
-    // 获取推荐优惠券列表（所有）+
+    // 获取hot推荐优惠券列表（所有）+
     async _getCouponsAll() {
       let params = {
         page: 1,
@@ -422,7 +260,6 @@
       let res = await CouponApi.getUserCouponList(0, 'all', -1)
       if (res.error === ERR_OK) {
         let userCouponsList = this._formatUserCouponList(res)
-        userCouponsList = this._formatList(userCouponsList)
         this.userCouponsList = userCouponsList
         this.$apply()
       }
@@ -441,10 +278,17 @@
       let first = res.slice(0, 2)
       let second = res.slice(2, 4)
       let third = res.slice(4, 6)
-      let newArrr = [first, second, third].filter((item) => {
+      let newArr = [first, second, third].filter((item) => {
         return item.length > 0
       })
-      return newArrr
+      first = newArr[0]
+      second = newArr[1]
+      third = newArr[2]
+      first && (this.hotFirst = first)
+      second && (this.hotSecond = second)
+      third && (this.hotThird = third)
+      this.$apply()
+      return newArr
     }
 
     // 格式化用户优惠券数据
@@ -452,17 +296,14 @@
       let arr = []
       if (res.data) {
         res.data.map(val => {
-          arr.push(val.promotion.title)
+          // 减免和折扣券用于买单
+          let flag = val.promotion.promotion_type === 'reduction' || val.promotion.promotion_type === 'discount'
+          if (flag) {
+            arr.push(val.promotion.title)
+          }
         })
       }
-      return arr
-    }
-
-    // 测试伪代码
-    _test(arr) {
-      for (let i = 0; i < 4; i++) {
-        arr.push(arr[0])
-      }
+      arr = [...new Set(arr)]
       return arr
     }
 
@@ -497,166 +338,13 @@
       }
     }
 
-    // 获取礼包列表(全部)
-    async _getGiftBags() {
-      let res = await Merchants.getGiftBags(this.merchantId)
-      if (res.error === ERR_OK) {
-        this.giftBags = res.data
-        this.$apply()
-      }
-    }
-
-    // 获取优惠券列表（分页）
-    async _getCoupons() {
-      let params = {
-        page: 1,
-        limit: 10
-      }
-      let res = await Merchants.getCoupons(this.merchantId, params)
-      if (res.error === ERR_OK) {
-        this.couponList = res.data
-        this.$apply()
-      }
-    }
-
-    // 获取优惠券列表（不切店的情况下按之前浏览的数量读取数据, 切店后重新开始获取）
-    async _getShowCoupons() {
-      this.$invoke('underline1', 'hide')
-      this.moreCoupon = true
-      let params
-      let limit
-      if (!this.moreCoupon || this.couponList.length >= 100) {
-        limit = 100
-      } else {
-        limit = Math.ceil(this.couponList.length / 10) * 10 || 10
-      }
-      if (this.shopChange) {
-        params = {
-          page: 1
-        }
-      } else {
-        params = {
-          page: 1,
-          limit
-        }
-      }
-      let res = await Merchants.getCoupons(this.merchantId, params)
-      if (res.error === ERR_OK) {
-        this.couponList = res.data
-        this.$apply()
-      }
-    }
-
-    // 获取内容列表 (分页)
-    async _getContents() {
-      const res = await ContentsApi.getMerchantContents()
-      if (res.error === ERR_OK) {
-        this.contents = res.data
-        if (this.contents.length) {
-          this.contentNothing = false
-        } else {
-          this.contentNothing = true
-        }
-        this.$apply()
-      }
-    }
-
-    // 获取内容列表（不切店的情况下按之前浏览的数量读取数据, 切店后重新开始获取）
-    async _getShowContents() {
-      this.$invoke('underline2', 'hide')
-      this.moreContent = true
-      let params, limit
-      if (!this.moreContent || this.contents.length >= 100) {
-        limit = 100
-      } else {
-        limit = Math.ceil(this.contents.length / 10) * 10 || 10
-      }
-      params = {
-        page: 1,
-        limit
-      }
-      const res = await ContentsApi.getMerchantContents(params)
-      if (res.error === ERR_OK) {
-        this.contents = res.data
-        if (this.contents.length) {
-          this.contentNothing = false
-        } else {
-          this.contentNothing = true
-        }
-        this.$apply()
-      }
-    }
-
-    // 加载更多优惠券
-    async _getMoreCoupons() {
-      this.couponPage++
-      let params = {
-        page: this.couponPage
-      }
-      let res = await Merchants.getCoupons(this.merchantId, params)
-      if (res.error === ERR_OK) {
-        if (!res.data.length) {
-          this.moreCoupon = false
-          this.couponPage--
-          this.$invoke('underline1', 'show')
-          return
-        }
-        this.couponList = [...this.couponList, ...res.data]
-        this.$apply()
-      }
-    }
-
-    // 加载更多内容
-    async _getMoreContents() {
-      this.contentPage++
-      let params = {
-        page: this.contentPage
-      }
-      let res = await ContentsApi.getMerchantContents(params)
-      if (res.error === ERR_OK) {
-        if (!res.data.length) {
-          this.moreContent = false
-          this.contentPage--
-          this.$invoke('underline2', 'show')
-          return
-        }
-        this.contents = [...this.contents, ...res.data]
-        this.$apply()
-      }
-    }
-
     _checkPropety(arr) {
       return arr.filter((item) => {
         return item.image
       })
     }
 
-    _checked(arr, idx) {
-      arr.forEach((item, index) => {
-        if (idx * 1 === index * 1) {
-          item.checked = item.checked ? '' : '1'
-        }
-      })
-    }
-
     methods = {
-      hotItemBtn(coupon) {
-        if (coupon.promotion.promotion_type === 'voucher' || coupon.promotion.promotion_type === 'cash') {
-          // this.$emit('buy', coupon) // 立即购买
-          let type = 1 // 1 优惠券 2 礼包
-          let merchantId = coupon.promotion.merchant_id
-          let url = `/pages/coupon-detail/coupon-detail?id=${coupon.promotion.id}&type=${type}&currentMerchant=${merchantId}`
-          this.$navigate(url)
-        } else if ((coupon.promotion.promotion_type === 'reduction' || coupon.promotion.promotion_type === 'discount') && !coupon.promotion.can_buy) {
-          // this.$emit('get', coupon) // 立即领取
-          let url = `/pages/coupon-particulars/coupon-particulars?id=${coupon.promotion.id}`
-          this.$navigate(url)
-        } else if ((coupon.promotion.promotion_type === 'reduction' || coupon.promotion.promotion_type === 'discount') && coupon.promotion.can_buy) {
-          // this.$emit('use', this.coupon) // 去使用
-          let url = `/pages/coupon-particulars/coupon-particulars?id=${coupon.promotion.id}`
-          this.$navigate(url)
-        }
-      },
       changeVal(e) {
         this.swiperCurrent = e.detail.current
       },
@@ -670,34 +358,6 @@
         } else {
           this.$invoke('toast', 'show', '暂未开放')
         }
-      },
-      async clickTab(index) {
-        this.activeTab = index
-        if (index === COUPON_TAB) {
-          await this._getShowCoupons()
-        } else if (index === DISCOVER_TAB) {
-          await this._getShowContents()
-        }
-        this.couponNothing = this.couponList.length === 0 && this.giftBags.length === 0
-        this.contentNothing = this.contents.length === 0
-        this.loaded()
-        this.$apply()
-      },
-      async goToCouponDetail(type, couponId) {
-        this.$navigate(`/pages/coupon-detail/coupon-detail?type=${type}&id=${couponId}`)
-      }
-    }
-
-    mathFloorNumber(number) {
-      return Math.floor(number)
-    }
-
-    computed = {
-      isOnlyOneStyle() {
-        return this.hotCouponsList[0] && (this.hotCouponsList[0].length <= 1 ? 'only-one' : '')
-      },
-      isShowInfoStyle() {
-        return this.hotListLen * 1 && true
       }
     }
 
@@ -706,43 +366,16 @@
         this._checked(this.giftBags, idx)
         this.$apply()
       }
-      // buy(coupon) {
-      //   let type = 1 // 1 优惠券 2 礼包
-      //   let merchantId = coupon.merchant_id
-      //   let url = `/pages/coupon-detail/coupon-detail?id=${coupon.promotion.id}&type=${type}&currentMerchant=${merchantId}`
-      //   this.$parent.$navigate(url)
-      // },
-      // get(coupon) {
-      //   let url = `/pages/coupon-particulars/coupon-particulars?id=${coupon.promotion.id}`
-      //   this.$parent.$navigate(url)
-      // },
-      // use(coupon) {
-      //   let url = `/pages/coupon-particulars/coupon-particulars?id=${coupon.promotion.id}`
-      //   this.$parent.$navigate(url)
-      // }
-    }
-
-    watch = {
-      merchantId() {
-        this.activeTab = COUPON_TAB
-        this.contents = []
-        this.$apply()
-      }
     }
 
     components = {
       Slider,
       toast: Toast,
-      underline1: Underline,
-      underline2: Underline,
       'recom-buy': RecomBuy,
       'recom-giftbat': RecomGiftbag,
       'recom-hot': RecomHot,
       'recom-discovery': RecomDiscovery,
-      'recom-panel': RecomPanel,
-      'coupon-item': CouponItem,
       'integral-popout': IntegralPopout
-//      'phone-test': PhoneTest
     }
 
     config = {
@@ -754,11 +387,6 @@
 <style lang="stylus">
   @import "../../common/stylus/variable"
   @import "../../common/stylus/mixin"
-  .recom-content-item
-    padding: 0 12px
-    margin-bottom: 2.659574vw
-    &:last-child
-      margin-bottom: 3.989vw
   .recommend
     width: 100%
     overflow: hidden
@@ -817,346 +445,6 @@
         .content
           margin-top: 4px
           font-size: $font-size-small
-    .tab-container
-      .tab-wrapper
-        position: relative
-        .tab-content
-          display: flex
-          height: 42px
-          background: $color-white
-          .tab-item
-            flex: 1
-            display: flex
-            justify-content: center
-            .tab-item-txt
-              font-family: PingFangSC-Light
-              font-size: $font-size-medium
-              text-align: center
-              line-height: 42px
-              width: 76px
-              color: $color-text
-              box-sizing: border-box
-              border-bottom: 2px solid $color-white
-              transition: all .3s
-              &.active
-                border-bottom: 2px solid $color-text-t
-      .tab-content-wrapper
-        display: flex
-        width: 100%
-        transition: all .5s
-        transform: translate3d(0, 0, 0)
-        &.discover
-          transform: translate3d(-50%, 0, 0)
-        .coupon-panel
-          display: none
-          width: 100%
-          box-sizing: border-box
-          .coupon
-            margin: 10px 12px 0
-            position: relative
-            padding-bottom: 28.49%
-            height: 0
-
-            .couponList-item-head-container
-              position: absolute
-              left: 0
-              top: 0
-              right: 0
-              bottom: 0
-              display: flex
-
-              .coupon-bc
-                position: absolute
-                height: 100%
-                width: 100%
-
-              .couponList-item-head-left
-                width: 74.4%
-                height: 100%
-                display: flex
-                position: absolute
-                left: 0
-
-                .couponList-itemPay
-                  flex: 4
-                  display: flex
-                  align-items: center
-                  justify-content: center
-
-                  .couponList-midMoney
-                    font-size: $font-size-small-s
-                    font-family: PingFangSC-Semibold
-                    color: $color-text-t
-
-                  .couponList-bigMoney
-                    color: $color-text-t
-                    font-size: 25px
-                    font-family: PingFangSC-Semibold
-
-                .couponList-itemMsg
-                  flex: 7
-                  display: flex
-                  flex-direction: column
-                  justify-content: center
-
-                  .couponList-item-title
-                    font-family: PingFangSC-Medium
-                    font-size: $font-size-medium
-                    padding-bottom: 10px
-
-                  .underline
-                    width: 90%
-                    height: 10px
-                    border-top: .5px solid $color-col-line
-
-                  .couponList-item-time
-                    font-size: $font-size-small-s
-                    color: $color-text-d
-                    line-height: 14px
-
-              .couponList-item-head-right
-                position: absolute
-                right: 0
-                width: 25.6%
-                height: 100%
-                display: flex
-                align-items: center
-                justify-content: center
-
-                .couponList-item-head-right-btn
-                  width: 58px
-                  height: 24px
-                  display: flex
-                  align-items: center
-                  justify-content: center
-                  border: 1px solid $color-orange
-                  font-size: $font-size-small
-                  color: $color-text-t
-                  border-radius: 2px
-
-          .giftbag
-            margin: 10px 12px 0
-
-            .mySelect-couponList-item-main
-              position: relative
-              padding-bottom: 28.49%
-              height: 0
-
-              .gift-bag-img
-                position: absolute
-                left: 0
-                top: 0
-                width: 41.5px
-                height: 43.5px
-
-              .couponList-item-head-container
-                position: absolute
-                left: 0
-                top: 0
-                right: 0
-                bottom: 0
-                display: flex
-
-                .coupon-bc
-                  position: absolute
-                  height: 100%
-                  width: 100%
-
-                .couponList-item-head-left
-                  width: 74.4%
-                  height: 100%
-                  display: flex
-                  position: absolute
-                  left: 0
-
-                  .couponList-itemPay
-                    flex: 4
-                    display: flex
-                    align-items: center
-                    justify-content: center
-
-                    .couponList-midMoney
-                      font-size: $font-size-small-s
-                      font-family: PingFangSC-Semibold
-                      color: $color-kac
-
-                    .couponList-bigMoney
-                      color: $color-kac
-                      font-size: 25px
-                      font-family: PingFangSC-Semibold
-
-                  .couponList-itemMsg
-                    flex: 7
-                    display: flex
-                    flex-direction: column
-                    justify-content: center
-
-                    .couponList-item-title
-                      font-family: PingFangSC-Medium
-                      font-size: $font-size-medium
-                      padding-bottom: 10px
-
-                    .underline
-                      width: 90%
-                      height: 10px
-                      border-top: .5px solid $color-col-line
-
-                    .couponList-item-time
-                      font-size: $font-size-small-s
-                      color: $color-text-d
-                      line-height: 14px
-
-                .couponList-item-head-right
-                  position: absolute
-                  right: 0
-                  width: 25.6%
-                  height: 100%
-                  display: flex
-                  align-items: center
-                  justify-content: center
-
-                  .couponList-item-head-right-btn
-                    width: 58px
-                    height: 24px
-                    display: flex
-                    align-items: center
-                    justify-content: center
-                    border: 1px solid $color-kac
-                    font-size: $font-size-small
-                    color: $color-kac
-                    border-radius: 2px
-
-                  .couponList-item-storechange
-                    position: absolute
-                    right: 0
-                    bottom: 0
-                    display: flex
-                    width: 100%
-                    height: 30px
-                    justify-content: center
-                    align-items: center
-
-                    .couponList-item-storechange-txt
-                      font-size: $font-size-small-s
-                      color: $color-text-d
-
-                    .couponList-item-storechange-icon
-                      width: 10px
-                      height: 10px
-                      margin-left: 5px
-
-        .discover-panel
-          display: none
-          width: 100%
-          box-sizing: border-box
-          padding: 10px 12px
-          .ticky-wrapper
-            margin-bottom: 10px
-            border: 1px solid #ddd
-            border-radius: 4px
-            background-color: $color-white
-            overflow: hidden
-            .ticky
-              position: relative
-              width: 100%
-              height: 0
-              padding-top: 34.188034%
-              background: $color-white
-              overflow: hidden
-              image
-                position: absolute
-                top: 0
-                left: 0
-                width: 100%
-              .title
-                position: absolute
-                left: 10px
-                top: 10px
-                font-size: $font-size-medium
-                color: $color-white
-                font-family: PingFangSC-Medium
-                line-height: 14px
-                text-shadow: 0 2px 5px rgba(0, 0, 0, 0.5)
-            .collector
-              display: flex
-              align-items: center
-              justify-content: space-between
-              height: 35.5px
-              padding: 0 12px
-              .avatar-wrapper
-                flex: 1
-                display: flex
-                align-items: center
-                .avatar
-                  width: 21px
-                  height: 21px
-                  margin-right: -7px
-                  border-radius: 50%
-                  overflow: hidden
-                  border: 1px solid $color-white
-                .more
-                  display: flex
-                  margin-left: 10.6px
-                  .dot
-                    width: 3px
-                    height: 3px
-                    margin-right: 2px
-                    border-radius: 50%
-                    background: $color-ellipse
-              .collect
-                display: flex
-                align-items: center
-                .font
-                  font-size: $font-size-small-s
-                .icon
-                  width: 14px
-                  height: 14px
-                  margin-right: 4px
-                  image
-                    display: block
-                .icon.last
-                  margin-left: 22px
-
-  .recom-hot
-    .swiper-wrapper
-      height: 63.297872vw
-      width: 100vw
-      box-sizing: border-box
-      position: relative
-      &.only-one
-        height: 34.04255vw
-
-      .swiper-box
-        width: 100%
-        height: 100%
-        .recom-content
-          layout()
-          justify-content: flex-start
-          align-items: center
-          width: 100%
-          .recom-content-item
-            width: 93.6vw
-            margin-bottom: 2.659574vw
-            &:last-child
-              margin-bottom: 3.989vw
-      .dot-box
-        position: absolute
-        bottom: 3.19vw
-        left: 0
-        right: 0
-        layout(row)
-        justify-content: center
-      .dot
-        width: 0.8vw
-        height: 0.8vw
-        border-radius: 0.8vw
-        background-color: $color-button-dis
-        margin: 0 2.1vw
-        transition: all .3s
-        &.active
-          width: 2.9vw
-          border-radius: 26.5957vw
-          background-color: $color-text-t
 
   .nothing-box
     margin-top: 10px
