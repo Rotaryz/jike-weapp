@@ -152,17 +152,17 @@
         color: $color-text-gray
         font-size: $font-size-small
         min-height :$font-size-small
-        margin-top: 3.23%
+        margin-top: 3.933vw
       .coupon-money
         text-align: center
-        margin-top: 4.82%
+        margin-top: 5.3vw
         font-size: $font-size-shop
         min-height: $font-size-shop
         font-family: PingFang-SC-Medium
       .coupon-get
         display: flex
         justify-content: center
-        margin-top: 5.45%
+        margin-top: 5.3vw
         .get-btn
           background: $color-main
           color: $color-white
@@ -185,9 +185,9 @@
         text-align: center
         color: $color-text-gray
         font-size: $font-size-small
-        margin-top: 3.28%
+        margin-top: 4vw
       .coupon-msg
-        margin-top: 13%
+        margin-top: 9.733vw
         .coupon-msg-item
           font-size: $font-size-small
           line-height: 18px
