@@ -29,6 +29,8 @@
   import ContentsApi from 'api/contents'
   import ContentItem from '@/base/content-item/content-item'
 
+  const PAGELIMIT = 10
+
   export default class HotSale extends wepy.page {
     mixins = [base, users]
     data = {
@@ -36,13 +38,37 @@
       list: [],
       type: 'mine',
       merchantId: wepy.getStorageSync('merchantId'),
-      activeIsEmpty: true
+      activeIsEmpty: true,
+      params: {
+        page: 1,
+        limit: PAGELIMIT
+      },
+      isAll: false
+    }
+
+    async onReady() {
+      this.merchantId = wepy.getStorageSync('merchantId')
+      this.$apply()
     }
 
     async onShow() {
-      this.merchantId = wepy.getStorageSync('merchantId')
-      await this._getContentsAll()
+      // await this.showIndustry()
+      await this._getContentsAll(this.params)
       this._checkIsEmpty()
+    }
+
+    async onReachBottom() {
+      if (this.isAll) return
+      this.params.page++
+      this._getContentsAll(this.params)
+    }
+
+    // 检查是否查询了全部
+    _checkIsAll() {
+      if (this.list.length % PAGELIMIT !== 0) {
+        this.$invoke('underline', 'show')
+        this.isAll = true
+      }
     }
 
     // 检查活动内容是否为空
@@ -53,12 +79,13 @@
     }
 
     // 获取内容列表 (all)+
-    async _getContentsAll() {
-      const res = await ContentsApi.getMerchantContents()
+    async _getContentsAll(params) {
+      if (this.isAll) return
+      const res = await ContentsApi.getMerchantContents(params)
       if (res.error === ERR_OK) {
-        this.list = res.data
+        this.list.push(...res.data)
         this.$apply()
-        this.$invoke('underline', 'show')
+        this._checkIsAll()
       }
       this.loaded()
     }
@@ -95,6 +122,8 @@
       .content-item
         width: 100%
         margin-bottom: 10px
+        &:last-child
+          margin-bottom: 10px
     .nothing-box
       height: 100vh
       display: flex

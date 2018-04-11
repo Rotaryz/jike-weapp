@@ -29,21 +29,46 @@
   import Merchants from 'api/merchants'
   import CouponItem from '@/base/coupon-item/coupon-item'
 
+  const PAGELIMIT = 10
+
   export default class HotSale extends wepy.page {
     mixins = [base, users]
     data = {
       imageUri: URIS.image,
       list: [],
       type: 'buy',
-      merchantId: wepy.getStorageSync('merchantId'),
-      activeIsEmpty: true
+      merchantId: '',
+      activeIsEmpty: true,
+      params: {
+        page: 1,
+        limit: PAGELIMIT
+      },
+      isAll: false
+    }
+
+    async onReady() {
+      this.merchantId = wepy.getStorageSync('merchantId')
+      this.$apply()
     }
 
     async onShow() {
       await this.showIndustry()
-      this.merchantId = wepy.getStorageSync('merchantId')
-      await this._getCouponsAll()
+      await this._getCouponsAll(this.params)
       this._checkIsEmpty()
+    }
+
+    async onReachBottom() {
+      if (this.isAll) return
+      this.params.page++
+      this._getCouponsAll(this.params)
+    }
+
+    // 检查是否查询了全部
+    _checkIsAll() {
+      if (this.list.length % PAGELIMIT !== 0) {
+        this.$invoke('underline', 'show')
+        this.isAll = true
+      }
     }
 
     // 检查活动内容是否为空
@@ -53,22 +78,18 @@
       this.$apply()
     }
 
-    // 获取推荐优惠券列表（所有）+
-    async _getCouponsAll() {
-      let params = {
-        page: 1,
-        limit: 10
-      }
+    // 获取推荐优惠券列表（分页）+
+    async _getCouponsAll(params) {
+      if (this.isAll) return
       let res = await Merchants.getCoupons(this.merchantId, params)
       if (res.error === ERR_OK) {
-        this.list = res.data
-        this.$invoke('underline', 'show')
+        this.list.push(...res.data)
         this.$apply()
+        this._checkIsAll()
       }
       this.loaded()
     }
 
-    methods = {}
     events = {
       buy(coupon) {
         let type = 1 // 1 优惠券 2 礼包
@@ -111,6 +132,8 @@
       .hot-content-item
         width: 93.6%
         margin-top: 10px
+        &:last-child
+          margin-bottom: 10px
     .nothing-box
       height: 100vh
       display: flex

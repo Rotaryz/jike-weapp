@@ -235,7 +235,11 @@
 
     // 获取礼包列表(全部)+
     async _getGiftBagsAll() {
-      let res = await Merchants.getGiftBags(this.merchantId)
+      let params = {
+        page: 1,
+        limit: 4
+      }
+      let res = await Merchants.getGiftBags(this.merchantId, params)
       if (res.error === ERR_OK) {
         let giftbagList = res.data
         giftbagList = this._formatList(giftbagList)
@@ -246,7 +250,11 @@
 
     // 获取内容列表 (all)+
     async _getContentsAll() {
-      const res = await ContentsApi.getMerchantContents()
+      let params = {
+        page: 1,
+        limit: 3
+      }
+      const res = await ContentsApi.getMerchantContents(params)
       if (res.error === ERR_OK) {
         let contentList = res.data
         contentList = this._formatList(contentList)
