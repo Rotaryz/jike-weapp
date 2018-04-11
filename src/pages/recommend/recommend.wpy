@@ -180,21 +180,19 @@
 
     // 登录用户领取播豆
     async _userAddScore() {
-      const isAuthorise = await this.isAuthorise()
-      if (isAuthorise) {
-        const json = await ShareApi.getShareSoya('login')
-        if (json.error !== ERR_OK) {
-          this.loaded()
-          return
-        }
-        if (json.error === ERR_OK && json.code === 10002) {
-          this.loaded()
-          return
-        }
-        let value = json.data.score_value
+      await this.isAuthorise()
+      const json = await ShareApi.getShareSoya('login')
+      if (json.error !== ERR_OK) {
         this.loaded()
-        value && this.$invoke('integral-popout', 'openPoput', 'login', value, '登录')
+        return
       }
+      if (json.error === ERR_OK && json.code === 10002) {
+        this.loaded()
+        return
+      }
+      let value = json.data.score_value
+      this.loaded()
+      value && this.$invoke('integral-popout', 'openPoput', 'login', value, '登录')
     }
 
     // 数据初始化
