@@ -35,10 +35,9 @@
             </view>
             <view class="myOrder-orderList-item-msg">
               <view class="myOrder-orderList-item-title">{{item.title}}</view>
-              <view class="myOrder-orderList-item-count myOrder-orderList-item-detail" wx:if="{{item.status === 0 && item.promotion_type !== 3}}">数量: {{item.count}}
-              </view>
-              <view class="myOrder-orderList-item-time myOrder-orderList-item-detail" wx:if="{{item.status !== 0 && item.promotion_type !== 3}}">下单时间: {{item.created_at}}
-              </view>
+              <view class="myOrder-orderList-item-count myOrder-orderList-item-detail" wx:if="{{item.status === 0 && item.promotion_type !== 3}}">数量: {{item.count}}</view>
+              <view class="myOrder-orderList-item-time myOrder-orderList-item-detail" wx:if="{{item.status !== 0 && item.promotion_type !== 3}}">下单时间: {{item.created_at}}</view>
+              <view class="myOrder-orderList-item-detail" wx:if="{{item.status === 1 && item.promotion_type === 3}}">{{item.promotion.title ? item.promotion.title : '无优惠'}}</view>
               <view class="myOrder-orderList-item-total myOrder-orderList-item-detail">总价: ¥{{item.total}}</view>
             </view>
           </view>
@@ -229,11 +228,6 @@
     async onShow() {
       wepy.setStorageSync('tips', {order: false})
       const scene = wx.getStorageSync('scene')
-//      if (scene) {
-//        let scene = decodeURIComponent(option.scene)
-//        const params = getParams(scene)
-//        this.menuIdx = params.idx
-//      }
       if (scene === 1014) {
         this.$invoke('BackHome', 'show')
       } else {
@@ -276,12 +270,6 @@
       }
       this.orderList = resList.data
       this.noOrder = this.orderList.length === 0 ? 1 : false
-//      let customerId = wx.getStorageSync('customerId')
-//      if (customerId) {
-//        this.isPhone = 1
-//      } else {
-//        this.isPhone = 0
-//      }
       let mobile = wx.getStorageSync('mobile')
       if (mobile) {
         this.isPhone = 1
