@@ -453,6 +453,8 @@
       color: $color-highlight-background
       border-color: $color-button-dis
       border-radius: 0
+      &::after
+        border: none
       .end-moeny
         margin-right: 5px
     .success-btn
