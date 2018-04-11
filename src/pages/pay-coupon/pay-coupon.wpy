@@ -5,7 +5,7 @@
       <view class="no-use-right">
         <view class="image-wrapper">
           <image class="no-use-img" wx:if="{{imageUri}}"
-                 src="{{noUseDiscountBtn ? imageUri + '/defaults/c-image/pay/icon-select_syyh@2x.png' : imageUri +'/defaults/c-image/pay/icon-notselect_syyh@2x.png'}}"></image>
+                 src="{{noUseDiscountBtn ? imageUri + '/defaults/c-image/template/icon-select_'+industry+'@2x.png' : imageUri +'/defaults/c-image/pay/icon-notselect_syyh@2x.png'}}"></image>
         </view>
       </view>
     </view>
