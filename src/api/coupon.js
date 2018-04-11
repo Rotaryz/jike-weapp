@@ -26,12 +26,13 @@ export default class Coupon extends base {
    * @param status 状态(未使用，已使用，已过期) page 页码
    * @returns {Promise.<*>}
    */
-  static async getUserCouponList(status, page, limit = 10) {
+  static async getUserCouponList(status, page, limit = 10, type = 'all') {
     const url = `${this.baseUrl}/api/coupons/promotions`
     let data = {
       status,
       page,
-      limit
+      limit,
+      type
     }
     return await this.get(url, data)
   }
