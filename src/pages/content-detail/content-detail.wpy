@@ -267,7 +267,10 @@
     }
 
     _checkContentCoupon(arr) {
-      return arr.map((item) => {
+      let res = arr.filter((item) => {
+        return item.detail
+      })
+      return res.map((item) => {
         if (item.type === COUPON_TYPE) {
           item = Object.assign({}, item, item.detail)
         }
