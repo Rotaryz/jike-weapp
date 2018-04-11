@@ -247,7 +247,7 @@
                   display: inline-block
                   width: 31px
                   height: 14px
-                  border: 1px solid #5D596F
+                  border: 0.5px solid #5D596F
                   border-radius: 1.5px
                   font-family: PingFang-SC-Regular
                   font-size: 9px
@@ -313,7 +313,7 @@
 
           .right-txt
             text-align: center
-            font-family: PingFang-SC-Medium
+            font-family: PingFang-SC-Regular
             font-size: $font-size-small-s
             color: $color-text
             margin-bottom: 7.5px
@@ -421,7 +421,7 @@
               white-space: nowrap
           .coupon-middle-down
             .down-time
-              padding: 3px
+              padding: 1px 5px
               background: rgba(255,78,0,0.1)
               font-family: PingFangSC-Light
               font-size: $font-size-small-s
@@ -523,7 +523,7 @@
               white-space: nowrap
           .coupon-middle-down
             .down-time
-              padding: 3px
+              padding: 1px 5px
               background: rgba(255,78,0,0.1)
               font-family: PingFangSC-Light
               font-size: $font-size-small-s
@@ -628,7 +628,7 @@
               white-space: nowrap
           .coupon-middle-down
             .down-time
-              padding: 3px
+              padding: 1px 5px
               background: rgba(255,78,0,0.1)
               font-family: PingFangSC-Light
               font-size: $font-size-small-s
