@@ -146,7 +146,7 @@
 
             .right-txt
               text-align: center
-              font-family: PingFang-SC-Medium
+              font-family: PingFang-SC-Regular
               font-size: $font-size-small-s
               color: $color-text
               margin-bottom: 7.5px
