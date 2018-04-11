@@ -15,7 +15,7 @@
                 type="default" size="mini"
                 class="content-wrapper">
           <image class="icon" wx:if="{{imageUri && industry.length}}"
-                 src="{{imageUri + '/defaults/c-image/recom/icon-r_live@2x.png'}}"></image>
+                 src="{{imageUri + '/defaults/c-image/recommend/icon-live_'+ industry +'@2x.png'}}"></image>
           <view class="content">直播优惠</view>
         </button>
         <button form-type="submit"
@@ -23,7 +23,7 @@
                 type="default" size="mini"
                 class="content-wrapper">
           <image class="icon" wx:if="{{imageUri && industry.length}}"
-                 src="{{imageUri + '/defaults/c-image/recom/icon-r_share@2x.png'}}"></image>
+                 src="{{imageUri + '/defaults/c-image/recommend/icon-share_'+ industry +'@2x.png'}}"></image>
           <view class="content">分享有礼</view>
         </button>
         <button form-type="submit"
@@ -31,7 +31,7 @@
                 type="default" size="mini"
                 class="content-wrapper">
           <image class="icon" wx:if="{{imageUri && industry.length}}"
-                 src="{{imageUri + '/defaults/c-image/recom/icon-r_sign@2x.png'}}"></image>
+                 src="{{imageUri + '/defaults/c-image/recommend/icon-sign_'+industry+'@2x.png'}}"></image>
           <view class="content">签到红包</view>
         </button>
         <button form-type="submit"
@@ -39,12 +39,12 @@
                 type="default" size="mini"
                 class="content-wrapper">
           <image class="icon" wx:if="{{imageUri && industry.length}}"
-                 src="{{imageUri + '/defaults/c-image/recom/icon-turntable@2x.png'}}"></image>
+                 src="{{imageUri + '/defaults/c-image/recommend/icon-turntable_'+industry+'@2x.png'}}"></image>
           <view class="content">大转盘</view>
         </button>
       </view>
     </form>
-    <recom-buy :list.sync="userCouponsList"></recom-buy>
+    <recom-buy :list.sync="userCouponsList" :industry.sync="industry"></recom-buy>
     <recom-giftbat
       :list.sync="giftbagList"
       wx:if="{{giftbagList.length>0}}"
@@ -73,7 +73,7 @@
                 <view class="recom-content">
                   <repeat for="{{itemList}}" key="index" index="index" item="item">
                     <view class="recom-content-item" @tap="hotItemBtn({{item}})">
-                      <coupon-item :type="typeHot" :coupon.sync="item"></coupon-item>
+                      <coupon-item :type="typeHot" :coupon.sync="item" :industryColor.sync="industryColor" :industry.sync="industry"></coupon-item>
                     </view>
                   </repeat>
                   <!--<block wx:for="{{itemList}}" wx:key="index">-->
@@ -282,6 +282,7 @@
     }
 
     async onLoad() {
+      console.log(this.industryColor)
       this.$invoke('Slider', 'init', this.shopImages.length)
       await this._userAddScore()
     }
@@ -485,6 +486,7 @@
         }
         wepy.setStorageSync('shop', shop)
         this.industry = shop.industry || this.industry
+        this.setColor(this.industry)
         wepy.setNavigationBarTitle({
           title: res.data.merchant_data.shop_name
         })

@@ -1,6 +1,6 @@
 <template>
   <view class="orderDetail">
-    <view class="orderDetail-head">
+    <view class="orderDetail-head" wx:if="{{orderMsg.promotion_type * 1 !== 3}}">
       <view class="orderDetail-head-detailBox" @tap="couponDetail">
         <view class="orderDetail-head-left">
           <view class="orderDetail-head-img-box">
@@ -38,6 +38,11 @@
       </view>
     </view>
 
+    <view class="paySuccess-box" wx:if="{{orderMsg.promotion_type * 1 === 3}}">
+      <image class="pay-icon" wx:if="{{imageUrlHead}}" src="{{imageUrlHead + '/defaults/c-image/mine/icon-payok@2x.png'}}"></image>
+      <view class="pay-txt">支付成功</view>
+    </view>
+
     <view class="orderDetail-merchant">
       <view class="orderDetail-merchant-title">商家信息</view>
       <view class="orderDetail-merchant-msgBox">
@@ -73,7 +78,7 @@
 
     <view class="orderDetail-orderList">
       <view class="orderDetail-orderList-title">订单信息</view>
-      <view class="orderDetail-orderList-msg">
+      <view class="orderDetail-orderList-msg {{orderMsg.promotion_type * 1 === 3 ? 'pay-padding' : ''}}">
         <view class="orderDetail-orderList-msgItem">订单编号：{{orderMsg.order_sn}}
         </view>
         <view class="orderDetail-orderList-msgItem">
@@ -83,9 +88,14 @@
           下单时间：{{orderMsg.created_at}}
         </view>
       </view>
-      <view class="orderDetail-orderList-pay">
+      <view class="orderDetail-orderList-pay" wx:if="{{orderMsg.promotion_type * 1 !== 3}}">
         <view class="orderDetail-orderList-msgItem">数量：{{orderMsg.count}}</view>
         <view class="orderDetail-orderList-msgItem">总价：{{orderMsg.total}}</view>
+      </view>
+      <view class="orderDetail-orderList-pay" wx:if="{{orderMsg.promotion_type * 1 === 3}}">
+        <view class="orderDetail-orderList-msgItem">服务金额：¥{{orderMsg.offline_total}}</view>
+        <view class="orderDetail-orderList-msgItem">优惠金额：{{orderMsg.discount_total ? '-¥' + orderMsg.discount_total : '无优惠'}}</view>
+        <view class="orderDetail-orderList-msgItem">实付金额：¥{{orderMsg.total}}</view>
       </view>
     </view>
 
@@ -324,6 +334,7 @@
   @import "../../../common/stylus/variable"
 
   .orderDetail
+    width: 100%
 
     .orderDetail-head
       margin-top: 10px
@@ -400,6 +411,20 @@
           border: 1px solid $color-row-line
           background: $color-button
 
+    .paySuccess-box
+      width: 100%
+      height: 60px
+      display: flex
+      align-items: center
+      justify-content: center
+      background: $color-white
+      .pay-icon
+        width: 20px
+        height: 20px
+        margin-right: 5px
+      .pay-txt
+        font-family: PingFang-SC-Regular
+        font-size: $font-size-large
     .orderDetail-merchant
       background: $color-highlight-background
       margin-top: 10px
@@ -466,6 +491,8 @@
       margin-top: 10px
       padding-left: 12px
       background: $color-highlight-background
+      .pay-padding
+        padding: 8.5px 0
 
       .orderDetail-orderList-title
         line-height: 38.5px
