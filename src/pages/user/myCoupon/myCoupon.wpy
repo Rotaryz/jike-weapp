@@ -119,10 +119,6 @@
       }
     }
 
-    async onLoad() {
-
-    }
-
     async onShow() {
       await this.showIndustry()
       await this.load()
