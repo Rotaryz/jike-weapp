@@ -57,20 +57,13 @@
   }
 </script>
 
-<style lang='stylus' >
+<style lang='stylus'>
   @import "../../common/stylus/variable"
   @import "../../common/stylus/mixin"
 
   .recom-merchant-giftbag
-    .recom-content-item
-      width: 93.6%
-      margin-bottom: 2.659574vw
-      &:last-child
-        margin-bottom: 3.989vw
-
     .swiper-wrapper
       height: 44.0159vw
-
       .recom-content
         layout()
         justify-content: flex-start
@@ -78,5 +71,6 @@
         width: 100%
         .recom-content-item
           padding:0 12px
+          width: 93.6%
           margin-bottom: 4.654vw
 </style>
