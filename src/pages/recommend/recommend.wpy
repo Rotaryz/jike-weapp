@@ -20,7 +20,6 @@
         </button>
 
 
-
         <button form-type="submit"
                 @tap="goToActivity('share', '/pages/shareAndPrize/shareAndPrize')"
                 type="default" size="mini"
@@ -218,12 +217,13 @@
     async _getCouponsAll() {
       let params = {
         page: 1,
-        limit: 10
+        limit: 6
       }
       let res = await Merchants.getCoupons(this.merchantId, params)
+      console.log(res)
       if (res.error === ERR_OK) {
         let hotCouponsList = res.data
-        this.hotListLen = hotCouponsList.length.toString()
+        this.hotListLen = res.meta.total.toString()
         // 测试伪代码
         // hotCouponsList = this._test(hotCouponsList)
         hotCouponsList = this._formatHotList(hotCouponsList)
@@ -257,7 +257,7 @@
 
     // 获取用户优惠券列表all+
     async _getUserCouponListAll() {
-      let res = await CouponApi.getUserCouponList(0, 'all', -1)
+      let res = await CouponApi.getUserCouponList(3, null, -1, 'offline')
       if (res.error === ERR_OK) {
         let userCouponsList = this._formatUserCouponList(res)
         this.userCouponsList = userCouponsList

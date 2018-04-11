@@ -1,6 +1,6 @@
 <template>
   <view class="hot-sale">
-    <view class="article">
+    <view class="hot-article">
       <repeat for="{{list}}" key="index" index="index" item="item">
         <view class="hot-content-item">
           <coupon-item :type="type" :coupon.sync="item" :industryColor.sync="industryColor" :industry.sync="industry"></coupon-item>
@@ -93,7 +93,7 @@
     }
 
     config = {
-      navigationBarTitleText: '热销优惠券'
+      navigationBarTitleText: '热销优惠'
     }
   }
 
