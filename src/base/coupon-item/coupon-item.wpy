@@ -47,7 +47,7 @@
             <view class="big-money" style="font-size:{{coupon.promotion.flag.length > 4 ?'18px' : '30px'}}">{{coupon.promotion.flag}}</view>
             <view class="small-money" style="font-size:18px" wx:if="{{coupon.promotion.promotion_type === 'discount'}}">折</view>
           </view>
-          <view class="left-sub" wx:if="{{coupon.promotion.promotion_type === 'reduction' || coupon.promotion.promotion_type === 'discount'}}">满{{coupon.promotion.config.meet_money}}可用</view>
+          <view class="left-sub" wx:if="{{coupon.promotion.promotion_type === 'reduction' || coupon.promotion.promotion_type === 'discount'}}">{{coupon.promotion.config.meet_money === -1 ? '无限制使用' : '满' + coupon.promotion.config.meet_money + '可用'}}</view>
         </view>
         <view class="coupon-middle">
           <view class="coupon-middle-top">
@@ -74,7 +74,7 @@
             <view class="big-money" style="font-size:{{coupon.promotion.flag.length > 4 ?'18px' : '30px'}}">{{coupon.promotion.flag}}</view>
             <view class="small-money" style="font-size:18px" wx:if="{{coupon.promotion.promotion_type === 'discount'}}">折</view>
           </view>
-          <view class="left-sub" wx:if="{{coupon.promotion.promotion_type === 'reduction' || coupon.promotion.promotion_type === 'discount'}}">满{{coupon.promotion.config.meet_money}}可用</view>
+          <view class="left-sub" wx:if="{{coupon.promotion.promotion_type === 'reduction' || coupon.promotion.promotion_type === 'discount'}}">{{coupon.promotion.config.meet_money === -1 ? '无限制使用' : '满' + coupon.promotion.config.meet_money + '可用'}}</view>
         </view>
         <view class="coupon-middle">
           <view class="coupon-middle-top">

@@ -35,34 +35,18 @@
             </view>
             <view class="myOrder-orderList-item-msg">
               <view class="myOrder-orderList-item-title">{{item.title}}</view>
-              <view
-                class="myOrder-orderList-item-count myOrder-orderList-item-detail"
-                wx:if="{{item.status === 0}}">数量: {{item.count}}
+              <view class="myOrder-orderList-item-count myOrder-orderList-item-detail" wx:if="{{item.status === 0 && item.promotion_type !== 3}}">数量: {{item.count}}
               </view>
-              <view
-                class="myOrder-orderList-item-time myOrder-orderList-item-detail"
-                wx:if="{{item.status !== 0}}">下单时间: {{item.created_at}}
+              <view class="myOrder-orderList-item-time myOrder-orderList-item-detail" wx:if="{{item.status !== 0 && item.promotion_type !== 3}}">下单时间: {{item.created_at}}
               </view>
-              <view
-                class="myOrder-orderList-item-total myOrder-orderList-item-detail">
-                总价: ¥{{item.total}}
-              </view>
+              <view class="myOrder-orderList-item-total myOrder-orderList-item-detail">总价: ¥{{item.total}}</view>
             </view>
           </view>
           <view class="myOrder-orderList-item-btnBox">
-            <view class="myOrder-orderList-item-status">
-              {{orderItemStatus[item.status]}}
-            </view>
-            <view class="myOrder-orderList-item-btn {{industry}}-bg"
-                  wx:if="{{menuIdx!==0}}"
-                  catchtap="useCoupon({{item.id}},{{item.promotion.id}},{{item.promotion_type}},{{item.merchant_id}},{{item.status}})">
-              {{orderItemBtnTxt[menuIdx - 1]}}
-            </view>
-            <view class="myOrder-orderList-item-btn {{industry}}-bg"
-                  wx:if="{{menuIdx===0}}"
-                  catchtap="useCoupon({{item.id}},{{item.promotion.id}},{{item.promotion_type}},{{item.merchant_id}},{{item.status}})">
-              {{orderItemBtnTxt[item.status]}}
-            </view>
+            <view class="myOrder-orderList-item-status">{{item.promotion_type === 3 ? '付款成功' : orderItemStatus[item.status]}}</view>
+            <view class="myOrder-orderList-item-btn {{industry}}-bg" wx:if="{{menuIdx!==0 && item.promotion_type !== 3}}" catchtap="useCoupon({{item.id}},{{item.promotion.id}},{{item.promotion_type}},{{item.merchant_id}},{{item.status}})">{{orderItemBtnTxt[menuIdx - 1]}}</view>
+            <view class="myOrder-orderList-item-btn {{industry}}-bg" wx:if="{{menuIdx===0 && item.promotion_type !== 3}}" catchtap="useCoupon({{item.id}},{{item.promotion.id}},{{item.promotion_type}},{{item.merchant_id}},{{item.status}})">{{orderItemBtnTxt[item.status]}}</view>
+            <view class="myOrder-orderList-item-btn {{industry}}-bg" wx:if="{{menuIdx===0 && item.promotion_type === 3}}" catchtap="orderDetail({{item.id}})">查看详情</view>
           </view>
         </view>
       </view>
@@ -225,6 +209,9 @@
             this.$navigate('/pages/coupon-detail/coupon-detail?id=' + couponId + '&type=' + couponType + '&currentMerchant=' + merchantId)
             break
         }
+      },
+      orderDetail(id) {
+        this.$navigate('/pages/user/myOrder-detail/myOrderDetail?id=' + id)
       },
       toRecommend() {
         wx.switchTab({url: '/pages/recommend/recommend'})
@@ -444,6 +431,9 @@
               height: 64px
 
           .myOrder-orderList-item-msg
+            display: flex
+            flex-direction: column
+            justify-content: space-between
 
             .myOrder-orderList-item-title
               font-size: $font-size-medium
