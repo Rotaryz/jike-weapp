@@ -307,6 +307,8 @@
         if (res.error === ERR_OK) {
           this.loaded()
           const {timestamp, nonceStr, signType, paySign} = res.data.pay_info
+          console.log(timestamp, nonceStr)
+          console.log(res.data.pay_info)
           const pay = await wepy.requestPayment({
             timeStamp: timestamp,
             nonceStr,
