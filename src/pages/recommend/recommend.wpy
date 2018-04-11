@@ -307,14 +307,6 @@
       return arr
     }
 
-    // // 测试伪代码
-    // _test(arr) {
-    //   for (let i = 0; i < 4; i++) {
-    //     arr.push(arr[0])
-    //   }
-    //   return arr
-    // }
-
     async _saveLog() {
       const data = {
         pages: '/pages/recommend/recommend',
