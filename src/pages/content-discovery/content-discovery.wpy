@@ -46,7 +46,7 @@
       isAll: false
     }
 
-    async onReady() {
+    async onLoad() {
       this.merchantId = wepy.getStorageSync('merchantId')
       this.$apply()
     }
