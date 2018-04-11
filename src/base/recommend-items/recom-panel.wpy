@@ -5,7 +5,7 @@
       <view class="more" wx:if="{{isShowMore}}" @tap.stop="toMore({{targetUrl}})">
         <text class="info" wx:if="{{isShowInfo}}">全部{{length}}个</text>
         <image class="arrow-right" wx:if="{{imageUri}}"
-               src="{{imageUri + '/defaults/c-image/square/icon-s_right2@2x.png'}}"></image>
+               src="{{imageUri + '/defaults/c-image/recom/icon-arrows@2x.png'}}"></image>
       </view>
     </view>
     <slot name="panel"></slot>
@@ -54,7 +54,7 @@
   }
 </script>
 
-<style lang='stylus'>
+<style lang='stylus' >
   @import "../../common/stylus/variable"
   @import "../../common/stylus/mixin"
 

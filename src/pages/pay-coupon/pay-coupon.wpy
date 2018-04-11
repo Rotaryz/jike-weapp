@@ -16,6 +16,12 @@
           <coupon :coupon.sync="item" :type="type"></coupon>
         </view>
       </repeat>
+        <view class="can-coupon" wx:if="{{couponList.length !== 0}}">可用的券</view>
+        <repeat for="{{couponList}}" key="index" index="index" item="item" >
+          <view class="couponList-box">
+            <coupon :coupon.sync="item" :type="type" :industryColor.sync="industryColor" :industry.sync="industry"></coupon>
+          </view>
+        </repeat>
       <view class="can-coupon" wx:if="{{noCouponList.length !== 0}}">不可用的券</view>
       <repeat for="{{noCouponList}}" key="index" index="index" item="item">
         <view class="couponList-box">
@@ -53,6 +59,7 @@
     }
 
     async onLoad(options) {
+      await this.showIndustry()
       let ids = options.discountMoney
       let couponId = options.couponId
       let arr = []
@@ -171,7 +178,6 @@
         margin: 0 auto
         width: 17px
         height: 17px
-
   .coupon-con
     .couponList-box
       padding: 10px 12px 0
@@ -180,7 +186,6 @@
       color: $color-text
       font-size: $font-size-medium
       margin-top: 20px
-
   .empty-wrapper
     margin-top: 70px
     text-align: center

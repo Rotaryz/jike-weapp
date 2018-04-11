@@ -15,15 +15,18 @@
                 type="default" size="mini"
                 class="content-wrapper">
           <image class="icon" wx:if="{{imageUri && industry.length}}"
-                 src="{{imageUri + '/defaults/c-image/recom/icon-r_live@2x.png'}}"></image>
+                 src="{{imageUri + '/defaults/c-image/recommend/icon-live_'+ industry +'@2x.png'}}"></image>
           <view class="content">直播优惠</view>
         </button>
+
+
+
         <button form-type="submit"
                 @tap="goToActivity('share', '/pages/shareAndPrize/shareAndPrize')"
                 type="default" size="mini"
                 class="content-wrapper">
           <image class="icon" wx:if="{{imageUri && industry.length}}"
-                 src="{{imageUri + '/defaults/c-image/recom/icon-r_share@2x.png'}}"></image>
+                 src="{{imageUri + '/defaults/c-image/recommend/icon-share_'+ industry +'@2x.png'}}"></image>
           <view class="content">分享有礼</view>
         </button>
         <button form-type="submit"
@@ -31,7 +34,7 @@
                 type="default" size="mini"
                 class="content-wrapper">
           <image class="icon" wx:if="{{imageUri && industry.length}}"
-                 src="{{imageUri + '/defaults/c-image/recom/icon-r_sign@2x.png'}}"></image>
+                 src="{{imageUri + '/defaults/c-image/recommend/icon-sign_'+industry+'@2x.png'}}"></image>
           <view class="content">签到红包</view>
         </button>
         <button form-type="submit"
@@ -39,14 +42,13 @@
                 type="default" size="mini"
                 class="content-wrapper">
           <image class="icon" wx:if="{{imageUri && industry.length}}"
-                 src="{{imageUri + '/defaults/c-image/recom/icon-turntable@2x.png'}}"></image>
+                 src="{{imageUri + '/defaults/c-image/recommend/icon-turntable_'+industry+'@2x.png'}}"></image>
           <view class="content">大转盘</view>
         </button>
       </view>
     </form>
     <recom-buy
-      :list.sync="userCouponsList"
-    ></recom-buy>
+      :list.sync="userCouponsList" :industry.sync="industry"></recom-buy>
     <recom-giftbat
       wx:if="{{giftbagList.length>0}}"
       :list.sync="giftbagList"
@@ -179,21 +181,19 @@
 
     // 登录用户领取播豆
     async _userAddScore() {
-      const isAuthorise = await this.isAuthorise()
-      if (isAuthorise) {
-        const json = await ShareApi.getShareSoya('login')
-        if (json.error !== ERR_OK) {
-          this.loaded()
-          return
-        }
-        if (json.error === ERR_OK && json.code === 10002) {
-          this.loaded()
-          return
-        }
-        let value = json.data.score_value
+      await this.isAuthorise()
+      const json = await ShareApi.getShareSoya('login')
+      if (json.error !== ERR_OK) {
         this.loaded()
-        value && this.$invoke('integral-popout', 'openPoput', 'login', value, '登录')
+        return
       }
+      if (json.error === ERR_OK && json.code === 10002) {
+        this.loaded()
+        return
+      }
+      let value = json.data.score_value
+      this.loaded()
+      value && this.$invoke('integral-popout', 'openPoput', 'login', value, '登录')
     }
 
     // 数据初始化
@@ -307,14 +307,6 @@
       return arr
     }
 
-    // // 测试伪代码
-    // _test(arr) {
-    //   for (let i = 0; i < 4; i++) {
-    //     arr.push(arr[0])
-    //   }
-    //   return arr
-    // }
-
     async _saveLog() {
       const data = {
         pages: '/pages/recommend/recommend',
@@ -335,6 +327,8 @@
         }
         wepy.setStorageSync('shop', shop)
         this.industry = shop.industry || this.industry
+        this.setColor(this.industry)
+        this.$invoke('recom-hot', 'setIndustry', this.industry, this.industryColor)
         wepy.setNavigationBarTitle({
           title: res.data.merchant_data.shop_name
         })

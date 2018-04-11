@@ -1,9 +1,9 @@
 <template>
   <view class="hot-sale">
-    <view class="hot-article">
+    <view class="article">
       <repeat for="{{list}}" key="index" index="index" item="item">
         <view class="hot-content-item">
-          <coupon-item :type="type" :coupon.sync="item"></coupon-item>
+          <coupon-item :type="type" :coupon.sync="item" :industryColor.sync="industryColor" :industry.sync="industry"></coupon-item>
         </view>
       </repeat>
     </view>
@@ -40,6 +40,7 @@
     }
 
     async onShow() {
+      await this.showIndustry()
       this.merchantId = wepy.getStorageSync('merchantId')
       await this._getCouponsAll()
       this._checkIsEmpty()
