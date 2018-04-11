@@ -48,7 +48,7 @@
       </view>
     </form>
     <recom-buy
-      :list.sync="userCouponsList" :industryHot.sync="industry"></recom-buy>
+      :list.sync="userCouponsList" :industry.sync="industry"></recom-buy>
     <recom-giftbat
       wx:if="{{giftbagList.length>0}}"
       :list.sync="giftbagList"
@@ -60,8 +60,6 @@
       :hotFirst.sync="hotFirst"
       :hotSecond.sync="hotSecond"
       :hotThird.sync="hotThird"
-      :industryColorHot.sync="industryColor"
-      :industryHot.sync="industry"
     ></recom-hot>
     <recom-discovery
       wx:if="{{contentList.length>0}}"
