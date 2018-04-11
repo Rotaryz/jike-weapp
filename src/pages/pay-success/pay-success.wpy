@@ -13,7 +13,7 @@
     <view class="payBottom">
       <repeat for="{{buyList}}" key="index" index="index" item="item">
         <view class="couponList-box">
-          <coupon :coupon.sync="item" :type="type"></coupon>
+          <coupon :coupon.sync="item" :type="type" :industryColor.sync="industryColor" :industry.sync="industry"></coupon>
         </view>
       </repeat>
     </view>
@@ -37,6 +37,7 @@
     }
 
     async onLoad() {
+      await this.showIndustry()
       let id = wepy.getStorageSync('merchantId')
       console.log(id)
       let res = await merchants.getCoupons(id)

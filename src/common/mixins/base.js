@@ -8,7 +8,8 @@ const COLLECT_COUNT = 20
 export default class base extends wepy.mixin {
   data = {
     industry: '',
-    shopName: ''
+    shopName: '',
+    industryColor: ''
   }
 
   loaded() {
@@ -55,12 +56,48 @@ export default class base extends wepy.mixin {
         this.industry = res.data.code_name ? res.data.code_name : 'ktv'
         this.shopName = res.data.shop_name ? res.data.shop_name : ''
         wepy.setStorageSync('shop', shop)
+        // 判断行业颜色
         this.$apply()
       }
       return
     }
     this.industry = shop.industry
     this.shopName = shop.shop_name
+    this.setColor(this.industry)
+  }
+  setColor(industry) {
+    switch (industry) {
+      case 'pet':
+        this.industryColor = '#FDC502'
+        break
+      case 'excercise':
+        this.industryColor = '#4A90E2'
+        break
+      case 'study':
+        this.industryColor = '#4A90E2'
+        break
+      case 'beauty':
+        this.industryColor = '#D9277D'
+        break
+      case 'baby':
+        this.industryColor = '#FF687F'
+        break
+      case 'car':
+        this.industryColor = '#FF9300'
+        break
+      case 'restaurant':
+        this.industryColor = '#F02543'
+        break
+      case 'retail':
+        this.industryColor = '#7782FF'
+        break
+      case 'photograph':
+        this.industryColor = '#D39C63'
+        break
+      case 'ktv':
+        this.industryColor = '#FF4E00'
+        break
+    }
   }
 
   methods = {

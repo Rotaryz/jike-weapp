@@ -91,9 +91,10 @@
     .article
       layout()
       align-items: center
+      width :100vw
       .content-item
-        width: 100vw
-        margin-bottom: 2.8vw
+        width: 100%
+        margin-bottom: 10px
     .nothing-box
       height: 100vh
       display: flex

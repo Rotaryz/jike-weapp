@@ -10,7 +10,10 @@
           <text class="yuan">元</text>
         </view>
       </view>
-      <view class="check-order" @tap="checkOrder">
+      <view wx:if="{{payway === 'pay'}}" class="check-order" @tap="checkOrder('pay')">
+        查看订单
+      </view>
+      <view wx:if="{{payway !== 'pay'}}" class="check-order" @tap="checkOrder(1)">
         查看订单
       </view>
     </view>
@@ -23,7 +26,7 @@
       <view class="coupons-wrapper">
         <repeat for="{{coupons}}" key="index" index="index" item="item">
           <view class="couponList-box">
-            <coupon :coupon.sync="item" @buy.user="goToCouponDetail" :type="type"></coupon>
+            <coupon :coupon.sync="item" @buy.user="goToCouponDetail" :type="type" :industryColor.sync="industryColor" :industry.sync="industry"></coupon>
           </view>
         </repeat>
       </view>
@@ -51,13 +54,16 @@
       total: '',
       icon: '',
       type: 'buy',
-      orderId: 0
+      orderId: 0,
+      payway: ''
     }
 
     async onLoad(option) {
+      await this.showIndustry()
       this.total = option.total
       const status = option.status
       this.orderId = option.orderId
+      this.payway = option.payway
       if (status === 'success') {
         wepy.setNavigationBarTitle({title: '支付成功'})
         this.icon = `${this.imageUri}/defaults/c-image/recommend/icon-success@2x.png`
@@ -103,8 +109,12 @@
     }
 
     methods = {
-      checkOrder() {
-        this.$redirect('/pages/user/myOrder/myOrder?idx=2')
+      checkOrder(number) {
+        if (number === 'pay') {
+          this.$redirect('/pages/user/myOrder/myOrder')
+        } else {
+          this.$redirect('/pages/user/myOrder/myOrder?idx=1')
+        }
       },
       goToCouponDetail(type) {
         let couponId = type.promotion.id
@@ -122,8 +132,24 @@
     }
 
     components = {
-      coupon: Coupon,
+      'coupon': Coupon,
       'popout': Popout
+    }
+
+    events = {
+      buy(item) {
+        let id = item.promotion.id
+        let merchantId = item.merchant_id
+        this.$navigate('/pages/coupon-detail/coupon-detail?type=1&id=' + id + '&currentMerchant=' + merchantId)
+      },
+      get(item) {
+        let id = item.promotion.id
+        this.$navigate('/pages/coupon-particulars/coupon-particulars?id=' + id)
+      },
+      use(item) {
+        let id = item.promotion.id
+        this.$navigate('/pages/coupon-particulars/coupon-particulars?id=' + id)
+      }
     }
   }
 </script>
@@ -180,6 +206,7 @@
           width: 67.5px
           margin: 0 6.25px
           border: 1px solid $color-col-line
+
   .couponList-box
     padding: 10px 12px 0
 </style>

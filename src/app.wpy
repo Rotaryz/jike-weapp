@@ -130,7 +130,7 @@
         list: [
           {
             pagePath: 'pages/square/square',
-            text: '联盟',
+            text: '店铺',
             iconPath: './icon/icon-tab_square1@2x.png',
             selectedIconPath: './icon/icon-tab_square2@2x.png'
           },

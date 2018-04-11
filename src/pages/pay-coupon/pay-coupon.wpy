@@ -13,7 +13,7 @@
         <view class="can-coupon" wx:if="{{couponList.length !== 0}}">可用的券</view>
         <repeat for="{{couponList}}" key="index" index="index" item="item" >
           <view class="couponList-box">
-            <coupon :coupon.sync="item" :type="type"></coupon>
+            <coupon :coupon.sync="item" :type="type" :industryColor.sync="industryColor" :industry.sync="industry"></coupon>
           </view>
         </repeat>
       <view class="can-coupon" wx:if="{{noCouponList.length !== 0}}">不可用的券</view>
@@ -52,11 +52,17 @@
     }
 
     async onLoad(options) {
+      await this.showIndustry()
       let ids = options.discountMoney
+      let couponId = options.couponId
       let arr = []
       let noarr = []
       this.$parent.globalData.couponList.map((item) => {
-        if (parseInt(item.promotion.config.meet_money) <= parseInt(ids) && item.promotion.promotion_type !== 'cash') {
+        if (parseInt(item.promotion.config.meet_money) <= parseInt(ids) && item.promotion.promotion_type !== 'cash' && parseInt(item.id) === parseInt(couponId)) {
+          item.canUsePay = true
+          item.checked = true
+          arr.push(item)
+        } else if (parseInt(item.promotion.config.meet_money) <= parseInt(ids) && item.promotion.promotion_type !== 'cash' && parseInt(item.id) !== parseInt(couponId)) {
           item.canUsePay = true
           item.checked = false
           arr.push(item)
@@ -115,9 +121,11 @@
         this.$apply()
         wepy.setStorageSync('choiceCoupon', coupon)
         wepy.setStorageSync('discountType', 'you')
-        wepy.navigateBack({
-          delta: 1
-        })
+        setTimeout(() => {
+          wepy.navigateBack({
+            delta: 1
+          })
+        }, 500)
       }
     }
   }
