@@ -23,7 +23,7 @@
             </view>
           </view>
           <view class="content coupon-wrapper" wx:if="{{item.type === type.coupon}}">
-            <coupon :coupon.sync="item" :type="couponType"></coupon>
+            <coupon :coupon.sync="item" :type="couponType" :industryColor.sync="industryColor" :industry.sync="industry"></coupon>
           </view>
         </view>
       </repeat>

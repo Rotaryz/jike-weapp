@@ -23,11 +23,13 @@
         <text class="content">推荐</text>
         <view class="right-line"></view>
       </view>
-      <repeat for="{{coupons}}" key="index" index="index" item="item">
-        <view class="couponList-box">
-          <coupon :coupon.sync="item" :type="type"></coupon>
-        </view>
-      </repeat>
+      <view class="coupons-wrapper">
+        <repeat for="{{coupons}}" key="index" index="index" item="item">
+          <view class="couponList-box">
+            <coupon :coupon.sync="item" @buy.user="goToCouponDetail" :type="type" :industryColor.sync="industryColor" :industry.sync="industry"></coupon>
+          </view>
+        </repeat>
+      </view>
     </view>
     <popout></popout>
   </view>
@@ -57,6 +59,7 @@
     }
 
     async onLoad(option) {
+      await this.showIndustry()
       this.total = option.total
       const status = option.status
       this.orderId = option.orderId
@@ -115,7 +118,6 @@
       },
       goToCouponDetail(type) {
         let couponId = type.promotion.id
-        console.log(type.promotion.promotion_type)
         switch (type.promotion.promotion_type) {
           case 'discount':
           case 'reduction':

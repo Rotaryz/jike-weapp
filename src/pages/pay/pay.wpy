@@ -41,7 +41,7 @@
       </view>
     </view>
     <view class="pay-submit">
-      <button class="submit-btn {{needPayMoney !== 0 ? 'success-btn' : ''}}" @tap="payOrder">
+      <button class="{{industry + '-bg'}} submit-btn {{needPayMoney !== 0 ? ''  : 'submit-dis'}}" @tap="payOrder">
         <text class="end-moeny" wx:if="{{needPayMoney !== 0}}">{{needPayMoney}}元</text>
         确定买单
       </button>
@@ -77,6 +77,7 @@
     }
 
     async onLoad() {
+      await this.showIndustry()
       await this._setGlobaCouponList()
     }
 
@@ -449,12 +450,13 @@
       height: 44px
       line-height: 46px
       font-size: $font-size-medium
-      background: $color-button-dis
       color: $color-highlight-background
       border-color: $color-button-dis
       border-radius: 0
       .end-moeny
         margin-right: 5px
+    .submit-dis
+      opacity :0.3
     .success-btn
       background: $color-text-t
 </style>
