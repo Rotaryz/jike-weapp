@@ -70,7 +70,7 @@
       padding: 15px 12px
       box-sizing: border-box
       .title
-        font-family: PingFang-SC-Medium
+        font-family: PingFangSC-Regular
         font-size: $font-size-medium-x
         color: $color-text
         letter-spacing: 0
@@ -81,7 +81,7 @@
         align-items: flex-end
         width: 80px
         .info
-          font-family: PingFang-SC-Medium
+          font-family: PingFangSC-Regular
           font-size: $font-size-small
           color: #A1A1A1
           letter-spacing: 0
