@@ -44,7 +44,8 @@
         page: 1,
         limit: PAGELIMIT
       },
-      isAll: false
+      isAll: false,
+      pageShowCount: 0
     }
 
     async onLoad() {
@@ -53,7 +54,11 @@
     }
 
     async onShow() {
-      await this._init()
+      if (this.pageShowCount < 1) {
+        await this._init()
+      }
+      this.pageShowCount++
+      this.$apply()
     }
 
     async onReachBottom() {
