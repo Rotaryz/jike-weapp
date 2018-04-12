@@ -19,6 +19,7 @@
 </template>
 
 <script>
+  /* eslint-disable no-undef */
   import wepy from 'wepy'
   import Underline from '@/base/underline-block/underline-block'
   import URIS from 'common/js/config'
@@ -52,15 +53,38 @@
     }
 
     async onShow() {
-      // await this.showIndustry()
-      await this._getContentsAll(this.params)
-      this._checkIsEmpty()
+      await this._init()
     }
 
     async onReachBottom() {
       if (this.isAll) return
       this.params.page++
       this._getContentsAll(this.params)
+    }
+
+    async onPullDownRefresh() {
+      this._resetConfig()
+      await this._init()
+      wx.stopPullDownRefresh()
+    }
+
+    // 初始化
+    async _init() {
+      // await this.showIndustry()
+      await this._getContentsAll(this.params)
+      this._checkIsEmpty()
+    }
+
+    // 重置配置
+    _resetConfig() {
+      this.activeIsEmpty = true
+      this.list = []
+      this.params = {
+        page: 1,
+        limit: PAGELIMIT
+      }
+      this.isAll = false
+      this.$apply()
     }
 
     // 检查是否查询了全部
@@ -104,7 +128,10 @@
     }
 
     config = {
-      navigationBarTitleText: '内容探店'
+      navigationBarTitleText: '内容探店',
+      backgroundColor: '#f9f9f9',
+      backgroundTextStyle: 'dark',
+      enablePullDownRefresh: true
     }
   }
 
@@ -118,7 +145,7 @@
     .c-d-article
       layout()
       align-items: center
-      width :100vw
+      width: 100vw
       .c-d-content-item
         width: 100%
         margin-bottom: 10px
