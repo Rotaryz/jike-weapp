@@ -1,17 +1,17 @@
 <template>
-  <view class="hot-sale">
-    <view class="article">
+  <view class="content-discovery">
+    <view class="c-d-article">
       <repeat for="{{list}}" key="index" index="index" item="item">
-        <view class="content-item">
+        <view class="c-d-content-item">
           <content-item :type="type" :content.sync="item"></content-item>
         </view>
       </repeat>
     </view>
-    <view class="nothing-box" wx:if="{{activeIsEmpty}}">
+    <view class="c-d-nothing-box" wx:if="{{activeIsEmpty}}">
       <image
         src="{{imageUri + '/defaults/c-image/recom/icon-blank_content@2x.png'}}"
-        wx:if="{{imageUri}}" class="nothing-img"></image>
-      <view class="nothing-txt">暂无内容</view>
+        wx:if="{{imageUri}}" class="c-d-nothing-img"></image>
+      <view class="c-d-nothing-txt">暂无内容</view>
     </view>
     <underline></underline>
     <toast></toast>
@@ -114,26 +114,26 @@
   @import "../../common/stylus/variable"
   @import "../../common/stylus/mixin"
 
-  .hot-sale
-    .article
+  .content-discovery
+    .c-d-article
       layout()
       align-items: center
       width :100vw
-      .content-item
+      .c-d-content-item
         width: 100%
         margin-bottom: 10px
         &:last-child
           margin-bottom: 10px
-    .nothing-box
+    .c-d-nothing-box
       height: 100vh
       display: flex
       flex-direction: column
       align-items: center
-      .nothing-img
+      .c-d-nothing-img
         width: 86px
         height: 74.5px
         margin: 170px 0 11.5px
-      .nothing-txt
+      .c-d-nothing-txt
         font-family: PingFangSC-Light
         letter-spacing: 0
         line-height: $font-size-small
