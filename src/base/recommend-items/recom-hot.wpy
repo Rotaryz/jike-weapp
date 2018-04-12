@@ -1,7 +1,7 @@
 <template>
   <view class="recom-hot">
     <recom-panel
-      title="热销优惠券"
+      title="热销优惠"
       :isShowMore.sync="isShowMore"
       :isShowInfo.sync="isShowInfoStyle"
       :targetUrl.sync="targetUrl"
