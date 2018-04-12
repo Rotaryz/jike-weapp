@@ -321,8 +321,9 @@
             let total = this.needPayMoney
             const status = 'success'
             const payway = 'pay'
+            const orderId = res.data.order_id
             this.$parent.globalData.noUseDiscountBtn = false
-            let url = `/pages/pay-result/pay-result?total=${total}&status=${status}&payway=${payway}`
+            let url = `/pages/pay-result/pay-result?total=${total}&status=${status}&payway=${payway}&orderId=${orderId}`
             this.$navigate(url)
           }
         } else if (res.error === 1) {
