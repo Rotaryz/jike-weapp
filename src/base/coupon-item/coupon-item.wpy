@@ -262,7 +262,7 @@
                   font-family: PingFang-SC-Regular
 
               .top-title
-                font-family: PingFang-SC-Medium
+                font-family: PingFang-SC-Regular
                 font-size: $font-size-medium
                 color: $color-text
                 margin-top: 6px
@@ -277,7 +277,7 @@
               -webkit-line-clamp: 2
               -webkit-box-orient: vertical
               .down-sub
-                font-family: PingFang-SC-Medium
+                font-family: PingFang-SC-Regular
                 font-size: $font-size-small
                 color: $color-text
               .down-money
@@ -285,7 +285,7 @@
                 align-items: flex-end
                 font-size: 0
                 .small-money
-                  font-family: PingFang-SC-Medium
+                  font-family: PingFang-SC-Regular
                   font-size: $font-size-small
                   color: $color-orange
                   margin-bottom: 3px
@@ -373,7 +373,7 @@
               font-family: PingFangSC-Semibold
               color: $color-white
           .left-sub
-            font-family: PingFang-SC-Medium
+            font-family: PingFang-SC-Regular
             font-size: $font-size-small
             color: $color-white
             margin-top: 8px
@@ -412,7 +412,7 @@
                 font-family: PingFang-SC-Regular
 
             .top-title
-              font-family: PingFang-SC-Medium
+              font-family: PingFang-SC-Regular
               font-size: $font-size-medium
               color: $color-text
               margin-top: 6px
@@ -475,7 +475,7 @@
               font-family: PingFangSC-Semibold
               color: $color-white
           .left-sub
-            font-family: PingFang-SC-Medium
+            font-family: PingFang-SC-Regular
             font-size: $font-size-small
             color: $color-white
             margin-top: 8px
@@ -514,7 +514,7 @@
                 font-family: PingFang-SC-Regular
 
             .top-title
-              font-family: PingFang-SC-Medium
+              font-family: PingFang-SC-Regular
               font-size: $font-size-medium
               color: $color-text
               margin-top: 6px
@@ -619,7 +619,7 @@
                 font-family: PingFang-SC-Regular
 
             .top-title
-              font-family: PingFang-SC-Medium
+              font-family: PingFang-SC-Regular
               font-size: $font-size-medium
               color: $color-text
               margin-top: 6px
@@ -672,7 +672,7 @@
       border: 1px solid $color-col-line
       font-size: $font-size-small
       color: #dbdbdb
-      font-family: PingFang-SC-Medium
+      font-family: PingFang-SC-Regular
       line-height: 28px
       text-align: center
       border-top: 0 none

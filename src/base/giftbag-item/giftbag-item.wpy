@@ -112,7 +112,7 @@
               flex-direction: column
               justify-content: space-between
               .giftBag-top-title
-                font-family: PingFang-SC-Medium
+                font-family: PingFang-SC-Regular
                 font-size: $font-size-medium
                 color: $color-gold
               .giftBag-top-money
