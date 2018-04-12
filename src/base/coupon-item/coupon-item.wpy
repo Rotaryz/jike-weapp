@@ -33,7 +33,7 @@
         <view class="coupon-right">
           <view class="right-txt">{{coupon.promotion.init_stock === -1 ? '已抢1%' : coupon.promotion.percentage === 100 ? '已抢光' : '已抢' + coupon.promotion.percentage + '%'}}</view>
           <view class="progress-box">
-            <progress percent="{{coupon.promotion.init_stock === -1 ? 1 : coupon.promotion.percentage}}" stroke-width="6" activeColor="{{industryColor}}" backgroundColor="#DBDBDB" class="progress" active="{{true}}"></progress>
+            <progress percent="{{coupon.promotion.init_stock === -1 ? 1 : coupon.promotion.percentage}}" stroke-width="6" active activeColor="{{industryColor}}" backgroundColor="#DBDBDB" class="progress"></progress>
           </view>
           <view class="coupon-btn getBtn {{industry + '-bg'}}" wx:if="{{(coupon.promotion.promotion_type === 'voucher' || coupon.promotion.promotion_type === 'cash') || ((coupon.promotion.promotion_type === 'reduction' || coupon.promotion.promotion_type === 'discount') && coupon.promotion.can_buy)}}">{{coupon.promotion.promotion_type === 'voucher' || coupon.promotion.promotion_type === 'cash' ? '立即抢购' : '立即领取'}}</view>
           <view class="coupon-btn useBtn {{industry}}" wx:if="{{(coupon.promotion.promotion_type === 'reduction' || coupon.promotion.promotion_type === 'discount') && !coupon.promotion.can_buy}}">去使用</view>
