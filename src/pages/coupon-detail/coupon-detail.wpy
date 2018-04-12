@@ -327,7 +327,6 @@
         promotionImage: this.promotionImages[0].image.url,
         promotion_type: this.type,
         promotion_id: this.coupon.id,
-        current_merchant: this.currentMerchant,
         title: this.coupon.title,
         price: this.coupon.platform_price,
         stock: this.coupon.stock,

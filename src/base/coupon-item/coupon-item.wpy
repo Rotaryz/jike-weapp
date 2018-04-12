@@ -239,9 +239,6 @@
             .coupon-left-second-top
               .top-shopName
                 line-height: 18px
-                overflow: hidden
-                text-overflow: ellipsis
-                white-space: nowrap
 
                 .top-label
                   display: inline-block
@@ -266,9 +263,6 @@
                 font-size: $font-size-medium
                 color: $color-text
                 margin-top: 6px
-                overflow: hidden
-                text-overflow: ellipsis
-                white-space: nowrap
 
             .coupon-left-second-down
               overflow : hidden
