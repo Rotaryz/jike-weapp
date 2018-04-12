@@ -156,7 +156,7 @@
               height: 6px
               border-radius: 3px
               overflow: hidden
-              margin-bottom: 4.933333333vw
+              margin-bottom: 3.7vw
               .progress
                 width: 70px
 
@@ -168,7 +168,7 @@
               font-family: PingFangSC-Regular
               font-size: $font-size-small
               text-align: center
-              margin-bottom: 3.13vw
+              margin-bottom: 3.7333333333vw
               line-height: 20px
               background: $color-gold
               color: $color-white

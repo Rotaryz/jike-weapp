@@ -19,6 +19,7 @@
 </template>
 
 <script>
+  /* eslint-disable no-undef */
   import wepy from 'wepy'
   import Underline from '@/base/underline-block/underline-block'
   import URIS from 'common/js/config'
@@ -52,15 +53,38 @@
     }
 
     async onShow() {
-      await this.showIndustry()
-      await this._getCouponsAll(this.params)
-      this._checkIsEmpty()
+      await this._init()
+    }
+
+    async onPullDownRefresh() {
+      this._resetConfig()
+      await this._init()
+      wx.stopPullDownRefresh()
     }
 
     async onReachBottom() {
       if (this.isAll) return
       this.params.page++
       this._getCouponsAll(this.params)
+    }
+
+    // 重置配置
+    _resetConfig() {
+      this.activeIsEmpty = true
+      this.list = []
+      this.params = {
+        page: 1,
+        limit: PAGELIMIT
+      }
+      this.isAll = false
+      this.$apply()
+    }
+
+    // 初始化
+    async _init() {
+      await this.showIndustry()
+      await this._getCouponsAll(this.params)
+      this._checkIsEmpty()
     }
 
     // 检查是否查询了全部
@@ -114,7 +138,10 @@
     }
 
     config = {
-      navigationBarTitleText: '热销优惠'
+      navigationBarTitleText: '热销优惠',
+      backgroundColor: '#f9f9f9',
+      backgroundTextStyle: 'dark',
+      enablePullDownRefresh: true
     }
   }
 
