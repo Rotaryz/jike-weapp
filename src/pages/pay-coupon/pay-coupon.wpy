@@ -58,6 +58,7 @@
       let couponId = options.couponId
       let arr = []
       let noarr = []
+      // 从全局变量拿优惠列表遍历可用和不可用
       this.$parent.globalData.couponList.map((item) => {
         if (parseInt(item.promotion.config.meet_money) <= parseInt(ids) && item.promotion.promotion_type !== 'cash' && parseInt(item.id) === parseInt(couponId)) {
           item.canUsePay = true
@@ -98,6 +99,7 @@
     }
 
     methods = {
+      // 选择不使用优惠卷
       noUseDiscount() {
         if (this.couponList.length === 0 && this.noCouponList.length === 0) {
           return
@@ -129,6 +131,7 @@
     }
 
     events = {
+      // 选择可用优惠卷
       choice(coupon) {
         this.noUseDiscountBtn = false
         this.couponList.map((item) => {

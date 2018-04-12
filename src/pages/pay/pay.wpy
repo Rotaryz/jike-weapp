@@ -64,15 +64,15 @@
     data = {
       imageUri: URIS.image,
       allMoney: '',
-      allMoneyInput: '',
       useDiscount: false,
       noDiscountMoney: '',
-      noDiscountInput: 0,
-      needPayMoney: 0,
+      allMoneyInput: '', // 消费总金额
+      noDiscountInput: 0, // 不参与优惠金额
+      needPayMoney: 0, // 需要支付金额金额
+      usableDiscountsMoney: 0, // 优惠金额
       discountType: 'self',
       bigDiscounts: false,
-      usableCoupon: '',
-      usableDiscountsMoney: 0
+      usableCoupon: ''
     }
 
     async onLoad() {
@@ -81,6 +81,7 @@
     }
 
     onShow() {
+      // 从本地缓存判断是否自己选择优惠卷
       var usableList = wepy.getStorageSync('choiceCoupon')
       if (wepy.getStorageSync('discountType') === 'you') {
         this.discountType = wepy.getStorageSync('discountType')
@@ -95,12 +96,14 @@
     }
 
     onHide() {
+      // 清楚缓存
       wepy.removeStorageSync('choiceCoupon')
       wepy.removeStorageSync('discountType')
       this.discountType = 'self'
       this.$apply()
     }
 
+    // 获取优惠列表存全局变量
     async _setGlobaCouponList() {
       let res = await Coupon.getUserCouponList(3, null, -1, 'offline')
       if (res.error === ERR_OK) {
@@ -109,6 +112,7 @@
       }
     }
 
+    // 系统自动选劵
     _getUsableCouponList(ids) {
       let arr = []
       this.$parent.globalData.couponList.map((item) => {
@@ -123,11 +127,13 @@
           case 'discount':
             let discountMoney = 0
             let endTime
+            // 折扣金额大于最大折扣金额和折扣金额无限制
             if (ids - (ids * (parseFloat(arr[i].promotion.config.discount) / 10)) > parseFloat(arr[i].promotion.config.max_reduction) && arr[i].promotion.config.max_reduction !== -1) {
               discountMoney = parseFloat(arr[i].promotion.config.max_reduction)
             } else {
               discountMoney = ids - (ids * (parseFloat(arr[i].promotion.config.discount) / 10))
             }
+            // 相同折扣，选择判断过期日少
             if (this.usableCoupon === '') {
               endTime = 10000
             } else {
@@ -145,6 +151,7 @@
             this.$apply()
             break
           case 'reduction':
+            // 相同折扣，选择判断过期日少
             if (this.usableCoupon === '') {
               endTime = 10000
             } else {
@@ -167,12 +174,14 @@
       this.$apply()
     }
 
+    // 计算最后所需支付金额（保留两位数）
     _calculateMoney() {
       this.needPayMoney = this.allMoneyInput - this.usableDiscountsMoney || 0
       this.needPayMoney = this.needPayMoney.toFixed(2)
       this.$apply()
     }
 
+    // 自己选择的优惠劵判断
     _youUsableCouponList() {
       let youDiscountMoney = this.allMoneyInput - this.noDiscountInput
       var youStorage = wepy.getStorageSync('choiceCoupon')
@@ -209,6 +218,7 @@
       }
     }
 
+    // 判断折扣方式：'self' 为 系统自动选择 'you' 为自己选择优惠卷
     _payWay() {
       switch (this.discountType) {
         case 'self':
@@ -221,6 +231,7 @@
       }
     }
 
+    // 判断是否最大折扣金额
     _bigDiscountMoney() {
       let discountMoney = this.allMoneyInput - this.noDiscountInput
       this.bigDiscounts = false
@@ -236,6 +247,7 @@
     }
 
     methods = {
+      // 输入消费总金额
       putAllMoney(e) {
         var value = e.detail.value
         var re = /([0-9]+\.[0-9]{2})[0-9]*/
@@ -252,6 +264,7 @@
         }
       },
 
+      // 不参与折扣金额
       noUseDiscount() {
         this.useDiscount = !this.useDiscount
         this.noDiscountInput = 0
@@ -261,6 +274,7 @@
         this.$apply()
       },
 
+      // 输入不参与折扣金额
       putNoDiscount(e) {
         var value = e.detail.value
         var re = /([0-9]+\.[0-9]{2})[0-9]*/
@@ -277,6 +291,7 @@
         }
       },
 
+      // 跳转选择优惠卷
       choiceCoupon() {
         let couponId
         if (this.usableCoupon) {
@@ -289,8 +304,9 @@
         this.$navigate(url)
       },
 
+      // 提交支付订单
       async payOrder() {
-        if (this.needPayMoney <= 0) {
+        if (this.needPayMoney < 0) {
           return
         }
         if (this.noDiscountInput) {
