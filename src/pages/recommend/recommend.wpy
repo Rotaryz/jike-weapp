@@ -220,7 +220,6 @@
         limit: 6
       }
       let res = await Merchants.getCoupons(this.merchantId, params)
-      console.log(res)
       if (res.error === ERR_OK) {
         let hotCouponsList = res.data
         this.hotListLen = res.meta.total.toString()

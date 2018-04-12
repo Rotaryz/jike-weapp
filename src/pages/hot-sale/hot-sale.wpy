@@ -7,11 +7,11 @@
         </view>
       </repeat>
     </view>
-    <view class="nothing-box" wx:if="{{activeIsEmpty}}">
+    <view class="h-s-nothing-box" wx:if="{{activeIsEmpty}}">
       <image
         src="{{imageUri + '/defaults/c-image/recom/icon-blank_coupon@2x.png'}}"
-        wx:if="{{imageUri}}" class="nothing-img"></image>
-      <view class="nothing-txt">无可用优惠券</view>
+        wx:if="{{imageUri}}" class="h-s-nothing-img"></image>
+      <view class="h-s-nothing-txt">无可用优惠券</view>
     </view>
     <underline></underline>
     <toast></toast>
@@ -134,16 +134,16 @@
         margin-top: 10px
         &:last-child
           margin-bottom: 10px
-    .nothing-box
+    .h-s-nothing-box
       height: 100vh
       display: flex
       flex-direction: column
       align-items: center
-      .nothing-img
+      .h-s-nothing-img
         width: 95.5px
         height: 75.5px
         margin: 170px 0 11.5px
-      .nothing-txt
+      .h-s-nothing-txt
         font-family: PingFangSC-Light
         letter-spacing: 0
         line-height: $font-size-small
