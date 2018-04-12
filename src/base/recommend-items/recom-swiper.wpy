@@ -31,12 +31,29 @@
         default: '0'
       }
     }
+    data = {
+      merchantIdOld: 0,
+      merchantIdNew: 0
+    }
+
+    // 判断是否切店铺
+    _isCheckShop() {
+      /* eslint-disable */
+      this.merchantIdNew = wepy.getStorageSync('merchantId')
+      if (this.merchantIdNew == this.merchantIdOld) {
+        return false
+      } else {
+        this.merchantIdOld = this.merchantIdNew
+        return true
+      }
+      this.$apply()
+    }
 
     computed = {
       dotCurrentIndex() {
         if (this.swiperCurrent && this.list) {
-          if (this.swiperCurrent * 1 >= this.list.length) {
-            return this.list.length - 1
+          if (this._isCheckShop()) {
+            return 0
           } else {
             return this.swiperCurrent
           }
