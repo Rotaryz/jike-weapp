@@ -44,20 +44,12 @@
         page: 1,
         limit: PAGELIMIT
       },
-      isAll: false,
-      pageShowCount: 0
+      isAll: false
     }
 
     async onLoad() {
       this.merchantId = wepy.getStorageSync('merchantId')
-      this.$apply()
-    }
-
-    async onShow() {
-      if (this.pageShowCount < 1) {
-        await this._init()
-      }
-      this.pageShowCount++
+      await this._init()
       this.$apply()
     }
 
