@@ -83,6 +83,7 @@
     // 重置配置
     _resetConfig() {
       this.activeIsEmpty = true
+      this.$invoke('underline', 'hide')
       this.list = []
       this.params = {
         page: 1,
