@@ -2,16 +2,18 @@
   <view class="recom-swiper">
     <swiper
       class="swiper-box"
-      current="{{swiperCurrent*1}}"
+      current="{{dotCurrentIndex}}"
       @change="changeVal"
     >
       <slot name="swiper"></slot>
     </swiper>
-    <view class="recom-s-dot-box" wx:if="{{list.length>1}}">
-      <block wx:for="{{list}}" wx:key="{{index}}">
-        <view class="recom-s-dot {{index == swiperCurrent ? 'active' : ''}}"></view>
-      </block>
-    </view>
+    <block wx:if="{{ listSource.length>1}}">
+      <view class="recom-s-dot-box">
+        <block wx:for="{{ listSource}}" wx:key="{{index}}">
+          <view class="recom-s-dot {{index == dotCurrentIndex ? 'active' : ''}}"></view>
+        </block>
+      </view>
+    </block>
   </view>
 </template>
 
@@ -29,9 +31,27 @@
         default: '0'
       }
     }
+
+    computed = {
+      dotCurrentIndex() {
+        if (this.swiperCurrent && this.list) {
+          if (this.swiperCurrent * 1 >= this.list.length) {
+            return this.list.length - 1
+          } else {
+            return this.swiperCurrent
+          }
+        }
+        return 0
+      },
+      listSource() {
+        return this.list || []
+      }
+    }
+
     methods = {
       changeVal(e) {
         this.swiperCurrent = e.detail.current
+        this.$apply()
       }
     }
   }
@@ -50,7 +70,7 @@
       width: 100%
       height: 100%
     .recom-s-dot-box
-      position :absolute
+      position: absolute
       width: 100%
       height: 3px
       bottom: 10px

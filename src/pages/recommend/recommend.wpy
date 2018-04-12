@@ -226,7 +226,6 @@
         // 测试伪代码
         // hotCouponsList = this._test(hotCouponsList)
         hotCouponsList = this._formatHotList(hotCouponsList)
-        hotCouponsList = this._formatList(hotCouponsList)
         this.hotCouponsList = hotCouponsList
         this.$apply()
       }
@@ -240,9 +239,7 @@
       }
       let res = await Merchants.getGiftBags(this.merchantId, params)
       if (res.error === ERR_OK) {
-        let giftbagList = res.data
-        giftbagList = this._formatList(giftbagList)
-        this.giftbagList = giftbagList
+        this.giftbagList = res.data
         this.$apply()
       }
     }
@@ -255,9 +252,7 @@
       }
       const res = await ContentsApi.getMerchantContents(params)
       if (res.error === ERR_OK) {
-        let contentList = res.data
-        contentList = this._formatList(contentList)
-        this.contentList = contentList
+        this.contentList = res.data
         this.$apply()
       }
     }
@@ -291,9 +286,9 @@
       first = newArr[0]
       second = newArr[1]
       third = newArr[2]
-      first && (this.hotFirst = first)
-      second && (this.hotSecond = second)
-      third && (this.hotThird = third)
+      this.hotFirst = first
+      this.hotSecond = second
+      this.hotThird = third
       this.$apply()
       return newArr
     }
