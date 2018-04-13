@@ -179,6 +179,7 @@
           color: $color-main
           width: 115px
           margin-right: 15px
+          margin-left: 0.5px
         .btn-small
           width: 115px
       .coupon-time

@@ -71,7 +71,7 @@ export default class base extends wepy.mixin {
         this.industryColor = '#FDC502'
         break
       case 'excercise':
-        this.industryColor = '#4A90E2'
+        this.industryColor = '#69447A'
         break
       case 'study':
         this.industryColor = '#4A90E2'

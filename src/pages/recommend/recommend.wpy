@@ -336,6 +336,7 @@
         this.industry = shop.industry || this.industry
         this.setColor(this.industry)
         this.$invoke('recom-hot', 'setIndustry', this.industry, this.industryColor)
+        this.$invoke('recom-discovery', 'setIndustrys', this.industry)
         wepy.setNavigationBarTitle({
           title: res.data.merchant_data.shop_name
         })
