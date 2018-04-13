@@ -121,7 +121,8 @@
       hotListLen: '0',
       hotFirst: [],
       hotSecond: [],
-      hotThird: []
+      hotThird: [],
+      activeIsEmpty: true
     }
 
     onShareAppMessage(res) {
@@ -213,7 +214,7 @@
 
     // 检查活动内容是否为空
     _checkIsEmpty() {
-      let flag = this.hotCouponsList && this.giftbagList && this.contentList
+      let flag = this.hotCouponsList.length && this.giftbagList.length && this.contentList.length
       this.activeIsEmpty = !flag
       this.$apply()
     }
