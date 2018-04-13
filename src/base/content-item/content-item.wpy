@@ -15,11 +15,11 @@
                 </view>
               </view>
               <view class="select-box">
-                <view class="select-txt">
+                <view class="select-txt {{industry + '-opacity'}}">
                   <text class="select-txt-title">收藏</text>
                   <text>{{content.favorite_count}}</text>
                 </view>
-                <view class="select-txt">
+                <view class="select-txt {{industry + '-opacity'}}">
                   <text class="select-txt-title">分享</text>
                   <text>{{content.share_count}}</text>
                 </view>
@@ -48,6 +48,10 @@
       },
       // 热销优惠‘buy’,我的‘mine’
       type: {
+        type: String,
+        default: ''
+      },
+      industry: {
         type: String,
         default: ''
       }

@@ -11,8 +11,8 @@
         <view class="coupon-left">
           <view class="coupon-left-first">
             <image class="shop-img" src="{{coupon.promotion.image_url}}" wx:if="{{coupon.promotion.image_url}}" mode="aspectFill"></image>
-            <image class="shop-img" wx:if="{{imageUrlHead && !coupon.promotion.image_url && coupon.promotion.promotion_type === 'reduction'}}" src="{{imageUrlHead + '/defaults/c-image/mine/pic-coupon_mjq@2x.png'}}"></image>
-            <image class="shop-img" wx:if="{{imageUrlHead && !coupon.promotion.image_url && coupon.promotion.promotion_type === 'discount'}}" src="{{imageUrlHead + '/defaults/c-image/mine/pic-coupon_zkq@2x.png'}}"></image>
+            <image class="shop-img coupon-img" wx:if="{{imageUrlHead && !coupon.promotion.image_url && coupon.promotion.promotion_type === 'reduction'}}" src="{{imageUrlHead + '/defaults/c-image/template/pic-mjq_'+industry+'@2x.png'}}"></image>
+            <image class="shop-img coupon-img" wx:if="{{imageUrlHead && !coupon.promotion.image_url && coupon.promotion.promotion_type === 'discount'}}" src="{{imageUrlHead + '/defaults/c-image/template/pic-zkq_'+industry+'@2x.png'}}"></image>
           </view>
           <view class="coupon-left-second">
             <view class="coupon-left-second-top">
@@ -227,12 +227,14 @@
             height: 18.66666666666vw
             border-radius: 3px
             box-sizing: border-box
-            border: 0.5px solid #e5e5e5
             margin: 0 4vw
             .shop-img
               width: 100%
               height: 100%
               border-radius: 3px
+            .coupon-img
+              width: 17.333vw
+              height: 18.6667vw
           .coupon-left-second
             width: 36vw
             height: 18.66666666666vw

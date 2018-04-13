@@ -24,7 +24,7 @@
     <scroll-view scroll-y class="mySelect-contentList" bindscrolltolower="contentLower" wx:if="{{contentList.length > 0}}">
       <repeat for="{{contentList}}" key="index" index="index" item="item">
         <view class="mySelect-contentList-box">
-          <content :content.sync="item" :type="giftType"></content>
+          <content :content.sync="item" :type="giftType" :industry.sync="industry"></content>
         </view>
       </repeat>
       <Underline></Underline>

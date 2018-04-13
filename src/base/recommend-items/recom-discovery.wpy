@@ -12,7 +12,7 @@
             <swiper-item>
               <view class="recom-content">
                 <view class="recom-content-item">
-                  <content-item :type="type" :content.sync="item"></content-item>
+                  <content-item :type="type" :content.sync="item" :industry.sync="industry"></content-item>
                 </view>
               </view>
             </swiper-item>
@@ -40,7 +40,14 @@
       isShowInfo: false,
       isShowMore: true,
       targetUrl: `/pages/content-discovery/content-discovery`,
-      type: 'buy'
+      type: 'buy',
+      industry: ''
+    }
+    methods={
+      setIndustrys(industry) {
+        this.industry = industry
+        this.$apply()
+      }
     }
     events = {
       contentClick(id, merchantId) {

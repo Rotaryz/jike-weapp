@@ -113,6 +113,7 @@
         line-height: 1.5
         color: $color-text
       .integral-table
+        margin-top: 12.5px
         border: 0.5px solid $color-text-dis
         .textBorder-top
           border-top: 0.5px solid  $color-text-dis

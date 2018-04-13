@@ -22,7 +22,7 @@
             <text class="rmb">¥</text>
             <text class="number">{{coupon.platform_price !== undefined ? coupon.platform_price : ''}}</text>
           </view>
-          <view class="origin-price">门市价:¥{{coupon.shop_price !== undefined ? coupon.shop_price : ''}}</view>
+          <view class="origin-price" wx:if="{{services.length > 0}}">门市价:¥{{coupon.shop_price !== undefined ? coupon.shop_price : ''}}</view>
           <view class="buy-number">
             <image class="icon" wx:if="{{imageUri}}"
                    src="{{imageUri + '/defaults/c-image/recommend/icon-many.png'}}"></image>
@@ -58,7 +58,7 @@
         <image class="shop-image-item" src="{{item}}" mode="widthFix"></image>
       </block>
     </view>
-    <view wx:if="{{type === 1}}">
+    <view wx:if="{{type === 1}}" class="{{services.length === 0 ? 'cash-show' : ''}}">
       <know-detail :note.sync="note" :notAllowTime.sync="notAllowTime" :industry.sync="industry"></know-detail>
     </view>
     <view class="buy-button-wrapper border-top-1px">
@@ -477,7 +477,7 @@
             margin-left: 5px
             font-size: $font-size-small-s
           .buy-number
-            margin-left: 34px
+            margin-left: 29.5px
             font-size: 0
             .icon
               width: 11px
@@ -632,4 +632,8 @@
           font-size: $font-size-small
           color: $color-white
           background-color: $color-prize-bc
+
+  .cash-show
+    background :$color-white
+    min-height: 42vh
 </style>

@@ -372,7 +372,7 @@
         font-family:  PingFang-SC-Regular
         text-align: right
         font-size: $font-size-large-xx
-        color: $color-pay-input-theme
+        color: $color-pay
         line-height: 47.5px
         height: 47.5px
         padding-right: 10px
@@ -381,9 +381,10 @@
         color: $color-text-error
         font-size: $font-size-medium
       .all-money-text
+        font-family :PingFang-SC-Regular
         font-size: $font-size-medium
         line-height: 49.5px
-        color: $color-text
+        color: $color-pay
         position: absolute
         left: 10px
         top: 0px
@@ -423,6 +424,7 @@
         flex-direction: row
         align-items: center
         position: relative
+        color :$color-pay
         .coupon-text
           color: $color-text-t
           font-size: $font-size-medium
@@ -433,6 +435,7 @@
         .coupon-money
           color: $color-text-t
           font-size: $font-size-large
+          font-family :PingFangSC-Semibold
         .coupon-bigdiscounts
           font-family: PingFang-SC-Regular
           font-size: $font-size-small-s
@@ -461,9 +464,9 @@
         color: $color-text-d
         font-size: $font-size-medium
       .pay-list-right
-        color: $color-car-theme
+        color: $color-pay
         font-size: $font-size-medium-x
-        font-weight: 600
+        font-family :PingFangSC-Semibold
         .pay-minus
           font-size: $font-size-small
 

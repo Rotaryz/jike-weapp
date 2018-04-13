@@ -131,6 +131,7 @@
         border: 0.5px solid #DBDBDB
         border-radius: 2px
         padding: 5px 8px
+        margin-top: .5px
         .getbox-img
           display: block
           width: 17px

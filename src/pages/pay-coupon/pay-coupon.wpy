@@ -131,6 +131,7 @@
     }
 
     events = {
+
       // 选择可用优惠卷
       choice(coupon) {
         this.noUseDiscountBtn = false
@@ -167,6 +168,8 @@
     border-bottom: 1px solid $color-row-line
     padding: 15px 12px
     .no-use-left
+      font-size :$font-size-medium
+      color :$color-text
       width: 82%
     .no-use-right
       width: 18%
