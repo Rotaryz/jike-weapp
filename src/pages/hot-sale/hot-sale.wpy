@@ -46,39 +46,33 @@
 
     async onLoad() {
       this.merchantId = wepy.getStorageSync('merchantId')
-      await this._init()
+      await Promise.all([this.showIndustry(), this._getNewCoupons(this.params)])
       this.$apply()
+      this.loaded()
     }
 
     async onPullDownRefresh() {
       this._resetConfig()
-      await this._init()
+      await this._getNewCoupons(this.params, false)
       wx.stopPullDownRefresh()
     }
 
     async onReachBottom() {
       if (this.isAll) return
       this.params.page++
-      this._getCouponsAll(this.params)
+      this._getMoreCoupons(this.params)
+      this.loaded()
     }
 
     // 重置配置
     _resetConfig() {
-      this.activeIsEmpty = true
       this.$invoke('underline', 'hide')
-      this.list = []
       this.params = {
         page: 1,
         limit: PAGELIMIT
       }
       this.isAll = false
       this.$apply()
-    }
-
-    // 初始化
-    async _init() {
-      await this.showIndustry()
-      await this._getCouponsAll(this.params)
     }
 
     // 检查是否查询了全部
@@ -96,16 +90,36 @@
       this.$apply()
     }
 
-    // 获取推荐优惠券列表（分页）+
-    async _getCouponsAll(params) {
+    // 获取更多推荐优惠券列表（分页）+
+    async _getMoreCoupons(params, loading) {
       if (this.isAll) return
-      let res = await Merchants.getCoupons(this.merchantId, params)
+      let res = await this._rqGetCouponsInfos(this.merchantId, params, loading)
       if (res.error === ERR_OK) {
         this.list.push(...res.data)
         this.$apply()
         this._checkIsAll(res)
       }
-      this.loaded()
+    }
+
+    // 获取新的优惠券（分页）
+    async _getNewCoupons(params, loading) {
+      if (this.isAll) return
+      let res = await this._rqGetCouponsInfos(this.merchantId, params, loading)
+      if (res.error === ERR_OK) {
+        this.list = res.data
+        this.$apply()
+        this._checkIsAll(res)
+      }
+    }
+
+    // 从服务器获取热销优惠券
+    async _rqGetCouponsInfos(merchantId, params, loading) {
+      let list = []
+      let res = await Merchants.getCoupons(merchantId, params, loading)
+      if (res.error === ERR_OK) {
+        list = res
+      }
+      return list
     }
 
     events = {
