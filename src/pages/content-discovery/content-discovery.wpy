@@ -8,9 +8,7 @@
       </repeat>
     </view>
     <view class="c-d-nothing-box" wx:if="{{activeIsEmpty}}">
-      <image
-        src="{{imageUri + '/defaults/c-image/recom/icon-blank_content@2x.png'}}"
-        wx:if="{{imageUri}}" class="c-d-nothing-img"></image>
+      <image src="{{imageUri + '/defaults/c-image/recom/icon-blank_content@2x.png'}}" wx:if="{{imageUri}}" class="c-d-nothing-img"></image>
       <view class="c-d-nothing-txt">暂无内容</view>
     </view>
     <underline></underline>
@@ -39,7 +37,6 @@
       list: [],
       type: 'mine',
       merchantId: wepy.getStorageSync('merchantId'),
-      activeIsEmpty: true,
       params: {
         page: 1,
         limit: PAGELIMIT
@@ -70,7 +67,6 @@
     async _init() {
       // await this.showIndustry()
       await this._getContentsAll(this.params)
-      this._checkIsEmpty()
     }
 
     // 重置配置
@@ -117,6 +113,14 @@
       contentClick(id, merchantId) {
         let url = `/pages/content-detail/content-detail?id=${id}&currentMerchant=${merchantId}`
         this.$navigate(url)
+      }
+    }
+
+    // 检查活动内容是否为空
+    computed = {
+      activeIsEmpty() {
+        let flag = this.list.length === 0
+        return flag
       }
     }
 
