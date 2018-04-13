@@ -3,7 +3,7 @@
     <view class="c-d-article">
       <repeat for="{{list}}" key="index" index="index" item="item">
         <view class="c-d-content-item">
-          <content-item :type="type" :content.sync="item"></content-item>
+          <content-item :type="type" :content.sync="item" :industry.sync="industry"></content-item>
         </view>
       </repeat>
     </view>
@@ -48,6 +48,7 @@
     }
 
     async onLoad() {
+      await this.showIndustry()
       this.merchantId = wepy.getStorageSync('merchantId')
       await this._init()
       this.$apply()
