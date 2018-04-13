@@ -8,9 +8,7 @@
       </repeat>
     </view>
     <view class="h-s-nothing-box" wx:if="{{activeIsEmpty}}">
-      <image
-        src="{{imageUri + '/defaults/c-image/recom/icon-blank_coupon@2x.png'}}"
-        wx:if="{{imageUri}}" class="h-s-nothing-img"></image>
+      <image src="{{imageUri + '/defaults/c-image/recom/icon-blank_coupon@2x.png'}}" wx:if="{{imageUri}}" class="h-s-nothing-img"></image>
       <view class="h-s-nothing-txt">无可用优惠券</view>
     </view>
     <underline></underline>
@@ -39,7 +37,6 @@
       list: [],
       type: 'buy',
       merchantId: '',
-      activeIsEmpty: true,
       params: {
         page: 1,
         limit: PAGELIMIT
@@ -82,7 +79,6 @@
     async _init() {
       await this.showIndustry()
       await this._getCouponsAll(this.params)
-      this._checkIsEmpty()
     }
 
     // 检查是否查询了全部
@@ -126,6 +122,14 @@
       use(coupon) {
         let url = `/pages/coupon-particulars/coupon-particulars?id=${coupon.promotion.id}`
         this.$navigate(url)
+      }
+    }
+
+    // 检查活动内容是否为空
+    computed = {
+      activeIsEmpty() {
+        let flag = this.list.length === 0
+        return flag
       }
     }
 
