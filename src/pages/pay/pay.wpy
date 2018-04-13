@@ -2,19 +2,15 @@
   <view class="pay-con">
     <view class="pay-input">
       <view class="all-money-con">
-        <input type="digit" placeholder="询问服务员后输入" class="all-money-input"
-               value="{{allMoney}}" bindinput="putAllMoney" maxlength="8" placeholder-class="input-placeholder"/>
+        <input type="digit" placeholder="询问服务员后输入" class="all-money-input" value="{{allMoney}}" bindinput="putAllMoney" maxlength="8" placeholder-class="input-placeholder"/>
         <view class="all-money-text">消费总额：</view>
       </view>
       <view class="select-discounts" @tap="noUseDiscount">
-        <image class="select-img" wx:if="{{imageUri}}"
-               src="{{imageUri + (useDiscount ? '/defaults/c-image/pay/icon-select@2x.png' : '/defaults/c-image/pay/icon-notselect@2x.png')}}"></image>
+        <image class="select-img" wx:if="{{imageUri}}" src="{{imageUri + (useDiscount ? '/defaults/c-image/pay/icon-select@2x.png' : '/defaults/c-image/pay/icon-notselect@2x.png')}}"></image>
         <view class="select-text">输入不参与优惠金额(如酒水、套餐)</view>
       </view>
       <view class="all-money-con no-select-discounts" wx:if="{{useDiscount}}">
-        <input type="digit" placeholder="询问服务员后输入" bindinput="putNoDiscount"
-               class="all-money-input " maxlength="8"
-               value="{{noDiscountMoney}}" placeholder-class="input-placeholder"/>
+        <input type="digit" placeholder="询问服务员后输入" bindinput="putNoDiscount" class="all-money-input " maxlength="8" value="{{noDiscountMoney}}" placeholder-class="input-placeholder"/>
         <view class="all-money-text">不参与优惠金额：</view>
       </view>
     </view>
@@ -28,8 +24,7 @@
             <text class="coupon-money">¥{{usableDiscountsMoney}}</text>
             <view class="coupon-bigdiscounts" wx:if="{{bigDiscounts}}">最大优惠</view>
           </view>
-          <image class="coupon-list-img" wx:if="{{imageUri}}"
-                 src="{{imageUri + '/defaults/b-image/page/Rectangle @2x.png'}}"></image>
+          <image class="coupon-list-img" wx:if="{{imageUri}}" src="{{imageUri + '/defaults/b-image/page/Rectangle @2x.png'}}"></image>
         </view>
       </view>
       <view class="pay-list">
@@ -309,7 +304,7 @@
         if (this.needPayMoney < 0) {
           return
         }
-        if (this.noDiscountInput) {
+        if (!this.noDiscountInput) {
           this.noDiscountInput = 0
           this.$apply()
         }
