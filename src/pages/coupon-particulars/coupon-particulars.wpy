@@ -54,8 +54,11 @@
       latitude: ''
     }
 
-    async onLoad(option) {
+    async onShow() {
       await this.showIndustry()
+    }
+
+    async onLoad(option) {
       const res = await wepy.getLocation({type: 'gcj02'})
       this.couponId = option.id ? option.id : ''
       this.longitude = res.longitude
@@ -97,6 +100,8 @@
           this.$apply()
         } else {
 //          立即去使用
+          wepy.setStorageSync('merchantId', coupon.merchant_id)
+          wepy.setStorageSync('shop', null)
           this.$navigate('/pages/pay/pay')
         }
       }
