@@ -22,7 +22,7 @@
             <view class="progress-box">
               <progress percent="{{giftbag.init_stock === -1 ? 1 : giftbag.percentage}}" stroke-width="6" active activeColor="#B89B68" backgroundColor="#DBDBDB" class="progress"></progress>
             </view>
-            <view class="giftBag-btn">立即抢购</view>
+            <view class="giftBag-btn">购买</view>
           </view>
         </view>
         <view class="giftBag-down">

@@ -66,9 +66,7 @@
     >
     </recom-discovery>
     <view class="nothing-box" wx:if="{{activeIsEmpty}}">
-      <image
-        src="{{imageUri + '/defaults/c-image/recom/icon-blank_tj@2x.png'}}"
-        wx:if="{{imageUri}}" class="nothing-img"></image>
+      <image src="{{imageUri + '/defaults/c-image/recom/icon-blank_tj@2x.png'}}" wx:if="{{imageUri}}" class="nothing-img"></image>
       <view class="nothing-txt">暂无内容</view>
     </view>
     <toast></toast>
@@ -364,7 +362,7 @@
     }
 
     // 检查活动内容是否为空
-    computed={
+    computed = {
       activeIsEmpty() {
         let flag = this.hotCouponsList.length === 0 && this.giftbagList.length === 0 && this.contentList.length === 0
         return flag
