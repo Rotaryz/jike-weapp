@@ -49,11 +49,8 @@
 
     async onLoad() {
       this.merchantId = wepy.getStorageSync('merchantId')
-      this.$apply()
-    }
-
-    async onShow() {
       await this._init()
+      this.$apply()
     }
 
     async onPullDownRefresh() {
@@ -71,6 +68,7 @@
     // 重置配置
     _resetConfig() {
       this.activeIsEmpty = true
+      this.$invoke('underline', 'hide')
       this.list = []
       this.params = {
         page: 1,
@@ -88,8 +86,8 @@
     }
 
     // 检查是否查询了全部
-    _checkIsAll() {
-      if (this.list.length % PAGELIMIT !== 0) {
+    _checkIsAll(res) {
+      if (this.list.length % PAGELIMIT !== 0 || this.list.length === res.meta.total * 1) {
         this.$invoke('underline', 'show')
         this.isAll = true
       }
@@ -109,7 +107,7 @@
       if (res.error === ERR_OK) {
         this.list.push(...res.data)
         this.$apply()
-        this._checkIsAll()
+        this._checkIsAll(res)
       }
       this.loaded()
     }

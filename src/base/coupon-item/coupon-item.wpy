@@ -21,7 +21,11 @@
               </view>
             </view>
             <view class="coupon-left-second-down">
-              <view class="down-sub" wx:if="{{coupon.promotion.promotion_type === 'reduction' || coupon.promotion.promotion_type === 'discount'}}">{{coupon.promotion.note.scope_application}}</view>
+              <view class="down-money" wx:if="{{coupon.promotion.promotion_type === 'reduction' || coupon.promotion.promotion_type === 'discount'}}">
+                <view class="small-money {{industry + '-text'}}" wx:if="{{coupon.promotion.promotion_type === 'reduction'}}">¥</view>
+                <view class="big-money {{industry + '-text'}}" wx:if="{{coupon.promotion.promotion_type === 'reduction'}}">{{coupon.promotion.flag}}</view>
+                <view class="big-money {{industry + '-text'}}" wx:if="{{coupon.promotion.promotion_type === 'discount'}}">{{coupon.promotion.flag}}折</view>
+              </view>
               <view class="down-money" wx:if="{{coupon.promotion.promotion_type === 'voucher' || coupon.promotion.promotion_type === 'cash'}}">
                 <view class="small-money {{industry + '-text'}}">¥</view>
                 <view class="big-money {{industry + '-text'}}">{{coupon.promotion.platform_price}}</view>
@@ -239,9 +243,6 @@
             .coupon-left-second-top
               .top-shopName
                 line-height: 18px
-                overflow: hidden
-                text-overflow: ellipsis
-                white-space: nowrap
 
                 .top-label
                   display: inline-block
@@ -266,9 +267,6 @@
                 font-size: $font-size-medium
                 color: $color-text
                 margin-top: 6px
-                overflow: hidden
-                text-overflow: ellipsis
-                white-space: nowrap
 
             .coupon-left-second-down
               overflow : hidden
