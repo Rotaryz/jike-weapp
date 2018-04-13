@@ -3,10 +3,8 @@
     <view class="picture-wrapper">
       <image src="{{contents.image_url}}" class="full-image" mode="widthFix"></image>
     </view>
-    <view class="line-title">
-      <view class="title-content">
-        · {{contents.title}} ·
-      </view>
+    <view class="linec-title">
+      <view class="title-content">{{contents.title}}</view>
     </view>
     <view class="content-container">
       <repeat for="{{details}}" key="index" index="index" item="item">
@@ -324,26 +322,14 @@
       overflow: hidden
       .image
         width: 100%
-    .line-title
+    .linec-title
       margin-bottom: 20px
-      text-align: center
-      width: 100%
-      overflow: hidden
+      padding: 0 12px
       .title-content
         position: relative
         display: inline-block
         font-size: $font-size-large
-        &:before, &:after
-          position: absolute
-          top: 7px
-          content: ''
-          width: 69px
-          height: 1px
-          border-bottom: 1px solid #cccccc
-        &:before
-          left: -75px
-        &:after
-          right: -75px
+        font-family: PingFang-SC-Medium
     .content-wrapper
       margin-bottom: 10px
       &:last-child
