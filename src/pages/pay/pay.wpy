@@ -359,7 +359,7 @@
     .no-select-discounts
       margin-bottom: 10px
     .all-money-con
-      border: .5px solid $color-pay-theme
+      border: .5px solid #DBDBDB
       background: $color-highlight-background
       height: 47.5px
       position: relative
@@ -401,10 +401,10 @@
   .coupon-pay
     padding-left: 12px
     background: $color-highlight-background
-    border-top: 0.5px solid $color-pay-theme
-    border-bottom: 0.5px solid $color-pay-theme
+    border-top: 0.5px solid #DBDBDB
+    border-bottom: 0.5px solid #DBDBDB
     .coupon-list
-      border-bottom: 0.5px solid $color-pay-theme
+      border-bottom: 0.5px solid #DBDBDB
       padding: 15px 12px 15px 0
       display: flex
       flex-direction: row
