@@ -268,8 +268,6 @@
         const data = res.data
         wepy.setNavigationBarTitle({title: data.title})
         this.promotionImages = data.promotion_images
-        data.platform_price = Math.floor(data.platform_price)
-        data.shop_price = Math.floor(data.shop_price)
         this.coupon = data
         this.services = data.detail
         this.note = data.note
@@ -298,8 +296,6 @@
       if (res.error === ERR_OK) {
         const data = res.data
         wepy.setNavigationBarTitle({title: data.title})
-        data.platform_price = Math.floor(data.platform_price)
-        data.shop_price = Math.floor(data.shop_price)
         this.coupon = data
         this.stock = data.stock
 //        this.note = data.note
