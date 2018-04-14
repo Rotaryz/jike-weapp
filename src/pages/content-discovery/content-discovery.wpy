@@ -45,35 +45,28 @@
     }
 
     async onLoad() {
-      await this.showIndustry()
       this.merchantId = wepy.getStorageSync('merchantId')
-      await this._init()
+      await this._getNewContents(this.params)
       this.$apply()
+      this.loaded()
     }
 
     async onReachBottom() {
       if (this.isAll) return
       this.params.page++
-      this._getContentsAll(this.params)
+      this._getMoreContents(this.params)
+      this.loaded()
     }
 
     async onPullDownRefresh() {
       this._resetConfig()
-      await this._init()
+      await this._getNewContents(this.params, false)
       wx.stopPullDownRefresh()
-    }
-
-    // 初始化
-    async _init() {
-      // await this.showIndustry()
-      await this._getContentsAll(this.params)
     }
 
     // 重置配置
     _resetConfig() {
-      this.activeIsEmpty = true
       this.$invoke('underline', 'hide')
-      this.list = []
       this.params = {
         page: 1,
         limit: PAGELIMIT
@@ -97,16 +90,36 @@
       this.$apply()
     }
 
-    // 获取内容列表 (all)+
-    async _getContentsAll(params) {
+    // 获取更多内容列表
+    async _getMoreContents(params, loading) {
       if (this.isAll) return
-      const res = await ContentsApi.getMerchantContents(params)
+      const res = await this._rqGetContentInfos(params, loading)
       if (res.error === ERR_OK) {
         this.list.push(...res.data)
         this.$apply()
         this._checkIsAll(res)
       }
-      this.loaded()
+    }
+
+    // 获取新的内容列表
+    async _getNewContents(params, loading) {
+      if (this.isAll) return
+      const res = await this._rqGetContentInfos(params, loading)
+      if (res.error === ERR_OK) {
+        this.list = res.data
+        this.$apply()
+        this._checkIsAll(res)
+      }
+    }
+
+    // 从服务器获取内容列表（分页）
+    async _rqGetContentInfos(params, loading) {
+      let list = []
+      let res = await ContentsApi.getMerchantContents(params, loading)
+      if (res.error === ERR_OK) {
+        list = res
+      }
+      return list
     }
 
     events = {
