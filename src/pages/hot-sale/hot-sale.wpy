@@ -8,9 +8,7 @@
       </repeat>
     </view>
     <view class="h-s-nothing-box" wx:if="{{activeIsEmpty}}">
-      <image
-        src="{{imageUri + '/defaults/c-image/recom/icon-blank_coupon@2x.png'}}"
-        wx:if="{{imageUri}}" class="h-s-nothing-img"></image>
+      <image src="{{imageUri + '/defaults/c-image/recom/icon-blank_coupon@2x.png'}}" wx:if="{{imageUri}}" class="h-s-nothing-img"></image>
       <view class="h-s-nothing-txt">无可用优惠券</view>
     </view>
     <underline></underline>
@@ -39,7 +37,6 @@
       list: [],
       type: 'buy',
       merchantId: '',
-      activeIsEmpty: true,
       params: {
         page: 1,
         limit: PAGELIMIT
@@ -49,40 +46,33 @@
 
     async onLoad() {
       this.merchantId = wepy.getStorageSync('merchantId')
-      await this._init()
+      await Promise.all([this.showIndustry(), this._getNewCoupons(this.params)])
       this.$apply()
+      this.loaded()
     }
 
     async onPullDownRefresh() {
       this._resetConfig()
-      await this._init()
+      await this._getNewCoupons(this.params, false)
       wx.stopPullDownRefresh()
     }
 
     async onReachBottom() {
       if (this.isAll) return
       this.params.page++
-      this._getCouponsAll(this.params)
+      this._getMoreCoupons(this.params)
+      this.loaded()
     }
 
     // 重置配置
     _resetConfig() {
-      this.activeIsEmpty = true
       this.$invoke('underline', 'hide')
-      this.list = []
       this.params = {
         page: 1,
         limit: PAGELIMIT
       }
       this.isAll = false
       this.$apply()
-    }
-
-    // 初始化
-    async _init() {
-      await this.showIndustry()
-      await this._getCouponsAll(this.params)
-      this._checkIsEmpty()
     }
 
     // 检查是否查询了全部
@@ -100,22 +90,42 @@
       this.$apply()
     }
 
-    // 获取推荐优惠券列表（分页）+
-    async _getCouponsAll(params) {
+    // 获取更多推荐优惠券列表（分页）+
+    async _getMoreCoupons(params, loading) {
       if (this.isAll) return
-      let res = await Merchants.getCoupons(this.merchantId, params)
+      let res = await this._rqGetCouponsInfos(this.merchantId, params, loading)
       if (res.error === ERR_OK) {
         this.list.push(...res.data)
         this.$apply()
         this._checkIsAll(res)
       }
-      this.loaded()
+    }
+
+    // 获取新的优惠券（分页）
+    async _getNewCoupons(params, loading) {
+      if (this.isAll) return
+      let res = await this._rqGetCouponsInfos(this.merchantId, params, loading)
+      if (res.error === ERR_OK) {
+        this.list = res.data
+        this.$apply()
+        this._checkIsAll(res)
+      }
+    }
+
+    // 从服务器获取热销优惠券
+    async _rqGetCouponsInfos(merchantId, params, loading) {
+      let list = []
+      let res = await Merchants.getCoupons(merchantId, params, loading)
+      if (res.error === ERR_OK) {
+        list = res
+      }
+      return list
     }
 
     events = {
       buy(coupon) {
         let type = 1 // 1 优惠券 2 礼包
-        let merchantId = coupon.merchant_id
+        let merchantId = coupon.promotion.merchant_id
         let url = `/pages/coupon-detail/coupon-detail?id=${coupon.promotion.id}&type=${type}&currentMerchant=${merchantId}`
         this.$navigate(url)
       },
@@ -126,6 +136,14 @@
       use(coupon) {
         let url = `/pages/coupon-particulars/coupon-particulars?id=${coupon.promotion.id}`
         this.$navigate(url)
+      }
+    }
+
+    // 检查活动内容是否为空
+    computed = {
+      activeIsEmpty() {
+        let flag = this.list.length === 0
+        return flag
       }
     }
 

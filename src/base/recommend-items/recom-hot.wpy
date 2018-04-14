@@ -132,8 +132,7 @@
     events = {
       buy(coupon) {
         let type = 1 // 1 优惠券 2 礼包
-        let merchantId = coupon.merchant_id
-        console.log(coupon)
+        let merchantId = coupon.promotion.merchant_id
         let url = `/pages/coupon-detail/coupon-detail?id=${coupon.promotion.id}&type=${type}&currentMerchant=${merchantId}`
         this._navTo(url)
       },

@@ -51,12 +51,8 @@
                  class="orderDetail-merchant-logo"></image>
         </view>
         <view class="orderDetail-merchant-msg">
-          <view class="orderDetail-merchant-msgName">
-            {{orderMsg.merchant_data.name}}
-          </view>
-          <view class="orderDetail-merchant-msgWork">
-            {{orderMsg.merchant_data.describe}}
-          </view>
+          <view class="orderDetail-merchant-msgName">{{orderMsg.merchant_data.name}}</view>
+          <view class="orderDetail-merchant-msgWork">{{orderMsg.merchant_data.describe}}</view>
         </view>
       </view>
       <view class="orderDetail-merchant-detail">
@@ -79,14 +75,9 @@
     <view class="orderDetail-orderList">
       <view class="orderDetail-orderList-title">订单信息</view>
       <view class="orderDetail-orderList-msg {{orderMsg.promotion_type * 1 === 3 ? 'pay-padding' : ''}}">
-        <view class="orderDetail-orderList-msgItem">订单编号：{{orderMsg.order_sn}}
-        </view>
-        <view class="orderDetail-orderList-msgItem">
-          手机号码：{{orderMsg.customer_phone}}
-        </view>
-        <view class="orderDetail-orderList-msgItem">
-          下单时间：{{orderMsg.created_at}}
-        </view>
+        <view class="orderDetail-orderList-msgItem">订单编号：{{orderMsg.order_sn}}</view>
+        <view class="orderDetail-orderList-msgItem">手机号码：{{orderMsg.customer_phone}}</view>
+        <view class="orderDetail-orderList-msgItem">下单时间：{{orderMsg.created_at}}</view>
       </view>
       <view class="orderDetail-orderList-pay" wx:if="{{orderMsg.promotion_type * 1 !== 3}}">
         <view class="orderDetail-orderList-msgItem">数量：{{orderMsg.count}}</view>
@@ -207,6 +198,9 @@
         return
       }
       this.orderMsg = res.data
+      if (res.data.promotion_type * 1 === 3) {
+        await wepy.setNavigationBarTitle({title: '买单详情'})
+      }
       this.$apply()
     }
 

@@ -280,7 +280,7 @@
     events = {
       buy(item) {
         let id = item.promotion.id
-        let merchantId = item.merchant_id
+        let merchantId = item.promotion.merchant_id
         this.$navigate('/pages/coupon-detail/coupon-detail?type=1&id=' + id + '&currentMerchant=' + merchantId)
       },
       get(item) {
