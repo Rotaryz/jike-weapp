@@ -76,6 +76,7 @@
       let res = await order.getCoupon(this.coupon.id)
       this.loaded()
       this.$invoke('Toast', 'show', res.message)
+      if (res.message === '库存不足') return
       await this._load(this.longitude, this.latitude)
     }
 
