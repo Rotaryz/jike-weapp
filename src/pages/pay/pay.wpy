@@ -16,7 +16,7 @@
     </view>
     <view class="coupon-pay">
       <view class="coupon-list" @tap="choiceCoupon">
-        <view class="coupon-list-left">代金券/折扣券/新手券</view>
+        <view class="coupon-list-left">满减券/折扣券</view>
         <view class="coupon-list-right">
           <view claass="coupon-list-money" wx:if="{{usableCoupon && usableDiscountsMoney > 0}}">
             <text class="coupon-text">{{usableCoupon.promotion.promotion_type_cn}}</text>
