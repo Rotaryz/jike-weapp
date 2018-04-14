@@ -267,7 +267,7 @@
 
     _checkContentCoupon(arr) {
       let res = arr.filter((item) => {
-        return item.detail
+        return item.detail || item.type === 1
       })
       return res.map((item) => {
         if (item.type === COUPON_TYPE) {
