@@ -1,0 +1,34 @@
+<template>
+  <view class="shareItem">
+
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import base from 'common/mixins/base'
+  import URIS from 'common/js/config'
+  import {ERR_OK} from 'api/base'
+
+  export default class shareItem extends wepy.component {
+    mixins = [base]
+
+    config = {
+      navigationBarTitleText: ''
+    }
+    data = {
+      imageUrl: URIS.image
+    }
+
+    infoRes(res) {
+      if (res.error === ERR_OK) {
+        return res.data
+      }
+    }
+  }
+</script>
+
+<style lang="stylus">
+  @import '../../common/stylus/variable'
+  @import '../../common/stylus/mixin'
+</style>
