@@ -55,7 +55,8 @@
 
     methods = {
       giftbagClick() {
-        this.$emit('giftbagClick', this.giftbag.id, this.giftbag.merchant_id)
+        let merchantId = this.giftbag.merchant_id || wepy.getStorageSync('merchantId')
+        this.$emit('giftbagClick', this.giftbag.id, merchantId)
       }
     }
   }
