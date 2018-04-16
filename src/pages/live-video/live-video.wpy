@@ -13,9 +13,9 @@
                  src="{{imageUrlHead + '/defaults/c-image/live/pic-r_couponbg2@2x.png'}}"
                  wx:if="{{showBk === index}}"></image>
           <view class="con-title">
-            <view></view>
-            <view class="monlogo">{{item.promotion_platform_price}}</view>
-            <view>{{item.promotion_title}}</view>
+            <view class="top">{{item.promotion_type_cn}}</view>
+            <view class="monlogo"><text class="small-money">¥</text><text class="big-money">{{item.promotion_platform_price}}</text></view>
+            <view class="title-txt">{{item.promotion_title}}</view>
           </view>
         </view>
       </scroll-view>
@@ -127,6 +127,16 @@
                 <view class="value">
                   {{conDes.note.buy_upper_limit === -1 ? '不限' :
                   '每人限购' + conDes.note.buy_upper_limit + '张优惠券'}}
+                </view>
+              </view>
+            </view>
+            <view class="item-wrapper">
+              <view class="title ">适用范围：
+              </view>
+              <view class="content">
+                <!--<view class="circle"></view>-->
+                <view class="value">
+                  {{conDes.note.scope_application === -1 || !conDes.note.scope_application ? '全场通用' : conDes.note.scope_application}}
                 </view>
               </view>
             </view>
@@ -373,33 +383,36 @@
   .con-title
     position: absolute
     z-index: 10
-    font-size: $font-size-small-s
-    color: #5D5D5D
-    width: 100%
+    padding-left: 8px
     height: 100%
-    view
-      padding-left: 10px
-      width: ($font-size-small-s* 5)
-      &:first-child
-        padding-top: 10px
-      &:last-child
-        height: 18px
-        line-height: 11px
+    overflow: hidden
+    .top
+      height: 14px
+      padding-top: 1px
+      font-family: PingFangSC-Light
+      font-size: $font-size-small-s
+      line-height: 14px
     .monlogo
-      padding-bottom: 3px
-      font-weight: 600
-      font-size: 17px
-      color: $color-text
-      position: relative
-      line-height: 4vw
-      text-indent: 6px
-      &::before
-        content: '¥'
-        color: #5D5D5D
+      height: 16px
+      margin-top: 2px
+      .small-money
+        font-family: PingFangSC-Regular
         font-size: $font-size-small-s
-        position: absolute
-        bottom: 1px
-        left: 1px
+        padding-bottom: 2px
+      .big-money
+        font-family: PingFangSC-Medium
+        font-size: $font-size-medium-x
+    .title-txt
+      height: 22px
+      overflow: hidden
+      text-overflow: ellipsis
+      display: -webkit-box
+      -webkit-line-clamp: 2
+      -webkit-box-orient: vertical
+      font-family: PingFangSC-Light
+      font-size: $font-size-small-s
+      color: #5D5D5D
+      line-height: 11px
 
   .live
     .live_conpons
