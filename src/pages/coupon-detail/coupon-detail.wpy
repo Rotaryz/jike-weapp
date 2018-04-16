@@ -325,6 +325,7 @@
         promotion_id: this.coupon.id,
         title: this.coupon.title,
         price: this.coupon.platform_price,
+        current_merchant: this.currentMerchant,
         stock: this.coupon.stock,
         peopleStock: this.coupon.note ? this.coupon.note.buy_upper_limit : -1
       }
