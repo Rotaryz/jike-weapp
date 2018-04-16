@@ -213,6 +213,7 @@
             scrollTop: 0,
             duration: 300
           })
+          this.groupBuyIdx = 0
         } catch (e) {
         }
       }
