@@ -37,7 +37,7 @@
         <view class="title">适用范围 </view>
         <view class="content">
           <!--<text class="circle"></text>-->
-          <text class="value">{{note.scope_application === -1 ? '全场通用' : coupon.scope_application}}</text>
+          <text class="value">{{note.scope_application === -1 ? '全场通用' : note.scope_application}}</text>
         </view>
       </view>
       <view class="item-wrapper" wx:if="{{note.remarks}}">
