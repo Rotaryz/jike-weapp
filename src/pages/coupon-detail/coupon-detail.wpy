@@ -2,7 +2,7 @@
   <view class="ro-share-coupon {{shareStatus ? 'ro-share-coupon-active' : ''}}" wx:if="{{share}}">
     <coupon type="pay" :content.sync="coupon" :industry.sync="industry"></coupon>
   </view>
-  <view class="coupon-detail">
+  <scroll-view class="coupon-detail" scroll-y="{{!share}}">
     <cover-view class="ro-share-money"></cover-view>
     <view class="slider-wrapper">
       <slider :list.sync="promotionImages">
@@ -106,7 +106,7 @@
     <post-order :orderInfo.sync="orderInfo" @throw.user="postOrderFail" :industry.sync="industry"></post-order>
     <toast></toast>
     <popout></popout>
-  </view>
+  </scroll-view>
 </template>
 
 <script>
@@ -428,6 +428,7 @@
     position: relative
     width: 100%
     padding-bottom: 44px
+    height: 100vh
     .slider-wrapper
       position: relative
       width: 100%
