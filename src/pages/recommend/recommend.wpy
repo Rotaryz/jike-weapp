@@ -4,8 +4,7 @@
       <repeat>
         <Slider :list.sync="shopImages"></Slider>
       </repeat>
-      <image wx:if="{{imageUri}}"
-             src="{{imageUri + '/defaults/c-image/recommend/pic-r_shadow@2x.png'}}"
+      <image wx:if="{{imageUri}}" src="{{imageUri + '/defaults/c-image/recommend/pic-r_shadow@2x.png'}}"
              class="underImage"></image>
     </view>
     <form bindsubmit="submit" report-submit='true'>
@@ -52,6 +51,42 @@
       wx:if="{{giftbagList.length>0}}"
       :list.sync="giftbagList"
     ></recom-giftbat>
+
+    <view class="group-buy" wx:if="{{true}}">
+      <view class="group-buy-head">
+        <view class="group-buy-title">团购火拼</view>
+        <image class="group-buy-arrow" wx:if="{{imageUri}}" src="{{imageUri + '/defaults/c-image/recom/icon-arrows@2x.png'}}"></image>
+      </view>
+      <swiper class="group-buy-content" duration="300" current="{{saleIdx}}" bindchange="swiperMove">
+        <block wx:for="{{[1,2,3]}}" wx:key="{{item}}" wx:key="{{index}}">
+          <swiper-item wx:if="{{true}}">
+            <view class="group-buy-item">
+              <view class="group-buy-coupon" wx:for="{{[1,2,3]}}" wx:key="{{index}}" @tap="couponDetail({{item}})">
+                <view class="img-box">
+                  <image class="shop-img" src="{{item.image_url}}" mode="aspectFill"></image>
+                  <view class="shop-name">2人团</view>
+                </view>
+                <view class="item-down">
+                  <view class="item-money">
+                    <text class="small-money">¥</text>
+                    <text class="big-money">100</text>
+                    <text class="del-money">¥ 200</text>
+                  </view>
+                  <view class="item-title">规范化广泛规范化</view>
+                  <view class="item-sale">
+                    <text class="sale-count">已团100件</text>
+                  </view>
+                </view>
+              </view>
+            </view>
+          </swiper-item>
+        </block>
+      </swiper>
+      <view class="swiper-dots" wx:if="{{true}}">
+        <view class="dot {{groupBuyIdx === index ? 'active' : ''}}" wx:for="{{[1,2,3]}}" wx:key="{{index}}"></view>
+      </view>
+    </view>
+
     <recom-hot
       wx:if="{{hotCouponsList.length>0}}"
       :list.sync="hotCouponsList"
@@ -120,7 +155,8 @@
       hotFirst: [],
       hotSecond: [],
       hotThird: [],
-      activeIsEmpty: true
+      activeIsEmpty: true,
+      groupBuyIdx: 0
     }
 
     onShareAppMessage(res) {
@@ -358,6 +394,10 @@
         } else {
           this.$invoke('toast', 'show', '暂未开放')
         }
+      },
+      swiperMove(e) {
+        this.groupBuyIdx = e.detail.current * 1
+        this.$apply()
       }
     }
 
@@ -453,6 +493,126 @@
         .content
           margin-top: 4px
           font-size: $font-size-small
+
+  .group-buy
+    background: $color-white
+    margin-bottom: 10px
+    margin-top: 10px
+    .group-buy-head
+      display: flex
+      align-items: center
+      justify-content: space-between
+      height: 50px
+      padding-left: 12px
+      .group-buy-title
+        font-family: PingFangSC-Regular
+        font-size: $font-size-medium-x
+        color: $color-text-title
+      .group-buy-arrow
+        width: 7px
+        height: 12px
+        margin-right: 12px
+    .group-buy-content
+      height: 51vw
+      width: 100%
+      .group-buy-item
+        padding: 0 12px
+        height: 100%
+        display: flex
+        overflow: hidden
+        .group-buy-coupon
+          width: 29.733333vw
+          height: 100%
+          display: flex
+          flex-direction: column
+          margin-right: 2.4vw
+          &:last-child
+            margin-right: 0
+          .img-box
+            width: 29.733333vw
+            height: 29.733333vw
+            box-sizing: border-box
+            border-radius: 3px
+            overflow: hidden
+            border: 0.5px solid $color-col-line
+            position: relative
+            .shop-img
+              width: 100%
+              height: 100%
+            .shop-name
+              width: 100%
+              box-sizing: border-box
+              padding-left: 5px
+              height: 18px
+              line-height: 18px
+              position: absolute
+              text-align: center
+              left: 0
+              bottom: 0
+              background: rgba(0, 0, 0, 0.5)
+              font-family: PingFangSC-Light
+              font-size: $font-size-small-s
+              color: $color-white
+          .item-down
+            flex: 1
+            display: flex
+            flex-direction: column
+            .item-money
+              display: flex
+              align-items: flex-end
+              font-family: PingFangSC-Semibold
+              color: $color-orange
+              margin: 1.8vw 0
+              overflow: hidden
+              .small-money
+                font-size: $font-size-small-s
+                margin-right: 3px
+                margin-bottom: 2px
+              .big-money
+                font-size: $font-size-large
+              .del-money
+                font-family: PingFangSC-Light
+                font-size: $font-size-small
+                color: $color-text-d
+                text-decoration: line-through
+                margin-bottom: 2px
+                white-space: nowrap
+                margin-left: 3px
+            .item-title
+              overflow: hidden
+              text-overflow: ellipsis
+              white-space: nowrap
+              font-family: PingFangSC-Light
+              font-size: $font-size-small
+              color: $color-text
+              margin-bottom: 6px
+            .item-sale
+              .sale-count
+                padding: 2px 4.5px
+                background: rgba(255, 78, 0, 0.1)
+                border-radius: 2px
+                font-size: $font-size-small-s
+                color: $color-orange
+                font-family: PingFangSC-Light
+
+    .swiper-dots
+      width: 100%
+      height: 13px
+      padding-top: 3px
+      display: flex
+      justify-content: center
+      .dot
+        width: 3px
+        height: 3px
+        background: #B8B5C1
+        border-radius: 1.5px
+        margin-right: 8px
+        transition: all .3s
+        &:last-child
+          margin-right: 0
+      .active.dot
+        width: 11px
+        background: #706B82
 
   .nothing-box
     margin-top: 10px

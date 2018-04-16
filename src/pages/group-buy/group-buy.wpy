@@ -1,0 +1,86 @@
+<template>
+  <view class="group-buy">
+    <view class="group-buy-item" wx:for="{{[1,2,3]}}" wx:key="{{index}}">
+      <view class="item-box">
+        <navigator url="" hover-class="none">
+          <view class="item-left">
+            <image class="item-left-img" src=""></image>
+            <view class="item-left-txt">2人团</view>
+          </view>
+          <view class="item-right">
+            <view class="item-right-top">
+              <view class="item-right-title">计划的飞机国会尽快发给甲方给回复</view>
+              <view class="item-right-money">
+                <text class="small-money">¥</text>
+                <text class="big-money">100</text>
+                <text class="del-money">¥ 200</text>
+              </view>
+            </view>
+            <view class="item-right-down">
+              <text class="sale-count">已团100件</text>
+              <view class="item-right-btn">去开团</view>
+            </view>
+          </view>
+        </navigator>
+      </view>
+    </view>
+    <underline></underline>
+  </view>
+</template>
+
+<script>
+  /* eslint-disable no-undef */
+  import wepy from 'wepy'
+  import base from 'common/mixins/base'
+  import {ERR_OK} from 'api/base'
+  import URIS from 'common/js/config'
+  import Underline from '@/base/underline-block/underline-block'
+
+  export default class GoodShops extends wepy.page {
+    mixins = [base]
+
+    config = {
+      navigationBarTitleText: '优质推荐',
+      navigationBarBackgroundColor: '#fff',
+      navigationBarTextStyle: 'black',
+      backgroundColor: '#f9f9f9',
+      backgroundTextStyle: 'dark',
+      enablePullDownRefresh: true
+    }
+
+    data = {
+      imageUri: URIS.image,
+      contentList: []
+    }
+
+    async onLoad() {
+      await this.load()
+      this.$invoke('underline', 'show')
+      this.loaded()
+    }
+
+    async onPullDownRefresh() {
+      await this.load(false)
+      this.loaded()
+      wx.stopPullDownRefresh()
+    }
+
+    async load(loading = true) {
+
+    }
+
+    components = {
+      underline: Underline
+    }
+  }
+</script>
+
+<style lang="stylus">
+  @import "../../common/stylus/variable"
+  @import "../../common/stylus/mixin"
+
+  .group-buy
+    width: 100%
+    .group-buy-item
+      width: 100%
+</style>
