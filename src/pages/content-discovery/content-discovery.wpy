@@ -45,6 +45,7 @@
     }
 
     async onLoad() {
+      await this.showIndustry()
       this.merchantId = wepy.getStorageSync('merchantId')
       await this._getNewContents(this.params)
       this.$apply()
