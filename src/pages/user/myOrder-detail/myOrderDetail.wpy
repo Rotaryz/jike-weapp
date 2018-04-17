@@ -43,6 +43,18 @@
       <view class="pay-txt">支付成功</view>
     </view>
 
+    <view class="group-buy-detail">
+      <view class="group-detail-head">
+        <view class="group-avatar-box">
+          <image class="avatar-img" src="" mode="aspectFill"></image>
+        </view>
+        <view class="group-msg">
+          <view class="group-title">买家已付款，等待成团</view>
+          <view class="group-msg-time"><text class="group-msg-first">剩余时间：</text><text class="group-red-time">23:30:30</text></view>
+        </view>
+      </view>
+    </view>
+
     <view class="orderDetail-merchant">
       <view class="orderDetail-merchant-title">商家信息</view>
       <view class="orderDetail-merchant-msgBox">
@@ -419,6 +431,43 @@
       .pay-txt
         font-family: PingFang-SC-Regular
         font-size: $font-size-large
+    .group-buy-detail
+      height: 192px
+      width: 100%
+      background: $color-white
+      .group-detail-head
+        height: 54px
+        display: flex
+        align-items: center
+        padding-left: 12px
+        .group-avatar-box
+          width: 34px
+          height: 34px
+          border: 0.5px solid $color-col-line
+          box-sizing: border-box
+          overflow: hidden
+          border-radius: 50%
+          margin-right: 13px
+          .avatar-img
+            width: 100%
+            height: 100%
+        .group-msg
+          .group-title
+            font-family: PingFangSC-Light
+            font-size: $font-size-medium
+            color: #333333
+            margin-bottom: 5px
+          .group-msg-time
+            font-family: PingFangSC-Light
+            font-size: $font-size-small-s
+            color: $color-text-d
+            height: 12px
+            display: flex
+            align-items: center
+            .group-red-time
+              font-family: PingFangSC-Light
+              font-size: $font-size-small
+              color: $color-orange
     .orderDetail-merchant
       background: $color-highlight-background
       margin-top: 10px

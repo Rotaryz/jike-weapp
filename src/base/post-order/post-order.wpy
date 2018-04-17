@@ -140,9 +140,6 @@
           signType,
           paySign,
           success: () => {
-            let tips = wepy.getStorageSync('tips')
-            tips.order = true
-            wepy.setStorageSync('tips', tips)
             const orderId = res.order_id
             const total = this.total
             const status = 'success'
