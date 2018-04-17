@@ -108,7 +108,7 @@
       }
     }
 
-    // 系统自动选劵
+    // 系统自动选券
     _getUsableCouponList(ids) {
       let arr = []
       this.$parent.globalData.couponList.map((item) => {
@@ -177,7 +177,7 @@
       this.$apply()
     }
 
-    // 自己选择的优惠劵判断
+    // 自己选择的优惠券判断
     _youUsableCouponList() {
       let youDiscountMoney = this.allMoneyInput - this.noDiscountInput
       var youStorage = wepy.getStorageSync('choiceCoupon')
