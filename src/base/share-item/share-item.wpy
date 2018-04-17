@@ -1,6 +1,18 @@
 <template>
-  <view class="shareItem">
-
+  <view class="ro-share-item">
+    <image class="ro-share-item-bk" wx:if="{{false}}"></image>
+    <view class="ro-share-left">
+      <view class="ro-share-item-logo"><view class="ro-share-item-buy">销售：100</view></view>
+      <view class="ro-share-content">
+        <view class="ro-share-title">养发项目优惠券套餐</view>
+        <view class="ro-share-now-money">现价  ¥100</view>
+        <view class="ro-share-end-money">券后价 ¥<text class="ro-share-end-price">80</text></view>
+      </view>
+    </view>
+    <view class="ro-share-right">
+      <image class="ro-share-right-icon" wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/c-image/share/icon-share_fxzq@2x.png'}}"></image>
+      <view class="ro-share-get-money">赚 ¥0.88</view>
+    </view>
   </view>
 </template>
 
@@ -8,22 +20,12 @@
   import wepy from 'wepy'
   import base from 'common/mixins/base'
   import URIS from 'common/js/config'
-  import {ERR_OK} from 'api/base'
 
   export default class shareItem extends wepy.component {
     mixins = [base]
 
-    config = {
-      navigationBarTitleText: ''
-    }
     data = {
       imageUrl: URIS.image
-    }
-
-    infoRes(res) {
-      if (res.error === ERR_OK) {
-        return res.data
-      }
     }
   }
 </script>
@@ -31,4 +33,73 @@
 <style lang="stylus">
   @import '../../common/stylus/variable'
   @import '../../common/stylus/mixin'
+  .ro-share-item
+    width: 100vw
+    height: 26.667vw
+    position: relative
+    background: $color-white
+    margin-bottom: 10.5px
+    display: flex
+    border-top: 0.5px solid $color-row-line
+    border-bottom: 0.5px solid $color-row-line
+    .ro-share-left
+      display :flex
+      padding: 12px 0 12px 10.5px
+      box-sizing: border-box
+      border-right :0.5px dashed #E5E5E5
+      .ro-share-item-logo
+        height: 20.26vw
+        width: @height
+        background: $color-background
+        position: relative
+        border: 0.5px solid #E5E5E5
+        border-radius: 6px
+        display :block
+        .ro-share-item-buy
+          position: absolute
+          right: 0
+          bottom: 0
+          width: 100%
+          border-bottom-left-radius :6px
+          border-bottom-right-radius :6px
+          z-index :1000
+          background: rgba(0, 0, 0, .6)
+          height: 18px
+          line-height: 18px
+          text-align: center
+          color: $color-white
+          font-size: $font-size-small-s
+          font-family: $font-family-light
+      .ro-share-content
+        width: 49vw
+        margin-left: 10px
+        .ro-share-title
+          color :$color-text
+          font-size :$font-size-small
+          font-family :$font-family-meddle
+          margin-bottom: 23.5px
+        .ro-share-now-money
+          font-size :$font-size-small-s
+          color :$color-text-d
+          margin-bottom: 7.5px
+        .ro-share-end-money
+          font-size :$font-size-small-s
+          color :$color-text-d
+          .ro-share-end-price
+            font-family :PingFangSC-Semibold
+            font-size :$font-size-large-m
+            color :$color-pay
+  .ro-share-right
+    flex :1
+    display :flex
+    flex-direction :column
+    align-items :center
+    justify-content :center
+    .ro-share-right-icon
+      height: 20.5px
+      width: 20.5px
+    .ro-share-get-money
+      color :$color-theme
+      margin-top: 10.4px
+      font-size :$font-size-small
 </style>

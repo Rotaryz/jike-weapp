@@ -114,7 +114,9 @@
         'pages/pay-success/pay-success',
         'pages/hot-sale/hot-sale',
         'pages/content-discovery/content-discovery',
-        'pages/group-buy/group-buy'
+        'pages/group-buy/group-buy',
+        'pages/share-list/share-list',
+        'pages/share-detail/share-detail'
       ],
       window: {
         backgroundColor: '#F9F9F9',

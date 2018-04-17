@@ -1,0 +1,310 @@
+<template>
+  <scroll-view class="share-detail" scroll-y="{{scroll}}">
+    <!--轮播图-->
+    <view class="slider-wrapper">
+      <slider :list.sync="2">
+        <block slot="content">
+          <repeat for="{{2}}" index="index" key="index" item="item">
+            <swiper-item>
+              <view class="slide-item">
+                {{item}}
+                <!--<image mode="widthFix" src="{{item.image.url}}" class="slide-image"/>-->
+              </view>
+            </swiper-item>
+          </repeat>
+        </block>
+      </slider>
+    </view>
+    <view class="ro-share-content">
+      <view class="ro-share-name">国颐堂养发护发套餐服务</view>
+      <view class="ro-share-content-buy">100人已购买</view>
+      <view class="ro-share-content-price">
+        <image class="ro-share-content-tip" wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/c-image/share/pic-price@2x.png'}}"><text class="ro-share-content-tip-text">券后价</text></image>
+        <view class="ro-share-content-end">¥<text class="ro-share-content-money">80000</text>
+        </view>
+        <view class="ro-share-content-now">现价:￥80000</view>
+      </view>
+      <view class="ro-share-content-aside">
+        <view class="ro-share-content-logo-box">
+          <image class="ro-share-content-logo" wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/c-image/share/icon-group@2x.png'}}"></image>
+        </view>
+        <view class="ro-share-content-see">查看详情</view>
+      </view>
+    </view>
+    <view class="ro-share-rule">
+      <view class="ro-share-rule-item">
+        <view class="ro-share-rule-item-title">优惠券 20元</view>
+        <view class="ro-share-rule-item-text">（满100使用）</view>
+      </view>
+      <view class="ro-share-rule-item">
+        <view class="ro-share-rule-item-title">通用佣金 2.00%</view>
+        <view class="ro-share-rule-item-text">（预计 ¥1.00）</view>
+      </view>
+      <view class="ro-share-rule-aside" @tap="getRule">
+        规则<image class="ro-share-rule-aside-icon" wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/c-image/square/icon-s_right1@2x.png'}}"></image>
+      </view>
+    </view>
+    <!--更多优惠券-->
+    <view class="ro-share-more">
+      <view class="ro-share-more-text"><text class="ro-share-more-text">更多</text></view>
+      <repeat>
+        <share-item></share-item>
+        <share-item></share-item>
+        <share-item></share-item>
+      </repeat>
+    </view>
+    <view class="ro-get-share">立即分享</view>
+  </scroll-view>
+  <toast></toast>
+  <rule>
+    <view class="ro-rule-content">
+      <view class="ro-rule-text">推广者 </view>
+      <image class="ro-rule-img" wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/c-image/share/pic-rule_tgz@2x.png'}}"></image>
+      <view class="ro-rule-tip">佣金计算规则：成交价格*佣金比率</view>
+    </view>
+    <view class="ro-rule-content">
+      <view class="ro-rule-text">被推广者</view>
+      <image class="ro-rule-img" wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/c-image/share/pic-rule_btgz@2x.png'}}"></image>
+      <view class="ro-rule-tip">抵用券：仅限该商品和业务使用</view>
+    </view>
+  </rule>
+  <share></share>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import base from 'common/mixins/base'
+  import URIS from 'common/js/config'
+  import {ERR_OK} from 'api/base'
+  import ShareItem from '@/base/share-item/share-item'
+  import Toast from '@/base/toast/toast'
+  import Rule from '@/base/rule/rule'
+  import Slider from '@/base/slider/slider'
+  import Share from '@/base/share/share'
+
+  export default class shareDetail extends wepy.page {
+    mixins = [base]
+
+    config = {
+      navigationBarTitleText: '分享赚钱'
+    }
+    data = {
+      scroll: true,
+      imageUrl: URIS.image
+    }
+
+    infoRes(res) {
+      if (res.error === ERR_OK) {
+        return res.data
+      }
+    }
+    methods ={
+      getRule() {
+        this.scroll = false
+        this.$invoke('rule', 'shoeRule')
+      }
+    }
+
+    events = {
+      closeCover() {
+        this.scroll = true
+        this.$apply()
+      }
+    }
+
+    components = {
+      'share-item': ShareItem,
+      'toast': Toast,
+      'slider': Slider,
+      'rule': Rule,
+      'share': Share
+    }
+  }
+</script>
+
+<style lang="stylus">
+  @import '../../common/stylus/variable'
+  @import '../../common/stylus/mixin'
+  .share-detail
+    height: 100vh
+    width: 100vw
+    overflow-x: hidden
+
+  .slider-wrapper
+    position: relative
+    width: 100%
+    height: 0
+    padding-top: 53.333333333%
+    .slider
+      position: absolute
+      top: 0
+      left: 0
+      width: 100%
+      height: 100%
+      background-color: #363636
+      .slide-item
+        width: 100%
+        height: 100%
+        overflow: hidden
+        background: $color-master-gray
+        .slide-image
+          width: 100%
+
+  .ro-share-content
+    position: relative
+    padding: 11px 12px 20.5px 12px
+    box-sizing: border-box
+    background :$color-white
+    .ro-share-name
+      font-size: $font-size-medium
+      font-family $font-family-regular
+      color: $color-text
+    .ro-share-content-buy
+      color: $color-text
+      margin-top: 10px
+      font-size: $font-size-small-s
+    .ro-share-content-price
+      margin-top: 12.5px
+      display: flex
+      align-items :flex-end
+      .ro-share-content-tip
+        width: 38px
+        height: 14px
+        margin-right: 1px
+        position:relative
+        .ro-share-content-tip-text
+          font-size :$font-size-small-s
+          color :$color-theme
+          position: absolute
+          top: 2px
+          left: 3px
+      .ro-share-content-end
+        color: $color-theme
+        font-size: $font-size-small
+        .ro-share-content-money
+          line-height: 1
+          font-family: $font-family-meddle
+          font-size: $font-size-large
+      .ro-share-content-now
+        font-size :$font-size-small-s
+        color :$color-text
+        margin-left: 5px
+    .ro-share-content-aside
+      position: absolute
+      right: 28.75px
+      top: 23px
+      display :flex
+      flex-direction :column
+      justify-content :center
+      align-items :center
+      .ro-share-content-logo-box
+        height: 32.5px
+        width : @height
+        border-radius :50%
+        border: 0.5px solid #E2E2E2
+        position: relative
+        .ro-share-content-logo
+          position: absolute
+          height: 17.5px
+          width :16.25px
+          all-center()
+      .ro-share-content-see
+        margin-top: 7.5px
+        font-family :$font-family-light
+        font-size :$font-size-small-s
+        color :$color-text
+
+  .ro-share-rule
+    position: relative
+    background :$color-white
+    margin-top: 10px
+    padding: 2.5px $padding-all 14.5px
+    .ro-share-rule-item
+      margin-top: 10px
+      text-indent: 10px
+      font-size :$font-size-small
+      position: relative
+      display :flex
+      &:before
+        content : ''
+        position: absolute
+        height: 3px
+        width: 3px
+        border-radius :50%
+        background :$color-pay
+        left: 0
+        col-center()
+      .ro-share-rule-item-text
+        margin-left: -10px
+        color :#a1a1a1
+    .ro-share-rule-aside
+      position: absolute
+      col-center()
+      right: 12px
+      font-size :$font-size-small
+      color :$color-text-d
+      margin-right: 3px
+      .ro-share-rule-aside-icon
+        height: 10px
+        width: 6px
+
+
+  .ro-share-more
+    background :$color-white
+    margin-top: 10px
+    padding: 17.5px 0 44px 0
+    .ro-share-more-text
+      font-size :$font-size-medium
+      font-family :$font-family-light
+      text-align :center
+      margin :0 0 13px
+      position: relative
+      .ro-share-more-text
+        position: relative
+        &:before,&:after
+          content: ''
+          height: 0.5px
+          width: 67.5px
+          position: absolute
+          col-center()
+          background : #E5E5E9
+        &:before
+          left:31.25px
+        &:after
+          left: -74.25px
+  .ro-get-share
+    position: fixed
+    bottom: 0
+    left: 0
+    width: 100vw
+    text-align:center
+    color :$color-white
+    font-size :$font-size-medium
+    font-family :$font-family-light
+    height :44px
+    background :$color-pay
+    line-height: 44px
+    z-index: 1500
+
+.ro-rule-content
+  margin-top: 12px
+  padding :0 9.5px 19.75px
+  border-bottom 0.5px dashed $color-col-line
+  &:last-child
+    border-bottom :none
+  .ro-rule-text
+    font-size :$font-size-small
+    font-family :$font-family-light
+    color :$color-text
+  .ro-rule-img
+    margin-top: 10px
+    width: 192.5px
+    height: 47px
+    margin-left: 47px
+  .ro-rule-tip
+    margin-top: 15px
+    font-size :$font-size-small
+    font-family :$font-family-light
+    text-align :center
+    color :$color-text-d
+</style>

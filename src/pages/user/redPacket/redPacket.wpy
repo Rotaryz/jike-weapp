@@ -1,6 +1,13 @@
 <template>
   <view class="myRedPacket">
-
+    <view class="ro-my-red-packet">
+      <view class="ro-my-red-packet-text">总金额(元)</view>
+      <view class="ro-my-red-packet-content">
+        <view class="ro-my-red-packet-money">580.00</view>
+        <view class="ro-my-red-packet-card">绑定银行卡 </view>
+        <view class="ro-my-red-packet-btn">提现</view>
+      </view>
+    </view>
     <view class="myRedPacket-top">
       <view class="myRedPacket-pandect">
         <view class="myRedPacket-pandect-item">
@@ -56,10 +63,9 @@
     mixins = [base]
 
     config = {
-      navigationBarTitleText: '我的红包',
-      navigationBarBackgroundColor: '#fff',
-      navigationBarTextStyle: 'black',
-      backgroundColor: '#F9F9F9'
+      navigationBarTitleText: '我的钱包',
+      navigationBarBackgroundColor: '#706B82',
+      navigationBarTextStyle: 'white'
     }
 
     components = {
@@ -246,4 +252,39 @@
           font-size: $font-size-small
           color: $color-text
 
+  .ro-my-red-packet
+    background :$color-pay
+    padding: 14px 12px 26px
+    .ro-my-red-packet-text
+      color :$color-white
+      font-size :$font-size-small-s
+      font-family :$font-family-light
+    .ro-my-red-packet-content
+      margin-top: 7.5px
+      display :flex
+      position: relative
+      align-items :flex-end
+      .ro-my-red-packet-money
+        line-height: 1
+        transform :translateY(4px)
+        color :$color-white
+        font-size:$font-size-large-xx
+        font-family :$font-family-meddle
+      .ro-my-red-packet-card
+        color :$color-white
+        margin-left: 12.5px
+        font-size :$font-size-small
+        font-family :$font-family-light
+      .ro-my-red-packet-btn
+        color :$color-white
+        position: absolute
+        border-radius :2px
+        bottom: 0px
+        right: 17px
+        height: 24px
+        width: 58px
+        border : 0.5px solid $color-white
+        text-align :center
+        font-size :$font-size-small
+        line-height: 24px
 </style>
