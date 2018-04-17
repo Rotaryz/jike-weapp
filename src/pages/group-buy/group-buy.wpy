@@ -1,15 +1,15 @@
 <template>
   <view class="group-buy">
-    <view class="group-buy-item" wx:for="{{[1,2,3]}}" wx:key="{{index}}">
-      <view class="item-box">
-        <navigator url="" hover-class="none">
+    <view class="group-buy-item" wx:for="{{[1,2,3,4,5,6,7,8,8,8,8]}}" wx:key="{{index}}">
+      <navigator url="" hover-class="none">
+        <view class="item-box">
           <view class="item-left">
             <image class="item-left-img" src=""></image>
             <view class="item-left-txt">2人团</view>
           </view>
           <view class="item-right">
             <view class="item-right-top">
-              <view class="item-right-title">计划的飞机国会尽快发给甲方给回复</view>
+              <view class="item-right-title">计划的飞机国会尽快发给甲方给回</view>
               <view class="item-right-money">
                 <text class="small-money">¥</text>
                 <text class="big-money">100</text>
@@ -21,8 +21,8 @@
               <view class="item-right-btn">去开团</view>
             </view>
           </view>
-        </navigator>
-      </view>
+        </view>
+      </navigator>
     </view>
     <underline></underline>
   </view>
@@ -40,7 +40,7 @@
     mixins = [base]
 
     config = {
-      navigationBarTitleText: '优质推荐',
+      navigationBarTitleText: '团购',
       navigationBarBackgroundColor: '#fff',
       navigationBarTextStyle: 'black',
       backgroundColor: '#f9f9f9',
@@ -65,6 +65,10 @@
       wx.stopPullDownRefresh()
     }
 
+    async onReachBottom() {
+      console.log(999)
+    }
+
     async load(loading = true) {
 
     }
@@ -82,5 +86,93 @@
   .group-buy
     width: 100%
     .group-buy-item
-      width: 100%
+      height: 84px
+      margin-bottom: 10px
+      background: $color-white
+      padding: 14px 12px
+      .item-box
+        width: 100%
+        height: 100%
+        display: flex
+        .item-left
+          margin-right: 13px
+          width: 84px
+          height: 84px
+          box-sizing: border-box
+          border: 0.5px solid $color-col-line
+          border-radius: 3px
+          overflow: hidden
+          position: relative
+          .item-left-img
+            width: 100%
+            height: 100%
+          .item-left-txt
+            width: 100%
+            height: 18px
+            line-height: 18px
+            text-align: center
+            font-family: PingFangSC-Light
+            font-size: $font-size-small-s
+            color: $color-white
+            background: rgba(0, 0, 0, 0.5)
+            position: absolute
+            left: 0
+            bottom: 0
+        .item-right
+          flex: 1
+          display: flex
+          overflow: hidden
+          flex-direction: column
+          justify-content: space-between
+          padding: 2px 0
+          .item-right-top
+            .item-right-title
+              font-family: PingFangSC-Regular
+              font-size: $font-size-medium
+              letter-spacing: 0.42px
+              overflow: hidden
+              text-overflow: ellipsis
+              white-space: nowrap
+            .item-right-money
+              margin-top: 10px
+              .small-money
+                font-family: PingFang-SC-Regular
+                font-size: $font-size-small
+                color: $color-orange
+                margin-bottom: 2px
+              .big-money
+                font-family: PingFangSC-Semibold
+                font-size: $font-size-large-xx
+                color: $color-orange
+                margin-left: 1px
+                margin-right: 5px
+              .del-money
+                font-family: PingFangSC-Light
+                font-size: $font-size-small
+                color: $color-text-d
+                text-decoration: line-through
+                margin-bottom: 2px
+                white-space: nowrap
+          .item-right-down
+            display: flex
+            align-items: flex-end
+            justify-content: space-between
+            .sale-count
+              padding: 2.5px 5px
+              font-family: PingFangSC-Light
+              font-size: $font-size-small-s
+              color: $color-orange
+              background: rgba(255,78,0,0.1)
+              border-radius: 2px
+              margin-right: 8px
+            .item-right-btn
+              width: 65px
+              height: 24px
+              border-radius: 12px
+              background: $color-orange
+              font-family: PingFangSC-Medium
+              font-size: $font-size-small
+              color: $color-white
+              line-height: 24px
+              text-align: center
 </style>

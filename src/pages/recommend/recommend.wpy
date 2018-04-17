@@ -53,10 +53,12 @@
     ></recom-giftbat>
 
     <view class="group-buy" wx:if="{{true}}">
-      <view class="group-buy-head">
-        <view class="group-buy-title">团购火拼</view>
-        <image class="group-buy-arrow" wx:if="{{imageUri}}" src="{{imageUri + '/defaults/c-image/recom/icon-arrows@2x.png'}}"></image>
-      </view>
+      <navigator url="/pages/group-buy/group-buy" hover-class="none">
+        <view class="group-buy-head">
+          <view class="group-buy-title">团购火拼</view>
+          <image class="group-buy-arrow" wx:if="{{imageUri}}" src="{{imageUri + '/defaults/c-image/recom/icon-arrows@2x.png'}}"></image>
+        </view>
+      </navigator>
       <swiper class="group-buy-content" duration="300" current="{{saleIdx}}" bindchange="swiperMove">
         <block wx:for="{{[1,2,3]}}" wx:key="{{item}}" wx:key="{{index}}">
           <swiper-item wx:if="{{true}}">

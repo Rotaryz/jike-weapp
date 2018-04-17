@@ -113,7 +113,8 @@
         'pages/pay-coupon/pay-coupon',
         'pages/pay-success/pay-success',
         'pages/hot-sale/hot-sale',
-        'pages/content-discovery/content-discovery'
+        'pages/content-discovery/content-discovery',
+        'pages/group-buy/group-buy'
       ],
       window: {
         backgroundColor: '#F9F9F9',
