@@ -77,7 +77,7 @@
       Toast,
       Underline
     }
-
+//    wx.setNavigationBarColor(OBJECT)导航条颜色
     data = {
       checkIdx: 0,
       imageUrlHead: URIS.image,
@@ -219,7 +219,7 @@
         .myRedPacket-list-item
           padding: 0 12px
           height: 45px
-          border-bottom: 1px solid $color-row-line
+          border-top: 1px solid $color-row-line
           display: flex
           align-items: center
           justify-content: space-between
