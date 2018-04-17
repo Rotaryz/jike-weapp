@@ -1,0 +1,117 @@
+<template>
+    <view class="ro-bank-card">
+      <view class="ro-bank-card-item">
+        <view class="ro-bank-card-name">姓名</view>
+        <input type="text" placeholder="持卡人姓名" class="ro-bank-content" placeholder-class="ro-bank-content-place" @input="getCardName"/>
+      </view>
+      <view class="ro-bank-card-item">
+        <view class="ro-bank-card-name">开户银行</view>
+        <picker mode="selector" value="" @chang="getBank"
+                range="{{industries}}" range-key="{{'name'}}">
+          <view class="ro-bank-content ro-bank-content-place">选择开户银行</view>
+        </picker>
+        <image class="ro-bank-card-icon" wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/c-image/square/icon-s_right1@2x.png'}}"></image>
+      </view>
+      <view class="ro-bank-card-item">
+        <view class="ro-bank-card-name">银行卡号</view>
+        <input type="number" placeholder="输入银行卡号" maxlength="23" class="ro-bank-content" placeholder-class="ro-bank-content-place" @input="getCardNum"/>
+      </view>
+      <view class="ro-bank-card-btn-box">
+        <view class="ro-bank-card-btn {{submit ? '' : 'ro-bank-card-disable'}}">确定</view>
+      </view>
+    </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import base from 'common/mixins/base'
+  import URIS from 'common/js/config'
+  import {ERR_OK} from 'api/base'
+
+  export default class bankCard extends wepy.page {
+    mixins = [base]
+
+    config = {
+      navigationBarTitleText: '绑定银行卡'
+    }
+    data = {
+      imageUrl: URIS.image,
+      cardNum: '',
+      cardName: '',
+      bank: '',
+      submit: false
+    }
+
+    checkBtn() {
+      if (this.cardNum && this.cardName && this.bank) {
+        this.submit = true
+      }
+    }
+
+    methods = {
+      getCardNum(e) {
+        this.cardNum = e.detail.value
+        this.checkBtn()
+      },
+      getCardName(e) {
+        this.cardName = e.detail.value
+        this.checkBtn()
+      },
+      getBank(e) {
+        console.log(e)
+        this.checkBtn()
+      }
+    }
+
+    infoRes(res) {
+      if (res.error === ERR_OK) {
+        return res.data
+      }
+    }
+  }
+</script>
+
+<style lang="stylus">
+    @import '../../common/stylus/variable'
+    @import '../../common/stylus/mixin'
+  .ro-bank-card-item
+    background :$color-white
+    height: 43.5px
+    display :flex
+    align-items :center
+    border-bottom :0.5px solid $color-col-line
+    padding-left :$padding-all
+    font-size :$font-size-medium
+    white-space :nowrap
+    position: relative
+    .ro-bank-card-name
+      min-width: 56px
+      color :$color-text-d
+    .ro-bank-content
+      color :$color-text
+    .ro-bank-content
+      margin-left: 30px
+    .ro-bank-content-place
+      color :#B6B6B6
+    .ro-bank-card-icon
+      position: absolute
+      col-center()
+      right: 12px
+      height: 10px
+      width: 6px
+  .ro-bank-card-btn-box
+    padding :20.5px $padding-all
+    border-bottom :0.5px solid $color-col-line
+    background :$color-white
+    .ro-bank-card-btn
+      width:100%
+      color :$color-white
+      height: 43px
+      line-height: 43px
+      text-align:center
+      background :#706B82
+      font-size :$font-size-medium
+      border-radius :2px
+    .ro-bank-card-disable
+      opacity :0.5
+</style>
