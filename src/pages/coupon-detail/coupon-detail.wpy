@@ -3,7 +3,7 @@
     <coupon type="pay" :content.sync="coupon" :industry.sync="industry"></coupon>
   </view>
   <scroll-view class="coupon-detail" scroll-y="{{!share}}">
-    <cover-view class="ro-share-money"></cover-view>
+    <cover-view class="ro-share-money" wx:if="{{share}}"></cover-view>
     <view class="slider-wrapper">
       <slider :list.sync="promotionImages">
         <block slot="content">
@@ -647,9 +647,9 @@
 
     /*分享赚钱*/
   .ro-share-money
-    height: 100%
+    height: 100vh
     width: 100vw
-    position: absolute
+    position: fixed
     z-index: 1000
     top: 0
     left: 0
