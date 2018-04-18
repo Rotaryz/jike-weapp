@@ -17,7 +17,7 @@
           <view class="coupon-msg-item">单笔订单只能使用一张券</view>
           <view class="coupon-msg-item">使用后不可退</view>
           <view class="coupon-msg-item" wx:if="{{coupon.config.max_reduction > 0}}">最高优惠{{coupon.config.max_reduction ? coupon.config.max_reduction : ''}}元</view>
-          <view class="coupon-msg-item">{{coupon.note.scope_application === -1 ? '全场通用' : coupon.note.scope_application}}</view>
+          <view class="coupon-msg-item" wx:if="{{coupon.note.scope_application}}">{{coupon.note.scope_application === -1 ? '全场通用' : coupon.note.scope_application}}</view>
           <view class="coupon-msg-item" wx:if="{{coupon.stock.restriction}}">{{coupon.stock.restriction}}</view>
           <view class="coupon-msg-item" wx:if="{{coupon.not_allow_time}}">{{coupon.not_allow_time}}</view>
           <view class="coupon-msg-item" wx:if="{{coupon.note.remarks}}">{{coupon.note.remarks}}</view>
