@@ -515,7 +515,11 @@
     methods = {
       switchRecommend() {
         const merchantId = this.currentMerchant.merchant_id
+
 //        this.$parent.updateGlobalData('merchantId', merchantId)
+        let lastMerchantId = wepy.getStorageSync('merchantId') ? wepy.getStorageSync('merchantId') : ''
+        wepy.setStorageSync('LastMerchant', lastMerchantId)
+        wepy.setStorageSync('scene', 11001)
         wepy.setStorageSync('merchantId', merchantId)
         wepy.switchTab({url: '/pages/recommend/recommend'})
       },

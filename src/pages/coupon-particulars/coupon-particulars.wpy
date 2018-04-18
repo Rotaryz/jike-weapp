@@ -54,8 +54,11 @@
       latitude: ''
     }
 
-    async onLoad(option) {
+    async onShow() {
       await this.showIndustry()
+    }
+
+    async onLoad(option) {
       const res = await wepy.getLocation({type: 'gcj02'})
       this.couponId = option.id ? option.id : ''
       this.longitude = res.longitude
@@ -97,6 +100,10 @@
           this.$apply()
         } else {
 //          立即去使用
+          let lastMerchantId = wepy.getStorageSync('merchantId') ? wepy.getStorageSync('merchantId') : ''
+          wepy.setStorageSync('LastMerchant', lastMerchantId)
+          wepy.setStorageSync('scene', 13202)
+          wepy.setStorageSync('token', coupon.merchant_id)
           this.$navigate('/pages/pay/pay')
         }
       }

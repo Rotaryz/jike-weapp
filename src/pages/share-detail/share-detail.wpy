@@ -15,7 +15,7 @@
         </block>
       </slider>
     </view>
-    <view class="ro-share-content">
+    <view class="ro-share-content-detail">
       <view class="ro-share-name">国颐堂养发护发套餐服务</view>
       <view class="ro-share-content-buy">100人已购买</view>
       <view class="ro-share-content-price">
@@ -150,7 +150,7 @@
         .slide-image
           width: 100%
 
-  .ro-share-content
+  .ro-share-content-detail
     position: relative
     padding: 11px 12px 20.5px 12px
     box-sizing: border-box
@@ -250,9 +250,9 @@
 
 
   .ro-share-more
-    background :$color-white
     margin-top: 10px
-    padding: 17.5px 0 44px 0
+    box-sizing :border-box
+    padding: 17.5px $padding-all 44px $padding-all
     .ro-share-more-text
       font-size :$font-size-medium
       font-family :$font-family-light
@@ -272,6 +272,8 @@
           left:31.25px
         &:after
           left: -74.25px
+    .ro-share-item
+      border :0.5px solid $color-row-line
   .ro-get-share
     position: fixed
     bottom: 0
