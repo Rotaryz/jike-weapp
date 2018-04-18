@@ -20,7 +20,7 @@
     <view class="desc-wrapper">
       <view class="description">
         <view class="name">{{coupon.title !== undefined ? coupon.title : ''}}</view>
-        <view class="limit">{{coupon.stock !== undefined ? coupon.stock === -1 ? '不限量' : '限量' + coupon.stock + '件' : ''}}</view>
+        <view class="limit">{{coupon.stock !== undefined ? coupon.stock * 1 === -1 ? '不限量' : '限量' + coupon.stock + '件' : ''}}</view>
         <view class="price-wrapper">
           <view class="price">
             <text class="rmb">¥</text>

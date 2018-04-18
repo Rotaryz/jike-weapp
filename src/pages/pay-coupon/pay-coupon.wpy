@@ -31,6 +31,7 @@
       <view class="desc">没有该店铺优惠卷</view>
     </view>
   </view>
+  <view class="pay-coupon-block" wx:if="{{couponBlock}}"></view>
 </template>
 
 <script>
@@ -49,7 +50,8 @@
       couponList: [],
       noCouponList: [],
       type: 'pay',
-      noUseDiscountBtn: false
+      noUseDiscountBtn: false,
+      couponBlock: false
     }
 
     async onLoad(options) {
@@ -109,6 +111,7 @@
           return item
         })
         this.noUseDiscountBtn = true
+        this.couponBlock = true
         this.$apply()
         wepy.removeStorageSync('choiceCoupon')
         wepy.setStorageSync('discountType', 'you')
@@ -143,6 +146,7 @@
           }
           return item
         })
+        this.couponBlock = true
         this.$apply()
         this.$parent.globalData.noUseDiscountBtn = false
         wepy.setStorageSync('choiceCoupon', coupon)
@@ -159,6 +163,13 @@
 
 <style lang="stylus">
   @import "../../common/stylus/variable"
+  .pay-coupon-block
+    position: fixed
+    left: 0
+    top: 0
+    width: 100%
+    height: 100%
+    z-index: 88
   .no-use-coupon
     display: flex
     flex-direction: row

@@ -40,6 +40,7 @@
       <view class="integral-null-text">播豆可以当人民币花哦！</view>
     </view>
   </view>
+  <underline></underline>
   <toast></toast>
 </template>
 
@@ -49,28 +50,76 @@
   import URIS from 'common/js/config'
   import Toast from '@/base/toast/toast'
   import {ERR_OK} from 'api/base'
+  import users from 'common/mixins/users'
   import base from 'common/mixins/base'
+  import Underline from '@/base/underline-block/underline-block'
 
+  const PAGELIMIT = 10
+
+  /* eslint-disable no-undef */
   export default class page extends wepy.page {
-    mixins = [base]
+    mixins = [base, users]
     data = {
       imageUri: URIS.image,
       integralList: [],
-      currentScore: 0
+      currentScore: 0,
+      page: 1,
+      isAll: false
     }
 
     async onLoad() {
-      await this._load()
+      await this._load(this.page)
+      this.loaded()
     }
 
-    async _load() {
-      let res = await Integral.getIntegralTotal()
+    async onPullDownRefresh() {
+      this._resetConfig()
+      await this._load(this.page)
+      this.loaded()
+      wx.stopPullDownRefresh()
+    }
+    async onReachBottom() {
+      if (this.isAll) return
+      this.page++
+      this._getMoreIntegral(this.page)
+      this.loaded()
+    }
+
+    // 检查是否查询了全部
+    _checkIsAll(res) {
+      if (this.integralList.length % PAGELIMIT !== 0 || this.integralList.length === res.meta.total * 1) {
+        this.$invoke('underline', 'show')
+        this.isAll = true
+      }
+    }
+
+    // 重置配置
+    _resetConfig() {
+      this.$invoke('underline', 'hide')
+      this.page = 1
+      this.isAll = false
+      this.$apply()
+    }
+
+    // 获取最新数据
+    async _load(page) {
+      let res = await Integral.getIntegralTotal(page)
       if (res.error === ERR_OK) {
-        this.integralList = res.data || []
+        this.integralList = res.data
         this.currentScore = res.currentScore || 0
         this.$apply()
+        this._checkIsAll(res)
       }
-      this.loaded()
+    }
+
+    // 下拉刷新数据
+    async _getMoreIntegral(page) {
+      let res = await Integral.getIntegralTotal(page)
+      if (res.error === ERR_OK) {
+        this.integralList.push(...res.data)
+        this.$apply()
+        this._checkIsAll(res)
+      }
     }
 
     methods = {
@@ -84,11 +133,14 @@
     }
 
     components = {
-      toast: Toast
+      toast: Toast,
+      underline: Underline
     }
 
     config = {
-      navigationBarTitleText: '我的播豆'
+      navigationBarTitleText: '我的播豆',
+      backgroundTextStyle: 'dark',
+      enablePullDownRefresh: true
     }
   }
 </script>

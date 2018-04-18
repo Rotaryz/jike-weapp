@@ -108,7 +108,7 @@
       }
     }
 
-    // 系统自动选劵
+    // 系统自动选券
     _getUsableCouponList(ids) {
       let arr = []
       this.$parent.globalData.couponList.map((item) => {
@@ -177,7 +177,7 @@
       this.$apply()
     }
 
-    // 自己选择的优惠劵判断
+    // 自己选择的优惠券判断
     _youUsableCouponList() {
       let youDiscountMoney = this.allMoneyInput - this.noDiscountInput
       var youStorage = wepy.getStorageSync('choiceCoupon')
@@ -231,10 +231,10 @@
     _bigDiscountMoney() {
       let discountMoney = this.allMoneyInput - this.noDiscountInput
       this.bigDiscounts = false
-      if (this.usableCoupon !== '') {
+      if (this.usableCoupon && this.usableCoupon.promotion) {
         switch (this.usableCoupon.promotion.promotion_type) {
           case ('discount'):
-            if (discountMoney - (discountMoney * (parseFloat(this.usableCoupon.promotion.config.discount) / 10)) >= parseFloat(this.usableCoupon.promotion.config.max_reduction) && this.usableCoupon.promotion.config.max_reduction !== -1) {
+            if ((discountMoney - (discountMoney * (parseFloat(this.usableCoupon.promotion.config.discount) / 10))).toFixed(2) >= parseFloat(this.usableCoupon.promotion.config.max_reduction) && this.usableCoupon.promotion.config.max_reduction !== -1) {
               this.bigDiscounts = true
             }
         }
