@@ -36,7 +36,7 @@
   import URIS from 'common/js/config'
   import Underline from '@/base/underline-block/underline-block'
 
-  export default class GoodShops extends wepy.page {
+  export default class GroupBuy extends wepy.page {
     mixins = [base]
 
     config = {

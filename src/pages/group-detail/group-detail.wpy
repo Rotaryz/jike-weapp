@@ -1,0 +1,276 @@
+<template>
+  <view class="group-detail">
+    <view class="group-detail-head">
+      <view class="group-item">
+        <view class="group-item-content">
+          <view class="item-left">
+            <image class="item-left-img" src=""></image>
+          </view>
+          <view class="item-right">
+            <view class="item-title">很多韩国复旦复华减肥法</view>
+            <view class="item-money">
+              <text class="red-small-txt">团购价：</text>
+              <text class="red-small-money">¥</text>
+              <text class="red-big-money">100</text>
+              <text class="gray-small-money">原价：¥ </text>
+              <text class="gray-big-money">298.8</text>
+            </view>
+            <view class="item-count">2人团</view>
+          </view>
+        </view>
+      </view>
+      <view class="group-detail-main">
+        <view class="main-msg">
+          <view class="msg-title">还差<text class="red-count">2</text>人，快喊小伙伴一起来拼团吧</view>
+          <view class="msg-time">该团倒计时:<text class="time-txt">00</text>天<text class="time-txt">00</text>时<text class="time-txt">00</text>分<text class="time-txt">00</text>秒</view>
+          <view class="msg-status" wx:if="{{false}}">
+            <image class="msg-status-img" wx:if="{{imageUrlHead}}" src="{{imageUrlHead + '/defaults/c-image/mine/icon-group_success@2x.png'}}"></image>
+            <image class="msg-status-img" wx:if="{{imageUrlHead && false}}" src="{{imageUrlHead + '/defaults/c-image/mine/icon-group_fail@2x.png'}}"></image>
+            <view class="msg-status-txt">拼团成功！</view>
+          </view>
+          <view class="group-avatar-list">
+            <view class="group-avatar-box" wx:for="12345" wx:key="{{index}}">
+              <image class="group-avatar-img" src="" wx:if="{{false}}"></image>
+              <image class="group-avatar-txt" wx:if="{{imageUrlHead}}" src="{{imageUrlHead + '/defaults/c-image/mine/icon-group_ques@2x.png'}}"></image>
+            </view>
+          </view>
+          <view class="group-red-btn" wx:if="{{false}}">我要参团</view>
+          <view class="group-red-btn" wx:if="{{true}}" @tap="showShareModal">邀请好友拼团</view>
+          <view class="group-white-btn" wx:if="{{true}}">查看订单详情</view>
+          <view class="group-red-btn" wx:if="{{false}}">查看更多团购</view>
+        </view>
+      </view>
+    </view>
+    <toast></toast>
+    <share :qrcode.sync="qrcode" :detail.sync="coupon" :promotionImages.sync="promotionImages"></share>
+  </view>
+</template>
+
+<script>
+  /* eslint-disable no-undef */
+  import wepy from 'wepy'
+  import base from 'common/mixins/base'
+  import {ERR_OK} from 'api/base'
+  import URIS from 'common/js/config'
+  import Share from '@/base/share/share'
+  import Toast from '@/base/toast/toast'
+  import PostOrder from '@/base/post-order/post-order'
+
+  export default class GroupDetail extends wepy.page {
+    mixins = [base]
+
+    config = {
+      navigationBarTitleText: '拼团详情',
+      navigationBarBackgroundColor: '#fff',
+      navigationBarTextStyle: 'black',
+      backgroundColor: '#f9f9f9'
+    }
+
+    data = {
+      imageUrlHead: URIS.image
+    }
+
+    onShareAppMessage(res) {
+      const user = wepy.getStorageSync('user')
+      if (res.from === 'button') {
+        // 来自页面内转发按钮
+//        console.log(res.target)
+      }
+      return {
+        title: user.nickName + '邀请你购买优惠券',
+        path: this.currentPage,
+        success: async () => {
+          // 转发成功
+        },
+        fail: (res) => {
+          // 转发失败
+          console.log(res)
+        }
+      }
+    }
+
+    async onLoad() {
+      await this.load()
+      this.$invoke('underline', 'show')
+      this.loaded()
+    }
+
+    async load() {
+
+    }
+
+    methods = {
+      showShareModal() {
+        this.$invoke('share', 'show', 'group')
+      }
+    }
+
+    components = {
+      'share': Share,
+      'post-order': PostOrder,
+      'toast': Toast
+    }
+  }
+</script>
+
+<style lang="stylus">
+  @import "../../common/stylus/variable"
+  @import "../../common/stylus/mixin"
+
+  .group-detail
+    width: 100%
+    .group-detail-head
+      background: $color-white
+      .group-item
+        padding-left: 12px
+        .group-item-content
+          display: flex
+          height: 84px
+          padding: 14px 0
+          border-bottom: 0.5px solid $color-col-line
+          .item-left
+            width: 84px
+            height: 84px
+            box-sizing: border-box
+            border: 0.5px solid $color-col-line
+            border-radius: 3px
+            overflow: hidden
+            margin-right: 13px
+            .item-left-img
+              width: 100%
+              height: 100%
+          .item-right
+            padding-top: 3px
+            overflow: hidden
+            .item-title
+              font-family: PingFangSC-Regular
+              font-size: $font-size-medium
+              letter-spacing: 0.42px
+              overflow: hidden
+              text-overflow: ellipsis
+              white-space: nowrap
+            .item-money
+              margin-top: 8px
+              display: flex
+              align-items: flex-end
+              overflow: hidden
+              white-space: nowrap
+              .red-small-txt
+                font-size: $font-size-small
+                color: $color-orange
+                margin-bottom: 1px
+              .red-small-money
+                font-family: PingFangSC-Regular
+                font-size: $font-size-small-s
+                color: $color-orange
+                margin-bottom: 1px
+              .red-big-money
+                font-family: PingFangSC-Semibold
+                font-size: $font-size-large
+                color: $color-orange
+              .gray-small-money
+                margin-left: 15px
+                font-size: $font-size-small-s
+                color: $color-text-ddd
+                margin-bottom: 1px
+              .gray-big-money
+                font-size: $font-size-small
+                color: $color-text-ddd
+                margin-bottom: 1px
+            .item-count
+              margin-top: 20px
+              display: inline-block
+              padding: 2.5px 5px
+              font-family: PingFangSC-Light
+              font-size: $font-size-small-s
+              color: $color-orange
+              background: rgba(255,78,0,0.1)
+              border-radius: 2px
+      .group-detail-main
+        background: $color-white
+        padding-bottom: 30px
+        .main-msg
+          .msg-title
+            font-size: $font-size-medium
+            text-align: center
+            padding-top: 29px
+            margin-bottom: 15px
+            .red-count
+              margin: 0 5px
+              color: $color-orange
+          .msg-time
+            line-height: 16px
+            text-align: center
+            font-size: $font-size-small-s
+            color: $color-text-d
+            .time-txt
+              display: inline-block
+              width: 16px
+              height: 16px
+              margin: 0 4px
+              border-radius: 2px
+              background: $color-main
+              color: $color-white
+              font-size: $font-size-small-s
+              text-align: center
+          .msg-status
+            display: flex
+            flex-direction: column
+            justify-content: flex-end
+            align-items: center
+            height: 104px
+            .msg-status-img
+              width: 58.5px
+              height: 47.5px
+              margin-bottom: 7px
+            .msg-status-txt
+              font-size: $font-size-medium-x
+          .group-avatar-list
+            padding: 25px 0
+            display: flex
+            justify-content: center
+            .group-avatar-box
+              width: 34px
+              height: 34px
+              box-sizing: border-box
+              border: 0.5px solid $color-col-line
+              border-radius: 50%
+              overflow: hidden
+              margin-right: 38px
+              position: relative
+              &:last-child
+                margin-right: 0
+              .group-avatar-img
+                width: 100%
+                height: 100%
+              .group-avatar-txt
+                width: 18px
+                height: 18px
+                position: absolute
+                all-center()
+
+          .group-red-btn
+            width: 85vw
+            height: 11.733vw
+            text-align: center
+            line-height: 11.733vw
+            background: $color-orange
+            color: $color-white
+            margin: 0 auto
+            border-radius: 2px
+            font-family: PingFangSC-Regular
+            font-size: $font-size-medium
+          .group-white-btn
+            width: 85vw
+            height: 11.733vw
+            text-align: center
+            line-height: 11.733vw
+            background: $color-white
+            box-sizing: border-box
+            border: 1px solid $color-col-line
+            color: $color-text-d
+            margin: 10px auto 0
+            border-radius: 2px
+            font-family: PingFangSC-Regular
+            font-size: $font-size-medium
+</style>
