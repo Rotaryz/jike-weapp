@@ -48,7 +48,7 @@
       imageUri: URIS.image,
       couponList: [],
       noCouponList: [],
-      type: 'pay',
+      type: 'share',
       noUseDiscountBtn: false
     }
 

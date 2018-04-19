@@ -15,6 +15,18 @@
         </block>
       </slider>
     </view>
+    <view class="ro-share-peo-cover"></view>
+    <swiper class="ro-share-peo" autoplay="{{autoplay}}" interval="5000" circular="{{circular}}" vertical>
+      <block wx:for="{{2}}" wx:key="{{index}}">
+        <swiper-item>
+          <view class="ro-share-peo-item">
+            <image class="ro-share-peo-header"></image>
+            <view class="ro-share-peo-name">潘大爷爷</view>
+            <view class="ro-share-peo-content">刚刚赚到了100元</view>
+          </view>
+        </swiper-item>
+      </block>
+    </swiper>
     <view class="ro-share-content-detail">
       <view class="ro-share-name">国颐堂养发护发套餐服务</view>
       <view class="ro-share-content-buy">100人已购买</view>
@@ -53,7 +65,7 @@
         <share-item></share-item>
       </repeat>
     </view>
-    <view class="ro-get-share">立即分享</view>
+    <view class="ro-get-share" @tap="shares">立即分享</view>
   </scroll-view>
   <toast></toast>
   <rule>
@@ -68,7 +80,7 @@
       <view class="ro-rule-tip">抵用券：仅限该商品和业务使用</view>
     </view>
   </rule>
-  <share></share>
+  <share :qrcode.sync="qrcode" :detail.sync="coupon" :promotionImages.sync="promotionImages"></share>
 </template>
 
 <script>
@@ -81,6 +93,7 @@
   import Rule from '@/base/rule/rule'
   import Slider from '@/base/slider/slider'
   import Share from '@/base/share/share'
+  import Info from 'api/info'
 
   export default class shareDetail extends wepy.page {
     mixins = [base]
@@ -89,16 +102,65 @@
       navigationBarTitleText: '分享赚钱'
     }
     data = {
+      circular: true,
+      autoplay: true,
       scroll: true,
-      imageUrl: URIS.image
+      imageUrl: URIS.image,
+      qrcode: '',
+      promotionImages: [],
+      shop: '',
+      coupon: {}, // 优惠券详情
+      currentPage: ''
     }
 
+    async onReady() {
+      await this._createQrcode()
+    }
+//    分享
+    onShareAppMessage(res) {
+      if (res.from === 'button') {
+        // 来自页面内转发按钮
+//        console.log(res.target)
+      }
+      return {
+//        商品名称
+        title: '',
+        path: this.currentPage,
+        success: () => {
+
+        },
+        fail: (res) => {
+          // 转发失败
+          console.log(res)
+        }
+      }
+    }
     infoRes(res) {
       if (res.error === ERR_OK) {
         return res.data
       }
     }
+
+    async _createQrcode() {
+      let currentMerchant = wepy.getStorageSync('merchantId') ? wepy.getStorageSync('merchantId') : ''
+      setTimeout(async () => {
+        this.currentPage = `/pages/live/live?currentMerchant=${currentMerchant}`
+        const res = await Info.createQrode({path: this.currentPage})
+        this.loaded()
+        this.qrcode = res.data.image_url
+        this.$apply()
+      }, 20)
+    }
     methods ={
+//      绘制图片
+      async sharePunchLine() {
+        await this.$invoke('share', 'generatePicture')
+      },
+      shares() {
+//        首图
+//        this.promotionImages = this.
+        this.$invoke('share', 'show', 'shareMoney')
+      },
       getRule() {
         this.scroll = false
         this.$invoke('rule', 'shoeRule')
@@ -250,7 +312,6 @@
 
 
   .ro-share-more
-    margin-top: 10px
     box-sizing :border-box
     padding: 17.5px $padding-all 44px $padding-all
     .ro-share-more-text
@@ -288,25 +349,69 @@
     line-height: 44px
     z-index: 1500
 
-.ro-rule-content
-  margin-top: 12px
-  padding :0 9.5px 19.75px
-  border-bottom 0.5px dashed $color-col-line
-  &:last-child
-    border-bottom :none
-  .ro-rule-text
+  .ro-rule-content
+    margin-top: 12px
+    padding :0 9.5px 19.75px
+    border-bottom 0.5px dashed $color-col-line
+    &:last-child
+      border-bottom :none
+    .ro-rule-text
+      font-size :$font-size-small
+      font-family :$font-family-light
+      color :$color-text
+    .ro-rule-img
+      margin-top: 10px
+      width: 192.5px
+      height: 47px
+      margin-left: 47px
+    .ro-rule-tip
+      margin-top: 15px
+      font-size :$font-size-small
+      font-family :$font-family-light
+      text-align :center
+      color :$color-text-d
+
+
+  .ro-share-peo-cover
+    position:absolute
+    top: 10px
+    left: 7.5px
+    height: 25.5px
+    width: 180px
+    z-index: 1600
+    background :transparent
+
+  .ro-share-peo
+    position: absolute
+    z-index: 1000
+    top: 10px
+    left: 7.5px
+    height: 25.5px
+    width: 180px
+    border-radius: 100px
     font-size :$font-size-small
-    font-family :$font-family-light
-    color :$color-text
-  .ro-rule-img
-    margin-top: 10px
-    width: 192.5px
-    height: 47px
-    margin-left: 47px
-  .ro-rule-tip
-    margin-top: 15px
-    font-size :$font-size-small
-    font-family :$font-family-light
-    text-align :center
-    color :$color-text-d
+    background: rgba(37,36,57,.8)
+    .ro-share-peo-item
+      height: 100%
+      display :flex
+      align-items: center
+      .ro-share-peo-header
+        height :20px
+        width: @height
+        margin-left: 3px
+        border-radius :50%
+        background :$color-white
+      .ro-share-peo-name
+        width: 36px
+        color :$color-white
+        margin-left: 6px
+        white-space :nowrap
+        overflow :hidden
+      .ro-share-peo-content
+        width:102px
+        margin-left: 5px
+        white-space :nowrap
+        overflow :hidden
+        color :$color-white
+
 </style>
