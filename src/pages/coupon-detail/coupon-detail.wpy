@@ -16,9 +16,30 @@
           </repeat>
         </block>
       </slider>
+
+      <view class="group-person-box">
+        <swiper class="group-person-list" autoplay circular vertical="{{true}}">
+          <block wx:for="{{personList}}" wx:key="{{index}}">
+            <swiper-item class="group-person-item">
+              <view class="person-img-box">
+                <image class="person-img" src=""></image>
+              </view>
+              <view class="person-name">大个旋{{item}}</view>
+              <view class="person-txt">刚刚赚到了800元</view>
+            </swiper-item>
+          </block>
+        </swiper>
+      </view>
+
     </view>
+
+    <view class="group-time-run">
+      <view class="group-time-left">2人团</view>
+      <view class="group-time-right">距离活动结束还剩:<text class="day-txt">{{groupEndTime.day}}</text>天<text class="time-txt">{{groupEndTime.hour}}</text>时<text class="time-txt">{{groupEndTime.minute}}</text>分<text class="time-txt">{{groupEndTime.second}}</text>秒</view>
+    </view>
+
     <view class="desc-wrapper">
-      <view class="description">
+      <view class="description" wx:if="{{false}}">
         <view class="name">{{coupon.title !== undefined ? coupon.title : ''}}</view>
         <view class="limit">{{coupon.stock !== undefined ? coupon.stock * 1 === -1 ? '不限量' : '限量' + coupon.stock + '件' : ''}}</view>
         <view class="price-wrapper">
@@ -32,6 +53,19 @@
                    src="{{imageUri + '/defaults/c-image/recommend/icon-many.png'}}"></image>
             <text class="font">{{coupon.collected !== undefined ? coupon.collected : ''}}人已购买</text>
           </view>
+        </view>
+      </view>
+      <view class="group-description">
+        <view class="group-name">环境换个环境和法国警方和高房价的好地方的</view>
+        <view class="group-limit">100人已购买</view>
+        <view class="group-money-box">
+          <view class="group-icon-box">
+            <image class="group-icon" wx:if="{{imageUri}}" src="{{imageUri + '/defaults/c-image/mine/icon-group_p@2x.png'}}"></image>
+            <view class="group-icon-txt">团购价</view>
+          </view>
+          <view class="small-money">¥</view>
+          <view class="big-money">200</view>
+          <view class="gray-money">现价:¥300</view>
         </view>
       </view>
       <view class="share-wrapper">
@@ -68,15 +102,12 @@
     <view class="buy-button-wrapper border-top-1px">
       <view class="button-group">
         <view class="collect border-right-1px" @tap="collectToggle">
-          <image wx:if="{{imageUri && !isFavorite}}" class="icon"
-                 src="{{imageUri + '/defaults/c-image/recommend/icon-r_collect32@2x.png'}}"></image>
-          <image wx:if="{{imageUri && isFavorite}}" class="icon"
-                 src="{{imageUri + '/defaults/c-image/recommend/icon-r_collection32@2x.png'}}"></image>
+          <image wx:if="{{imageUri && !isFavorite}}" class="icon" src="{{imageUri + '/defaults/c-image/recommend/icon-r_collect32@2x.png'}}"></image>
+          <image wx:if="{{imageUri && isFavorite}}" class="icon" src="{{imageUri + '/defaults/c-image/recommend/icon-r_collection32@2x.png'}}"></image>
           收藏
         </view>
         <button class="customer-service" session-from="{{currentMerchant}}" open-type="contact">
-          <image class="icon" wx:if="{{imageUri}}"
-                 src="{{imageUri + '/defaults/c-image/recommend/icon-r_service32@2x.png'}}"></image>
+          <image class="icon" wx:if="{{imageUri}}" src="{{imageUri + '/defaults/c-image/recommend/icon-r_service32@2x.png'}}"></image>
           客服
         </button>
       </view>
@@ -158,7 +189,20 @@
       showSoya: true,
       shopImages: [],
       share: false,
-      shareStatus: false
+      shareStatus: false,
+      activityStatus: '',
+      personTransition: '',
+      personTransform: '',
+      personIdx: 0,
+      personTimer: '',
+      personList: [1, 2, 3, 1],
+      endTime: 1545753599,
+      groupEndTime: {
+        day: '00',
+        hour: '00',
+        minute: '00',
+        second: '00'
+      }
     }
 
     onShareAppMessage(res) {
@@ -184,7 +228,7 @@
     }
 
     async onLoad(option) {
-      this.share = option.status ? option.status : false
+      this.activityStatus = option.status ? option.status : ''
       await this.showIndustry()
       if (option.scene) {
         let scene = decodeURIComponent(option.scene)
@@ -213,6 +257,7 @@
         await this._getPackageDetail()
       }
       await this._createQrcode()
+      this._groupTimePlay()
       this.loaded()
     }
 
@@ -324,6 +369,35 @@
       }
     }
 
+    _groupTimePlay() {
+      this.groupEndTime = this._groupTimeCheckout(this.endTime)
+      this.$apply()
+      setInterval(() => {
+        this.groupEndTime = this._groupTimeCheckout(this.endTime)
+        this.$apply()
+      }, 1000)
+    }
+
+    _groupTimeCheckout(time) {
+      let nowSecond = parseInt(Date.now() / 1000)
+      let differ = time * 1 - nowSecond
+      let day = Math.floor(differ / (60 * 60 * 24))
+      day = day >= 10 ? day : '0' + day
+      let hour = Math.floor(differ / (60 * 60)) - (day * 24)
+      hour = hour >= 10 ? hour : '0' + hour
+      let minute = Math.floor(differ / 60) - (day * 24 * 60) - (hour * 60)
+      minute = minute >= 10 ? minute : '0' + minute
+      let second = Math.floor(differ) - (day * 24 * 60 * 60) - (hour * 60 * 60) - (minute * 60)
+      second = second >= 10 ? second : '0' + second
+      let times = {
+        day,
+        hour,
+        minute,
+        second
+      }
+      return times
+    }
+
     submit() {
       wepy.pageScrollTo({scrollTop: 0})
       this.orderInfo = {
@@ -395,6 +469,12 @@
       }
     }
 
+    computed = {
+      personBoxHeight() {
+        return this.personList.length * 26
+      }
+    }
+
     components = {
       'phone-test': PhoneTest,
       'service-detail': ServiceDetail,
@@ -445,6 +525,82 @@
           background: $color-master-gray
           .slide-image
             width: 100%
+      .group-person-box
+        position: absolute
+        width: 185px
+        height: 26px
+        background: rgba(37,36,57,0.8)
+        border-radius: 13px
+        left: 7.5px
+        top: 10.5px
+        overflow: hidden
+        .group-person-list
+          width: 100%
+          height: 100%
+          .group-person-item
+            width: 185px
+            height: 26px
+            display: flex
+            align-items: center
+            .person-img-box
+              width: 20px
+              height: 20px
+              border-radius: 50%
+              overflow: hidden
+              box-sizing: border-box
+              margin-left: 3px
+              .person-img
+                width: 100%
+                height: 100%
+                background: $color-white
+            .person-name, .person-txt
+              font-size: $font-size-small
+              color: $color-white
+              overflow: hidden
+              white-space: nowrap
+            .person-name
+              width: 48px
+              margin-left: 6px
+            .person-txt
+              width: 95px
+              margin-left: 5px
+
+    .group-time-run
+      height: 44px
+      margin-bottom: 10px
+      background: $color-white
+      display: flex
+      padding: 0 12px
+      align-items: center
+      justify-content: space-between
+      .group-time-left
+        font-size: $font-size-small
+        color: $color-text-d
+      .group-time-right
+        line-height: 16px
+        text-align: center
+        font-size: $font-size-small-s
+        color: $color-text-d
+        .time-txt
+          display: inline-block
+          width: 16px
+          height: 16px
+          margin: 0 4px
+          border-radius: 2px
+          background: $color-main
+          color: $color-white
+          font-size: $font-size-small-s
+          text-align: center
+        .day-txt
+          display: inline-block
+          height: 16px
+          padding: 0 2px
+          margin: 0 4px
+          border-radius: 2px
+          background: $color-main
+          color: $color-white
+          font-size: $font-size-small-s
+          text-align: center
     .desc-wrapper
       display: flex
       height: 94px
@@ -492,6 +648,9 @@
               display: inline-block
               vertical-align: middle
               font-size: $font-size-small-s
+      .group-description
+        flex: 1
+        padding-top: 11px
       .share-wrapper
         flex: 0 0 48px
         display: flex

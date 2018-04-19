@@ -48,7 +48,9 @@
           <image class="group-status-img" wx:if="{{imageUrlHead}}" src="{{imageUrlHead + '/defaults/c-image/mine/' + item.icon}}"></image>
         </view>
       </view>
-      <view class="group-btn">邀请好友拼团</view>
+      <navigator url="/pages/group-detail/group-detail" hover-class="none">
+        <view class="group-btn">邀请好友拼团</view>
+      </navigator>
     </view>
 
     <view class="orderDetail-merchant">
@@ -79,9 +81,25 @@
 
     <view class="group-order-msg">
       <view class="group-order-msg-item">
-        <view class="group-order-title"></view>
+        <view class="group-order-title">商品金额</view>
         <view class="group-order-money">
           <view class="small-money">¥</view>
+          <view class="big-money">200</view>
+        </view>
+      </view>
+      <view class="group-order-msg-item">
+        <view class="group-order-title">团购优惠</view>
+        <view class="group-order-money" wx:if="{{false}}">
+          <view class="small-money">¥</view>
+          <view class="big-money">200</view>
+        </view>
+        <view class="group-order-txt">暂无优惠</view>
+      </view>
+      <view class="group-order-msg-item">
+        <view class="group-order-title">实付金额</view>
+        <view class="group-order-money">
+          <view class="small-money">¥</view>
+          <view class="big-money">200</view>
         </view>
       </view>
     </view>
@@ -603,6 +621,33 @@
         view:last-child
           border-right: 0 none
 
+    .group-order-msg
+      margin-top: 10px
+      background: $color-white
+      padding-left: 12px
+      .group-order-msg-item
+        display: flex
+        height: 40px
+        align-items: center
+        justify-content: space-between
+        border-bottom: 0.5px solid $color-col-line
+        &:last-child
+          border-bottom: 0 none
+        .group-order-title
+          font-size: $font-size-medium
+        .group-order-money
+          display: flex
+          align-items: flex-end
+          margin-right: 12px
+          .small-money
+            font-size: $font-size-small-s
+          .big-money
+            font-family: PingFangSC-Regular
+            font-size: $font-size-medium
+        .group-order-txt
+          font-size: $font-size-small
+          color: #A1A1A1
+          margin-right: 12px
     .orderDetail-orderList
       margin-top: 10px
       padding-left: 12px
