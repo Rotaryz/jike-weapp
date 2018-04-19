@@ -310,7 +310,8 @@
         this.$apply()
       },
       'appraiseSuccess': async () => {
-        this.menuIdx = 2
+        this.menuIdx = 3
+        this.menuType = this.menuItems[this.menuIdx].type
         this.page = 1
         this.nothingAdd = false
         let resList = await this._getOrderList(2, 1)
@@ -320,6 +321,7 @@
           return
         }
         this.orderList = resList.data
+        this.noOrder = this.orderList.length === 0 ? 1 : false
         this.$apply()
       }
     }
