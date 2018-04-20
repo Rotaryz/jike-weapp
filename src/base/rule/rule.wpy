@@ -5,7 +5,7 @@
         <view>{{title}}</view>
         <view class="shareAndPrize-rule-head-chunk"></view>
       </view>
-      <slot></slot>
+      <slot name="content"></slot>
     </scroll-view>
     <view class="close-box">
       <image wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/c-image/mine/icon-delet@2x.png'}}" class="shareAndPrize-rule-close" @tap="closeCover"></image>
@@ -40,10 +40,10 @@
         this.$apply()
         this.$emit('closeCover')
       },
-      shoeRule() {
+      showRule() {
         this.coverShow = true
         this.$apply()
-        this.$emit('shoeRule')
+        this.$emit('showRule')
       }
     }
   }

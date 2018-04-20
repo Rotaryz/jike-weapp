@@ -81,12 +81,30 @@
 
     <view class="group-list-box">
       <view class="group-list-head">小伙伴在开团，可直接参加</view>
-      <view class="group-list-container">
-
-      </view>
+      <swiper class="group-list-container" autoplay circular vertical="{{true}}">
+        <block wx:for="{{personList}}" wx:key="{{index}}">
+          <swiper-item class="group-list-swiper">
+            <view class="group-swiper-item" wx:for="12" wx:key="{{index}}">
+              <view class="group-swiper-item-left">
+                <view class="group-swiper-item-avatar-box">
+                  <image class="group-swiper-item-avatar" src=""></image>
+                </view>
+                <view class="group-swiper-item-name">还记得是否会富华大厦发过火</view>
+              </view>
+              <view class="group-swiper-item-right">
+                <view class="group-swiper-time">
+                  <view class="group-swiper-txt">还差2人拼成</view>
+                  <view class="group-swiper-time-txt">剩余10:20:20</view>
+                </view>
+                <view class="group-swiper-item-btn">去参团</view>
+              </view>
+            </view>
+          </swiper-item>
+        </block>
+      </swiper>
       <view class="group-list-foot">
         <view class="group-list-foot-left">支付开团邀请好友参团，可直接参与</view>
-        <view class="group-list-foot-right">
+        <view class="group-list-foot-right" @tap="showGroupRule">
           <view class="group-list-foot-right-txt">玩法详情</view>
           <image class="group-list-foot-right-icon" wx:if="{{imageUri}}" src="{{imageUri + '/defaults/c-image/share/icon-arrows@2x.png'}}"></image>
         </view>
@@ -152,6 +170,13 @@
     <post-order :orderInfo.sync="orderInfo" @throw.user="postOrderFail" :industry.sync="industry"></post-order>
     <toast></toast>
     <popout></popout>
+    <rule title="玩法详情">
+      <block slot="content">
+        <view class="group-rule-img-box">
+          <image class="group-rule-img" wx:if="{{imageUri}}" src="{{imageUri + '/defaults/c-image/mine/icon-group_x@2x.png'}}"></image>
+        </view>
+      </block>
+    </rule>
   </scroll-view>
 </template>
 
@@ -176,6 +201,7 @@
   import URIS from 'common/js/config'
   import {getParams} from 'common/js/data'
   import Popout from '@/base/integral-popout/integral-popout'
+  import Rule from '@/base/rule/rule'
 
   const COUPON_TYPE = 1
   const PACKAGE_TYPE = 2
@@ -210,7 +236,7 @@
       personTransform: '',
       personIdx: 0,
       personTimer: '',
-      personList: [1, 2, 3, 1],
+      personList: [1, 2, 3, 4],
       endTime: 1545753599,
       groupEndTime: {
         day: '00',
@@ -481,6 +507,9 @@
           this.stock = 0
           this.$invoke('post-order', 'hide')
         }
+      },
+      showGroupRule() {
+        this.$invoke('rule', 'showRule')
       }
     }
 
@@ -500,7 +529,8 @@
       'share-modal': BaseModal,
       'post-order': PostOrder,
       'toast': Toast,
-      'popout': Popout
+      'popout': Popout,
+      'rule': Rule
     }
 
     config = {
@@ -749,6 +779,14 @@
       .group-list-container
         height: 109px
         overflow: hidden
+        .group-list-swiper
+          width: 100%
+          height: 100%
+          .group-swiper-item
+            padding-right: 12px
+            height: 54px
+            border-bottom: 0.5px solid $color-col-line
+            display: flex
       .group-list-foot
         display: flex
         justify-content: space-between
@@ -905,6 +943,14 @@
   .cash-show
     background: $color-white
     min-height: 42vh
+  .group-rule-img-box
+    height: 192px
+    display: flex
+    justify-content: center
+    padding-top: 10px
+    .group-rule-img
+      width: 218px
+      height: 192px
 
     /*分享赚钱*/
   .ro-share-money
