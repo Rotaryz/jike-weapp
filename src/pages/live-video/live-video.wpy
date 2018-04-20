@@ -6,12 +6,11 @@
               wx:key="index"
               @tap="conponDetail({{item.promotion_id}},{{index}})">
           <text class="arrows" wx:if="{{showBk === index}}"></text>
-          <image class="con_bk" wx:if="{{imageUrlHead}}"
-                 src="{{imageUrlHead + '/defaults/c-image/live/pic-r_couponbg1@2x.png'}}"
-                 wx:if="{{showBk !== index}}"></image>
-          <image class="con_bk" wx:if="{{imageUrlHead}}"
-                 src="{{imageUrlHead + '/defaults/c-image/live/pic-r_couponbg2@2x.png'}}"
-                 wx:if="{{showBk === index}}"></image>
+          <image class="con_bk {{showBk === index ? 'con_bk-active' : ''}}" wx:if="{{imageUrlHead}}"
+                 src="{{imageUrlHead + '/defaults/c-image/live/pic-coupon_zbyh@3x.png'}}"></image>
+          <!--<image class="con_bk" wx:if="{{imageUrlHead}}"-->
+          <!--src="{{imageUrlHead + '/defaults/c-image/live/pic-r_couponbg2@2x.png'}}"-->
+          <!--wx:if="{{showBk === index}}"></image>-->
           <view class="con-title">
             <view class="top">{{item.promotion_type_cn}}</view>
             <view class="monlogo"><text class="small-money">¥</text><text class="big-money">{{item.promotion_platform_price}}</text></view>
@@ -102,13 +101,13 @@
               </view>
               <view class="content">
                 <!--<view-->
-                  <!--class="circle "></view>-->
+                <!--class="circle "></view>-->
                 <view class="value">
                   {{conDes.note.need_subscribe === 0 ? '不需要预约' : '需要预约'}}
                 </view>
               </view>
             </view>
-            <view class="item-wrapper">
+            <view class="item-wrapper" wx:if="{{conDes.note.can_use_number}}">
               <view class="title ">使用人数：
               </view>
               <view class="content">
@@ -140,7 +139,7 @@
                 </view>
               </view>
             </view>
-            <view class="item-wrapper">
+            <view class="item-wrapper" wx:if="{{conDes.note.remarks}}">
               <view class="title ">备注：
               </view>
               <view class="content">
@@ -379,6 +378,19 @@
     width: 100%
     height: 100%
     row-center()
+    &:before
+      content: ''
+      position: absolute
+      width: 100%
+      height: 2px
+      background :$color-text
+      bottom: 0
+      left: 0
+      border-bottom-right-radius :2px
+      border-bottom-left-radius :2px
+  .con_bk-active
+    &:before
+      background :$color-theme
 
   .con-title
     position: absolute

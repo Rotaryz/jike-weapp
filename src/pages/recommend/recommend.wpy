@@ -321,9 +321,9 @@
       first = newArr[0]
       second = newArr[1]
       third = newArr[2]
-      this.hotFirst = first
-      this.hotSecond = second
-      this.hotThird = third
+      this.hotFirst = first || []
+      this.hotSecond = second || []
+      this.hotThird = third || []
       this.$apply()
       return newArr
     }

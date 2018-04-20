@@ -28,7 +28,7 @@
         <image class="full-image" wx:if="{{imageUri}}"
                src="{{imageUri + '/defaults/b-image/common/pic-empty_coupon@2x.png'}}"></image>
       </view>
-      <view class="desc">没有该店铺优惠卷</view>
+      <view class="desc">没有该店铺优惠券</view>
     </view>
   </view>
   <view class="pay-coupon-block" wx:if="{{couponBlock}}"></view>

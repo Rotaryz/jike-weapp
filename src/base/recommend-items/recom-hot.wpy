@@ -88,10 +88,9 @@
       industryColor: ''
     }
 
-    methods={
+    methods = {
       setIndustry(industry, industryColor) {
         this.industry = industry
-        console.log(this.industry)
         this.industryColor = industryColor
         this.$apply()
       }
@@ -99,19 +98,23 @@
 
     computed = {
       isOnlyOneStyle() {
-        return this.list[0] && (this.list[0].length <= 1 ? 'only-one' : '')
+        if (this.list[0] != null) {
+          return this.list[0].length <= 1 ? 'only-one' : 'not-only-one-undef'
+        } else {
+          return 'only-one'
+        }
       },
       isShowInfoStyle() {
-        return this.length && true
+        return (this.length * 1 && true) || false
       },
       first() {
-        return this.hotFirst || []
+        return this.hotFirst ? this.hotFirst : []
       },
       second() {
-        return this.hotSecond || []
+        return this.hotSecond ? this.hotSecond : []
       },
       third() {
-        return this.hotThird || []
+        return this.hotThird ? this.hotThird : []
       }
     }
 
@@ -137,12 +140,10 @@
         this._navTo(url)
       },
       get(coupon) {
-        console.log(coupon)
         let url = `/pages/coupon-particulars/coupon-particulars?id=${coupon.promotion.id}`
         this._navTo(url)
       },
       use(coupon) {
-        console.log(coupon, 2)
         let url = `/pages/coupon-particulars/coupon-particulars?id=${coupon.promotion.id}`
         this._navTo(url)
       }

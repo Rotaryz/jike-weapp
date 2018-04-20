@@ -1,9 +1,5 @@
 <template>
-  <view class="ro-share-coupon {{shareStatus ? 'ro-share-coupon-active' : ''}}" wx:if="{{share}}">
-    <coupon type="pay" :content.sync="coupon" :industry.sync="industry"></coupon>
-  </view>
-  <scroll-view class="coupon-detail" scroll-y="{{!share}}">
-    <cover-view class="ro-share-money" wx:if="{{share}}"></cover-view>
+  <view class="coupon-detail">
     <view class="slider-wrapper">
       <slider :list.sync="promotionImages">
         <block slot="content">
@@ -177,7 +173,7 @@
         </view>
       </block>
     </rule>
-  </scroll-view>
+  </view>
 </template>
 
 <script>
@@ -546,11 +542,10 @@
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "../../common/stylus/variable"
   @import "../../common/stylus/mixin"
+
   .coupon-detail
-    position: relative
     width: 100%
     padding-bottom: 44px
-    height: 100vh
     .slider-wrapper
       position: relative
       width: 100%

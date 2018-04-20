@@ -27,7 +27,7 @@
             </view>
           </view>
           <view class="content-main-right">
-            <image class="content-main-img" src="{{content.image_url}}" mode="widthFix"></image>
+            <image class="content-main-img" src="{{content.image_url}}" mode="aspectFill"></image>
           </view>
         </view>
       </view>
