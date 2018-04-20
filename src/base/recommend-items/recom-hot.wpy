@@ -91,7 +91,6 @@
     methods={
       setIndustry(industry, industryColor) {
         this.industry = industry
-        console.log(this.industry)
         this.industryColor = industryColor
         this.$apply()
       }
