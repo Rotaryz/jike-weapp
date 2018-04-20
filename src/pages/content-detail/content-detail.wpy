@@ -33,7 +33,7 @@
         <cover-image wx:if="{{imageUri && isFavorite}}" src="{{imageUri + '/defaults/c-image/recommend/icon-collection2@2x.png'}}" class="full-image"></cover-image>
       </cover-view>
       <cover-view class="share-btn" @tap="showShareModal">
-        <cover-image wx:if="{{imageUri}}" src="{{imageUri + '/defaults/c-image/recommend/icon-sharepolite@2x.png'}}" class="full-image"></cover-image>
+        <cover-image wx:if="{{imageUri}}" src="{{imageUri + '/defaults/c-image/recommend/icon-sharepolite@2x.png'}}" class="share-image full-image"></cover-image>
         <cover-view class="red" wx:if="{{contents.activity_share}}">
           <cover-image wx:if="{{imageUri}}" src="{{imageUri + '/defaults/c-image/recommend/pic-openmoney@2x.png'}}" class="full-image"></cover-image>
         </cover-view>
@@ -381,14 +381,17 @@
         position: relative
         width: 50px
         height: 50px
+        .share-image
+          position: relative
+          bottom: -4px
         .red
           position: absolute
-          top: -4px
-          right: -2px
+          top: 0
+          right: 0
           width: 27.5px
           height: 12px
-          image
-            display: block
+          cover-image
+            display: flex
     .base-modal-content
       .header-wrapper
         height: 124.5px
