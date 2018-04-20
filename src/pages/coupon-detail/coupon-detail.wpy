@@ -81,7 +81,7 @@
 
     <view class="group-list-box">
       <view class="group-list-head">小伙伴在开团，可直接参加</view>
-      <swiper class="group-list-container" autoplay circular vertical="{{true}}">
+      <swiper class="group-list-container" autoplay circular vertical="{{true}}" interval="4000">
         <block wx:for="{{personList}}" wx:key="{{index}}">
           <swiper-item class="group-list-swiper">
             <view class="group-swiper-item" wx:for="12" wx:key="{{index}}">
@@ -93,7 +93,7 @@
               </view>
               <view class="group-swiper-item-right">
                 <view class="group-swiper-time">
-                  <view class="group-swiper-txt">还差2人拼成</view>
+                  <view class="group-swiper-txt">还差<text class="red-num">2人</text>拼成</view>
                   <view class="group-swiper-time-txt">剩余10:20:20</view>
                 </view>
                 <view class="group-swiper-item-btn">去参团</view>
@@ -787,6 +787,54 @@
             height: 54px
             border-bottom: 0.5px solid $color-col-line
             display: flex
+            align-items: center
+            justify-content: space-between
+            .group-swiper-item-left
+              display: flex
+              height: 54px
+              align-items: center
+              .group-swiper-item-avatar-box
+                width: 34px
+                height: 34px
+                box-sizing: border-box
+                border: 0.5px solid $color-col-line
+                border-radius: 50%
+                overflow: hidden
+                margin-right: 18px
+                .group-swiper-item-avatar
+                  width: 100%
+                  height: 100%
+              .group-swiper-item-name
+                width: 29vw
+                overflow: hidden
+                text-overflow: ellipsis
+                white-space: nowrap
+                font-size: $font-size-medium
+            .group-swiper-item-right
+              display: flex
+              height: 54px
+              align-items: center
+              .group-swiper-time
+                .group-swiper-txt
+                  font-size: $font-size-small-s
+                  margin-bottom: 4px
+                  .red-num
+                    color: $color-orange
+                    margin: 0 2px
+                .group-swiper-time-txt
+                  font-size: $font-size-small-s
+                  color: $color-text-d
+              .group-swiper-item-btn
+                margin-left: 13px
+                width: 65px
+                height: 24px
+                border-radius: 12px
+                background: $color-orange
+                line-height: 24px
+                text-align: center
+                font-family: PingFangSC-Medium
+                font-size: $font-size-small
+                color: $color-white
       .group-list-foot
         display: flex
         justify-content: space-between

@@ -7,8 +7,8 @@
       </view>
       <slot name="content"></slot>
     </scroll-view>
-    <view class="close-box">
-      <image wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/c-image/mine/icon-delet@2x.png'}}" class="shareAndPrize-rule-close" @tap="closeCover"></image>
+    <view class="close-box" @tap="closeCover">
+      <image wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/c-image/mine/icon-delet@2x.png'}}" class="shareAndPrize-rule-close"></image>
     </view>
   </view>
 </template>
