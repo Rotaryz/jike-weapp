@@ -2,7 +2,7 @@
   <view class="shareAndPrize-cover" wx:if="{{coverShow}}">
     <scroll-view scroll-y="{{srcoll}}" class="shareAndPrize-rule">
       <view class="shareAndPrize-rule-head">
-        <view>活动规则</view>
+        <view>{{title}}</view>
         <view class="shareAndPrize-rule-head-chunk"></view>
       </view>
       <slot></slot>
@@ -24,6 +24,10 @@
       srcoll: {
         type: Boolean,
         default: true
+      },
+      title: {
+        type: String,
+        default: '活动规则'
       }
     }
     data = {

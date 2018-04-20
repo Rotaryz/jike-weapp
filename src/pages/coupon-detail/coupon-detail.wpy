@@ -65,7 +65,7 @@
           </view>
           <view class="small-money">¥</view>
           <view class="big-money">200</view>
-          <view class="gray-money">现价:¥300</view>
+          <view class="gray-money">现价: ¥ 300</view>
         </view>
       </view>
       <view class="share-wrapper">
@@ -78,6 +78,21 @@
         </view>
       </view>
     </view>
+
+    <view class="group-list-box">
+      <view class="group-list-head">小伙伴在开团，可直接参加</view>
+      <view class="group-list-container">
+
+      </view>
+      <view class="group-list-foot">
+        <view class="group-list-foot-left">支付开团邀请好友参团，可直接参与</view>
+        <view class="group-list-foot-right">
+          <view class="group-list-foot-right-txt">玩法详情</view>
+          <image class="group-list-foot-right-icon" wx:if="{{imageUri}}" src="{{imageUri + '/defaults/c-image/share/icon-arrows@2x.png'}}"></image>
+        </view>
+      </view>
+    </view>
+
     <view class="promotion-detail" wx:if="{{promotions.length > 0}}">
       <view class="header">
         <view class="red-title line-{{industry}}">礼包详情</view>
@@ -651,6 +666,50 @@
       .group-description
         flex: 1
         padding-top: 11px
+        .group-name
+          font-family: PingFangSC-Regular
+          font-size: $font-size-medium
+          margin-bottom: 10px
+        .group-limit
+          font-size: $font-size-small-s
+          margin-bottom: 12px
+        .group-money-box
+          display: flex
+          height: 20px
+          align-items: flex-end
+          .group-icon-box
+            width: 38px
+            height: 14px
+            position: relative
+            margin-bottom: 2px
+            margin-right: 2px
+            .group-icon
+              width: 38px
+              height: 14px
+            .group-icon-txt
+              font-size: $font-size-small-s
+              color: $color-orange
+              position: absolute
+              left: 0
+              top: 0
+              width: 38px
+              height: 14px
+              text-align: center
+              line-height: 14px
+          .small-money
+            font-family: PingFangSC-Regular
+            font-size: $font-size-small
+            color: $color-orange
+            margin-bottom: 2px
+            margin-right: 1px
+          .big-money
+            font-family: PingFangSC-Medium
+            font-size: $font-size-large-xx
+            color: $color-orange
+            margin-right: 15px
+          .gray-money
+            font-size: $font-size-small-s
+            margin-bottom: 2px
       .share-wrapper
         flex: 0 0 48px
         display: flex
@@ -664,6 +723,52 @@
           .share-txt
             font-size: $font-size-small-s
             color: $color-text
+    .group-list-box
+      margin-bottom: 10px
+      background: $color-white
+      padding-left: 12px
+      .group-list-head
+        height: 39px
+        padding-right: 12px
+        border-bottom: 0.5px solid $color-col-line
+        line-height: 39px
+        font-size: $font-size-medium
+        color: #6E697F
+        text-indent: 7px
+        position: relative
+        &::before
+          content: ''
+          width: 2px
+          height: 14px
+          position: absolute
+          top: 50%
+          left: 0
+          background: $color-orange
+          display: block
+          transform: translate(0, -50%)
+      .group-list-container
+        height: 109px
+        overflow: hidden
+      .group-list-foot
+        display: flex
+        justify-content: space-between
+        align-items: center
+        height: 39px
+        border-top: 0.5px solid $color-col-line
+        .group-list-foot-left
+          font-size: $font-size-small
+        .group-list-foot-right
+          height: 39px
+          display: flex
+          align-items: center
+          padding-right: 12px
+          .group-list-foot-right-txt
+            font-size: $font-size-small
+            margin-right: 5px
+            color: #A1A1A1
+          .group-list-foot-right-icon
+            width: 7px
+            height: 12px
     .promotion-detail
       padding-bottom: 10px
       background-color: $color-white
