@@ -99,7 +99,7 @@
     computed = {
       isOnlyOneStyle() {
         if (this.list[0] != null) {
-          return this.list[0].length <= 1 ? 'only-one' : ''
+          return this.list[0].length <= 1 ? 'only-one' : 'not-only-one-undef'
         } else {
           return 'only-one'
         }
