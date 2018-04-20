@@ -1,5 +1,5 @@
 <template>
-  <scroll-view class="coupon-detail">
+  <view class="coupon-detail">
     <view class="slider-wrapper">
       <slider :list.sync="promotionImages">
         <block slot="content">
@@ -102,7 +102,7 @@
     <post-order :orderInfo.sync="orderInfo" @throw.user="postOrderFail" :industry.sync="industry"></post-order>
     <toast></toast>
     <popout></popout>
-  </scroll-view>
+  </view>
 </template>
 
 <script>
