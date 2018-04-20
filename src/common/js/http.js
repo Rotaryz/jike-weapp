@@ -26,6 +26,7 @@ export default class http {
     } else if (this.isError(res)) {
       let status = this.isError(res)
       wepy.redirectTo({url: `/pages/error/error?status=${status}`})
+      throw this.requestException(res)
     } else if (this.isSoldOut(res)) {
       const result = res.data.data
       wepy.redirectTo({url: `/pages/sold-out/sold-out?appId=${result.app_id}&businessCircleId=${result.business_circle_id}`})

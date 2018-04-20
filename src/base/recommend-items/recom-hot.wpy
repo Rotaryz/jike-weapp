@@ -91,7 +91,6 @@
     methods={
       setIndustry(industry, industryColor) {
         this.industry = industry
-        console.log(this.industry)
         this.industryColor = industryColor
         this.$apply()
       }
@@ -137,12 +136,10 @@
         this._navTo(url)
       },
       get(coupon) {
-        console.log(coupon)
         let url = `/pages/coupon-particulars/coupon-particulars?id=${coupon.promotion.id}`
         this._navTo(url)
       },
       use(coupon) {
-        console.log(coupon, 2)
         let url = `/pages/coupon-particulars/coupon-particulars?id=${coupon.promotion.id}`
         this._navTo(url)
       }

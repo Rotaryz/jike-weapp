@@ -23,11 +23,6 @@
   import wepy from 'wepy'
   import URIS from 'common/js/config'
   export default class error extends wepy.page {
-    config = {
-      navigationBarTitleText: '报错',
-      navigationBarBackgroundColor: '#ffffff',
-      navigationBarTextStyle: 'black'
-    }
     data = {
       imageUrl: URIS.image,
       error: false
@@ -35,16 +30,24 @@
 
     onLoad(option) {
       if (option.status) {
+        let title = ''
         switch (option.status) {
           case '1':
             this.error = false
+            title = '404'
             break
           case '2':
             this.error = true
+            title = '升级中'
             break
         }
         this.$apply()
+        this._setNavigationBarTitle(title)
       }
+    }
+
+    _setNavigationBarTitle(title) {
+      wepy.setNavigationBarTitle({title})
     }
   }
 </script>
