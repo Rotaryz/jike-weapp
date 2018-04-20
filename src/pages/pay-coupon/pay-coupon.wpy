@@ -10,12 +10,12 @@
       </view>
     </view>
     <view class="coupon-con">
-        <view class="can-coupon" wx:if="{{couponList.length !== 0}}">可用的券</view>
-        <repeat for="{{couponList}}" key="index" index="index" item="item" >
-          <view class="couponList-box">
-            <coupon :coupon.sync="item" :type="type" :industryColor.sync="industryColor" :industry.sync="industry"></coupon>
-          </view>
-        </repeat>
+      <view class="can-coupon" wx:if="{{couponList.length !== 0}}">可用的券</view>
+      <repeat for="{{couponList}}" key="index" index="index" item="item" >
+        <view class="couponList-box">
+          <coupon :coupon.sync="item" :type="type" :industryColor.sync="industryColor" :industry.sync="industry"></coupon>
+        </view>
+      </repeat>
       <view class="can-coupon" wx:if="{{noCouponList.length !== 0}}">不可用的券</view>
       <repeat for="{{noCouponList}}" key="index" index="index" item="item">
         <view class="couponList-box">
@@ -28,9 +28,10 @@
         <image class="full-image" wx:if="{{imageUri}}"
                src="{{imageUri + '/defaults/b-image/common/pic-empty_coupon@2x.png'}}"></image>
       </view>
-      <view class="desc">没有该店铺优惠卷</view>
+      <view class="desc">没有该店铺优惠券</view>
     </view>
   </view>
+  <view class="pay-coupon-block" wx:if="{{couponBlock}}"></view>
 </template>
 
 <script>
@@ -48,8 +49,9 @@
       imageUri: URIS.image,
       couponList: [],
       noCouponList: [],
-      type: 'share',
-      noUseDiscountBtn: false
+      type: 'shareBuy',
+      noUseDiscountBtn: false,
+      couponBlock: false
     }
 
     async onLoad(options) {
@@ -109,6 +111,7 @@
           return item
         })
         this.noUseDiscountBtn = true
+        this.couponBlock = true
         this.$apply()
         wepy.removeStorageSync('choiceCoupon')
         wepy.setStorageSync('discountType', 'you')
@@ -143,6 +146,7 @@
           }
           return item
         })
+        this.couponBlock = true
         this.$apply()
         this.$parent.globalData.noUseDiscountBtn = false
         wepy.setStorageSync('choiceCoupon', coupon)
@@ -159,6 +163,13 @@
 
 <style lang="stylus">
   @import "../../common/stylus/variable"
+  .pay-coupon-block
+    position: fixed
+    left: 0
+    top: 0
+    width: 100%
+    height: 100%
+    z-index: 88
   .no-use-coupon
     display: flex
     flex-direction: row
