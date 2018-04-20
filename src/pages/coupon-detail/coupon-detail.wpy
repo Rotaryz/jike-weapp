@@ -1,9 +1,5 @@
 <template>
-  <view class="ro-share-coupon {{shareStatus ? 'ro-share-coupon-active' : ''}}" wx:if="{{share}}">
-    <coupon type="pay" :content.sync="coupon" :industry.sync="industry"></coupon>
-  </view>
-  <scroll-view class="coupon-detail" scroll-y="{{!share}}">
-    <cover-view class="ro-share-money" wx:if="{{share}}"></cover-view>
+  <scroll-view class="coupon-detail">
     <view class="slider-wrapper">
       <slider :list.sync="promotionImages">
         <block slot="content">
@@ -156,9 +152,7 @@
       sharePrice: '',
       orderInfo: {},
       showSoya: true,
-      shopImages: [],
-      share: false,
-      shareStatus: false
+      shopImages: []
     }
 
     onShareAppMessage(res) {
@@ -184,7 +178,6 @@
     }
 
     async onLoad(option) {
-      this.share = option.status ? option.status : false
       await this.showIndustry()
       if (option.scene) {
         let scene = decodeURIComponent(option.scene)
@@ -421,11 +414,10 @@
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "../../common/stylus/variable"
   @import "../../common/stylus/mixin"
+
   .coupon-detail
-    position: relative
     width: 100%
     padding-bottom: 44px
-    height: 100vh
     .slider-wrapper
       position: relative
       width: 100%
@@ -639,24 +631,6 @@
           background-color: $color-prize-bc
 
   .cash-show
-    background: $color-white
+    background :$color-white
     min-height: 42vh
-
-  /*分享赚钱*/
-  .ro-share-money
-    height: 100vh
-    width: 100vw
-    position: fixed
-    z-index: 1000
-    top: 0
-    left: 0
-    background: rgba(218, 218, 218, .7)
-  .ro-share-coupon
-    padding :5px 0 15.5px 0
-  .ro-share-coupon-active
-    height:0px
-    padding: 0
-    transition :all 0.5s
-    .coupon
-      margin: 0
 </style>
