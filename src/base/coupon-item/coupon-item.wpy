@@ -5,9 +5,11 @@
       <image class="coupon-bc" wx:if="{{imageUrlHead && type === 'pay' && coupon.canUsePay}}" src="{{imageUrlHead + '/defaults/c-image/template/bg-kycoupon_'+industry+'@2x.png'}}"></image>
       <image class="coupon-bc" wx:if="{{imageUrlHead && type === 'pay' && !coupon.canUsePay}}" src="{{imageUrlHead + '/defaults/c-image/mine/bg-coupon_sxsyyh@2x.png'}}"></image>
       <image class="coupon-bc" wx:if="{{imageUrlHead && type === 'mine' && coupon.promotion.promotion_type !== 'exchange' && coupon.promotion.status * 1 === 0}}" src="{{imageUrlHead + '/defaults/c-image/template/bg-kycoupon_'+industry+'@2x.png'}}"></image>
+      <!--分享赚钱-->
+      <image class="coupon-bc" wx:if="{{imageUrlHead && type === 'pay'}}" src="{{imageUrlHead + '/defaults/c-image/template/bg-kycoupon_'+industry+'@2x.png'}}"></image>
       <image class="coupon-bc" wx:if="{{imageUrlHead && type === 'mine' && coupon.promotion.promotion_type !== 'exchange' && coupon.promotion.status * 1 !== 0}}" src="{{imageUrlHead + '/defaults/c-image/mine/bg-coupon_disable@2x.png'}}"></image>
       <image class="coupon-bc" wx:if="{{imageUrlHead && type === 'mine' && coupon.promotion.promotion_type === 'exchange'}}" src="{{imageUrlHead + '/defaults/c-image/mine/bg-coupon-dhq@2x.png'}}"></image>
-      <view class="coupon-content" wx:if="{{type === 'buy'}}" @tap="buyCouponClick('buy', {{coupon}})">
+      <view class="coupon-content" wx:if="{{type === 'buy' || type === 'share'}}" @tap="buyCouponClick('buy', {{coupon}})">
         <view class="coupon-left">
           <view class="coupon-left-first">
             <image class="shop-img" src="{{coupon.promotion.image_url}}" wx:if="{{coupon.promotion.image_url}}" mode="aspectFill"></image>
