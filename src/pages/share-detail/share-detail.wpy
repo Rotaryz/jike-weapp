@@ -140,7 +140,7 @@
         return res.data
       }
     }
-
+//   分享赚钱图片生成
     async _createQrcode() {
       let currentMerchant = wepy.getStorageSync('merchantId') ? wepy.getStorageSync('merchantId') : ''
       setTimeout(async () => {
