@@ -41,7 +41,7 @@
         <view class="mine-order-menu">
           <view class="mine-order-menuItem" wx:for="{{orderMenu}}"
                 wx:key="{{item.text}}"
-                @tap="notestToPage('/pages/user/myOrder/myOrder?idx={{index}}')">
+                @tap="notestToPage('/pages/user/myOrder/myOrder?idx={{item.type}}')">
             <image src="{{item.imgUrl}}"
                    class="mine-order-menuItem-image"></image>
             <view class="mine-order-menuItem-txt">{{item.text}}</view>
@@ -155,16 +155,20 @@
       orderMenu: [
         {
           imgUrl: URIS.image + '/defaults/c-image/mine/icon-m_ppay@2x.png',
-          text: '待付款'
+          text: '待付款',
+          type: 0
         }, {
           imgUrl: URIS.image + '/defaults/c-image/mine/icon-m_used@2x.png',
-          text: '待使用'
+          text: '待使用',
+          type: 1
         }, {
           imgUrl: URIS.image + '/defaults/c-image/mine/icon-m_evalua@2x.png',
-          text: '待评价'
+          text: '待评价',
+          type: 2
         }, {
           imgUrl: URIS.image + '/defaults/c-image/mine/icon-m_refund@2x.png',
-          text: '退款/售后'
+          text: '退款/售后',
+          type: 3
         }
       ],
       serveMenu: [
