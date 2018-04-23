@@ -1,30 +1,41 @@
 <template>
-  <scroll-view class="share-detail" scroll-y="{{scroll}}">
+  <view class="share-detail" scroll-y="{{scroll}}">
     <!--轮播图-->
     <view class="slider-wrapper">
-      <slider :list.sync="2">
+      <swiper class="ro-share-peo" autoplay="{{autoplay}}" interval="5000" circular="{{circular}}" vertical>
+        <block wx:for="{{shareNotice}}" wx:key="{{index}}">
+          <swiper-item>
+            <view class="ro-share-peo-item">
+              <image class="ro-share-peo-header" src="{{item.avatar_url}}"></image>
+              <view class="ro-share-peo-name">{{item.nickname}}</view>
+              <view class="ro-share-peo-content">刚刚赚到了{{item.money}}元</view>
+            </view>
+          </swiper-item>
+        </block>
+      </swiper>
+      <slider :list.sync="promotionImages">
         <block slot="content">
-          <repeat for="{{2}}" index="index" key="index" item="item">
-            <swiper-item>
+          <repeat for="{{promotionImages}}" index="index" key="index" item="item">
+            <swiper-item wx:if="{{item.image}}">
               <view class="slide-item">
-                {{item}}
-                <!--<image mode="widthFix" src="{{item.image.url}}" class="slide-image"/>-->
+                <image mode="widthFix" src="{{item.image.url}}" class="slide-image"/>
               </view>
             </swiper-item>
           </repeat>
         </block>
       </slider>
     </view>
-    <view class="ro-share-content">
-      <view class="ro-share-name">国颐堂养发护发套餐服务</view>
-      <view class="ro-share-content-buy">100人已购买</view>
+    <view class="ro-share-peo-cover"></view>
+    <view class="ro-share-content-detail">
+      <view class="ro-share-name">{{shareDetail.title}}</view>
+      <view class="ro-share-content-buy">{{shareDetail.sales_volume}}人已购买</view>
       <view class="ro-share-content-price">
         <image class="ro-share-content-tip" wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/c-image/share/pic-price@2x.png'}}"><text class="ro-share-content-tip-text">券后价</text></image>
-        <view class="ro-share-content-end">¥<text class="ro-share-content-money">80000</text>
+        <view class="ro-share-content-end">¥<view class="ro-share-content-money">{{shareDetail.after_price}}</view>
         </view>
-        <view class="ro-share-content-now">现价:￥80000</view>
+        <view class="ro-share-content-now">现价:￥{{shareDetail.price}}</view>
       </view>
-      <view class="ro-share-content-aside">
+      <view class="ro-share-content-aside" @tap="goCouponDetail">
         <view class="ro-share-content-logo-box">
           <image class="ro-share-content-logo" wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/c-image/share/icon-group@2x.png'}}"></image>
         </view>
@@ -33,12 +44,12 @@
     </view>
     <view class="ro-share-rule">
       <view class="ro-share-rule-item">
-        <view class="ro-share-rule-item-title">优惠券 20元</view>
-        <view class="ro-share-rule-item-text">（满100使用）</view>
+        <view class="ro-share-rule-item-title">优惠券 {{shareDetail.eductible_money}}元</view>
+        <!--<view class="ro-share-rule-item-text">（满100使用）</view>-->
       </view>
       <view class="ro-share-rule-item">
-        <view class="ro-share-rule-item-title">通用佣金 2.00%</view>
-        <view class="ro-share-rule-item-text">（预计 ¥1.00）</view>
+        <view class="ro-share-rule-item-title">通用佣金 {{shareDetail.rate}}%</view>
+        <view class="ro-share-rule-item-text">（预计 ¥{{shareDetail.profit_money}}）</view>
       </view>
       <view class="ro-share-rule-aside" @tap="getRule">
         规则<image class="ro-share-rule-aside-icon" wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/c-image/square/icon-s_right1@2x.png'}}"></image>
@@ -47,14 +58,12 @@
     <!--更多优惠券-->
     <view class="ro-share-more">
       <view class="ro-share-more-text"><text class="ro-share-more-text">更多</text></view>
-      <repeat>
-        <share-item></share-item>
-        <share-item></share-item>
-        <share-item></share-item>
+      <repeat for="{{shareList}}" key="index" index="index" item="item">
+        <share-item :shareCoupon.sync="item"></share-item>
       </repeat>
     </view>
-    <view class="ro-get-share">立即分享</view>
-  </scroll-view>
+    <view class="ro-get-share" @tap="shares">立即分享</view>
+  </view>
   <toast></toast>
   <rule>
     <view class="ro-rule-content">
@@ -68,7 +77,7 @@
       <view class="ro-rule-tip">抵用券：仅限该商品和业务使用</view>
     </view>
   </rule>
-  <share></share>
+  <share :qrcode.sync="qrcode" :detail.sync="detail" :promotionImages.sync="promotionImages"></share>
 </template>
 
 <script>
@@ -81,7 +90,8 @@
   import Rule from '@/base/rule/rule'
   import Slider from '@/base/slider/slider'
   import Share from '@/base/share/share'
-
+  import Info from 'api/info'
+  import shareMoney from 'api/sharemoney'
   export default class shareDetail extends wepy.page {
     mixins = [base]
 
@@ -89,16 +99,101 @@
       navigationBarTitleText: '分享赚钱'
     }
     data = {
+      circular: true,
+      autoplay: true,
       scroll: true,
-      imageUrl: URIS.image
+      imageUrl: URIS.image,
+      qrcode: '',
+      promotionImages: [],
+      shop: '',
+      coupon: {}, // 优惠券详情
+      currentPage: '',
+      shareList: [],
+      shareDetail: {},
+      shareNotice: [],
+      detail: {}
     }
 
+    async onLoad(option) {
+      let id = option.id || 0
+      await this._load(id)
+      await this._createQrcode()
+      this.$apply()
+    }
+//    分享
+    onShareAppMessage(res) {
+      if (res.from === 'button') {
+        // 来自页面内转发按钮
+//        console.log(res.target)
+      }
+      return {
+//        商品名称
+        title: this.shareDetail.title || '',
+        path: this.currentPage,
+        success: () => {
+
+        },
+        fail: (res) => {
+          // 转发失败
+          console.log(res)
+        }
+      }
+    }
+    async _load(id) {
+//      详情
+      let resDetail = await shareMoney.shareDetail(id)
+      this.shareDetail = this.infoRes(resDetail)
+      this.promotionImages = this.shareDetail ? this.shareDetail.promotion_images : {}
+      this.detail = {
+        title: this.shareDetail.title, // 标题
+        buyCount: this.shareDetail.sales_volume, // 购买数量
+        platform_price: this.shareDetail.after_price, // 橙色的价格
+        shop_price: this.shareDetail.after_price  // 原价
+      }
+//      公告
+      let resNotice = await shareMoney.profitNotice()
+      this.shareNotice = this.infoRes(resNotice)
+//      更多优惠券
+      let data = {page: 1, limit: 10, unclude_id: id}
+      let res = await shareMoney.shareList(data)
+      this.loaded()
+      res = this.infoRes(res)
+      this.shareList = res.slice(0, 3)
+      console.log(this.shareList)
+      this.$apply()
+    }
     infoRes(res) {
       if (res.error === ERR_OK) {
         return res.data
       }
     }
+//   分享赚钱图片生成
+    async _createQrcode() {
+      let currentMerchant = wepy.getStorageSync('merchantId') ? wepy.getStorageSync('merchantId') : ''
+      setTimeout(async () => {
+        let id = this.shareDetail ? this.shareDetail.promotion_id : 0
+        this.currentPage = `/pages/coupon-detail/coupon-detail?id=${id}&type=1&currentMerchant=${currentMerchant}&status=share`
+        const res = await Info.createQrode({path: this.currentPage})
+        this.loaded()
+        this.qrcode = res.data.image_url
+        this.$apply()
+      }, 20)
+    }
     methods ={
+      goCouponDetail() {
+        let currentMerchant = wepy.getStorageSync('merchantId') ? wepy.getStorageSync('merchantId') : ''
+        let id = this.shareDetail ? this.shareDetail.promotion_id : 0
+        let url = `/pages/coupon-detail/coupon-detail?id=${id}&type=1&currentMerchant=${currentMerchant}`
+        this.$navigate(url)
+      },
+//      绘制图片
+      async sharePunchLine() {
+        await this.$invoke('share', 'generatePicture')
+      },
+      shares() {
+//        console.log( this.detail)
+        this.$invoke('share', 'show', 'shareMoney')
+      },
       getRule() {
         this.scroll = false
         this.$invoke('rule', 'shoeRule')
@@ -109,6 +204,9 @@
       closeCover() {
         this.scroll = true
         this.$apply()
+      },
+      async shareDetail(id) {
+        await this._load(id)
       }
     }
 
@@ -150,7 +248,7 @@
         .slide-image
           width: 100%
 
-  .ro-share-content
+  .ro-share-content-detail
     position: relative
     padding: 11px 12px 20.5px 12px
     box-sizing: border-box
@@ -179,12 +277,16 @@
           top: 2px
           left: 3px
       .ro-share-content-end
+        display:flex
+        align-items :flex-end
         color: $color-theme
         font-size: $font-size-small
         .ro-share-content-money
           line-height: 1
+          color: $color-theme
           font-family: $font-family-meddle
           font-size: $font-size-large
+          transform :translateY(2px)
       .ro-share-content-now
         font-size :$font-size-small-s
         color :$color-text
@@ -250,9 +352,8 @@
 
 
   .ro-share-more
-    background :$color-white
-    margin-top: 10px
-    padding: 17.5px 0 44px 0
+    box-sizing :border-box
+    padding: 17.5px $padding-all 44px $padding-all
     .ro-share-more-text
       font-size :$font-size-medium
       font-family :$font-family-light
@@ -272,6 +373,8 @@
           left:31.25px
         &:after
           left: -74.25px
+    .ro-share-item
+      border :0.5px solid $color-row-line
   .ro-get-share
     position: fixed
     bottom: 0
@@ -286,25 +389,69 @@
     line-height: 44px
     z-index: 1500
 
-.ro-rule-content
-  margin-top: 12px
-  padding :0 9.5px 19.75px
-  border-bottom 0.5px dashed $color-col-line
-  &:last-child
-    border-bottom :none
-  .ro-rule-text
+  .ro-rule-content
+    margin-top: 12px
+    padding :0 9.5px 19.75px
+    border-bottom 0.5px dashed $color-col-line
+    &:last-child
+      border-bottom :none
+    .ro-rule-text
+      font-size :$font-size-small
+      font-family :$font-family-light
+      color :$color-text
+    .ro-rule-img
+      margin-top: 10px
+      width: 192.5px
+      height: 47px
+      margin-left: 47px
+    .ro-rule-tip
+      margin-top: 15px
+      font-size :$font-size-small
+      font-family :$font-family-light
+      text-align :center
+      color :$color-text-d
+
+
+  .ro-share-peo-cover
+    position:absolute
+    top: 10px
+    left: 7.5px
+    height: 25.5px
+    width: 180px
+    z-index: 1600
+    background :transparent
+
+  .ro-share-peo
+    position: absolute
+    z-index: 1000
+    top: 10px
+    left: 7.5px
+    height: 25.5px
+    width: 180px
+    border-radius: 100px
     font-size :$font-size-small
-    font-family :$font-family-light
-    color :$color-text
-  .ro-rule-img
-    margin-top: 10px
-    width: 192.5px
-    height: 47px
-    margin-left: 47px
-  .ro-rule-tip
-    margin-top: 15px
-    font-size :$font-size-small
-    font-family :$font-family-light
-    text-align :center
-    color :$color-text-d
+    background: rgba(37,36,57,.8)
+    .ro-share-peo-item
+      height: 100%
+      display :flex
+      align-items: center
+      .ro-share-peo-header
+        height :20px
+        width: @height
+        margin-left: 3px
+        border-radius :50%
+        background :$color-white
+      .ro-share-peo-name
+        width: 36px
+        color :$color-white
+        margin-left: 6px
+        white-space :nowrap
+        overflow :hidden
+      .ro-share-peo-content
+        width:102px
+        margin-left: 5px
+        white-space :nowrap
+        overflow :hidden
+        color :$color-white
+
 </style>

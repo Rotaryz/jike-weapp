@@ -12,10 +12,13 @@ export default class http {
       data: data
     }
     const Authorization = wepy.getStorageSync('token')
+    let Scene = wepy.getStorageSync('scene') || 0
+    let LastMerchant = wepy.getStorageSync('LastMerchant') || 0
+    let LastBusiness = wepy.getStorageSync('LastBusiness') || 0
     if (Authorization) {
       param.header = Object.assign({}, {Authorization}, {'X-Requested-With': 'XMLHttpRequest'})
     }
-    param.header = Object.assign({}, param.header, {'Current-merchant': wepy.getStorageSync('merchantId')})
+    param.header = Object.assign({}, param.header, {'Current-merchant': wepy.getStorageSync('merchantId'), Scene, 'Last-merchant': LastMerchant, 'Last-business': LastBusiness})
     if (loading) {
       Tips.loading()
     }

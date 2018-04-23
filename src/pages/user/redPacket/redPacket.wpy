@@ -5,8 +5,13 @@
       <view class="ro-my-red-packet-content">
         <view class="ro-my-red-packet-money">580.00</view>
         <view class="ro-my-red-packet-card">绑定银行卡 </view>
-        <view class="ro-my-red-packet-btn">提现</view>
+        <view class="ro-my-red-packet-btn" @tap="withDrawSub">提现</view>
       </view>
+    </view>
+    <!--切换-->
+    <view class="ro-my-check">
+      <view class="ro-my-check-item {{checkIdx === 0 ? 'ro-my-check-item-active' : ''}}">活动红包</view>
+      <view class="ro-my-check-item">分享赚钱</view>
     </view>
     <view class="myRedPacket-top">
       <view class="myRedPacket-pandect">
@@ -23,7 +28,7 @@
         </view>
       </view>
 
-      <view class="myRedPacket-withDraw {{industry}}-bg" @tap="withDrawSub">提现</view>
+      <!--<view class="myRedPacket-withDraw {{industry}}-bg" @tap="withDrawSub">提现</view>-->
     </view>
 
     <scroll-view scroll-y class="myRedPacket-list" wx:if="{{packetList.length>0}}" bindscrolltolower="redPacketLower">
@@ -72,8 +77,9 @@
       Toast,
       Underline
     }
-
+//    wx.setNavigationBarColor(OBJECT)导航条颜色
     data = {
+      checkIdx: 0,
       imageUrlHead: URIS.image,
       packetTotal: {redpacker_count: 0},
       packetList: [],
@@ -155,18 +161,25 @@
       background: $color-highlight-background
 
       .myRedPacket-top
-        height: 28vh
+        height:99px
         display: flex
         flex-direction: column
         justify-content: space-between
 
       .myRedPacket-pandect
         display: flex
-
+        position: relative
+        &:before
+          content: ''
+          width: 1px
+          height: 30px
+          position: absolute
+          background :#DBDBDB
+          top:35.25px
+          left: 50%
         .myRedPacket-pandect-item
           flex: 1
           text-align: center
-
           .myRedPacket-pandect-item-num
             font-size: $font-size-large-xx
             color: $color-text-t
@@ -206,7 +219,7 @@
         .myRedPacket-list-item
           padding: 0 12px
           height: 45px
-          border-bottom: 1px solid $color-row-line
+          border-top: 1px solid $color-row-line
           display: flex
           align-items: center
           justify-content: space-between
@@ -242,7 +255,7 @@
         display: flex
         flex-direction: column
         align-items: center
-
+        background :$color-background
         .myRedPacket-noList-img
           width: 100px
           height: 80px
@@ -287,4 +300,27 @@
         text-align :center
         font-size :$font-size-small
         line-height: 24px
+
+  .ro-my-check
+    height: 49px
+    display :flex
+    align-items :center
+    background :$color-white
+    justify-content :space-around
+    border-bottom :0.5px solid $color-col-line
+    .ro-my-check-item
+      font-size :$font-size-medium
+      font-family :$font-family-light
+      position: relative
+      &:before
+        content : ''
+        position: absolute
+        left: 13px
+        bottom: -17.5px
+        height: 2px
+        width: 30px
+    .ro-my-check-item-active
+      &:before
+        background :$color-theme
+
 </style>

@@ -86,6 +86,11 @@
         wepy.setStorageSync('shop', shop)
       }
       let url = INFOURL
+      if (options.scene) {
+        wepy.setStorageSync('scene', options.scene)
+      } else if (options.lastBusiness) {
+        wepy.setStorageSync('LastBusiness', options.lastBusiness)
+      }
       if (options.path) {
         url = decodeURIComponent(options.path)
       }

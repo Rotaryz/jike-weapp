@@ -1,17 +1,17 @@
 <template>
-  <view class="ro-share-item">
+  <view class="ro-share-item" @tap="shareDetail({{shareCoupon.id}})">
     <image class="ro-share-item-bk" wx:if="{{false}}"></image>
     <view class="ro-share-left">
-      <view class="ro-share-item-logo"><view class="ro-share-item-buy">销售：100</view></view>
+      <image class="ro-share-item-logo" mode="aspectFill" src="{{shareCoupon.image_url}}"><view class="ro-share-item-buy">销售：{{shareCoupon.sales_volume}}</view></image>
       <view class="ro-share-content">
-        <view class="ro-share-title">养发项目优惠券套餐</view>
-        <view class="ro-share-now-money">现价  ¥100</view>
-        <view class="ro-share-end-money">券后价 ¥<text class="ro-share-end-price">80</text></view>
+        <view class="ro-share-title">{{shareCoupon.title}}</view>
+        <view class="ro-share-now-money">现价  ¥{{shareCoupon.price}}</view>
+        <view class="ro-share-end-money">券后价<view class="ro-share-end-money-tip">¥</view><view class="ro-share-end-price">{{shareCoupon.after_price}}</view></view>
       </view>
     </view>
     <view class="ro-share-right">
       <image class="ro-share-right-icon" wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/c-image/share/icon-share_fxzq@2x.png'}}"></image>
-      <view class="ro-share-get-money">赚 ¥0.88</view>
+      <view class="ro-share-get-money">赚 ¥{{shareCoupon.profit_money}}</view>
     </view>
   </view>
 </template>
@@ -23,9 +23,19 @@
 
   export default class shareItem extends wepy.component {
     mixins = [base]
-
+    props = {
+      shareCoupon: {
+        type: Object,
+        default: {}
+      }
+    }
     data = {
       imageUrl: URIS.image
+    }
+    methods ={
+      shareDetail(id) {
+        this.$emit('shareDetail', id)
+      }
     }
   }
 </script>
@@ -34,8 +44,8 @@
   @import '../../common/stylus/variable'
   @import '../../common/stylus/mixin'
   .ro-share-item
-    width: 100vw
-    height: 26.667vw
+    width: 100%
+    height: 100px
     position: relative
     background: $color-white
     margin-bottom: 10.5px
@@ -44,11 +54,12 @@
     border-bottom: 0.5px solid $color-row-line
     .ro-share-left
       display :flex
+      flex: 7.6
       padding: 12px 0 12px 10.5px
       box-sizing: border-box
       border-right :0.5px dashed #E5E5E5
       .ro-share-item-logo
-        height: 20.26vw
+        height: 76px
         width: @height
         background: $color-background
         position: relative
@@ -71,26 +82,37 @@
           font-size: $font-size-small-s
           font-family: $font-family-light
       .ro-share-content
-        width: 49vw
         margin-left: 10px
         .ro-share-title
+          margin-top: 3px
           color :$color-text
-          font-size :$font-size-small
+          font-size :$font-size-medium
+          line-height: 18px
+          min-height: 35.5px
           font-family :$font-family-meddle
-          margin-bottom: 23.5px
+          width :43vw
+          no-wrap()
         .ro-share-now-money
           font-size :$font-size-small-s
           color :$color-text-d
-          margin-bottom: 7.5px
+          margin-bottom: 6px
         .ro-share-end-money
           font-size :$font-size-small-s
           color :$color-text-d
-          .ro-share-end-price
+          display :flex
+          align-items :flex-end
+          height: $font-size-large
+          .ro-share-end-money-tip
+            margin-left: 3.5px
             font-family :PingFangSC-Semibold
-            font-size :$font-size-large-m
+          .ro-share-end-price
+            transform :translateY(1px)
+            line-height: 1
+            font-family :PingFangSC-Semibold
+            font-size :$font-size-large
             color :$color-pay
   .ro-share-right
-    flex :1
+    flex :2.4
     display :flex
     flex-direction :column
     align-items :center
@@ -100,6 +122,6 @@
       width: 20.5px
     .ro-share-get-money
       color :$color-theme
-      margin-top: 10.4px
+      margin-top: 2.77vw
       font-size :$font-size-small
 </style>

@@ -159,6 +159,8 @@
       hotSecond: [],
       hotThird: [],
       activeIsEmpty: true,
+      logTimes: 0,
+      getLogs: true,
       groupBuyIdx: 0,
       groupBuyList: []
     }
@@ -207,7 +209,20 @@
       this.shopChange = !(oldId === this.merchantId)
       const isAuthorise = await this.isAuthorise(false)
       this.$parent.updateGlobalData('isAuthorise', isAuthorise)
-      await this._saveLog()
+//      一分钟三次收集返问日志
+      //  获取当前时间
+      let timestamp = Date.parse(new Date())
+      let last = this.$parent.globalData.nowTimes ? this.$parent.globalData.nowTimes : timestamp
+      let logStatus = timestamp - last > 60000
+      this.logTimes = this.$parent.globalData.logTimes && !logStatus ? this.$parent.globalData.logTimes : 0
+      this.getLogs = logStatus || this.logTimes < 3
+      if (this.getLogs) {
+        console.log('日志')
+        await this._saveLog()
+        this.$parent.updateGlobalData('nowTimes', timestamp)
+        this.$parent.updateGlobalData('logTimes', ++this.logTimes)
+      }
+
       await this._getMechantsMsg()
       // 切店存储对应的商家ID
       if (this.shopChange) {

@@ -10,12 +10,12 @@
       </view>
     </view>
     <view class="coupon-con">
-        <view class="can-coupon" wx:if="{{couponList.length !== 0}}">可用的券</view>
-        <repeat for="{{couponList}}" key="index" index="index" item="item" >
-          <view class="couponList-box">
-            <coupon :coupon.sync="item" :type="type" :industryColor.sync="industryColor" :industry.sync="industry"></coupon>
-          </view>
-        </repeat>
+      <view class="can-coupon" wx:if="{{couponList.length !== 0}}">可用的券</view>
+      <repeat for="{{couponList}}" key="index" index="index" item="item" >
+        <view class="couponList-box">
+          <coupon :coupon.sync="item" :type="type" :industryColor.sync="industryColor" :industry.sync="industry"></coupon>
+        </view>
+      </repeat>
       <view class="can-coupon" wx:if="{{noCouponList.length !== 0}}">不可用的券</view>
       <repeat for="{{noCouponList}}" key="index" index="index" item="item">
         <view class="couponList-box">
@@ -49,7 +49,7 @@
       imageUri: URIS.image,
       couponList: [],
       noCouponList: [],
-      type: 'pay',
+      type: 'shareBuy',
       noUseDiscountBtn: false,
       couponBlock: false
     }
