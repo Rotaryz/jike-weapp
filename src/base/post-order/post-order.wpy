@@ -24,6 +24,13 @@
         </view>
       </view>
       <view class="price-wrapper border-top-1px border-bottom-1px">
+        <view class="content border-bottom-1px" wx:if="{{status === 'group' || status === 'share'}}">
+          <view class="label">店铺优惠</view>
+          <view class="content-right">
+            <view class="content-right-txt">无可用券</view>
+            <image class="content-right-icon" wx:if="{{imageUri}}" src="{{imageUri + '/defaults/c-image/share/icon-arrows@2x.png'}}"></image>
+          </view>
+        </view>
         <view class="content">
           <view class="label">订单总价</view>
           <view class="price">
@@ -44,6 +51,7 @@
   import {ERR_OK} from 'api/base'
   import Order from 'api/order'
   import base from 'common/mixins/base'
+  import URIS from 'common/js/config'
 
   export default class PostOrder extends wepy.component {
     mixins = [base]
@@ -57,13 +65,15 @@
     }
 
     data = {
+      imageUri: URIS.image,
       show: false,
       maskAnimation: '',
       modalAnimation: '',
       count: 1,
       stock: 0,
       peopleStock: -1,
-      total: 0
+      total: 0,
+      status: ''
     }
 
     _hide() {
@@ -99,7 +109,7 @@
         } else {
           this.count -= 1
         }
-        this.total = this.count * this.orderInfo.price
+        this.total = (this.count * this.orderInfo.price).toFixed(1)
       },
       addCount() {
         if (this.stock !== -1 && this.peopleStock === -1) {
@@ -113,7 +123,7 @@
         } else {
           this.count += 1
         }
-        this.total = this.count * this.orderInfo.price
+        this.total = (this.count * this.orderInfo.price).toFixed(1)
       },
       async postOrder() {
         /* eslint-disable no-undef */
@@ -160,9 +170,10 @@
       hide() {
         this._hide()
       },
-      show() {
+      show(status = '') {
         this.total = this.count * this.orderInfo.price
         this.stock = this.orderInfo.stock
+        this.status = status
         this.peopleStock = this.orderInfo.peopleStock
         let modalAnimation = wepy.createAnimation({
           duration: 200,
@@ -272,6 +283,17 @@
               font-size: $font-size-large
             .yuan
               font-size: $font-size-small-s
+          .content-right
+            display: flex
+            align-items: center
+            height: 42px
+            .content-right-txt
+              font-size: $font-size-small
+              color: #A1A1A1
+            .content-right-icon
+              width: 7px
+              height: 12px
+              margin-left: 5px
       .post-btn
         position: fixed
         bottom: 0

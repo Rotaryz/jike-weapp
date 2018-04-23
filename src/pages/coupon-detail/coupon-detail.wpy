@@ -13,29 +13,30 @@
         </block>
       </slider>
 
-      <view class="group-person-box">
+      <view class="group-person-box" wx:if="{{activityStatus === 'group'}}">
         <swiper class="group-person-list" autoplay circular vertical="{{true}}">
           <block wx:for="{{personList}}" wx:key="{{index}}">
             <swiper-item class="group-person-item">
               <view class="person-img-box">
-                <image class="person-img" src=""></image>
+                <image class="person-img" src="{{item.img_url}}"></image>
               </view>
-              <view class="person-name">大个旋{{item}}</view>
-              <view class="person-txt">刚刚赚到了800元</view>
+              <view class="person-name">{{item.name}}</view>
+              <view class="person-txt">刚刚赚到了{{item.money}}元</view>
             </swiper-item>
           </block>
         </swiper>
+        <view class="swiper-cover"></view>
       </view>
 
     </view>
 
-    <view class="group-time-run">
-      <view class="group-time-left">2人团</view>
+    <view class="group-time-run" wx:if="{{activityStatus === 'group'}}">
+      <view class="group-time-left">{{groupBuyDetail.group_number}}人团</view>
       <view class="group-time-right">距离活动结束还剩:<text class="day-txt">{{groupEndTime.day}}</text>天<text class="time-txt">{{groupEndTime.hour}}</text>时<text class="time-txt">{{groupEndTime.minute}}</text>分<text class="time-txt">{{groupEndTime.second}}</text>秒</view>
     </view>
 
     <view class="desc-wrapper">
-      <view class="description" wx:if="{{false}}">
+      <view class="description" wx:if="{{activityStatus !== 'group'}}">
         <view class="name">{{coupon.title !== undefined ? coupon.title : ''}}</view>
         <view class="limit">{{coupon.stock !== undefined ? coupon.stock * 1 === -1 ? '不限量' : '限量' + coupon.stock + '件' : ''}}</view>
         <view class="price-wrapper">
@@ -51,17 +52,17 @@
           </view>
         </view>
       </view>
-      <view class="group-description">
-        <view class="group-name">环境换个环境和法国警方和高房价的好地方的</view>
-        <view class="group-limit">100人已购买</view>
+      <view class="group-description" wx:if="{{activityStatus === 'group'}}">
+        <view class="group-name">{{groupBuyDetail.activity_name}}</view>
+        <view class="group-limit">{{groupBuyDetail.buy_number}}人已购买</view>
         <view class="group-money-box">
           <view class="group-icon-box">
             <image class="group-icon" wx:if="{{imageUri}}" src="{{imageUri + '/defaults/c-image/mine/icon-group_p@2x.png'}}"></image>
             <view class="group-icon-txt">团购价</view>
           </view>
           <view class="small-money">¥</view>
-          <view class="big-money">200</view>
-          <view class="gray-money">现价: ¥ 300</view>
+          <view class="big-money">{{groupBuyDetail.group_price}}</view>
+          <view class="gray-money">现价: ¥ {{groupBuyDetail.promotion_price}}</view>
         </view>
       </view>
       <view class="share-wrapper">
@@ -75,29 +76,30 @@
       </view>
     </view>
 
-    <view class="group-list-box">
+    <view class="group-list-box" wx:if="{{activityStatus === 'group' && groupType !== 'join'}}">
       <view class="group-list-head">小伙伴在开团，可直接参加</view>
-      <swiper class="group-list-container" autoplay circular vertical="{{true}}" interval="4000">
-        <block wx:for="{{personList}}" wx:key="{{index}}">
+      <swiper class="group-list-container" autoplay circular vertical="{{true}}" interval="4000" wx:if="{{groupBuyList.length}}">
+        <block wx:for="{{groupBuyList}}" wx:key="{{index}}">
           <swiper-item class="group-list-swiper">
-            <view class="group-swiper-item" wx:for="12" wx:key="{{index}}">
+            <view class="group-swiper-item" wx:for="{{item}}" wx:key="{{index}}">
               <view class="group-swiper-item-left">
                 <view class="group-swiper-item-avatar-box">
-                  <image class="group-swiper-item-avatar" src=""></image>
+                  <image class="group-swiper-item-avatar" src="{{item.img_url}}"></image>
                 </view>
-                <view class="group-swiper-item-name">还记得是否会富华大厦发过火</view>
+                <view class="group-swiper-item-name">{{item.name}}</view>
               </view>
               <view class="group-swiper-item-right">
                 <view class="group-swiper-time">
-                  <view class="group-swiper-txt">还差<text class="red-num">2人</text>拼成</view>
-                  <view class="group-swiper-time-txt">剩余10:20:20</view>
+                  <view class="group-swiper-txt">还差<text class="red-num">{{item.remaining_number}}人</text>拼成</view>
+                  <view class="group-swiper-time-txt">剩余{{item.endTime}}</view>
                 </view>
-                <view class="group-swiper-item-btn">去参团</view>
+                <view class="group-swiper-item-btn" @tap="joinGroupBuy({{item}})">去参团</view>
               </view>
             </view>
           </swiper-item>
         </block>
       </swiper>
+      <view class="group-nothing" wx:if="{{!groupBuyList.length}}">暂无参团信息～</view>
       <view class="group-list-foot">
         <view class="group-list-foot-left">支付开团邀请好友参团，可直接参与</view>
         <view class="group-list-foot-right" @tap="showGroupRule">
@@ -128,11 +130,15 @@
     <view wx:if="{{type === 1}}" class="{{services.length === 0 ? 'cash-show' : ''}}">
       <know-detail :note.sync="note" :notAllowTime.sync="notAllowTime" :industry.sync="industry"></know-detail>
     </view>
-    <view class="buy-button-wrapper border-top-1px">
+    <view class="buy-button-wrapper border-top-1px {{activityStatus === 'group' ? 'group-buy' : ''}}">
       <view class="button-group">
-        <view class="collect border-right-1px" @tap="collectToggle">
+        <view class="collect border-right-1px" @tap="collectToggle" wx:if="{{activityStatus !== 'group' && activityStatus !== 'share'}}">
           <image wx:if="{{imageUri && !isFavorite}}" class="icon" src="{{imageUri + '/defaults/c-image/recommend/icon-r_collect32@2x.png'}}"></image>
           <image wx:if="{{imageUri && isFavorite}}" class="icon" src="{{imageUri + '/defaults/c-image/recommend/icon-r_collection32@2x.png'}}"></image>
+          收藏
+        </view>
+        <view class="collect border-right-1px dis" wx:if="{{activityStatus === 'group' || activityStatus === 'share'}}">
+          <image wx:if="{{imageUri}}" class="icon" src="{{imageUri + '/defaults/c-image/recommend/icon-no_collect@2x.png'}}"></image>
           收藏
         </view>
         <button class="customer-service" session-from="{{currentMerchant}}" open-type="contact">
@@ -140,7 +146,8 @@
           客服
         </button>
       </view>
-      <view class="buy-btn {{industry}}-bg {{stock === 0 ? 'disable' : ''}}" @tap="postOrder">立即购买</view>
+      <view class="buy-btn {{stock === 0 ? 'disable' : ''}}" @tap="postOrder">{{activityStatus === 'group' ? '¥' + groupBuyDetail.promotion_price + '单买' : '立即购买'}}</view>
+      <view class="group-buy-btn" @tap="postGroupOrder" wx:if="{{activityStatus === 'group'}}">¥{{groupBuyDetail.group_price}}{{groupType === 'join' ? '参团' : '开团'}}</view>
     </view>
     <phone-test @isPhoneOk.user="getSymbol" :industry.sync="industry"></phone-test>
     <share :qrcode.sync="qrcode" :detail.sync="coupon" :promotionImages.sync="promotionImages"
@@ -163,7 +170,7 @@
         </view>
       </view>
     </share-modal>
-    <post-order :orderInfo.sync="orderInfo" @throw.user="postOrderFail" :industry.sync="industry"></post-order>
+    <post-order :orderInfo.sync="orderInfo" @throw.user="postOrderFail" :industry.sync="industry" :status="activityStatus"></post-order>
     <toast></toast>
     <popout></popout>
     <rule title="玩法详情">
@@ -192,6 +199,7 @@
   import Share from '@/base/share/share'
   import BaseModal from '@/base/base-modal/base-modal'
   import Shares from 'api/share'
+  import GroupApi from 'api/groupon'
   import PostOrder from '@/base/post-order/post-order'
   import Toast from '@/base/toast/toast'
   import URIS from 'common/js/config'
@@ -228,18 +236,22 @@
       share: false,
       shareStatus: false,
       activityStatus: '',
-      personTransition: '',
-      personTransform: '',
-      personIdx: 0,
-      personTimer: '',
-      personList: [1, 2, 3, 4],
-      endTime: 1545753599,
+      personList: [],
+      endTime: 0,
       groupEndTime: {
         day: '00',
         hour: '00',
         minute: '00',
         second: '00'
-      }
+      },
+      groupBuyDetail: {
+        group_price: 0,
+        promotion_price: 0
+      },
+      groupId: '',
+      groupBuyList: [],
+      groupType: 'open',
+      joinGroupId: ''
     }
 
     onShareAppMessage(res) {
@@ -266,12 +278,14 @@
 
     async onLoad(option) {
       this.activityStatus = option.status ? option.status : ''
+      this.groupType = option.groupType ? option.groupType : 'open'
       await this.showIndustry()
       if (option.scene) {
         let scene = decodeURIComponent(option.scene)
         const params = getParams(scene)
         this.type = Math.floor(params.type)
         this.id = params.id
+        this.groupId = params.groupId
         this.currentMerchant = params.merchantId
         wepy.setStorageSync('merchantId', this.currentMerchant)
         if (!wepy.getStorageSync('token')) {
@@ -280,6 +294,7 @@
       } else {
         this.type = Math.floor(option.type)
         this.id = option.id
+        this.groupId = option.groupId
         this.currentMerchant = option.currentMerchant ? option.currentMerchant : 0
       }
       await this.load()
@@ -290,6 +305,9 @@
       this.currentPage = `/pages/coupon-detail/coupon-detail?type=${this.type}&id=${this.id}&merchantId=${this.currentMerchant}`
       if (this.type === COUPON_TYPE) {
         await this._getCouponDetail()
+        if (this.activityStatus === 'group') {
+          await this._getGroupDetail()
+        }
       } else if (this.type === PACKAGE_TYPE) {
         await this._getPackageDetail()
       }
@@ -369,6 +387,26 @@
       }
     }
 
+    async _getGroupDetail() {
+      const resData = await GroupApi.getGroupDetail(this.groupId)
+      if (resData.error !== ERR_OK || !resData.activity_status) {
+        return
+      }
+      let res = resData.data
+      this.personList = res.earn_lists
+      this.groupBuyDetail = res
+      this.endTime = res.end_at_timestamp
+      let groupList = res.open_groupon_lists
+      let first = groupList.slice(0, 2)
+      let second = groupList.slice(2, 4)
+      let third = groupList.slice(4, 6)
+      let four = groupList.slice(6, 8)
+      this.groupBuyList = [first, second, third, four].filter((item) => {
+        return item.length > 0
+      })
+      this.$apply()
+    }
+
     // 出来门店照片
     _formatShopImages(data) {
       let arr = []
@@ -408,9 +446,25 @@
 
     _groupTimePlay() {
       this.groupEndTime = this._groupTimeCheckout(this.endTime)
+      this.groupBuyList = this.groupBuyList.map((item) => {
+        item.map((item) => {
+          let endTime = this._groupTimeCheckout(item.remaining_time_timestamp)
+          item.endTime = `${endTime.hour}:${endTime.minute}:${endTime.second}`
+          return item
+        })
+        return item
+      })
       this.$apply()
       setInterval(() => {
         this.groupEndTime = this._groupTimeCheckout(this.endTime)
+        this.groupBuyList = this.groupBuyList.map((item) => {
+          item.map((item) => {
+            let endTime = this._groupTimeCheckout(item.remaining_time_timestamp)
+            item.endTime = `${endTime.hour}:${endTime.minute}:${endTime.second}`
+            return item
+          })
+          return item
+        })
         this.$apply()
       }, 1000)
     }
@@ -426,29 +480,55 @@
       minute = minute >= 10 ? minute : '0' + minute
       let second = Math.floor(differ) - (day * 24 * 60 * 60) - (hour * 60 * 60) - (minute * 60)
       second = second >= 10 ? second : '0' + second
-      let times = {
-        day,
-        hour,
-        minute,
-        second
+      let times
+      if (differ > 0) {
+        times = {
+          day,
+          hour,
+          minute,
+          second
+        }
+      } else {
+        times = {
+          day: '00',
+          hour: '00',
+          minute: '00',
+          second: '00'
+        }
       }
       return times
     }
 
-    submit() {
+    submit(status) {
       wepy.pageScrollTo({scrollTop: 0})
-      this.orderInfo = {
-        promotionImage: this.promotionImages[0].image.url,
-        promotion_type: this.type,
-        promotion_id: this.coupon.id,
-        title: this.coupon.title,
-        price: this.coupon.platform_price,
-        current_merchant: this.currentMerchant,
-        stock: this.coupon.stock,
-        peopleStock: this.coupon.note ? this.coupon.note.buy_upper_limit : -1
+      if (status === 'group') {
+        this.orderInfo = {
+          promotionImage: this.promotionImages[0].image.url,
+          promotion_type: this.type,
+          promotion_id: this.coupon.id,
+          group_id: this.groupId,
+          title: this.groupBuyDetail.activity_name,
+          price: this.groupBuyDetail.group_price,
+          current_merchant: this.currentMerchant,
+          stock: this.coupon.stock,
+          group_type: this.groupType,
+          joinGroupId: this.joinGroupId,
+          peopleStock: this.coupon.note ? this.coupon.note.buy_upper_limit : -1
+        }
+      } else {
+        this.orderInfo = {
+          promotionImage: this.promotionImages[0].image.url,
+          promotion_type: this.type,
+          promotion_id: this.coupon.id,
+          title: this.coupon.title,
+          price: this.coupon.platform_price,
+          current_merchant: this.currentMerchant,
+          stock: this.coupon.stock,
+          peopleStock: this.coupon.note ? this.coupon.note.buy_upper_limit : -1
+        }
       }
       this.$apply()
-      this.$invoke('post-order', 'show')
+      this.$invoke('post-order', 'show', status)
     }
 
     methods = {
@@ -495,7 +575,20 @@
           this.$invoke('phone-test', 'show')
           return
         }
-        this.submit()
+        this.submit('')
+      },
+      async postGroupOrder() {
+        if (!this.groupBuyDetail.can_open_group) {
+          this.$invoke('toast', 'show', '开团数已达上限')
+          return
+        }
+        const isAuthorise = await this.isAuthorise()
+        this.loaded()
+        if (!isAuthorise) {
+          this.$invoke('phone-test', 'show')
+          return
+        }
+        this.submit('group')
       },
       postOrderFail(message) {
         this.$invoke('toast', 'show', message || '网络错误...')
@@ -506,6 +599,13 @@
       },
       showGroupRule() {
         this.$invoke('rule', 'showRule')
+      },
+      async joinGroupBuy(item) {
+        if (!item.can_join_group) {
+          this.$invoke('toast', 'show', '参团失败，请选择其他团')
+          return
+        }
+        this.$navigate('/pages/group-detail/group-detail?id=' + item.id)
       }
     }
 
@@ -574,6 +674,12 @@
         left: 7.5px
         top: 10.5px
         overflow: hidden
+        .swiper-cover
+          width: 100%
+          height: 100%
+          position: absolute
+          left: 0
+          top: 0
         .group-person-list
           width: 100%
           height: 100%
@@ -771,6 +877,11 @@
           background: $color-orange
           display: block
           transform: translate(0, -50%)
+      .group-nothing
+        height: 109px
+        line-height: 109px
+        text-align: center
+        font-size: $font-size-small
       .group-list-container
         height: 109px
         overflow: hidden
@@ -810,6 +921,7 @@
               height: 54px
               align-items: center
               .group-swiper-time
+                width: 62px
                 .group-swiper-txt
                   font-size: $font-size-small-s
                   margin-bottom: 4px
@@ -894,7 +1006,7 @@
       height: 44px
       background-color: $color-white
       .button-group
-        flex: 1
+        width: 50vw
         display: flex
         font-size: $font-size-small-s
         border-top: 0.5px solid $color-col-line
@@ -908,6 +1020,8 @@
             width: 16px
             height: 16px
             margin-bottom: 3px
+        .dis.collect
+          color: #dbdbdb
         .customer-service
           background-color: transparent
           flex: 1
@@ -934,6 +1048,19 @@
         background-color: $color-button
         &.disable
           opacity: .2
+    .buy-button-wrapper.group-buy
+      .button-group
+        width: 32vw
+      .buy-btn
+        flex: 0 0 32vw
+        background-color: $color-button
+      .group-buy-btn
+        width: 36vw
+        background-color: $color-orange
+        line-height: 44px
+        text-align: center
+        font-size: $font-size-medium
+        color: $color-white
     .base-modal-content
       .header-wrapper
         height: 124.5px

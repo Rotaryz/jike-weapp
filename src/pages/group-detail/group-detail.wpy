@@ -2,69 +2,69 @@
   <view class="group-detail">
     <view class="group-detail-head">
       <view class="group-item">
-        <view class="group-item-content">
+        <view class="group-item-content" @tap="groupDetail">
           <view class="item-left">
-            <image class="item-left-img" src=""></image>
+            <image class="item-left-img" src="{{groupDetails.promotion_image}}"></image>
           </view>
           <view class="item-right">
-            <view class="item-title">很多韩国复旦复华减肥法</view>
+            <view class="item-title">{{groupDetails.promotion_name}}</view>
             <view class="item-money">
               <text class="red-small-txt">团购价：</text>
               <text class="red-small-money">¥</text>
-              <text class="red-big-money">100</text>
+              <text class="red-big-money">{{groupDetails.group_price}}</text>
               <text class="gray-small-money">原价：¥ </text>
-              <text class="gray-big-money">298.8</text>
+              <text class="gray-big-money">{{groupDetails.promotion_price}}</text>
             </view>
-            <view class="item-count">2人团</view>
+            <view class="item-count">{{groupDetails.group_number}}人团</view>
           </view>
         </view>
       </view>
       <view class="group-detail-main">
         <view class="main-msg">
-          <view class="msg-title" wx:if="{{false}}">还差<text class="red-count">2</text>人，快喊小伙伴一起来拼团吧</view>
-          <view class="msg-time" wx:if="{{false}}">该团倒计时:<text class="day-txt">00</text>天<text class="time-txt">00</text>时<text class="time-txt">00</text>分<text class="time-txt">00</text>秒</view>
-          <view class="msg-status" wx:if="{{true}}">
-            <image class="msg-status-img" wx:if="{{imageUrlHead}}" src="{{imageUrlHead + '/defaults/c-image/mine/icon-group_success@2x.png'}}"></image>
-            <image class="msg-status-img" wx:if="{{imageUrlHead && false}}" src="{{imageUrlHead + '/defaults/c-image/mine/icon-group_fail@2x.png'}}"></image>
-            <view class="msg-status-txt">拼团成功！</view>
+          <view class="msg-title">还差<text class="red-count">{{groupDetails.remaining_number}}</text>人，快喊小伙伴一起来拼团吧</view>
+          <view class="msg-time">该团倒计时:<text class="day-txt">{{groupEndTime.day}}</text>天<text class="time-txt">{{groupEndTime.hour}}</text>时<text class="time-txt">{{groupEndTime.minute}}</text>分<text class="time-txt">{{groupEndTime.second}}</text>秒</view>
+          <view class="msg-status" wx:if="{{groupStatus !== 2}}">
+            <image class="msg-status-img" wx:if="{{imageUrlHead && groupStatus === 1}}" src="{{imageUrlHead + '/defaults/c-image/mine/icon-group_success@2x.png'}}"></image>
+            <image class="msg-status-img" wx:if="{{imageUrlHead && groupStatus === 0}}" src="{{imageUrlHead + '/defaults/c-image/mine/icon-group_fail@2x.png'}}"></image>
+            <view class="msg-status-txt">{{groupStatus === 1 ? '拼团成功！' : '拼团失败！'}}</view>
           </view>
           <view class="group-avatar-list">
-            <view class="group-avatar-box" wx:for="123" wx:key="{{index}}">
-              <image class="group-avatar-img" src="" wx:if="{{false}}"></image>
-              <image class="group-avatar-txt" wx:if="{{imageUrlHead}}" src="{{imageUrlHead + '/defaults/c-image/mine/icon-group_ques@2x.png'}}"></image>
+            <view class="group-avatar-box" wx:for="{{groupAvatarList}}" wx:key="{{index}}">
+              <image class="group-avatar-img" src="{{item.img_url}}" wx:if="{{item.img_url}}"></image>
+              <image class="group-avatar-txt" wx:if="{{imageUrlHead && !item.img_url}}" src="{{imageUrlHead + '/defaults/c-image/mine/icon-group_ques@2x.png'}}"></image>
             </view>
           </view>
-          <view class="group-red-btn" wx:if="{{false}}">我要参团</view>
-          <view class="group-red-btn" wx:if="{{false}}" @tap="showShareModal">邀请好友拼团</view>
-          <navigator url="/pages/recommend/recommend" hover-class="none" open-type="switchTab">
-            <view class="group-red-btn" wx:if="{{true}}">查看更多团购</view>
+          <view class="group-red-btn" wx:if="{{!groupHasJoin && groupStatus === 2}}">我要参团</view>
+          <view class="group-red-btn" wx:if="{{groupHasJoin && groupStatus === 2}}" @tap="showShareModal">邀请好友拼团</view>
+          <navigator url="/pages/recommend/recommend" hover-class="none" open-type="switchTab" wx:if="{{groupHasJoin && groupStatus === 1}}">
+            <view class="group-red-btn">查看更多团购</view>
           </navigator>
-          <navigator url="/pages/user/myOrder-detail/myOrderDetail" hover-class="none">
-            <view class="group-white-btn" wx:if="{{true}}">查看订单详情</view>
+          <navigator url="/pages/user/myOrder-detail/myOrderDetail" hover-class="none" wx:if="{{groupHasJoin && groupStatus === 2}}">
+            <view class="group-white-btn">查看订单详情</view>
           </navigator>
         </view>
       </view>
     </view>
-    <view class="more-group-list">
+    <view class="more-group-list" wx:if="{{groupHasJoin}}">
       <view class="group-list-title">更多团购</view>
-      <view class="group-list-item" wx:for="123" wx:key="{{index}}">
-        <navigator url="" hover-class="none">
+      <view class="group-list-item" wx:for="{{groupBuyList}}" wx:key="{{index}}">
+        <navigator url="{{'/pages/coupon-detail/coupon-detail?type=1&status=group&id=' + item.promotion_id + '&currentMerchant=' + item.merchant_id + '&groupId=' + item.id}}" hover-class="none">
           <view class="item-box">
             <view class="item-left">
-              <image class="item-left-img" src=""></image>
-              <view class="item-left-txt">2人团</view>
+              <image class="item-left-img" src="{{item.promotion_image}}"></image>
+              <view class="item-left-txt">{{item.group_number}}人团</view>
             </view>
             <view class="item-right">
               <view class="item-right-top">
-                <view class="item-right-title">计划的飞机国会尽快发给甲方给回</view>
+                <view class="item-right-title">{{item.activity_name}}</view>
                 <view class="item-right-money">
                   <text class="small-money">¥</text>
-                  <text class="big-money">100</text>
-                  <text class="del-money">¥ 200</text>
+                  <text class="big-money">{{item.group_price}}</text>
+                  <text class="del-money">¥ {{item.promotion_price}}</text>
                 </view>
               </view>
               <view class="item-right-down">
-                <text class="sale-count">已团100件</text>
+                <text class="sale-count">已团{{item.purchase_count}}件</text>
                 <view class="item-right-btn">去开团</view>
               </view>
             </view>
@@ -73,7 +73,7 @@
       </view>
     </view>
     <toast></toast>
-    <share :qrcode.sync="qrcode" :detail.sync="coupon" :promotionImages.sync="promotionImages"></share>
+    <share :qrcode.sync="qrcode" :detail.sync="canvasDetail" :promotionImages.sync="promotionImages"></share>
   </view>
 </template>
 
@@ -86,6 +86,8 @@
   import Share from '@/base/share/share'
   import Toast from '@/base/toast/toast'
   import PostOrder from '@/base/post-order/post-order'
+  import GroupApi from 'api/groupon'
+  import Info from 'api/info'
 
   export default class GroupDetail extends wepy.page {
     mixins = [base]
@@ -98,7 +100,23 @@
     }
 
     data = {
-      imageUrlHead: URIS.image
+      imageUrlHead: URIS.image,
+      id: '',
+      groupAvatarList: [],
+      groupDetails: {},
+      groupBuyList: [],
+      groupEndTime: {
+        day: '00',
+        hour: '00',
+        minute: '00',
+        second: '00'
+      },
+      endTime: '',
+      groupHasJoin: false,
+      groupStatus: false,
+      qrcode: '',
+      canvasDetail: {},
+      promotionImages: ''
     }
 
     onShareAppMessage(res) {
@@ -120,19 +138,102 @@
       }
     }
 
-    async onLoad() {
-      await this.load()
-      this.$invoke('underline', 'show')
+    async onLoad(option) {
+      this.id = option.id
+      this.currentPage = '/pages/group-detail/group-detail?id=' + this.id
+      await this.load(this.id)
+      await this._getGroupList()
+      this._groupTimePlay()
+      await this._createQrcode()
       this.loaded()
     }
 
-    async load() {
+    async load(id) {
+      const resData = await GroupApi.getGroupBuyDetail(id)
+      let res = resData.data
+      this.groupDetails = res
+      this.endTime = res.remaining_time_timestamp
+      this.groupStatus = res.group_status * 1
+      this.groupHasJoin = res.in_group
+      for (let i = 0; i < res.group_number; i++) {
+        this.groupAvatarList.push(res.join_numbers[i])
+      }
+      this.promotionImages = res.promotion_image
+      this.canvasDetail = {
+        title: res.promotion_name,
+        buyCount: res.buy_number,
+        platform_price: res.group_price,
+        shop_price: res.promotion_price
+      }
+      this.$apply()
+    }
 
+    async _createQrcode() {
+      const res = await Info.createQrode({path: this.currentPage})
+      if (res.error === ERR_OK) {
+        const data = res.data
+        this.qrcode = data.image_url
+      }
+    }
+
+    async _getGroupList() {
+      let resData = await GroupApi.getGroupList(1, 3)
+      if (resData.error !== ERR_OK) {
+        return
+      }
+      if (!resData.activity_status) {
+        this.groupBuyList = []
+        return
+      }
+      this.groupBuyList = [...resData.data]
+      this.$apply()
+    }
+
+    _groupTimePlay() {
+      this.groupEndTime = this._groupTimeCheckout(this.endTime)
+      this.$apply()
+      setInterval(() => {
+        this.groupEndTime = this._groupTimeCheckout(this.endTime)
+        this.$apply()
+      }, 1000)
+    }
+
+    _groupTimeCheckout(time) {
+      let nowSecond = parseInt(Date.now() / 1000)
+      let differ = time * 1 - nowSecond
+      let day = Math.floor(differ / (60 * 60 * 24))
+      day = day >= 10 ? day : '0' + day
+      let hour = Math.floor(differ / (60 * 60)) - (day * 24)
+      hour = hour >= 10 ? hour : '0' + hour
+      let minute = Math.floor(differ / 60) - (day * 24 * 60) - (hour * 60)
+      minute = minute >= 10 ? minute : '0' + minute
+      let second = Math.floor(differ) - (day * 24 * 60 * 60) - (hour * 60 * 60) - (minute * 60)
+      second = second >= 10 ? second : '0' + second
+      let times
+      if (differ > 0) {
+        times = {
+          day,
+          hour,
+          minute,
+          second
+        }
+      } else {
+        times = {
+          day: '00',
+          hour: '00',
+          minute: '00',
+          second: '00'
+        }
+      }
+      return times
     }
 
     methods = {
       showShareModal() {
         this.$invoke('share', 'show', 'group')
+      },
+      groupDetail() {
+        this.$navigate('/pages/coupon-detail/coupon-detail?type=1&status=group&groupType=join&id=' + 152 + '&currentMerchant=' + 100004 + '&groupId=' + 24)
       }
     }
 

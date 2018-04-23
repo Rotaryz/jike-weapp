@@ -52,7 +52,7 @@
       :list.sync="giftbagList"
     ></recom-giftbat>
 
-    <view class="group-buy" wx:if="{{true}}">
+    <view class="group-buy" wx:if="{{groupBuyList.length}}">
       <navigator url="/pages/group-buy/group-buy" hover-class="none">
         <view class="group-buy-head">
           <view class="group-buy-title">团购火拼</view>
@@ -60,23 +60,23 @@
         </view>
       </navigator>
       <swiper class="group-buy-content" duration="300" current="{{saleIdx}}" bindchange="swiperMove">
-        <block wx:for="{{[1,2,3]}}" wx:key="{{item}}" wx:key="{{index}}">
+        <block wx:for="{{groupBuyList}}" wx:key="{{item}}" wx:key="{{index}}">
           <swiper-item wx:if="{{true}}">
             <view class="group-buy-item">
-              <view class="group-buy-coupon" wx:for="{{[1,2,3]}}" wx:key="{{index}}" @tap="couponDetail({{item}})">
+              <view class="group-buy-coupon" wx:for="{{item}}" wx:key="{{index}}" @tap="groupDetail({{item}})">
                 <view class="img-box">
-                  <image class="shop-img" src="{{item.image_url}}" mode="aspectFill"></image>
-                  <view class="shop-name">2人团</view>
+                  <image class="shop-img" src="{{item.promotion_image}}" mode="aspectFill"></image>
+                  <view class="shop-name">{{item.group_number}}人团</view>
                 </view>
                 <view class="item-down">
                   <view class="item-money">
                     <text class="small-money">¥</text>
-                    <text class="big-money">100</text>
-                    <text class="del-money">¥ 200</text>
+                    <text class="big-money">{{item.group_price}}</text>
+                    <text class="del-money">¥ {{item.promotion_price}}</text>
                   </view>
-                  <view class="item-title">规范化广泛规范化</view>
+                  <view class="item-title">{{item.promotion_name}}</view>
                   <view class="item-sale">
-                    <text class="sale-count">已团100件</text>
+                    <text class="sale-count">已团{{item.purchase_count}}件</text>
                   </view>
                 </view>
               </view>
@@ -84,8 +84,8 @@
           </swiper-item>
         </block>
       </swiper>
-      <view class="swiper-dots" wx:if="{{true}}">
-        <view class="dot {{groupBuyIdx === index ? 'active' : ''}}" wx:for="{{[1,2,3]}}" wx:key="{{index}}"></view>
+      <view class="swiper-dots" wx:if="{{groupBuyList.length > 1}}">
+        <view class="dot {{groupBuyIdx === index ? 'active' : ''}}" wx:for="{{groupBuyList}}" wx:key="{{index}}"></view>
       </view>
     </view>
 
@@ -120,6 +120,7 @@
   import {ERR_OK} from 'api/base'
   import ContentsApi from 'api/contents'
   import Merchants from 'api/merchants'
+  import GroupApi from 'api/groupon'
   import URIS from 'common/js/config'
   import RecomBuy from '@/base/recommend-items/recom-buy'
   import RecomGiftbag from '@/base/recommend-items/recom-merchant-giftbag'
@@ -158,7 +159,8 @@
       hotSecond: [],
       hotThird: [],
       activeIsEmpty: true,
-      groupBuyIdx: 0
+      groupBuyIdx: 0,
+      groupBuyList: []
     }
 
     onShareAppMessage(res) {
@@ -242,6 +244,7 @@
     async _init() {
       await Promise.all([
         this._getCouponsAll(),
+        this._getGroupList(),
         this._getContentsAll(),
         this._getGiftBagsAll(),
         this._getUserCouponListAll()
@@ -277,6 +280,26 @@
         this.giftbagList = res.data
         this.$apply()
       }
+    }
+
+    // 获取团购火拼列表（最多9条）
+    async _getGroupList(loading = true) {
+      let resData = await GroupApi.getGroupList(1, 9, loading)
+      if (resData.error !== ERR_OK) {
+        return
+      }
+      if (!resData.activity_status) {
+        this.groupBuyList = []
+        return
+      }
+      let res = resData.data
+      let first = res.slice(0, 3)
+      let second = res.slice(3, 6)
+      let third = res.slice(6, 9)
+      this.groupBuyList = [first, second, third].filter((item) => {
+        return item.length > 0
+      })
+      this.$apply()
     }
 
     // 获取内容列表 (all)+
@@ -401,6 +424,12 @@
       swiperMove(e) {
         this.groupBuyIdx = e.detail.current * 1
         this.$apply()
+      },
+      groupDetail(msg) {
+        let groupId = msg.id
+        let promotionId = msg.promotion_id
+        let merchantId = msg.merchant_id
+        this.$navigate('/pages/coupon-detail/coupon-detail?type=1&status=group&id=' + promotionId + '&currentMerchant=' + merchantId + '&groupId=' + groupId)
       }
     }
 
