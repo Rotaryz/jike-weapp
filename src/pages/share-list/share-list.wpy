@@ -36,6 +36,9 @@
 
     async onLoad() {
       this.shareList = await this._load()
+      if (!this.shareList.length) {
+        this.shareNone = true
+      }
       this.$apply()
     }
 
@@ -67,6 +70,11 @@
       return res
     }
 
+    events = {
+      shareDetail(id) {
+        this.$navigate(`/pages/share-detail/share-detail?id=${id}`)
+      }
+    }
     components = {
       'underline-block': UnderlineBlock,
       'share-item': ShareItem

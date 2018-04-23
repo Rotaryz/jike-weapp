@@ -131,7 +131,7 @@
         ctx.fillText('邀请你参加活动', 200, 1530)
       } else if (type === 'shareMoney') {
 //        分享赚钱活动图片
-        await this.drawActivity(ctx, user, shopName, '先领券 再领取', '券后价')
+        await this.drawActivity(ctx, user, shopName, '先领券 再购买', '券后价')
       } else if (type === 'groupBuy') {
 //        团购的活动分享图片
         await this.drawActivity(ctx, user, shopName, '拼团优惠', '团购价')
@@ -174,15 +174,16 @@
     }
 
     async drawActivity(ctx, user, shopName, title, activityTitle) {
+      console.log(this.detail)
       const manys = await wepy.downloadFile({url: URIS.image + '/defaults/service-image/icon-many.png'})
       const activityIcon = await wepy.downloadFile({url: URIS.image + '/defaults/c-image/share/pic-price@2x.png'})
       const avatars = await wepy.downloadFile({url: user.avatarUrl})
 //    商品图片
-//      const pics = await wepy.downloadFile({url: this.promotionImages[0].image.url})
+      const pics = await wepy.downloadFile({url: this.promotionImages[0].image.url})
       let many = manys.tempFilePath
       let avatar = avatars.tempFilePath
       let activityIcons = activityIcon.tempFilePath
-//      let pic = pics.tempFilePath
+      let pic = pics.tempFilePath
 //        活动标题
       let num = 0
       for (let i = 0; i < title.length; i++) {
@@ -213,8 +214,8 @@
       ctx.setFillStyle('#000000')
       ctx.fillText(title, textLeft, 160)
 //        商品图片
-      ctx.fillRect(140, 210, 1220, 680)
-//      ctx.drawImage(pic, 140, 62, 1220, 680)
+//      ctx.fillRect(140, 210, 1220, 680)
+      ctx.drawImage(pic, 140, 210, 1220, 680)
 //        商品名称
       ctx.setFontSize(48)
       ctx.setFillStyle('#464646')
@@ -229,14 +230,14 @@
       ctx.fillText('¥', 312, 1078)
 //      金额
       ctx.setFontSize(72)
-      ctx.fillText(this.detail.platform_price, 322, 1078)
+      ctx.fillText(this.detail.platform_price, 337, 1078)
 //      门市价
       ctx.setFontSize(40)
       ctx.setFillStyle('#464646')
       ctx.fillText(`门市价:¥${this.detail.shop_price}`, 578, 1074)
 //      购买人数
       ctx.drawImage(many, 908, 1045, 32, 30)
-      ctx.fillText(this.detail.collected < 100 ? '100人已购买' : `${this.detail.collected}已购买`, 918, 1074)
+      ctx.fillText(this.detail.buyCount < 100 ? '100人已购买' : `${this.detail.buyCount}已购买`, 938, 1074)
 
       ctx.setFontSize(48)
       ctx.drawImage(avatar, 200, 1340, 96, 96)

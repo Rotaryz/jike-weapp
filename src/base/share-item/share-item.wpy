@@ -1,5 +1,5 @@
 <template>
-  <view class="ro-share-item">
+  <view class="ro-share-item" @tap="shareDetail({{shareCoupon.id}})">
     <image class="ro-share-item-bk" wx:if="{{false}}"></image>
     <view class="ro-share-left">
       <image class="ro-share-item-logo" mode="aspectFill" src="{{shareCoupon.image_url}}"><view class="ro-share-item-buy">销售：{{shareCoupon.sales_volume}}</view></image>
@@ -31,6 +31,11 @@
     }
     data = {
       imageUrl: URIS.image
+    }
+    methods ={
+      shareDetail(id) {
+        this.$emit('shareDetail', id)
+      }
     }
   }
 </script>
