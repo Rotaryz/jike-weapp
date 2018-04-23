@@ -18,15 +18,6 @@
           <view class="content">直播优惠</view>
         </button>
 
-
-        <button form-type="submit"
-                @tap="goToActivity('share', '/pages/shareAndPrize/shareAndPrize')"
-                type="default" size="mini"
-                class="content-wrapper">
-          <image class="icon" wx:if="{{imageUri && industry.length}}"
-                 src="{{imageUri + '/defaults/c-image/recommend/icon-share_'+ industry +'@2x.png'}}"></image>
-          <view class="content">分享有礼</view>
-        </button>
         <button form-type="submit"
                 @tap="goToActivity('sign', '/pages/activity/activity?type=sign')"
                 type="default" size="mini"
@@ -42,6 +33,14 @@
           <image class="icon" wx:if="{{imageUri && industry.length}}"
                  src="{{imageUri + '/defaults/c-image/recommend/icon-turntable_'+industry+'@2x.png'}}"></image>
           <view class="content">大转盘</view>
+        </button>
+        <button form-type="submit"
+                @tap="goToActivity('share', '/pages/share-list/share-list')"
+                type="default" size="mini"
+                class="content-wrapper">
+          <image class="icon" wx:if="{{imageUri && industry.length}}"
+                 src="{{imageUri + '/defaults/c-image/share/icon-share_tj@2x.png'}}"></image>
+          <view class="content">分享赚钱</view>
         </button>
       </view>
     </form>

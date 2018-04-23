@@ -1,9 +1,9 @@
 <template>
-  <view class="ro-share-coupon {{shareStatus ? 'ro-share-coupon-active' : ''}}" wx:if="{{share}}">
-    <coupon type="pay" :content.sync="coupon" :industry.sync="industry"></coupon>
+  <view class="ro-share-coupon {{shareStatus ? 'ro-share-coupon-active' : ''}}" wx:if="{{activityStatus === 'share'}}">
+    <coupon :type.sync="shareType" :content.sync="coupon" :industry.sync="industry" :industryColor.sync="industryColor"></coupon>
   </view>
   <view class="coupon-detail">
-    <cover-view class="ro-share-money" wx:if="{{share}}"></cover-view>
+    <!--<cover-view class="ro-share-money" wx:if="{{share}}"></cover-view>-->
     <view class="slider-wrapper">
       <slider :list.sync="promotionImages">
         <block slot="content">
@@ -194,6 +194,7 @@
   import Slider from '@/base/slider/slider'
   import {ERR_OK} from 'api/base'
   import CouponApi from 'api/coupon'
+  import Merchants from 'api/merchants'
   import Info from 'api/info'
   import Coupon from '@/base/coupon/coupon'
   import CouponFactory from 'common/js/coupon'
@@ -255,7 +256,10 @@
       groupId: '',
       groupBuyList: [],
       groupType: 'open',
-      joinGroupId: ''
+      joinGroupId: '',
+      shareType: 'shareBuy',
+      fromCustomerId: 0, // 分享者的ID,
+      actId: 0
     }
 
     onShareAppMessage(res) {
@@ -299,19 +303,25 @@
         this.type = Math.floor(option.type)
         this.id = option.id
         this.groupId = option.groupId
+        this.actId = option.actId || 0
+        this.fromCustomerId = option.fromCustomerId || 0
         this.currentMerchant = option.currentMerchant ? option.currentMerchant : 0
       }
+
       await this.load()
     }
 
     async load() {
       this.currentMerchant = this.currentMerchant || wepy.getStorageSync('merchantId')
       this.currentPage = `/pages/coupon-detail/coupon-detail?type=${this.type}&id=${this.id}&merchantId=${this.currentMerchant}`
-      if (this.type === COUPON_TYPE) {
+      console.log(this.type)
+      if (this.type === COUPON_TYPE && !this.activityStatus) {
         await this._getCouponDetail()
         if (this.activityStatus === 'group') {
           await this._getGroupDetail()
         }
+      } else if (this.activityStatus === 'share') {
+        await this._getShareMoney()
       } else if (this.type === PACKAGE_TYPE) {
         await this._getPackageDetail()
       }
@@ -319,7 +329,30 @@
       this._groupTimePlay()
       this.loaded()
     }
-
+    async _getShareMoney() {
+      let Sharedata = {
+        act_type: 1,
+        act_id: this.actId, // 活动id
+        p_customer_id: this.fromCustomerId
+      }
+      let res = await Merchants.coupons(this.id, Sharedata)
+      if (res.error !== ERR_OK) {
+        this.loaded()
+        return
+      }
+      const data = res.data
+      console.log(data)
+      wepy.setNavigationBarTitle({title: data.title})
+      this.promotionImages = data.promotion_images
+      this.coupon = data
+      this.services = data.detail
+      this.note = data.note
+      this.notAllowTime = data.not_allow_time
+      this.isFavorite = data.is_favorite
+      this.stock = data.stock
+      // 添shop照片
+      this.shopImages = this._formatShopImages(data)
+    }
     async _getSharePrize() {
       if (!this.coupon.activity_share) {
         return
@@ -421,7 +454,7 @@
         return arr
       }
     }
-
+//  分享赚钱活动
     async _getPackageDetail() {
       const res = await CouponApi.getPackageDetail(this.id, this.currentMerchant)
       if (res.error === ERR_OK) {
@@ -534,7 +567,6 @@
       this.$apply()
       this.$invoke('post-order', 'show', status)
     }
-
     methods = {
       showShareModal() {
         this.$invoke('share', 'show')
@@ -579,7 +611,7 @@
           this.$invoke('phone-test', 'show')
           return
         }
-        this.submit('')
+        this.submit(this.activityStatus)
       },
       async postGroupOrder() {
         if (!this.groupBuyDetail.can_open_group) {

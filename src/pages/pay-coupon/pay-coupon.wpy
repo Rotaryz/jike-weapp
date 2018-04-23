@@ -49,7 +49,7 @@
       imageUri: URIS.image,
       couponList: [],
       noCouponList: [],
-      type: 'shareBuy',
+      type: 'pay',
       noUseDiscountBtn: false,
       couponBlock: false
     }
