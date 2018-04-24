@@ -127,13 +127,28 @@
       },
       async postOrder() {
         /* eslint-disable no-undef */
-        const {current_merchant, promotion_type, promotion_id, price} = this.orderInfo
-        const data = {
-          current_merchant,
-          promotion_type,
-          promotion_id,
-          price,
-          count: this.count
+        const {current_merchant, promotion_type, promotion_id, price, from, group_type, group_id, activity_id} = this.orderInfo
+        let data
+        if (from === 'c_groupon') {
+          data = {
+            current_merchant,
+            promotion_type,
+            promotion_id,
+            price,
+            count: this.count,
+            from,
+            group_type,
+            group_id,
+            activity_id
+          }
+        } else {
+          data = {
+            current_merchant,
+            promotion_type,
+            promotion_id,
+            price,
+            count: this.count
+          }
         }
         const json = await Order.operation(data)
         this.loaded()
@@ -153,7 +168,11 @@
             const orderId = res.order_id
             const total = this.total
             const status = 'success'
-            this.$parent.$navigate(`/pages/pay-result/pay-result?orderId=${orderId}&total=${total}&status=${status}`)
+            if (this.status === 'group') {
+              this.$emit('postSuccess')
+            } else {
+              this.$parent.$navigate(`/pages/pay-result/pay-result?orderId=${orderId}&total=${total}&status=${status}`)
+            }
             this._hide()
           },
           fail: () => {

@@ -233,6 +233,7 @@
             duration: 300
           })
           this.groupBuyIdx = 0
+          this.groupBuyList = []
         } catch (e) {
         }
       }

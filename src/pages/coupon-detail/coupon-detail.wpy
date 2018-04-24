@@ -57,7 +57,7 @@
         </view>
       </view>
       <view class="group-description" wx:if="{{activityStatus === 'group'}}">
-        <view class="group-name">{{groupBuyDetail.activity_name}}</view>
+        <view class="group-name">{{groupBuyDetail.promotion_name}}</view>
         <view class="group-limit">{{groupBuyDetail.buy_number}}人已购买</view>
         <view class="group-money-box">
           <view class="group-icon-box">
@@ -255,7 +255,8 @@
       groupId: '',
       groupBuyList: [],
       groupType: 'open',
-      joinGroupId: ''
+      joinGroupId: '',
+      timer: ''
     }
 
     onShareAppMessage(res) {
@@ -449,6 +450,7 @@
     }
 
     _groupTimePlay() {
+      clearInterval(this.timer)
       this.groupEndTime = this._groupTimeCheckout(this.endTime)
       this.groupBuyList = this.groupBuyList.map((item) => {
         item.map((item) => {
@@ -459,7 +461,7 @@
         return item
       })
       this.$apply()
-      setInterval(() => {
+      this.timer = setInterval(() => {
         this.groupEndTime = this._groupTimeCheckout(this.endTime)
         this.groupBuyList = this.groupBuyList.map((item) => {
           item.map((item) => {
@@ -508,16 +510,17 @@
       if (status === 'group') {
         this.orderInfo = {
           promotionImage: this.promotionImages[0].image.url,
-          promotion_type: this.type,
+          promotion_type: 4, // 4为团购
           promotion_id: this.coupon.id,
-          group_id: this.groupId,
-          title: this.groupBuyDetail.activity_name,
+          activity_id: this.groupId,
+          title: this.groupBuyDetail.promotion_name,
           price: this.groupBuyDetail.group_price,
           current_merchant: this.currentMerchant,
-          stock: this.coupon.stock,
+          stock: this.groupBuyDetail.surplus_stock,
           group_type: this.groupType,
-          joinGroupId: this.joinGroupId,
-          peopleStock: this.coupon.note ? this.coupon.note.buy_upper_limit : -1
+          group_id: this.joinGroupId,
+          peopleStock: this.coupon.note ? this.coupon.note.buy_upper_limit : -1,
+          from: 'c_groupon'
         }
       } else {
         this.orderInfo = {
@@ -528,7 +531,8 @@
           price: this.coupon.platform_price,
           current_merchant: this.currentMerchant,
           stock: this.coupon.stock,
-          peopleStock: this.coupon.note ? this.coupon.note.buy_upper_limit : -1
+          peopleStock: this.coupon.note ? this.coupon.note.buy_upper_limit : -1,
+          from: ''
         }
       }
       this.$apply()
@@ -607,6 +611,12 @@
       async joinGroupBuy(item) {
         if (!item.can_join_group) {
           this.$invoke('toast', 'show', '参团失败，请选择其他团')
+          return
+        }
+        const res = await GroupApi.checkGroup('join', item.activity_id, item.id)
+        this.loaded()
+        if (res.error !== ERR_OK) {
+          this.$invoke('toast', 'show', res.message)
           return
         }
         this.$navigate('/pages/group-detail/group-detail?id=' + item.id)

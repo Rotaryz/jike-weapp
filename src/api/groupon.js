@@ -36,10 +36,11 @@ export default class Group extends base {
    * 判断是否可以开团/参团
    * @returns {Promise.<void>}
    */
-  static async checkGroup(type, id, loading = true) {
+  static async checkGroup(type, id, groupId = 0, loading = true) {
     let data = {
       group_type: type,
-      activity_id: id
+      activity_id: id,
+      id: groupId
     }
     const url = `${this.baseUrl}/api/groupon/checkout-group`
     return await this.get(url, data, loading)
