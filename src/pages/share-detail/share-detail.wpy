@@ -172,10 +172,10 @@
     async _createQrcode() {
       let currentMerchant = wepy.getStorageSync('merchantId') ? wepy.getStorageSync('merchantId') : ''
       setTimeout(async () => {
-        let id = this.shareDetail ? this.shareDetail.promotion_id : 0
+        let atcId = this.shareDetail ? this.shareDetail.id : 0
         let fromCustomerId = this.shareDetail ? this.shareDetail.from_customer_id : 0
         let promotionId = this.shareDetail ? this.shareDetail.promotion_id : 0
-        this.currentPage = `/pages/coupon-detail/coupon-detail?actId=${id}&type=1&merchantId=${currentMerchant}&fromCustomerId=${fromCustomerId}&id=${promotionId}&status=share`
+        this.currentPage = `/pages/coupon-detail/coupon-detail?actId=${atcId}&type=1&merchantId=${currentMerchant}&fromCustomerId=${fromCustomerId}&id=${promotionId}&status=share`
         console.log(this.currentPage)
         const res = await Info.createQrode({path: this.currentPage})
         this.loaded()

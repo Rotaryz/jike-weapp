@@ -10,8 +10,8 @@
       </view>
     </view>
     <view class="ro-share-right">
-      <image class="ro-share-right-icon" wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/c-image/share/icon-share_fxzq@2x.png'}}"></image>
-      <view class="ro-share-get-money">赚 ¥{{shareCoupon.profit_money}}</view>
+      <image class="ro-share-right-icon" wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/c-image/template/icon-share2_'+industry+'@2x.png'}}"></image>
+      <view class="ro-share-get-money {{industry}}-text">赚 ¥{{shareCoupon.profit_money}}</view>
     </view>
   </view>
 </template>
@@ -27,6 +27,10 @@
       shareCoupon: {
         type: Object,
         default: {}
+      },
+      industry: {
+        type: String,
+        default: ''
       }
     }
     data = {

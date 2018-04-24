@@ -1,6 +1,7 @@
 <template>
   <view class="myOrder">
     <view class="myOrder-menuTab">
+      <!--'myOrder-menuTab-item ' + industry + '-border':'myOrder-menuTab-item'-->
       <view wx:for="{{menuItems}}" wx:key="{{index}}"
             class="{{index === menuIdx?'myOrder-menuTab-item ' + industry + '-border':'myOrder-menuTab-item'}}"
             @tap="tabChange({{item.type}},{{index}})">
@@ -331,25 +332,31 @@
     .myOrder-menuTab
       display: flex
       height: 8vh
-      padding-right: 8px
       box-sizing: border-box
       background: $color-highlight-background
       border-bottom: 1px solid $color-row-line
-
+      justify-content :space-around
       .myOrder-menuTab-item
         font-size: $font-size-medium
         color: $color-text
-        flex: 1
         line-height: 8vh
-        text-align: center
-        margin: 0 11px
         margin-bottom: -1rpx
         border-bottom: 0 none
         white-space: nowrap
-
-      .myOrder-menuTab-item.active
+        position: relative
+        text-align :center
+      .myOrder-menuTab-item-active
         color: $color-text-t
-        border-bottom: 2px solid $color-text-t
+        &:before
+          content : ''
+          width: 30px
+          height: 2px
+          position: absolute
+          left: 50%
+          transform :translateX(-50%)
+          bottom: 0px
+          background :$color-theme
+
 
     .myOrder-phoneTestBox
       height: 55px

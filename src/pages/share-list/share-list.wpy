@@ -1,7 +1,7 @@
 <template>
   <view class="share-list">
     <repeat for="{{shareList}}" key="index" index="index" item="item">
-      <share-item :shareCoupon.sync="item"></share-item>
+      <share-item :shareCoupon.sync="item" :industry.sync="industry"></share-item>
     </repeat>
     <view class="ro-share-none" wx:if="{{shareNone}}">
       <image class="ro-share-none-img" wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/b-image/common/pic-empty_city@2x.png'}}"></image>
@@ -43,6 +43,7 @@
       this.$apply()
     }
     async onLoad() {
+      await this.showIndustry()
       this.shareList = await this._load()
       if (!this.shareList.length) {
         this.shareNone = true

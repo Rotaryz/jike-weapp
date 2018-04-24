@@ -1,6 +1,6 @@
 <template>
   <view class="ro-share-coupon {{shareStatus ? 'ro-share-coupon-active' : ''}}" wx:if="{{activityStatus === 'share'}}">
-    <coupon :type.sync="shareType" :content.sync="coupon" :industry.sync="industry" :industryColor.sync="industryColor"></coupon>
+    <coupon-item :type="shareType" :coupon.sync="deduction" :industry.sync="industry" :industryColor.sync="industryColor"></coupon-item>
   </view>
   <view class="coupon-detail">
     <!--<cover-view class="ro-share-money" wx:if="{{share}}"></cover-view>-->
@@ -197,6 +197,7 @@
   import Merchants from 'api/merchants'
   import Info from 'api/info'
   import Coupon from '@/base/coupon/coupon'
+  import CouponItem from '@/base/coupon-item/coupon-item'
   import CouponFactory from 'common/js/coupon'
   import PhoneTest from '@/base/phoneTest/phoneTest'
   import ServiceDetail from '@/base/service-detail/service-detail'
@@ -211,6 +212,8 @@
   import {getParams} from 'common/js/data'
   import Popout from '@/base/integral-popout/integral-popout'
   import Rule from '@/base/rule/rule'
+  import order from 'api/order'
+  import tips from 'common/js/tips'
 
   const COUPON_TYPE = 1
   const PACKAGE_TYPE = 2
@@ -259,7 +262,8 @@
       joinGroupId: '',
       shareType: 'shareBuy',
       fromCustomerId: 0, // 分享者的ID,
-      actId: 0
+      actId: 0,
+      deduction: {}
     }
 
     onShareAppMessage(res) {
@@ -336,6 +340,7 @@
         p_customer_id: this.fromCustomerId
       }
       let res = await Merchants.coupons(this.id, Sharedata)
+
       if (res.error !== ERR_OK) {
         this.loaded()
         return
@@ -350,8 +355,11 @@
       this.notAllowTime = data.not_allow_time
       this.isFavorite = data.is_favorite
       this.stock = data.stock
+      this.deduction = Object.assign({}, data.deduction, {promotion_type: 'deduction'})
+      console.log(this.deduction)
       // 添shop照片
       this.shopImages = this._formatShopImages(data)
+      this.$apply()
     }
     async _getSharePrize() {
       if (!this.coupon.activity_share) {
@@ -454,7 +462,7 @@
         return arr
       }
     }
-//  分享赚钱活动
+
     async _getPackageDetail() {
       const res = await CouponApi.getPackageDetail(this.id, this.currentMerchant)
       if (res.error === ERR_OK) {
@@ -644,7 +652,22 @@
         this.$navigate('/pages/group-detail/group-detail?id=' + item.id)
       }
     }
+    events = {
+      async shareBuy(id) {
+        let res = await order.getCoupon(id)
+        this.loaded()
+        if (res.error === ERR_OK) {
+          tips.success(res.message)
+          this.deduction.deduction_status = 1
+          this.$apply()
+        } else {
+          tips.error(res.message)
+        }
 
+//        this.tips('toast', 'show', res.message)
+        console.log(res)
+      }
+    }
     computed = {
       personBoxHeight() {
         return this.personList.length * 26
@@ -662,7 +685,8 @@
       'post-order': PostOrder,
       'toast': Toast,
       'popout': Popout,
-      'rule': Rule
+      'rule': Rule,
+      'coupon-item': CouponItem
     }
 
     config = {
@@ -1159,20 +1183,9 @@
       height: 192px
 
     /*分享赚钱*/
-  .ro-share-money
-    height: 100vh
-    width: 100vw
-    position: fixed
-    z-index: 1000
-    top: 0
-    left: 0
-    background: rgba(218, 218, 218, .7)
+
   .ro-share-coupon
-    padding :5px 0 15.5px 0
-  .ro-share-coupon-active
-    height:0px
-    padding: 0
-    transition :all 0.5s
+    padding :15px 12px
     .coupon
       margin: 0
 </style>
