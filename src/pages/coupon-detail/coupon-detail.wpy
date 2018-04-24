@@ -174,7 +174,7 @@
         </view>
       </view>
     </share-modal>
-    <post-order :orderInfo.sync="orderInfo" @throw.user="postOrderFail" :industry.sync="industry" :status="activityStatus"></post-order>
+    <post-order :orderInfo.sync="orderInfo" @throw.user="postOrderFail" :industry.sync="industry" :status="activityStatus" :userCoupon.sync="userCoupon"></post-order>
     <toast></toast>
     <popout></popout>
     <rule title="玩法详情">
@@ -264,7 +264,8 @@
       fromCustomerId: 0, // 分享者的ID,
       actId: 0,
       deduction: {},
-      timer: ''
+      timer: '',
+      userCoupon: '' // 抵用券的文案
     }
 
     onShareAppMessage(res) {
@@ -308,8 +309,8 @@
         this.type = Math.floor(option.type)
         this.id = option.id
         this.groupId = option.groupId
-        this.actId = option.actId || 0
-        this.fromCustomerId = option.fromCustomerId || 0
+        this.actId = option.actId || 0 // 抵用券
+        this.fromCustomerId = option.fromCustomerId || 0 // 分享者
         this.currentMerchant = option.currentMerchant ? option.currentMerchant : 0
       }
 
@@ -357,7 +358,9 @@
       this.isFavorite = data.is_favorite
       this.stock = data.stock
       this.deduction = Object.assign({}, data.deduction, {promotion_type: 'deduction'})
-      console.log(this.deduction)
+      if (this.deduction.deduction_status === 1) {
+        this.userCoupon = ` - ${this.deduction.price} `
+      }
       // 添shop照片
       this.shopImages = this._formatShopImages(data)
       this.$apply()
@@ -563,6 +566,23 @@
           peopleStock: this.coupon.note ? this.coupon.note.buy_upper_limit : -1,
           from: 'c_groupon'
         }
+      } else if (this.activityStatus === 'share') {
+        this.orderInfo = {
+          shareMoney: this.deduction.price, // 抵用券金额
+          promotionImage: this.promotionImages[0].image.url,
+          promotion_type: 1, // 1分享赚钱
+          promotion_id: this.coupon.id,
+          activity_id: this.actId, // 活动ID
+          title: this.coupon.title,
+          price: this.coupon.platform_price,
+          current_merchant: this.currentMerchant,
+          stock: this.coupon.stock,
+          peopleStock: this.coupon.note ? this.coupon.note.buy_upper_limit : -1,
+          from: 'C_sharemoney',
+          deduction_id: this.deduction.id, // 抵用券ID
+          is_share_money: 1,
+          share_customer_id: this.fromCustomerId // 分享者id
+        }
       } else {
         this.orderInfo = {
           promotionImage: this.promotionImages[0].image.url,
@@ -669,6 +689,7 @@
         if (res.error === ERR_OK) {
           tips.success(res.message)
           this.deduction.deduction_status = 1
+          this.userCoupon = ` - ${this.deduction.price} `
           this.$apply()
         } else {
           tips.error(res.message)

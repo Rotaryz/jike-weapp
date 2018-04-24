@@ -23,18 +23,18 @@
           <view class="content">{{total}}元</view>
         </view>
       </view>
-      <view class="price-wrapper border-top-1px border-bottom-1px">
+      <view class="price-wrapper border-top-1px border-bottom-1px" @tap="shareCoupon">
         <view class="content border-bottom-1px" wx:if="{{status === 'group' || status === 'share'}}">
           <view class="label">店铺优惠</view>
           <view class="content-right">
-            <view class="content-right-txt">无可用券</view>
+            <view class="content-right-txt {{userCoupon ? 'content-right-txt-user' : ''}}"><text class="content-right-title">抵用券</text>{{userCoupon || '无可用券'}}<text class="content-right-money" wx:if="{{userCoupon}}">元</text> </view>
             <image class="content-right-icon" wx:if="{{imageUri}}" src="{{imageUri + '/defaults/c-image/share/icon-arrows@2x.png'}}"></image>
           </view>
         </view>
         <view class="content">
           <view class="label">订单总价</view>
           <view class="price">
-            <text class="number">{{total}}</text>
+            <text class="number">{{orderInfo.from === 'C_sharemoney' ? total-orderInfo.shareMoney :total}}</text>
             <text class="yuan">元</text>
           </view>
         </view>
@@ -59,6 +59,10 @@
     props = {
       orderInfo: Object,
       industry: {
+        type: String,
+        default: ''
+      },
+      userCoupon: {
         type: String,
         default: ''
       }
@@ -109,6 +113,10 @@
         } else {
           this.count -= 1
         }
+        if (this.orderInfo.from === 'C_sharemoney') {
+          this.total = (this.count * this.orderInfo.price).toFixed(1) - this.orderInfo.shareMoney
+          return
+        }
         this.total = (this.count * this.orderInfo.price).toFixed(1)
       },
       addCount() {
@@ -123,11 +131,15 @@
         } else {
           this.count += 1
         }
+        if (this.orderInfo.from === 'C_sharemoney') {
+          this.total = (this.count * this.orderInfo.price).toFixed(1) - this.orderInfo.shareMoney
+          return
+        }
         this.total = (this.count * this.orderInfo.price).toFixed(1)
       },
       async postOrder() {
         /* eslint-disable no-undef */
-        const {current_merchant, promotion_type, promotion_id, price, from, group_type, group_id, activity_id} = this.orderInfo
+        const {current_merchant, promotion_type, promotion_id, price, from, group_type, group_id, activity_id, deduction_id, is_share_money, share_customer_id} = this.orderInfo
         let data
         if (from === 'c_groupon') {
           data = {
@@ -140,6 +152,19 @@
             group_type,
             group_id,
             activity_id
+          }
+        } else if (from === 'C_sharemoney') {
+          data = {
+            current_merchant,
+            promotion_type,
+            promotion_id,
+            price,
+            from,
+            count: this.count,
+            activity_id,
+            deduction_id,
+            is_share_money,
+            share_customer_id
           }
         } else {
           data = {
@@ -309,6 +334,14 @@
             .content-right-txt
               font-size: $font-size-small
               color: #A1A1A1
+            .content-right-txt-user
+              color :$color-text
+              font-family :$font-family-meddle
+              .content-right-money
+                font-size : $font-size-small-s
+                font-family :$font-family-regular
+              .content-right-title
+                font-family :$font-family-regular
             .content-right-icon
               width: 7px
               height: 12px
