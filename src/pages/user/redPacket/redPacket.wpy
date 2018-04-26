@@ -42,19 +42,21 @@
         </view>
       </view>
     </view>
-    <scroll-view scroll-y class="myRedPacket-list" bindscrolltolower="redPacketLower">
-      <view class="myRedPacket-list-item" wx:for="{{packetList}}" wx:key="{{index}}" wx:if="{{checkIdx === 0}}">
+    <scroll-view scroll-y class="myRedPacket-list" bindscrolltolower="redPacketLower" scroll-top="{{redTop}}" bindscroll="getRedTop" style="display:{{checkIdx === 0 ? 'block' : 'none'}}">
+      <view class="myRedPacket-list-item" wx:for="{{packetList}}" wx:key="{{index}}">
         <view class="myRedPacket-list-item-left">
           <!--<image wx:if="{{imageUrlHead}}" src="{{imageUrlHead + '/defaults/c-image/mine/icon-my_money.png'}}" class="myRedPacket-list-item-image"></image>-->
           <view class="myRedPacket-list-item-msg">
-            <view class="myRedPacket-list-item-msg-title">{{item.title}}</view>
+            <view class="myRedPacket-list-item-msg-title">{{item.activity_name}}</view>
             <view class="myRedPacket-list-item-msg-shop-name">{{item.created_at}}</view>
           </view>
         </view>
-        <view class="myRedPacket-list-item-num"><text class="myRedPacket-list-item-num-money">{{item.price}}</text></view>
+        <view class="myRedPacket-list-item-num"><text class="myRedPacket-list-item-num-money">+{{item.price}}</text></view>
         <Underline></Underline>
       </view>
-      <view class="myRedPacket-list-item" wx:for="{{shareList}}" wx:key="{{index}}" wx:if="{{checkIdx === 1}}">
+    </scroll-view>
+    <scroll-view scroll-y class="myRedPacket-list" bindscrolltolower="redPacketLower" scroll-top="{{shareTop}}" bindscroll="getShareTop" style="display:{{checkIdx === 1 ? 'block' : 'none'}}">
+      <view class="myRedPacket-list-item" wx:for="{{shareList}}" wx:key="{{index}}">
         <view class="myRedPacket-list-item-left">
           <!--<image wx:if="{{imageUrlHead}}" src="{{imageUrlHead + '/defaults/c-image/mine/icon-my_money.png'}}" class="myRedPacket-list-item-image"></image>-->
           <view class="myRedPacket-list-item-msg">
@@ -66,7 +68,6 @@
         <Underline></Underline>
       </view>
     </scroll-view>
-
     <view class="myRedPacket-noList" wx:if="{{showNone}}">
       <image wx:if="{{imageUrlHead}}" src="{{imageUrlHead + '/defaults/c-image/mine/pic-no_moeny@2x.png'}}" class="myRedPacket-noList-img"></image>
       <view class="myRedPacket-noList-txt">您还没有红包</view>
@@ -111,24 +112,43 @@
       shareNothing: false,
       page: 1,
       sharePage: 1,
-      nothingAdd: false,
+      redNothing: false,
       shareActive: [],
       shareList: [],
       packetTotalMoney: '',
       showNone: false,
-      isBank: false
+      isBank: false,
+      shareTop: 0,
+      redTop: 0
     }
 
     methods = {
       checkNav(index) {
         this.checkIdx = index * 1
         this._isNone()
+        console.log(this.shareTop)
+      },
+      getShareTop(e) {
+        this.shareTop = e.detail.scrollLeft * 1
+        this.$apply()
+      },
+      getRedTop(e) {
+        this.redTop = e.detail.scrollLeft * 1
+        this.$apply()
       },
 //      下拉刷新
       async redPacketLower() {
         switch (this.checkIdx) {
           case 0:
             this.page++
+            console.log(5545)
+            if (!this.redNothing) {
+              let res = await this._getRedPacketList(this.page)
+              this.packetList.push(...res)
+              if (!res.length) {
+                this.redNothing = true
+              }
+            }
             break
           case 1:
             this.sharePage++
@@ -141,6 +161,7 @@
             }
             break
         }
+        this.$apply()
       },
       withDrawSub() {
         this.$navigate('/pages/user/withDraw/withDraw')
@@ -160,24 +181,27 @@
     }
 //    判断是否有数据
     async _isNone() {
+      console.log(this.checkIdx)
       switch (this.checkIdx) {
         case 0:
           this.showNone = !this.packetList.length
           if (this.showNone) {
             this.packetList = await this._getRedPacketList(1)
-            this.showNone = !this.packetList.length
-            return
+            this.showNone = this.packetList.length
+            this.$apply()
           }
+          this.$apply()
           break
         case 1:
           this.showNone = !this.shareList.length
           if (this.showNone) {
             this.shareList = await this._shareMoneyProfit()
-            this.showNone = !this.shareList.length
+            this.showNone = this.shareList.length
+            this.$apply()
           }
+          this.$apply()
           break
       }
-      this.$apply()
     }
 
 //    分享赚钱列表
@@ -216,6 +240,7 @@
     async _getBankCardDetail() {
       const res = await Finance.bankCardDetail()
       this.isBank = res.error === ERR_OK
+      this.loaded()
       this.$apply()
     }
     _computed(num) {
@@ -231,16 +256,18 @@
 
   page
     background: $color-background
-
+    height: 100vh
+    overflow:hidden
     .myRedPacket
       background: $color-highlight-background
-
+      height: 100%
+      overflow:hidden
       .myRedPacket-top
         height:99px
         display: flex
         flex-direction: column
         justify-content: space-between
-
+        border-bottom :0.5px solid $color-col-line
       .myRedPacket-pandect
         display: flex
         position: relative
@@ -290,12 +317,12 @@
         background: $color-button-dis
 
       .myRedPacket-list
-        max-height: 72vh
+        max-height: 98.667vw
 
         .myRedPacket-list-item
           padding: 0 12px
           height: 45px
-          border-top: 1px solid $color-row-line
+          border-bottom: 1px solid $color-row-line
           display: flex
           align-items: center
           justify-content: space-between

@@ -1,5 +1,5 @@
 <template>
-  <view class="ro-share-coupon {{shareStatus ? 'ro-share-coupon-active' : ''}}" wx:if="{{activityStatus === 'share'}}">
+  <view class="ro-share-coupon {{shareStatus ? 'ro-share-coupon-active' : ''}}" wx:if="{{activityStatus === 'share' && !isShowCoupon}}">
     <coupon-item :type="shareType" :coupon.sync="deduction" :industry.sync="industry" :industryColor.sync="industryColor"></coupon-item>
   </view>
   <view class="coupon-detail">
@@ -150,7 +150,8 @@
           客服
         </button>
       </view>
-      <view class="buy-btn {{stock === 0 ? 'disable' : ''}}" @tap="postOrder">{{activityStatus === 'group' ? '¥' + groupBuyDetail.promotion_price + '单买' : '立即购买'}}</view>
+      <view class="buy-btn {{stock === 0 ? 'disable' : ''}}" @tap="postOrder" wx:if="{{activityStatus === 'group'}}">单买</view>
+      <view class="buy-btn {{stock === 0 ? 'disable' : ''}}" @tap="postOrder" wx:if="{{activityStatus !== 'group'}}">立即购买</view>
       <view class="group-buy-btn" @tap="postGroupOrder" wx:if="{{activityStatus === 'group'}}">¥{{groupBuyDetail.group_price}}{{groupType === 'join' ? '参团' : '开团'}}</view>
     </view>
     <phone-test @isPhoneOk.user="getSymbol" :industry.sync="industry"></phone-test>
@@ -267,7 +268,8 @@
       deduction: {},
       timer: '',
       userCoupon: '', // 抵用券的文案
-      getShareCoupon: true
+      getShareCoupon: true,
+      isShowCoupon: false
     }
 
     onShareAppMessage(res) {
@@ -293,6 +295,7 @@
     }
 
     async onLoad(option) {
+      this.isShowCoupon = option.isShowCoupon || this.isShowCoupon
       this.getShareCoupon = true
       this.activityStatus = option.status ? option.status : ''
       this.groupType = option.groupType ? option.groupType : 'open'
