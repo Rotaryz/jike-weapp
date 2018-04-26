@@ -66,7 +66,7 @@
           </view>
           <view class="small-money">¥</view>
           <view class="big-money">{{groupBuyDetail.group_price}}</view>
-          <view class="gray-money">现价: ¥ {{groupBuyDetail.promotion_price}}</view>
+          <view class="gray-money">原价: ¥ {{groupBuyDetail.promotion_price}}</view>
         </view>
       </view>
       <view class="share-wrapper">
@@ -256,7 +256,9 @@
       groupBuyList: [],
       groupType: 'open',
       joinGroupId: '',
-      timer: ''
+      timer: '',
+      goodsStatus: 1, // 商品状态
+      activitiesStatus: 1 // 活动状态
     }
 
     onShareAppMessage(res) {
@@ -284,6 +286,7 @@
     async onLoad(option) {
       this.activityStatus = option.status ? option.status : ''
       this.groupType = option.groupType ? option.groupType : 'open'
+      this.joinGroupId = option.joinGroupId ? option.joinGroupId : ''
       await this.showIndustry()
       if (option.scene) {
         let scene = decodeURIComponent(option.scene)
@@ -310,7 +313,7 @@
       this.currentPage = `/pages/coupon-detail/coupon-detail?type=${this.type}&id=${this.id}&merchantId=${this.currentMerchant}`
       if (this.type === COUPON_TYPE) {
         await this._getCouponDetail()
-        if (this.activityStatus === 'group') {
+        if (this.activityStatus === 'group' && this.goodsStatus !== 3) {
           await this._getGroupDetail()
         }
       } else if (this.type === PACKAGE_TYPE) {
@@ -378,7 +381,9 @@
       const res = await CouponApi.getShopCouponDetail(this.id)
       if (res.error === ERR_OK) {
         const data = res.data
-        wepy.setNavigationBarTitle({title: data.title})
+        if (this.activityStatus !== 'group') {
+          wepy.setNavigationBarTitle({title: data.title})
+        }
         this.promotionImages = data.promotion_images
         this.coupon = data
         this.services = data.detail
@@ -398,6 +403,7 @@
         return
       }
       let res = resData.data
+      wepy.setNavigationBarTitle({title: res.promotion_name})
       this.personList = res.earn_lists
       this.groupBuyDetail = res
       this.endTime = res.end_at_timestamp
@@ -566,11 +572,11 @@
         }
         this.loaded()
       },
-      async getSymbol() {
+      async getSymbol(type) {
         const isAuthorise = await this.isAuthorise()
         this.loaded()
         if (isAuthorise) {
-          this.submit()
+          this.submit(type)
         }
       },
       async postOrder() {
@@ -580,20 +586,25 @@
         const isAuthorise = await this.isAuthorise()
         this.loaded()
         if (!isAuthorise) {
-          this.$invoke('phone-test', 'show')
+          this.$invoke('phone-test', 'show', '')
           return
         }
         this.submit('')
       },
       async postGroupOrder() {
-        if (!this.groupBuyDetail.can_open_group) {
+        if (!this.groupBuyDetail.can_open_group && this.groupType === 'open') {
           this.$invoke('toast', 'show', '开团数已达上限')
           return
         }
         const isAuthorise = await this.isAuthorise()
-        this.loaded()
         if (!isAuthorise) {
-          this.$invoke('phone-test', 'show')
+          this.$invoke('phone-test', 'show', 'group')
+          return
+        }
+        const res = await GroupApi.checkGroup(this.groupType, this.groupId, this.joinGroupId)
+        this.loaded()
+        if (res.error !== ERR_OK) {
+          this.$invoke('toast', 'show', res.message)
           return
         }
         this.submit('group')
@@ -623,9 +634,9 @@
       }
     }
 
-    computed = {
-      personBoxHeight() {
-        return this.personList.length * 26
+    events = {
+      async postSuccess(id) {
+        this.$navigate('/pages/group-detail/group-detail?id=' + id)
       }
     }
 

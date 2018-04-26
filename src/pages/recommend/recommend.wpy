@@ -452,7 +452,7 @@
     // 检查活动内容是否为空
     computed = {
       activeIsEmpty() {
-        let flag = this.hotCouponsList.length === 0 && this.giftbagList.length === 0 && this.contentList.length === 0
+        let flag = this.hotCouponsList.length === 0 && this.giftbagList.length === 0 && this.contentList.length === 0 && this.groupBuyList.length === 0
         return flag
       }
     }
