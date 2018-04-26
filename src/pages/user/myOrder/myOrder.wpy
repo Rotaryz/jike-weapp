@@ -1,13 +1,13 @@
 <template>
   <view class="myOrder">
-    <view class="myOrder-menuTab">
+    <scroll-view scroll-x class="myOrder-menuTab" scroll-with-animation="true" scrollLeft="{{leftIndex}}" bindscroll="setScroll">
       <!--'myOrder-menuTab-item ' + industry + '-border':'myOrder-menuTab-item'-->
       <view wx:for="{{menuItems}}" wx:key="{{index}}"
             class="{{index === menuIdx?'myOrder-menuTab-item ' + industry + '-border':'myOrder-menuTab-item'}}"
             @tap="tabChange({{item.type}},{{index}})">
-        {{item.title}}
+        <text>{{item.title}}</text>
       </view>
-    </view>
+    </scroll-view>
 
     <view class="myOrder-phoneTestBox" wx:if="{{isPhone===0}}">
       <PhoneTestHint></PhoneTestHint>
@@ -25,14 +25,10 @@
       </view>
 
       <view class="myOrder-orderList" wx:if="{{orderList.length > 0}}">
-        <view class="myOrder-orderList-item" wx:for="{{orderList}}"
-              @tap="showDetail({{item.id}},{{item.status}})"
-              wx:key="{{item.id}}">
+        <view class="myOrder-orderList-item" wx:for="{{orderList}}" @tap="showDetail({{item.id}},{{item.status}})" wx:key="{{item.id}}" wx:if="{{menuItems[menuIdx].type !== 5}}">
           <view class="myOrder-orderList-item-left">
             <view class="myOrder-orderList-item-logo-box">
-              <image class="myOrder-orderList-item-logo"
-                     src="{{item.merchant_data.logo_image}}"
-                     mode="aspectFill"></image>
+              <image class="myOrder-orderList-item-logo" src="{{item.merchant_data.logo_image}}" mode="aspectFill"></image>
             </view>
             <view class="myOrder-orderList-item-msg">
               <view class="myOrder-orderList-item-title">{{item.title}}</view>
@@ -50,6 +46,9 @@
           </view>
         </view>
       </view>
+      <repeat for="{{orderList}}" key="index" index="index" item="item" wx:if="{{menuItems[menuIdx].type === 5}}">
+        <order-item :order.sync="item"></order-item>
+      </repeat>
       <Underline></Underline>
     </scroll-view>
 
@@ -73,6 +72,7 @@
   import Toast from '@/base/toast/toast'
   import Underline from '@/base/underline-block/underline-block'
   import BackHome from '@/base/back-home/back-home'
+  import OrderItem from '@/base/order-item/order-item'
   import Popout from '@/base/integral-popout/integral-popout'
   import Shares from 'api/share'
 
@@ -94,7 +94,8 @@
       Underline,
       Toast,
       BackHome,
-      'popout': Popout
+      'popout': Popout,
+      'order-item': OrderItem
     }
 
     data = {
@@ -103,6 +104,9 @@
       menuItems: [{title: '全部', type: 4}, {
         title: '待付款',
         type: 0
+      }, {
+        title: '待成团',
+        type: 5
       }, {title: '待使用', type: 1}, {title: '待评价', type: 2}, {
         title: '退款/售后',
         type: 3
@@ -115,11 +119,24 @@
       orderList: [],
       page: 1,
       nothingAdd: false,
-      noOrder: false
+      noOrder: false,
+      leftIndex: 0,
+      leftTmp: 0
     }
 
     methods = {
-      async tabChange(type, idx) {
+      setScroll(e) {
+        this.leftTmp = e.detail.scrollLeft * 1
+      },
+      async tabChange(type, idx, e) {
+        let w = wepy.getSystemInfoSync().windowWidth
+        let x = e.detail.x
+        let num = w - x
+        if (num < 66) {
+          this.leftIndex = this.leftTmp + 70
+        } else if (num > 270) {
+          this.leftIndex = this.leftTmp - 70
+        }
         this.menuIdx = idx
         this.orderList = []
         this.noOrder = false
@@ -330,33 +347,35 @@
     font-family: PingFangSC-Light
 
     .myOrder-menuTab
-      display: flex
       height: 8vh
       box-sizing: border-box
+      flex-wrap: nowrap
       background: $color-highlight-background
       border-bottom: 1px solid $color-row-line
-      justify-content :space-around
+      white-space: nowrap
+      width: auto
+      overflow: hidden
       .myOrder-menuTab-item
+        display: inline-block
+        min-width: 18.67vw
         font-size: $font-size-medium
         color: $color-text
         line-height: 8vh
-        margin-bottom: -1rpx
-        border-bottom: 0 none
+        height: 98%
         white-space: nowrap
         position: relative
-        text-align :center
+        text-align: center
       .myOrder-menuTab-item-active
         color: $color-text-t
         &:before
-          content : ''
+          content: ''
           width: 30px
           height: 2px
           position: absolute
           left: 50%
-          transform :translateX(-50%)
+          transform: translateX(-50%)
           bottom: 0px
-          background :$color-theme
-
+          background: $color-theme
 
     .myOrder-phoneTestBox
       height: 55px

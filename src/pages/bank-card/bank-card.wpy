@@ -1,25 +1,25 @@
 <template>
-    <view class="ro-bank-card">
-      <view class="ro-bank-card-item">
-        <view class="ro-bank-card-name">姓名</view>
-        <input type="text" placeholder="持卡人姓名" class="ro-bank-content" placeholder-class="ro-bank-content-place" @input="getCardName"/>
-      </view>
-      <view class="ro-bank-card-item">
-        <view class="ro-bank-card-name">开户银行</view>
-        <picker mode="selector" value="" @chang="getBank"
-                range="{{industries}}" range-key="{{'name'}}">
-          <view class="ro-bank-content ro-bank-content-place">选择开户银行</view>
-        </picker>
-        <image class="ro-bank-card-icon" wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/c-image/square/icon-s_right1@2x.png'}}"></image>
-      </view>
-      <view class="ro-bank-card-item">
-        <view class="ro-bank-card-name">银行卡号</view>
-        <input type="number" placeholder="输入银行卡号" maxlength="23" class="ro-bank-content" placeholder-class="ro-bank-content-place" @input="getCardNum"/>
-      </view>
-      <view class="ro-bank-card-btn-box">
-        <view class="ro-bank-card-btn {{submit ? '' : 'ro-bank-card-disable'}}">确定</view>
-      </view>
+  <view class="ro-bank-card">
+    <view class="ro-bank-card-item">
+      <view class="ro-bank-card-name">姓名</view>
+      <input type="text" placeholder="持卡人姓名" class="ro-bank-content" placeholder-class="ro-bank-content-place" value="{{cardName}}" @input="getCardName"/>
     </view>
+    <view class="ro-bank-card-item">
+      <view class="ro-bank-card-name">开户银行</view>
+      <picker mode="selector" value="" bindchange="getBank" range="{{bankList}}" range-key="{{'name'}}">
+        <view class="ro-bank-content {{bank === '选择开户银行' ? 'ro-bank-content-place' : ''}}">{{bank}}</view>
+      </picker>
+      <image class="ro-bank-card-icon" wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/c-image/square/icon-s_right1@2x.png'}}"></image>
+    </view>
+    <view class="ro-bank-card-item">
+      <view class="ro-bank-card-name">银行卡号</view>
+      <input type="number" placeholder="输入银行卡号" maxlength="23" value="{{cardNum}}" class="ro-bank-content" placeholder-class="ro-bank-content-place" @input="getCardNum"/>
+    </view>
+    <view class="ro-bank-card-btn-box">
+      <view class="ro-bank-card-btn {{submit ? '' : 'ro-bank-card-disable'}}" @tap="setBank">确定</view>
+    </view>
+  </view>
+  <Toast></Toast>
 </template>
 
 <script>
@@ -27,6 +27,8 @@
   import base from 'common/mixins/base'
   import URIS from 'common/js/config'
   import {ERR_OK} from 'api/base'
+  import Finance from 'api/finance'
+  import Toast from '@/base/toast/toast'
 
   export default class bankCard extends wepy.page {
     mixins = [base]
@@ -38,8 +40,11 @@
       imageUrl: URIS.image,
       cardNum: '',
       cardName: '',
-      bank: '',
-      submit: false
+      bank: '选择开户银行',
+      submit: false,
+      bankList: [],
+      isNew: true,
+      id: -1
     }
 
     checkBtn() {
@@ -47,10 +52,65 @@
         this.submit = true
       }
     }
+    async _getBankCardDetail() {
+      const res = await Finance.bankCardDetail()
+      if (res.error === ERR_OK) {
+        this.isNew = false
+        const data = res.data
+        this.id = data.id
+        this.cardName = data.user_name
+        this.id = data.id ? data.id : 0
+        this.bank = data.bank ? data.bank : ''
+        this.cardNum = data.withdrawal_card ? data.withdrawal_card : ''
+        this.checkBtn()
+      }
+    }
+    async onLoad() {
+      await this._getBankCardDetail()
+      await this._banksList()
+    }
+
+    async _banksList() {
+      let res = await Finance.banksList()
+      this.loaded()
+      this.bankList = this.infoRes(res)
+      this.$apply()
+    }
+
+    async _bankCards() {
+      let data = {
+        user_name: this.cardName,
+        bank: this.bank,
+        withdrawal_card: this.cardNum
+      }
+      let res = {}
+      if (this.isNew) {
+        res = await Finance.bankCards(data)
+        this.loaded()
+      } else {
+        res = await Finance.putBankCards(this.id, data)
+        this.loaded()
+      }
+      if (res.error === ERR_OK) {
+        this.$invoke('Toast', 'show', '绑定成功')
+      } else {
+        this.$invoke('Toast', 'show', res.message)
+      }
+    }
 
     methods = {
+      async setBank() {
+        if (!this.submit) {
+          return false
+        }
+        await this._bankCards()
+      },
       getCardNum(e) {
-        this.cardNum = e.detail.value
+        let value = e.detail.value
+        if (/\S{5}/.test(value)) {
+          value = value.replace(/\s/g, '').replace(/(.{4})/g, '$1 ')
+        }
+        this.cardNum = value
         this.checkBtn()
       },
       getCardName(e) {
@@ -58,7 +118,8 @@
         this.checkBtn()
       },
       getBank(e) {
-        console.log(e)
+        let index = e.detail.value
+        this.bank = this.bankList[index].name
         this.checkBtn()
       }
     }
@@ -68,50 +129,56 @@
         return res.data
       }
     }
+    components = {
+      Toast
+    }
   }
 </script>
 
 <style lang="stylus">
-    @import '../../common/stylus/variable'
-    @import '../../common/stylus/mixin'
+  @import '../../common/stylus/variable'
+  @import '../../common/stylus/mixin'
   .ro-bank-card-item
-    background :$color-white
+    background: $color-white
     height: 43.5px
-    display :flex
-    align-items :center
-    border-bottom :0.5px solid $color-col-line
-    padding-left :$padding-all
-    font-size :$font-size-medium
-    white-space :nowrap
+    display: flex
+    align-items: center
+    border-bottom: 0.5px solid $color-col-line
+    padding-left: $padding-all
+    font-size: $font-size-medium
+    white-space: nowrap
     position: relative
     .ro-bank-card-name
       min-width: 56px
-      color :$color-text-d
+      color: $color-text-d
     .ro-bank-content
-      color :$color-text
+      color: $color-text
+    input.ro-bank-content
+      width: 55vw
     .ro-bank-content
       margin-left: 30px
     .ro-bank-content-place
-      color :#B6B6B6
+      color: #B6B6B6
     .ro-bank-card-icon
       position: absolute
       col-center()
       right: 12px
       height: 10px
       width: 6px
+
   .ro-bank-card-btn-box
-    padding :20.5px $padding-all
-    border-bottom :0.5px solid $color-col-line
-    background :$color-white
+    padding: 20.5px $padding-all
+    border-bottom: 0.5px solid $color-col-line
+    background: $color-white
     .ro-bank-card-btn
-      width:100%
-      color :$color-white
+      width: 100%
+      color: $color-white
       height: 43px
       line-height: 43px
-      text-align:center
-      background :#706B82
-      font-size :$font-size-medium
-      border-radius :2px
+      text-align: center
+      background: #706B82
+      font-size: $font-size-medium
+      border-radius: 2px
     .ro-bank-card-disable
-      opacity :0.5
+      opacity: 0.5
 </style>

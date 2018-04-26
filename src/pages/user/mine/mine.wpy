@@ -158,6 +158,10 @@
           text: '待付款',
           type: 0
         }, {
+          imgUrl: URIS.image + '/defaults/c-image/share/icon-group@2x.png',
+          text: '待成团',
+          type: 5
+        }, {
           imgUrl: URIS.image + '/defaults/c-image/mine/icon-m_used@2x.png',
           text: '待使用',
           type: 1

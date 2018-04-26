@@ -33,4 +33,22 @@ export default class shareMoney extends base {
     const url = `${this.baseUrl}/api/sharemoney/profit-notice`
     return await this.get(url)
   }
+  /**
+   * 抵用券列表
+   * @param data
+   * @returns {Promise.<*>}
+   */
+  static async deductionPromotionList(data) {
+    const url = `${this.baseUrl}/api/sharemoney/deduction-promotion-list`
+    return await this.get(url, data)
+  }
+  /**
+   * 我的页面红包总额
+   * @param data
+   * @returns {Promise.<*>}
+   */
+  static async shareMoneyProfit(data) {
+    const url = `${this.baseUrl}/api/finance/share-money-profit-list`
+    return await this.get(url, data)
+  }
 }

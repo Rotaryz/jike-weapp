@@ -214,6 +214,7 @@
   import Rule from '@/base/rule/rule'
   import order from 'api/order'
   import tips from 'common/js/tips'
+  import ShareMoney from 'api/sharemoney'
 
   const COUPON_TYPE = 1
   const PACKAGE_TYPE = 2
@@ -265,7 +266,8 @@
       actId: 0,
       deduction: {},
       timer: '',
-      userCoupon: '' // 抵用券的文案
+      userCoupon: '', // 抵用券的文案
+      getShareCoupon: true
     }
 
     onShareAppMessage(res) {
@@ -291,6 +293,7 @@
     }
 
     async onLoad(option) {
+      this.getShareCoupon = true
       this.activityStatus = option.status ? option.status : ''
       this.groupType = option.groupType ? option.groupType : 'open'
       await this.showIndustry()
@@ -313,14 +316,21 @@
         this.fromCustomerId = option.fromCustomerId || 0 // 分享者
         this.currentMerchant = option.currentMerchant ? option.currentMerchant : 0
       }
-
       await this.load()
     }
-
+//    分享赚钱的选择优惠券判断
+    onShow() {
+      if (this.activityStatus === 'share') {
+        let shareCoupon = wepy.getStorageSync('shareCoupon')
+        this.orderInfo.deduction_id = typeof (shareCoupon) === 'object' ? shareCoupon.id : 0
+        this.userCoupon = typeof (shareCoupon) === 'object' ? ` - ${shareCoupon.money}` : ''
+        this.$apply()
+      }
+    }
     async load() {
       this.currentMerchant = this.currentMerchant || wepy.getStorageSync('merchantId')
       this.currentPage = `/pages/coupon-detail/coupon-detail?type=${this.type}&id=${this.id}&merchantId=${this.currentMerchant}`
-      console.log(this.type)
+//      console.log(this.type)
       if (this.type === COUPON_TYPE && !this.activityStatus) {
         await this._getCouponDetail()
         if (this.activityStatus === 'group') {
@@ -336,6 +346,8 @@
       this.loaded()
     }
     async _getShareMoney() {
+      wepy.removeStorageSync('shareCoupon')
+      wepy.removeStorageSync('shareId')
       let Sharedata = {
         act_type: 1,
         act_id: this.actId, // 活动id
@@ -348,7 +360,7 @@
         return
       }
       const data = res.data
-      console.log(data)
+//      console.log(data)
       wepy.setNavigationBarTitle({title: data.title})
       this.promotionImages = data.promotion_images
       this.coupon = data
@@ -359,11 +371,29 @@
       this.stock = data.stock
       this.deduction = Object.assign({}, data.deduction, {promotion_type: 'deduction'})
       if (this.deduction.deduction_status === 1) {
-        this.userCoupon = ` - ${this.deduction.price} `
+//        判断是否拥有优惠券
+        await this._isShareCoupon()
+        this.loaded()
+        return
       }
+      this.deduction.id = 0
       // 添shop照片
       this.shopImages = this._formatShopImages(data)
       this.$apply()
+    }
+//    判断是否有优惠券
+    async _isShareCoupon() {
+      let data = {act_id: this.actId, page: 1}
+      let res = await ShareMoney.deductionPromotionList(data)
+      this.loaded()
+      res = res.data
+      for (let i = 0; i < res.length; i++) {
+        if (res[i].status === 0) {
+          this.deduction.id = res[i].id
+          this.userCoupon = ` - ${res[i].money} `
+          break
+        }
+      }
     }
     async _getSharePrize() {
       if (!this.coupon.activity_share) {
@@ -684,15 +714,20 @@
     }
     events = {
       async shareBuy(id) {
-        let res = await order.getCoupon(id)
-        this.loaded()
-        if (res.error === ERR_OK) {
-          tips.success(res.message)
-          this.deduction.deduction_status = 1
-          this.userCoupon = ` - ${this.deduction.price} `
-          this.$apply()
-        } else {
-          tips.error(res.message)
+        if (this.getShareCoupon) {
+          this.getShareCoupon = false
+          let data = {is_share_money: 1, act_id: this.actId}
+          let res = await order.getCoupon(this.coupon.id, data)
+          this.loaded()
+          if (res.error === ERR_OK) {
+            tips.success(res.message)
+            this.deduction.deduction_status = 1
+            await this._isShareCoupon()
+            this.$apply()
+          } else {
+            tips.error(res.message)
+            this.getShareCoupon = true
+          }
         }
       }
     }

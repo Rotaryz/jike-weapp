@@ -23,18 +23,18 @@
           <view class="content">{{total}}元</view>
         </view>
       </view>
-      <view class="price-wrapper border-top-1px border-bottom-1px" @tap="shareCoupon">
-        <view class="content border-bottom-1px" wx:if="{{status === 'group' || status === 'share'}}">
+      <view class="price-wrapper border-top-1px border-bottom-1px">
+        <view class="content border-bottom-1px" wx:if="{{status === 'group' || status === 'share'}}" @tap.stop="shareCoupon({{status}})">
           <view class="label">店铺优惠</view>
           <view class="content-right">
-            <view class="content-right-txt {{userCoupon ? 'content-right-txt-user' : ''}}"><text class="content-right-title">抵用券</text>{{userCoupon || '无可用券'}}<text class="content-right-money" wx:if="{{userCoupon}}">元</text> </view>
+            <view class="content-right-txt {{userCoupon ? 'content-right-txt-user' : ''}}"><text class="content-right-title" wx:if="{{userCoupon}}">抵用券</text>{{userCoupon || '无可用券'}}<text class="content-right-money" wx:if="{{userCoupon}}">元</text> </view>
             <image class="content-right-icon" wx:if="{{imageUri}}" src="{{imageUri + '/defaults/c-image/share/icon-arrows@2x.png'}}"></image>
           </view>
         </view>
         <view class="content">
           <view class="label">订单总价</view>
           <view class="price">
-            <text class="number">{{orderInfo.from === 'C_sharemoney' ? total-orderInfo.shareMoney :total}}</text>
+            <text class="number">{{orderInfo.from === 'C_sharemoney' ? shareMoney :total}}</text>
             <text class="yuan">元</text>
           </view>
         </view>
@@ -105,8 +105,23 @@
         this.$apply()
       }, 200)
     }
-
+    onShow() {
+      if (this.activityStatus === 'share') {
+        let shareCoupon = wepy.getStorageSync('shareCoupon')
+        this.userCoupon = typeof (shareCoupon) === 'object' ? ` - ${shareCoupon.money}` : ''
+        this.$apply()
+      }
+    }
     methods = {
+      shareCoupon(status) {
+        if (status === 'share') {
+          let shareCoupon = wepy.getStorageSync('shareCoupon')
+          this.orderInfo.deduction_id = typeof (shareCoupon) === 'object' ? shareCoupon.id : 0
+          let activityId = this.orderInfo.activity_id
+          let url = `/pages/pay-coupon/pay-coupon?status=share&actId=${activityId}`
+          this.$parent.$navigate(url)
+        }
+      },
       descCount() {
         if (this.count <= 1) {
           this.count = 1
@@ -114,7 +129,7 @@
           this.count -= 1
         }
         if (this.orderInfo.from === 'C_sharemoney') {
-          this.total = (this.count * this.orderInfo.price).toFixed(1) - this.orderInfo.shareMoney
+          this.total = (this.count * this.orderInfo.price).toFixed(1)
           return
         }
         this.total = (this.count * this.orderInfo.price).toFixed(1)
@@ -132,7 +147,7 @@
           this.count += 1
         }
         if (this.orderInfo.from === 'C_sharemoney') {
-          this.total = (this.count * this.orderInfo.price).toFixed(1) - this.orderInfo.shareMoney
+          this.total = (this.count * this.orderInfo.price).toFixed(1)
           return
         }
         this.total = (this.count * this.orderInfo.price).toFixed(1)
@@ -200,7 +215,11 @@
             }
             this._hide()
           },
-          fail: () => {
+          fail: (res) => {
+            if (res.errMsg === 'requestPayment:fail cancel' && this.activityStatus === 'share') {
+              this.userCoupon = ''
+              this.$apply()
+            }
 //            const orderId = res.order_id
 //            const total = this.total
 //            const status = 'fail'
@@ -242,6 +261,23 @@
           this.$apply()
         }, 200)
       }
+    }
+    computed = {
+      shareMoney() {
+        let shareMoney = this.userCoupon.slice(3)
+        return this.total - Math.abs(shareMoney)
+      }
+    }
+    watch = {
+      userCoupon(newVal) {
+//        let a = this.$parent.$parent.globalData('shareId')
+//        console.log(newVal, a)
+//        未确定
+        if (!newVal) {
+//          this.orderInfo.deduction_id = this.userCoupon ? this.orderInfo.deduction_id : 0
+        }
+      }
+
     }
   }
 </script>
