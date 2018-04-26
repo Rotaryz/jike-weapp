@@ -209,7 +209,7 @@
             const total = this.total
             const status = 'success'
             if (this.status === 'group') {
-              this.$emit('postSuccess')
+              this.$emit('postSuccess', res.group_id)
             } else {
               this.$parent.$navigate(`/pages/pay-result/pay-result?orderId=${orderId}&total=${total}&status=${status}`)
             }

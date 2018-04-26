@@ -22,8 +22,9 @@
       <view class="group-detail-main">
         <view class="main-msg">
           <view class="msg-title" wx:if="{{groupStatus === 2}}">还差<text class="red-count">{{groupDetails.remaining_number}}</text>人，快喊小伙伴一起来拼团吧</view>
+          <view class="msg-title" wx:if="{{groupStatus === 1 && !groupHasJoin}}">很遗憾，该团已经成团，还可以选择其他团参加</view>
           <view class="msg-time" wx:if="{{groupStatus === 2}}">该团倒计时:<text class="day-txt">{{groupEndTime.day}}</text>天<text class="time-txt">{{groupEndTime.hour}}</text>时<text class="time-txt">{{groupEndTime.minute}}</text>分<text class="time-txt">{{groupEndTime.second}}</text>秒</view>
-          <view class="msg-status" wx:if="{{groupStatus === 0 || groupStatus === 1}}">
+          <view class="msg-status" wx:if="{{(groupStatus === 0 || groupStatus === 1) && groupHasJoin}}">
             <image class="msg-status-img" wx:if="{{imageUrlHead && groupStatus === 1}}" src="{{imageUrlHead + '/defaults/c-image/mine/icon-group_success@2x.png'}}"></image>
             <image class="msg-status-img" wx:if="{{imageUrlHead && groupStatus === 0}}" src="{{imageUrlHead + '/defaults/c-image/mine/icon-group_fail@2x.png'}}"></image>
             <view class="msg-status-txt">{{groupStatus === 1 ? '拼团成功！' : '拼团失败！'}}</view>
@@ -36,7 +37,7 @@
           </view>
           <view class="group-red-btn" wx:if="{{!groupHasJoin && groupStatus === 2}}" @tap="postOrder">我要参团</view>
           <view class="group-red-btn" wx:if="{{groupHasJoin && groupStatus === 2}}" @tap="showShareModal">邀请好友拼团</view>
-          <navigator url="/pages/recommend/recommend" hover-class="none" open-type="switchTab" wx:if="{{groupHasJoin && groupStatus === 1}}">
+          <navigator url="/pages/recommend/recommend" hover-class="none" open-type="switchTab" wx:if="{{groupStatus === 1 || groupStatus === 0}}">
             <view class="group-red-btn">查看更多团购</view>
           </navigator>
           <navigator url="{{'/pages/user/myOrder-detail/myOrderDetail?id=' + groupDetails.order_id}}" hover-class="none" wx:if="{{groupHasJoin && groupStatus === 2}}">
@@ -75,6 +76,7 @@
     <toast></toast>
     <share :qrcode.sync="qrcode" :detail.sync="canvasDetail" :promotionImages.sync="promotionImages"></share>
     <post-order :orderInfo.sync="orderInfo" @throw.user="postOrderFail" :status="activityStatus"></post-order>
+    <phone-test @isPhoneOk.user="getSymbol"></phone-test>
   </view>
 </template>
 
@@ -90,6 +92,7 @@
   import PostOrder from '@/base/post-order/post-order'
   import GroupApi from 'api/groupon'
   import Info from 'api/info'
+  import PhoneTest from '@/base/phoneTest/phoneTest'
 
   export default class GroupDetail extends wepy.page {
     mixins = [base, users]
@@ -160,6 +163,7 @@
       this.endTime = res.remaining_time_timestamp
       this.groupStatus = res.group_status * 1
       this.groupHasJoin = res.in_group
+      this.groupAvatarList = []
       for (let i = 0; i < res.group_number; i++) {
         this.groupAvatarList.push(res.join_numbers[i])
       }
@@ -258,13 +262,18 @@
         this.$invoke('share', 'show', 'groupBuy')
       },
       groupDetail() {
-        this.$navigate('/pages/coupon-detail/coupon-detail?type=1&status=group&groupType=join&id=' + 152 + '&currentMerchant=' + 100004 + '&groupId=' + 24)
+        let id = this.groupDetails.promotion_id
+        let currentMerchant = this.groupDetails.merchant_id
+        let groupId = this.groupDetails.activity_id
+        let joinGroupId = this.id
+        let type = this.groupHasJoin ? '' : 'join'
+        this.$navigate('/pages/coupon-detail/coupon-detail?type=1&status=group&groupType=' + type + '&id=' + id + '&currentMerchant=' + currentMerchant + '&groupId=' + groupId + '&joinGroupId=' + joinGroupId)
       },
       async postOrder() {
         const isAuthorise = await this.isAuthorise()
         if (!isAuthorise) {
           this.loaded()
-          this.$invoke('phone-test', 'show')
+          this.$invoke('phone-test', 'show', '')
           return
         }
         const res = await GroupApi.checkGroup('join', this.groupDetails.activity_id, this.id)
@@ -275,6 +284,13 @@
         }
         this.loaded()
         this.submit('group')
+      },
+      async getSymbol(type) {
+        const isAuthorise = await this.isAuthorise()
+        this.loaded()
+        if (isAuthorise) {
+          this.submit(type)
+        }
       },
       postOrderFail(message) {
         this.$invoke('toast', 'show', message || '网络错误...')
@@ -296,7 +312,8 @@
     components = {
       'share': Share,
       'post-order': PostOrder,
-      'toast': Toast
+      'toast': Toast,
+      'phone-test': PhoneTest
     }
   }
 </script>
