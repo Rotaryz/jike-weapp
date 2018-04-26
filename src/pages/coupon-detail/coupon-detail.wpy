@@ -631,6 +631,6 @@
           background-color: $color-prize-bc
 
   .cash-show
-    background :$color-white
+    background: $color-white
     min-height: 42vh
 </style>
