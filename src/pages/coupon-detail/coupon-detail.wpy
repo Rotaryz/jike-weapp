@@ -393,6 +393,7 @@
       this.isFavorite = data.is_favorite
       this.stock = data.stock
       this.deduction = data.deduction
+      this.deduction.deduction_status = this.activitiesStatus === 3 ? 3 : this.deduction.deduction_status
       if (this.deduction.deduction_status === 1) {
 //        判断是否拥有优惠券
         await this._isShareCoupon()

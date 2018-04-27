@@ -149,6 +149,7 @@
           this.$invoke('Toast', 'show', '请选择后提交')
           return
         }
+        console.log(this.couponMsg)
         let data = {
           star_level: this.starCount * 1 + 1,
           detail: this.appraise,

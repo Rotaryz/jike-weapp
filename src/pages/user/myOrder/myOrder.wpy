@@ -41,8 +41,8 @@
             </view>
             <view class="myOrder-orderList-item-btnBox">
               <view class="myOrder-orderList-item-status">{{item.promotion_type === 3 ? '付款成功' : orderItemStatus[item.status]}}</view>
-              <view class="myOrder-orderList-item-btn {{industry}}-bg" wx:if="{{menuIdx!==0 && item.promotion_type !== 3}}" catchtap="useCoupon({{item}})">{{orderItemBtnTxt[menuIdx - 1]}}</view>
-              <view class="myOrder-orderList-item-btn {{industry}}-bg" wx:if="{{menuIdx===0 && item.promotion_type !== 3}}" catchtap="useCoupon({{item}})">{{orderItemBtnTxt[item.status]}}</view>
+              <view class="myOrder-orderList-item-btn {{industry}}-bg" wx:if="{{menuIdx!==0 && item.promotion_type !== 3}}" catchtap="useCoupon({{item}})">{{orderItemBtnTxt[item.status]}}</view>
+              <!--<view class="myOrder-orderList-item-btn {{industry}}-bg" wx:if="{{menuIdx===0 && item.promotion_type !== 3}}" catchtap="useCoupon({{item}})">{{orderItemBtnTxt[item.status]}}</view>-->
               <view class="myOrder-orderList-item-btn {{industry}}-bg" wx:if="{{menuIdx===0 && item.promotion_type === 3}}" catchtap="orderDetail({{item.id}})">查看详情</view>
             </view>
           </view>
@@ -215,7 +215,8 @@
             break
           case 2:
             this.$invoke('Appraise', 'showCover')
-            this.$broadcast('sendCouponMsg', item.id, item.couponId)
+            console.log(item)
+            this.$broadcast('sendCouponMsg', item.id, item.promotion.id)
             break
           default:
             let couponType
@@ -224,7 +225,7 @@
             } else if (item.promotion_type * 1 === 2) {
               couponType = 2
             }
-            this.$navigate('/pages/coupon-detail/coupon-detail?id=' + item.couponId + '&type=' + couponType + '&currentMerchant=' + item.merchantId)
+            this.$navigate('/pages/coupon-detail/coupon-detail?id=' + item.promotion.id + '&type=' + couponType + '&currentMerchant=' + item.merchant_id)
             break
         }
       },
@@ -325,8 +326,8 @@
         this.$apply()
       },
       'appraiseSuccess': async () => {
-        this.menuIdx = 3
-        this.menuType = this.menuItems[this.menuIdx].type
+        let type = 2
+        this.menuIdx = this.menuItems.findIndex(item => item.type === type)
         this.page = 1
         this.nothingAdd = false
         let resList = await this._getOrderList(2, 1)
