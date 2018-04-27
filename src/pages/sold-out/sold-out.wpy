@@ -1,8 +1,9 @@
 <template>
   <view class="sold-out">
     <image class="sold-img" wx:if="{{imageUrl}}"
-           src="{{imageUrl + '/defaults/c-image/mine/icon-shopsoldout@2x.png'}}"></image>
-    <view class="sold-text">您访问的店铺已下架</view>
+           src="{{image}}"></image>
+    <view class="sold-text">{{content}}</view>
+    <view class="error-text" wx:if="{{shop}}">我们推荐更多的精彩给您</view>
     <view class="sold-btn" @tap="goShop">随便逛逛</view>
   </view>
 </template>
@@ -21,15 +22,23 @@
     data = {
       imageUrl: URIS.image,
       appId: '',
-      businessCircleId: ''
+      businessCircleId: '',
+      content: '您访问的店铺已下架',
+      shop: false,
+      image: URIS.image + '/defaults/c-image/mine/icon-shopsoldout@2x.png'
     }
 
     onLoad(option) {
+      this.content = option.content || this.content
       this.appId = option.appId || ''
       this.businessCircleId = option.businessCircleId || ''
     }
 
     methods = {
+      setContent(content, image) {
+        this.content = content
+        this.image = image
+      },
       goShop() {
         const version = URIS.envVersion
         wepy.navigateToMiniProgram({
@@ -62,12 +71,16 @@
       height: 76px
     .sold-text
       margin-top: 8px
+    .error-text
+      margin-top :10px
+      color:#B6B6B6
     .sold-btn
-      margin-top: 39px
+      margin-top: 30px
       height: 24px
       width: 88.5px
       text-align: center
       line-height: 24px
       border-radius: 2px
       border: 0.5px solid $color-col-line
+
 </style>

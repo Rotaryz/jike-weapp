@@ -167,6 +167,11 @@
         this.$navigate('/pages/coupon-particulars/coupon-particulars?id=' + id)
       },
       showQrcord(item) {
+//        `/pages/coupon-detail/coupon-detail?actId=${atcId}&type=1&merchantId=${item.merchant_id}&fromCustomerId=${fromCustomerId}&id=${promotionId}&status=share&isShowCoupon=1`
+        if (item.promotion.promotion_type === 'deduction') {
+          console.log(item)
+          return
+        }
         let type = item.promotion.promotion_type
         let id = item.id
         this.$navigate('/pages/coupon-use/couponUse?type=' + type + '&id=' + id)
@@ -204,8 +209,7 @@
         text-align: center
         line-height: 8vh
         width: 71px
-        border-bottom: 2px solid #fff
-
+        position: relative
       .myCoupon-tab-itemTxt.active
         color: $color-text-t
         border-bottom: 2px solid $color-theme

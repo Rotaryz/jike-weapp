@@ -1,0 +1,125 @@
+<template>
+  <view class="order-item" @tap="goOrderDetail({{order}})">
+    <view class="ro-order-top">
+      <view class="ro-order-shop-name">店铺：{{order.merchant_data.shop_name}}</view>
+      <view class="ro-order-tip">{{order.status * 1 !== 1 ? orderItemStatus[order.status] : (order.group_status === 1 || order.group_status === 2) ? '待成团' : (order.group_status === 3 || order.group_status === 4) ? '待使用' : orderItemStatus[order.status]}}</view>
+    </view>
+    <view class="ro-order-bottom">
+      <image class="ro-order-shop-logo" src="{{order.merchant_data.logo_image}}" mode="aspectFill"></image>
+      <view class="ro-order-content">
+        <view class="ro-order-content-tip-box">
+          <view class="ro-order-tip">拼团</view>
+          <view class="ro-order-coupon-name">{{order.title}}</view>
+        </view>
+        <view class="ro-order-num">数量：{{order.count}}</view>
+        <view class="ro-order-money">总价：{{order.total}}</view>
+      </view>
+    </view>
+    <view class="ro-order-btn {{industry}}-bg">拼团详情</view>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import base from 'common/mixins/base'
+  import URIS from 'common/js/config'
+  import {ERR_OK} from 'api/base'
+
+  export default class orderItem extends wepy.component {
+    mixins = [base]
+    props = {
+      order: {
+        type: Object,
+        default: {}
+      },
+      industry: {
+        type: String,
+        default: ''
+      }
+    }
+    data = {
+      imageUrl: URIS.image,
+      orderItemStatus: ['待付款', '待使用', '待评价', '退款中', '退款完成', '已评价', '已关闭', '退款失败', '退款失败', '已关闭'],
+      groupItemStatus: ['待付款', '待使用', '待评价', '退款中', '退款完成', '已评价', '已关闭', '退款失败', '退款失败', '已关闭']
+    }
+    methods = {
+      goOrderDetail(order) {
+        console.log(order)
+        this.$parent.$navigate(`/pages/user/myOrder-detail/myOrderDetail?id=${order.id}`)
+      }
+    }
+
+    infoRes(res) {
+      if (res.error === ERR_OK) {
+        return res.data
+      }
+    }
+  }
+</script>
+
+<style lang="stylus">
+  @import '../../common/stylus/variable'
+  @import '../../common/stylus/mixin'
+  .order-item
+    padding-left: $padding-all
+    background: $color-white
+    margin-top: 10px
+    box-sizing: border-box
+    font-family: $font-family-light
+    position: relative
+    .ro-order-top
+      border-bottom: 0.5px solid $color-col-line
+      display: flex
+      height: 40px
+      justify-content: space-between
+      padding-right: $padding-all
+      box-sizing: border-box
+      align-items: center
+      font-size: $font-size-small
+      .ro-order-shop-name
+        color: $color-text
+      .ro-order-tip
+        color: $color-theme
+    .ro-order-bottom
+      padding: 15px 0
+      display: flex
+      .ro-order-shop-logo
+        height: 64px
+        width: 64px
+        border-radius: 2px
+        margin-right: 9px
+        background: $color-pay
+      .ro-order-content
+        .ro-order-content-tip-box
+          display: flex
+          margin-bottom: 14.5px
+          .ro-order-tip
+            width: 29px
+            height: 15px
+            line-height: 15px
+            color: $color-text
+            font-size: $font-size-small-s
+            text-align: center
+            border: 0.5px solid #D3D3D3
+            border-radius: 2px
+          .ro-order-coupon-name
+            margin-left: 5px
+            font-size: $font-size-medium
+      .ro-order-num, .ro-order-money
+        margin-bottom: 3px
+        color: $color-text-d
+        font-size: $font-size-small
+
+    .ro-order-btn
+      position: absolute
+      bottom: 29.5px
+      background: $color-pay
+      width: 58px
+      height: 24px
+      line-height: 24px
+      color: $color-white
+      text-align: center
+      border-radius: 2px
+      font-size: $font-size-small
+      right: 12px
+</style>

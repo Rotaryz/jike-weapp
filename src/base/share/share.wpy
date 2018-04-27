@@ -222,7 +222,7 @@
       ctx.fillText(this.detail.title, 148, 962)
 //        活动标签
       ctx.setFontSize(40)
-      ctx.drawImage(activityIcons, 150, 1026, 152, 56)
+      ctx.drawImage(activityIcons, 150, 1022, 152, 56)
       ctx.setFillStyle('#FF4E00')
       ctx.fillText(activityTitle, 162, 1068)
 //        钱￥

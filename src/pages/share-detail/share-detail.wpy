@@ -56,10 +56,10 @@
       </view>
     </view>
     <!--更多优惠券-->
-    <view class="ro-share-more">
+    <view class="ro-share-more" wx:if="{{shareList.length}}">
       <view class="ro-share-more-text"><text class="ro-share-more-text">更多</text></view>
       <repeat for="{{shareList}}" key="index" index="index" item="item">
-        <share-item :shareCoupon.sync="item"></share-item>
+        <share-item :shareCoupon.sync="item" :industry.sync="industry"></share-item>
       </repeat>
     </view>
     <view class="ro-get-share" @tap="shares">立即分享</view>
@@ -115,6 +115,7 @@
     }
 
     async onLoad(option) {
+      await this.showIndustry()
       let id = option.id || 0
       await this._load(id)
       await this._createQrcode()
@@ -150,6 +151,7 @@
         platform_price: this.shareDetail.after_price, // 橙色的价格
         shop_price: this.shareDetail.after_price  // 原价
       }
+//      wepy.setNavigationBarTitle({title: this.shareDetail.title})
 //      公告
       let resNotice = await shareMoney.profitNotice()
       this.shareNotice = this.infoRes(resNotice)
@@ -159,7 +161,6 @@
       this.loaded()
       res = this.infoRes(res)
       this.shareList = res.slice(0, 3)
-      console.log(this.shareList)
       this.$apply()
     }
     infoRes(res) {
@@ -171,8 +172,11 @@
     async _createQrcode() {
       let currentMerchant = wepy.getStorageSync('merchantId') ? wepy.getStorageSync('merchantId') : ''
       setTimeout(async () => {
-        let id = this.shareDetail ? this.shareDetail.promotion_id : 0
-        this.currentPage = `/pages/coupon-detail/coupon-detail?id=${id}&type=1&currentMerchant=${currentMerchant}&status=share`
+        let atcId = this.shareDetail ? this.shareDetail.id : 0 // 活动ID
+        let fromCustomerId = this.shareDetail ? this.shareDetail.from_customer_id : 0 // 分享者id
+        let promotionId = this.shareDetail ? this.shareDetail.promotion_id : 0
+        this.currentPage = `/pages/coupon-detail/coupon-detail?actId=${atcId}&type=1&merchantId=${currentMerchant}&fromCustomerId=${fromCustomerId}&id=${promotionId}&status=share`
+        console.log(this.currentPage)
         const res = await Info.createQrode({path: this.currentPage})
         this.loaded()
         this.qrcode = res.data.image_url

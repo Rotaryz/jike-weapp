@@ -1,9 +1,9 @@
 <template>
-  <view class="ro-share-coupon {{shareStatus ? 'ro-share-coupon-active' : ''}}" wx:if="{{share}}">
-    <coupon type="pay" :content.sync="coupon" :industry.sync="industry"></coupon>
+  <view class="ro-share-coupon {{shareStatus ? 'ro-share-coupon-active' : ''}}" wx:if="{{activityStatus === 'share' && !isShowCoupon}}">
+    <coupon-item :type="shareType" :coupon.sync="deduction" :industry.sync="industry" :industryColor.sync="industryColor"></coupon-item>
   </view>
   <view class="coupon-detail">
-    <cover-view class="ro-share-money" wx:if="{{share}}"></cover-view>
+    <!--<cover-view class="ro-share-money" wx:if="{{share}}"></cover-view>-->
     <view class="slider-wrapper">
       <slider :list.sync="promotionImages">
         <block slot="content">
@@ -36,7 +36,16 @@
 
     <view class="group-time-run" wx:if="{{activityStatus === 'group'}}">
       <view class="group-time-left">{{groupBuyDetail.group_number}}人团</view>
-      <view class="group-time-right">距离活动结束还剩:<text class="day-txt">{{groupEndTime.day}}</text>天<text class="time-txt">{{groupEndTime.hour}}</text>时<text class="time-txt">{{groupEndTime.minute}}</text>分<text class="time-txt">{{groupEndTime.second}}</text>秒</view>
+      <view class="group-time-right">距离活动结束还剩:
+        <text class="day-txt">{{groupEndTime.day}}</text>
+        天
+        <text class="time-txt">{{groupEndTime.hour}}</text>
+        时
+        <text class="time-txt">{{groupEndTime.minute}}</text>
+        分
+        <text class="time-txt">{{groupEndTime.second}}</text>
+        秒
+      </view>
     </view>
 
     <view class="desc-wrapper">
@@ -94,7 +103,10 @@
               </view>
               <view class="group-swiper-item-right">
                 <view class="group-swiper-time">
-                  <view class="group-swiper-txt">还差<text class="red-num">{{item.remaining_number}}人</text>拼成</view>
+                  <view class="group-swiper-txt">还差
+                    <text class="red-num">{{item.remaining_number}}人</text>
+                    拼成
+                  </view>
                   <view class="group-swiper-time-txt">剩余{{item.endTime}}</view>
                 </view>
                 <view class="group-swiper-item-btn" @tap="joinGroupBuy({{item}})">去参团</view>
@@ -150,7 +162,8 @@
           客服
         </button>
       </view>
-      <view class="buy-btn {{stock === 0 ? 'disable' : ''}}" @tap="postOrder">{{activityStatus === 'group' ? '¥' + groupBuyDetail.promotion_price + '单买' : '立即购买'}}</view>
+      <view class="buy-btn {{stock === 0 || goodsStatus !== 1 ? 'disable' : ''}}" @tap="postOrder" wx:if="{{activityStatus === 'group'}}">{{ goodsStatus === 0 ? '该商品已下架' : goodsStatus === 1 ? '单买' : goodsStatus === 2 ? '已售罄' : '立即购买'}}</view>
+      <view class="buy-btn {{stock === 0 || goodsStatus !== 1 ? 'disable' : ''}}" @tap="postOrder" wx:if="{{activityStatus !== 'group'}}">{{ goodsStatus === 0 ? '该商品已下架' : goodsStatus === 1 ? '立即购买' : goodsStatus === 2 ? '已售罄' : '立即购买'}}</view>
       <view class="group-buy-btn" @tap="postGroupOrder" wx:if="{{activityStatus === 'group'}}">¥{{groupBuyDetail.group_price}}{{groupType === 'join' ? '参团' : '开团'}}</view>
     </view>
     <phone-test @isPhoneOk.user="getSymbol" :industry.sync="industry"></phone-test>
@@ -174,7 +187,7 @@
         </view>
       </view>
     </share-modal>
-    <post-order :orderInfo.sync="orderInfo" @throw.user="postOrderFail" :industry.sync="industry" :status="activityStatus"></post-order>
+    <post-order :orderInfo.sync="orderInfo" @throw.user="postOrderFail" :industry.sync="industry" :status="activityStatus" :userCoupon.sync="userCoupon"></post-order>
     <toast></toast>
     <popout></popout>
     <rule title="玩法详情">
@@ -194,8 +207,10 @@
   import Slider from '@/base/slider/slider'
   import {ERR_OK} from 'api/base'
   import CouponApi from 'api/coupon'
+  import Merchants from 'api/merchants'
   import Info from 'api/info'
   import Coupon from '@/base/coupon/coupon'
+  import CouponItem from '@/base/coupon-item/coupon-item'
   import CouponFactory from 'common/js/coupon'
   import PhoneTest from '@/base/phoneTest/phoneTest'
   import ServiceDetail from '@/base/service-detail/service-detail'
@@ -210,6 +225,9 @@
   import {getParams} from 'common/js/data'
   import Popout from '@/base/integral-popout/integral-popout'
   import Rule from '@/base/rule/rule'
+  import order from 'api/order'
+  import tips from 'common/js/tips'
+  import ShareMoney from 'api/sharemoney'
 
   const COUPON_TYPE = 1
   const PACKAGE_TYPE = 2
@@ -256,7 +274,14 @@
       groupBuyList: [],
       groupType: 'open',
       joinGroupId: '',
+      shareType: 'shareBuy',
+      fromCustomerId: 0, // 分享者的ID,
+      actId: 0,
+      deduction: {},
       timer: '',
+      userCoupon: '', // 抵用券的文案
+      getShareCoupon: true,
+      isShowCoupon: false,
       goodsStatus: 1, // 商品状态
       activitiesStatus: 1 // 活动状态
     }
@@ -284,6 +309,8 @@
     }
 
     async onLoad(option) {
+      this.isShowCoupon = option.isShowCoupon || this.isShowCoupon
+      this.getShareCoupon = true
       this.activityStatus = option.status ? option.status : ''
       this.groupType = option.groupType ? option.groupType : 'open'
       this.joinGroupId = option.joinGroupId ? option.joinGroupId : ''
@@ -303,25 +330,101 @@
         this.type = Math.floor(option.type)
         this.id = option.id
         this.groupId = option.groupId
+        this.actId = option.actId || 0 // 抵用券
+        this.fromCustomerId = option.fromCustomerId || 0 // 分享者
         this.currentMerchant = option.currentMerchant ? option.currentMerchant : 0
       }
       await this.load()
     }
 
+//    分享赚钱的选择优惠券判断
+    onShow() {
+      if (this.activityStatus === 'share') {
+        let shareCoupon = wepy.getStorageSync('shareCoupon')
+        this.orderInfo.deduction_id = typeof (shareCoupon) === 'object' ? shareCoupon.id : 0
+        this.userCoupon = typeof (shareCoupon) === 'object' ? ` - ${shareCoupon.money}` : ''
+        this.$apply()
+      }
+    }
+
     async load() {
       this.currentMerchant = this.currentMerchant || wepy.getStorageSync('merchantId')
       this.currentPage = `/pages/coupon-detail/coupon-detail?type=${this.type}&id=${this.id}&merchantId=${this.currentMerchant}`
-      if (this.type === COUPON_TYPE) {
+//      console.log(this.type)
+      if (this.type === COUPON_TYPE && !this.activityStatus) {
         await this._getCouponDetail()
         if (this.activityStatus === 'group' && this.goodsStatus !== 3) {
           await this._getGroupDetail()
         }
+      } else if (this.activityStatus === 'share') {
+        await this._getShareMoney()
       } else if (this.type === PACKAGE_TYPE) {
         await this._getPackageDetail()
       }
       await this._createQrcode()
       this._groupTimePlay()
       this.loaded()
+    }
+
+    async _getShareMoney() {
+      wepy.removeStorageSync('shareCoupon')
+      wepy.removeStorageSync('shareId')
+      let Sharedata = {
+        act_type: 1,
+        act_id: this.actId, // 活动id
+        p_customer_id: this.fromCustomerId
+      }
+      let res = await Merchants.coupons(this.id, Sharedata)
+
+      if (res.error !== ERR_OK) {
+        this.loaded()
+        return
+      }
+      const data = res.data
+      this.goodsStatus = res.activitiesStatus || 1
+      this.activitiesStatus = res.activitiesStatus || 1
+//      console.log(data)
+      wepy.setNavigationBarTitle({title: data.title})
+      this.promotionImages = data.promotion_images
+      this.coupon = data
+      this.services = data.detail
+      this.note = data.note
+      this.notAllowTime = data.not_allow_time
+      this.isFavorite = data.is_favorite
+      this.stock = data.stock
+      this.deduction = data.deduction
+      if (this.deduction.deduction_status === 1) {
+//        判断是否拥有优惠券
+        await this._isShareCoupon()
+        this.loaded()
+        return
+      }
+      this.deduction.id = 0
+      // 添shop照片
+      this.shopImages = this._formatShopImages(data)
+      this.$apply()
+    }
+
+    //    检查是否被删除
+    _isDel() {
+      if (this.goodsStatus === 3 || this.activitiesStatus === 3) {
+//        wepy.redirectTo({url: `/pages/sold-out/sold-out?appId=${result.app_id}&businessCircleId=${result.business_circle_id}`})
+      }
+    }
+
+//    判断是否有优惠券
+    async _isShareCoupon() {
+      let data = {act_id: this.actId, page: 1}
+      let res = await ShareMoney.deductionPromotionList(data)
+      this.loaded()
+      res = res.data
+      for (let i = 0; i < res.length; i++) {
+        if (res[i].status === 0) {
+          this.deduction.id = res[i].id
+          this.userCoupon = ` - ${res[i].money} `
+          break
+        }
+      }
     }
 
     async _getSharePrize() {
@@ -381,6 +484,7 @@
       const res = await CouponApi.getShopCouponDetail(this.id)
       if (res.error === ERR_OK) {
         const data = res.data
+        this.goodsStatus = res.goods_status || 1
         if (this.activityStatus !== 'group') {
           wepy.setNavigationBarTitle({title: data.title})
         }
@@ -433,6 +537,7 @@
       const res = await CouponApi.getPackageDetail(this.id, this.currentMerchant)
       if (res.error === ERR_OK) {
         const data = res.data
+        this.goodsStatus = res.activitiesStatus || 1
         wepy.setNavigationBarTitle({title: data.title})
         this.coupon = data
         this.stock = data.stock
@@ -529,6 +634,23 @@
           peopleStock: this.coupon.note ? this.coupon.note.buy_upper_limit : -1,
           from: 'c_groupon'
         }
+      } else if (this.activityStatus === 'share') {
+        this.orderInfo = {
+          shareMoney: this.deduction.price, // 抵用券金额
+          promotionImage: this.promotionImages[0].image.url,
+          promotion_type: 1, // 1分享赚钱
+          promotion_id: this.coupon.id,
+          activity_id: this.actId, // 活动ID
+          title: this.coupon.title,
+          price: this.coupon.platform_price,
+          current_merchant: this.currentMerchant,
+          stock: this.coupon.stock,
+          peopleStock: this.coupon.note ? this.coupon.note.buy_upper_limit : -1,
+          from: 'C_sharemoney',
+          deduction_id: this.deduction.id, // 抵用券ID
+          is_share_money: 1,
+          share_customer_id: this.fromCustomerId // 分享者id
+        }
       } else {
         this.orderInfo = {
           promotionImage: this.promotionImages[0].image.url,
@@ -590,7 +712,7 @@
           this.$invoke('phone-test', 'show', '')
           return
         }
-        this.submit('')
+        this.submit(this.activityStatus)
       },
       async postGroupOrder() {
         if (!this.groupBuyDetail.can_open_group && this.groupType === 'open') {
@@ -634,13 +756,33 @@
         this.$navigate('/pages/group-detail/group-detail?id=' + item.id)
       }
     }
-
     events = {
+      async shareBuy(id) {
+        if (this.getShareCoupon) {
+          this.getShareCoupon = false
+          let data = {is_share_money: 1, act_id: this.actId}
+          let res = await order.getCoupon(this.coupon.id, data)
+          this.loaded()
+          if (res.error === ERR_OK) {
+            tips.success(res.message)
+            this.deduction.deduction_status = 1
+            await this._isShareCoupon()
+            this.$apply()
+          } else {
+            tips.error(res.message)
+            this.getShareCoupon = true
+          }
+        }
+      },
       async postSuccess(id) {
         this.$navigate('/pages/group-detail/group-detail?id=' + id)
       }
     }
-
+    computed = {
+      personBoxHeight() {
+        return this.personList.length * 26
+      }
+    }
     components = {
       'phone-test': PhoneTest,
       'service-detail': ServiceDetail,
@@ -652,7 +794,8 @@
       'post-order': PostOrder,
       'toast': Toast,
       'popout': Popout,
-      'rule': Rule
+      'rule': Rule,
+      'coupon-item': CouponItem
     }
 
     config = {
@@ -695,7 +838,7 @@
         position: absolute
         width: 185px
         height: 26px
-        background: rgba(37,36,57,0.8)
+        background: rgba(37, 36, 57, 0.8)
         border-radius: 13px
         left: 7.5px
         top: 10.5px
@@ -1139,6 +1282,7 @@
   .cash-show
     background: $color-white
     min-height: 42vh
+
   .group-rule-img-box
     height: 192px
     display: flex
@@ -1148,21 +1292,10 @@
       width: 218px
       height: 192px
 
-    /*分享赚钱*/
-  .ro-share-money
-    height: 100vh
-    width: 100vw
-    position: fixed
-    z-index: 1000
-    top: 0
-    left: 0
-    background: rgba(218, 218, 218, .7)
+  /*分享赚钱*/
+
   .ro-share-coupon
-    padding :5px 0 15.5px 0
-  .ro-share-coupon-active
-    height:0px
-    padding: 0
-    transition :all 0.5s
+    padding: 15px 12px
     .coupon
       margin: 0
 </style>

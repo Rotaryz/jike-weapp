@@ -1,14 +1,14 @@
 <template>
-  <scroll-view class="share-list" scroll-y @scrolltolower="orderLower">
+  <view class="share-list">
     <repeat for="{{shareList}}" key="index" index="index" item="item">
-      <share-item :shareCoupon.sync="item"></share-item>
+      <share-item :shareCoupon.sync="item" :industry.sync="industry"></share-item>
     </repeat>
     <view class="ro-share-none" wx:if="{{shareNone}}">
       <image class="ro-share-none-img" wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/b-image/common/pic-empty_city@2x.png'}}"></image>
       <view class="ro-share-none-text">暂无数据</view>
     </view>
     <underline-block></underline-block>
-  </scroll-view>
+  </view>
 
 </template>
 
@@ -24,7 +24,9 @@
     mixins = [base]
 
     config = {
-      navigationBarTitleText: '分享赚钱'
+      navigationBarTitleText: '分享赚钱',
+      enablePullDownRefresh: true,
+      backgroundTextStyle: 'dark'
     }
     data = {
       shareNone: false,
@@ -33,8 +35,15 @@
       shareList: [],
       nothing: false
     }
-
+    async onPullDownRefresh() {
+      this.page = 1
+      this.nothing = false
+      this.shareList = await this._load(false)
+      wepy.stopPullDownRefresh()
+      this.$apply()
+    }
     async onLoad() {
+      await this.showIndustry()
       this.shareList = await this._load()
       if (!this.shareList.length) {
         this.shareNone = true
@@ -47,13 +56,13 @@
         return res.data
       }
     }
-    async orderLower() {
+    async onReachBottom() {
       if (this.nothing) {
         return
       }
       this.page++
       if (this.page > 1) {
-        let res = await this._load(this.page)
+        let res = await this._load()
         this.shareList.push(...res)
         if (res.length === 0 && res) {
           this.$invoke('underline-block', 'show')
@@ -62,9 +71,9 @@
       }
       this.$apply()
     }
-    async _load() {
+    async _load(loading = true) {
       let data = {page: this.page, limit: 10}
-      let res = await shareMoney.shareList(data)
+      let res = await shareMoney.shareList(data, loading)
       this.loaded()
       res = this.infoRes(res)
       return res
