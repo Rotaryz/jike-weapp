@@ -6,7 +6,7 @@
     <!--</view>-->
     <view class="detail-wrapper">
       <view class="item-wrapper" wx:if="{{notAllowTime}}">
-        <view class="title">有效期 </view>
+        <view class="title">不可用期 </view>
         <view class="content">
           <!--<text class="circle"></text>-->
           <text class="value">{{notAllowTime}}</text>
