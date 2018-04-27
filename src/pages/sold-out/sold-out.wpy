@@ -29,6 +29,7 @@
     }
 
     onLoad(option) {
+      this.content = option.content || this.content
       this.appId = option.appId || ''
       this.businessCircleId = option.businessCircleId || ''
     }

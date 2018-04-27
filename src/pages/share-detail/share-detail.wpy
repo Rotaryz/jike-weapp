@@ -144,7 +144,6 @@
 //      详情
       let resDetail = await shareMoney.shareDetail(id)
       this.shareDetail = this.infoRes(resDetail)
-      console.log(this.shareDetail)
       this.promotionImages = this.shareDetail ? this.shareDetail.promotion_images : {}
       this.detail = {
         title: this.shareDetail.title, // 标题
@@ -152,6 +151,7 @@
         platform_price: this.shareDetail.after_price, // 橙色的价格
         shop_price: this.shareDetail.after_price  // 原价
       }
+//      wepy.setNavigationBarTitle({title: this.shareDetail.title})
 //      公告
       let resNotice = await shareMoney.profitNotice()
       this.shareNotice = this.infoRes(resNotice)
@@ -161,7 +161,6 @@
       this.loaded()
       res = this.infoRes(res)
       this.shareList = res.slice(0, 3)
-      console.log(this.shareList)
       this.$apply()
     }
     infoRes(res) {

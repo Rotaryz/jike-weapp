@@ -51,4 +51,13 @@ export default class shareMoney extends base {
     const url = `${this.baseUrl}/api/finance/share-money-profit-list`
     return await this.get(url, data)
   }
+  /**
+   * 用户提现申请银行卡
+   * @param data
+   * @returns {Promise.<*>}
+   */
+  static async customerWithdrawalMoney(data) {
+    const url = `${this.baseUrl}/api/finance/customer-withdrawal-money`
+    return await this.post(url, data)
+  }
 }

@@ -25,8 +25,7 @@
       </view>
 
       <view class="mine-order">
-        <view class="mine-order-head"
-              @tap="notestToPage('/pages/user/myOrder/myOrder?idx={{currentIdx}}')">
+        <view class="mine-order-head" @tap="notestToPage('/pages/user/myOrder/myOrder')">
           <view class="mine-order-head-left">
             <text class="mine-order-headTxt line-{{industry}}">我的订单</text>
           </view>

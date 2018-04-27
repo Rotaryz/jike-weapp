@@ -93,6 +93,7 @@
       }
       if (res.error === ERR_OK) {
         this.$invoke('Toast', 'show', '绑定成功')
+        this.$back(-1)
       } else {
         this.$invoke('Toast', 'show', res.message)
       }

@@ -164,6 +164,10 @@
         this.$apply()
       },
       withDrawSub() {
+        if (!this.isBank) {
+          this.$invoke('Toast', 'show', '请绑定银行卡')
+          return
+        }
         this.$navigate('/pages/user/withDraw/withDraw')
       },
       goBank() {
@@ -178,6 +182,9 @@
         this._getBankCardDetail()
       ])
       this._isNone()
+    }
+    async onShow() {
+      await this._shareMoneyProfit()
     }
 //    判断是否有数据
     async _isNone() {

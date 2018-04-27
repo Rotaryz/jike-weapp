@@ -2,7 +2,7 @@
   <view class="order-item" @tap="goOrderDetail({{order}})">
     <view class="ro-order-top">
       <view class="ro-order-shop-name">店铺：{{order.merchant_data.shop_name}}</view>
-      <view class="ro-order-tip">待成团</view>
+      <view class="ro-order-tip">{{order.status * 1 !== 1 ? orderItemStatus[order.status] : (order.group_status === 1 || order.group_status === 2) ? '待成团' : (order.group_status === 3 || order.group_status === 4) ? '待使用' : orderItemStatus[order.status]}}</view>
     </view>
     <view class="ro-order-bottom">
       <image class="ro-order-shop-logo" src="{{order.merchant_data.logo_image}}" mode="aspectFill"></image>
@@ -15,7 +15,7 @@
         <view class="ro-order-money">总价：{{order.total}}</view>
       </view>
     </view>
-    <view class="ro-order-btn">拼团详情</view>
+    <view class="ro-order-btn {{industry}}-bg">拼团详情</view>
   </view>
 </template>
 
@@ -31,13 +31,20 @@
       order: {
         type: Object,
         default: {}
+      },
+      industry: {
+        type: String,
+        default: ''
       }
     }
     data = {
-      imageUrl: URIS.image
+      imageUrl: URIS.image,
+      orderItemStatus: ['待付款', '待使用', '待评价', '退款中', '退款完成', '已评价', '已关闭', '退款失败', '退款失败', '已关闭'],
+      groupItemStatus: ['待付款', '待使用', '待评价', '退款中', '退款完成', '已评价', '已关闭', '退款失败', '退款失败', '已关闭']
     }
     methods = {
       goOrderDetail(order) {
+        console.log(order)
         this.$parent.$navigate(`/pages/user/myOrder-detail/myOrderDetail?id=${order.id}`)
       }
     }

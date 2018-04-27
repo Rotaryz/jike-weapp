@@ -25,30 +25,32 @@
       </view>
 
       <view class="myOrder-orderList" wx:if="{{orderList.length > 0}}">
-        <view class="myOrder-orderList-item" wx:for="{{orderList}}" @tap="showDetail({{item.id}},{{item.status}})" wx:key="{{item.id}}" wx:if="{{menuItems[menuIdx].type !== 5}}">
-          <view class="myOrder-orderList-item-left">
-            <view class="myOrder-orderList-item-logo-box">
-              <image class="myOrder-orderList-item-logo" src="{{item.merchant_data.logo_image}}" mode="aspectFill"></image>
+        <view wx:for="{{orderList}}" wx:key="{{index}}">
+          <view class="myOrder-orderList-item" @tap="showDetail({{item.id}},{{item.status}})" wx:if="{{item.promotion_type !== 4}}">
+            <view class="myOrder-orderList-item-left">
+              <view class="myOrder-orderList-item-logo-box">
+                <image class="myOrder-orderList-item-logo" src="{{item.merchant_data.logo_image}}" mode="aspectFill"></image>
+              </view>
+              <view class="myOrder-orderList-item-msg">
+                <view class="myOrder-orderList-item-title">{{item.title}}</view>
+                <view class="myOrder-orderList-item-count myOrder-orderList-item-detail" wx:if="{{item.status === 0 && item.promotion_type !== 3}}">数量: {{item.count}}</view>
+                <view class="myOrder-orderList-item-time myOrder-orderList-item-detail" wx:if="{{item.status !== 0 && item.promotion_type !== 3}}">下单时间: {{item.created_at}}</view>
+                <!--<view class="myOrder-orderList-item-detail" wx:if="{{item.status === 1 && item.promotion_type === 3}}">{{item.promotion.title ? item.promotion.title : '无优惠'}}</view>-->
+                <view class="myOrder-orderList-item-total myOrder-orderList-item-detail">总价: ¥{{item.total}}</view>
+              </view>
             </view>
-            <view class="myOrder-orderList-item-msg">
-              <view class="myOrder-orderList-item-title">{{item.title}}</view>
-              <view class="myOrder-orderList-item-count myOrder-orderList-item-detail" wx:if="{{item.status === 0 && item.promotion_type !== 3}}">数量: {{item.count}}</view>
-              <view class="myOrder-orderList-item-time myOrder-orderList-item-detail" wx:if="{{item.status !== 0 && item.promotion_type !== 3}}">下单时间: {{item.created_at}}</view>
-              <!--<view class="myOrder-orderList-item-detail" wx:if="{{item.status === 1 && item.promotion_type === 3}}">{{item.promotion.title ? item.promotion.title : '无优惠'}}</view>-->
-              <view class="myOrder-orderList-item-total myOrder-orderList-item-detail">总价: ¥{{item.total}}</view>
+            <view class="myOrder-orderList-item-btnBox">
+              <view class="myOrder-orderList-item-status">{{item.promotion_type === 3 ? '付款成功' : orderItemStatus[item.status]}}</view>
+              <view class="myOrder-orderList-item-btn {{industry}}-bg" wx:if="{{menuIdx!==0 && item.promotion_type !== 3}}" catchtap="useCoupon({{item}})">{{orderItemBtnTxt[menuIdx - 1]}}</view>
+              <view class="myOrder-orderList-item-btn {{industry}}-bg" wx:if="{{menuIdx===0 && item.promotion_type !== 3}}" catchtap="useCoupon({{item}})">{{orderItemBtnTxt[item.status]}}</view>
+              <view class="myOrder-orderList-item-btn {{industry}}-bg" wx:if="{{menuIdx===0 && item.promotion_type === 3}}" catchtap="orderDetail({{item.id}})">查看详情</view>
             </view>
           </view>
-          <view class="myOrder-orderList-item-btnBox">
-            <view class="myOrder-orderList-item-status">{{item.promotion_type === 3 ? '付款成功' : orderItemStatus[item.status]}}</view>
-            <view class="myOrder-orderList-item-btn {{industry}}-bg" wx:if="{{menuIdx!==0 && item.promotion_type !== 3}}" catchtap="useCoupon({{item}})">{{orderItemBtnTxt[menuIdx - 1]}}</view>
-            <view class="myOrder-orderList-item-btn {{industry}}-bg" wx:if="{{menuIdx===0 && item.promotion_type !== 3}}" catchtap="useCoupon({{item}})">{{orderItemBtnTxt[item.status]}}</view>
-            <view class="myOrder-orderList-item-btn {{industry}}-bg" wx:if="{{menuIdx===0 && item.promotion_type === 3}}" catchtap="orderDetail({{item.id}})">查看详情</view>
-          </view>
+          <repeat key="index" index="index" item="item" wx:if="{{item.promotion_type === 4}}">
+            <order-item :order.sync="item" :industry.sync="industry"></order-item>
+          </repeat>
         </view>
       </view>
-      <repeat for="{{orderList}}" key="index" index="index" item="item" wx:if="{{menuItems[menuIdx].type === 5}}">
-        <order-item :order.sync="item"></order-item>
-      </repeat>
       <Underline></Underline>
     </scroll-view>
 
@@ -112,7 +114,7 @@
         type: 3
       }],
       noOrderIcon: [URIS.image + '/defaults/c-image/mine/pic-my_nopaid.png', URIS.image + '/defaults/c-image/mine/pic-my_noused.png', URIS.image + '/defaults/c-image/mine/pic-my_noevaluated.png', URIS.image + '/defaults/c-image/mine/pic-my_norefund.png'],
-      orderItemStatus: ['待付款', '', '', '退款中', '退款完成', '已评价', '已关闭', '退款失败', '退款失败', '已关闭'],
+      orderItemStatus: ['待付款', '待使用', '待评价', '退款中', '退款完成', '已评价', '已关闭', '退款失败', '退款失败', '已关闭'],
       orderItemBtnTxt: ['付款', '进店使用', '评价', '再来一单', '再来一单', '再来一单', '再来一单', '再来一单', '再来一单', '再来一单'],
       isPhone: 1,
       LowerLoading: false,
@@ -186,7 +188,7 @@
         switch (item.status) {
           case 0:
             let data = {
-              order_id: item.orderId
+              order_id: item.id
             }
             let res = await getMyOrder.paymentOrder(data)
             this.loaded()
@@ -205,15 +207,15 @@
             if (pay.errMsg === 'requestPayment:ok') {
               this.load({idx: '0'})
               wepy.setStorageSync('tips', {order: true})
-              this._getShareSoya(item.orderId)
+              this._getShareSoya(item.id)
             }
             break
           case 1:
-            this.$navigate('/pages/coupon-use/couponUse?id=' + item.orderId + '&type=order')
+            this.$navigate('/pages/coupon-use/couponUse?id=' + item.id + '&type=order')
             break
           case 2:
             this.$invoke('Appraise', 'showCover')
-            this.$broadcast('sendCouponMsg', item.orderId, item.couponId)
+            this.$broadcast('sendCouponMsg', item.id, item.couponId)
             break
           default:
             let couponType
@@ -260,8 +262,9 @@
     }
 
     async load(option) {
+      console.log(option)
 //     判断type值
-      let type = option.idx && option.idx * 1 >= 0 ? option.idx * 1 : 4
+      let type = option.idx ? option.idx * 1 : 4
       this.menuIdx = this.menuItems.findIndex((item) => item.type === type)
 
       this.nothingAdd = false
@@ -280,6 +283,7 @@
         return
       }
       this.orderList = resList.data
+      console.log(this.orderList)
       this.noOrder = this.orderList.length === 0 ? 1 : false
       let mobile = wx.getStorageSync('mobile')
       if (mobile) {

@@ -36,7 +36,16 @@
 
     <view class="group-time-run" wx:if="{{activityStatus === 'group'}}">
       <view class="group-time-left">{{groupBuyDetail.group_number}}人团</view>
-      <view class="group-time-right">距离活动结束还剩:<text class="day-txt">{{groupEndTime.day}}</text>天<text class="time-txt">{{groupEndTime.hour}}</text>时<text class="time-txt">{{groupEndTime.minute}}</text>分<text class="time-txt">{{groupEndTime.second}}</text>秒</view>
+      <view class="group-time-right">距离活动结束还剩:
+        <text class="day-txt">{{groupEndTime.day}}</text>
+        天
+        <text class="time-txt">{{groupEndTime.hour}}</text>
+        时
+        <text class="time-txt">{{groupEndTime.minute}}</text>
+        分
+        <text class="time-txt">{{groupEndTime.second}}</text>
+        秒
+      </view>
     </view>
 
     <view class="desc-wrapper">
@@ -94,7 +103,10 @@
               </view>
               <view class="group-swiper-item-right">
                 <view class="group-swiper-time">
-                  <view class="group-swiper-txt">还差<text class="red-num">{{item.remaining_number}}人</text>拼成</view>
+                  <view class="group-swiper-txt">还差
+                    <text class="red-num">{{item.remaining_number}}人</text>
+                    拼成
+                  </view>
                   <view class="group-swiper-time-txt">剩余{{item.endTime}}</view>
                 </view>
                 <view class="group-swiper-item-btn" @tap="joinGroupBuy({{item}})">去参团</view>
@@ -150,8 +162,8 @@
           客服
         </button>
       </view>
-      <view class="buy-btn {{stock === 0 ? 'disable' : ''}}" @tap="postOrder" wx:if="{{activityStatus === 'group'}}">单买</view>
-      <view class="buy-btn {{stock === 0 ? 'disable' : ''}}" @tap="postOrder" wx:if="{{activityStatus !== 'group'}}">立即购买</view>
+      <view class="buy-btn {{stock === 0 || goodsStatus !== 1 ? 'disable' : ''}}" @tap="postOrder" wx:if="{{activityStatus === 'group'}}">{{ goodsStatus === 0 ? '该商品已下架' : goodsStatus === 1 ? '单买' : goodsStatus === 2 ? '已售罄' : '立即购买'}}</view>
+      <view class="buy-btn {{stock === 0 || goodsStatus !== 1 ? 'disable' : ''}}" @tap="postOrder" wx:if="{{activityStatus !== 'group'}}">{{ goodsStatus === 0 ? '该商品已下架' : goodsStatus === 1 ? '立即购买' : goodsStatus === 2 ? '已售罄' : '立即购买'}}</view>
       <view class="group-buy-btn" @tap="postGroupOrder" wx:if="{{activityStatus === 'group'}}">¥{{groupBuyDetail.group_price}}{{groupType === 'join' ? '参团' : '开团'}}</view>
     </view>
     <phone-test @isPhoneOk.user="getSymbol" :industry.sync="industry"></phone-test>
@@ -269,8 +281,7 @@
       timer: '',
       userCoupon: '', // 抵用券的文案
       getShareCoupon: true,
-      isShowCoupon: false
-      timer: '',
+      isShowCoupon: false,
       goodsStatus: 1, // 商品状态
       activitiesStatus: 1 // 活动状态
     }
@@ -325,6 +336,7 @@
       }
       await this.load()
     }
+
 //    分享赚钱的选择优惠券判断
     onShow() {
       if (this.activityStatus === 'share') {
@@ -334,6 +346,7 @@
         this.$apply()
       }
     }
+
     async load() {
       this.currentMerchant = this.currentMerchant || wepy.getStorageSync('merchantId')
       this.currentPage = `/pages/coupon-detail/coupon-detail?type=${this.type}&id=${this.id}&merchantId=${this.currentMerchant}`
@@ -352,6 +365,7 @@
       this._groupTimePlay()
       this.loaded()
     }
+
     async _getShareMoney() {
       wepy.removeStorageSync('shareCoupon')
       wepy.removeStorageSync('shareId')
@@ -367,6 +381,8 @@
         return
       }
       const data = res.data
+      this.goodsStatus = res.activitiesStatus || 1
+      this.activitiesStatus = res.activitiesStatus || 1
 //      console.log(data)
       wepy.setNavigationBarTitle({title: data.title})
       this.promotionImages = data.promotion_images
@@ -376,7 +392,7 @@
       this.notAllowTime = data.not_allow_time
       this.isFavorite = data.is_favorite
       this.stock = data.stock
-      this.deduction = Object.assign({}, data.deduction, {promotion_type: 'deduction'})
+      this.deduction = data.deduction
       if (this.deduction.deduction_status === 1) {
 //        判断是否拥有优惠券
         await this._isShareCoupon()
@@ -388,6 +404,14 @@
       this.shopImages = this._formatShopImages(data)
       this.$apply()
     }
+
+    //    检查是否被删除
+    _isDel() {
+      if (this.goodsStatus === 3 || this.activitiesStatus === 3) {
+//        wepy.redirectTo({url: `/pages/sold-out/sold-out?appId=${result.app_id}&businessCircleId=${result.business_circle_id}`})
+      }
+    }
+
 //    判断是否有优惠券
     async _isShareCoupon() {
       let data = {act_id: this.actId, page: 1}
@@ -402,6 +426,7 @@
         }
       }
     }
+
     async _getSharePrize() {
       if (!this.coupon.activity_share) {
         return
@@ -459,6 +484,7 @@
       const res = await CouponApi.getShopCouponDetail(this.id)
       if (res.error === ERR_OK) {
         const data = res.data
+        this.goodsStatus = res.goods_status || 1
         if (this.activityStatus !== 'group') {
           wepy.setNavigationBarTitle({title: data.title})
         }
@@ -511,6 +537,7 @@
       const res = await CouponApi.getPackageDetail(this.id, this.currentMerchant)
       if (res.error === ERR_OK) {
         const data = res.data
+        this.goodsStatus = res.activitiesStatus || 1
         wepy.setNavigationBarTitle({title: data.title})
         this.coupon = data
         this.stock = data.stock
@@ -639,6 +666,7 @@
       this.$apply()
       this.$invoke('post-order', 'show', status)
     }
+
     methods = {
       showShareModal() {
         this.$invoke('share', 'show')
@@ -809,7 +837,7 @@
         position: absolute
         width: 185px
         height: 26px
-        background: rgba(37,36,57,0.8)
+        background: rgba(37, 36, 57, 0.8)
         border-radius: 13px
         left: 7.5px
         top: 10.5px
@@ -1253,6 +1281,7 @@
   .cash-show
     background: $color-white
     min-height: 42vh
+
   .group-rule-img-box
     height: 192px
     display: flex
@@ -1262,10 +1291,10 @@
       width: 218px
       height: 192px
 
-    /*分享赚钱*/
+  /*分享赚钱*/
 
   .ro-share-coupon
-    padding :15px 12px
+    padding: 15px 12px
     .coupon
       margin: 0
 </style>
