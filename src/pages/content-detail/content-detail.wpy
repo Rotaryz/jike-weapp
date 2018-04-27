@@ -222,6 +222,7 @@
 
     async _getContentDetail() {
       const json = await ContentsApi.getContentDetail(this.id)
+      this._isDel(json)
       if (json.error === ERR_OK) {
         const data = json.data
         wepy.setNavigationBarTitle({title: data.title})

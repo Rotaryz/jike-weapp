@@ -221,7 +221,6 @@
     methods = {
       // 点击优惠券事件(根据需求读取不同数据再进行下一步操作)
       buyCouponClick(type, coupon) {
-        console.log(type)
         switch (type) {
           case 'buy':
             if (coupon.promotion.promotion_type === 'voucher' || coupon.promotion.promotion_type === 'cash') {

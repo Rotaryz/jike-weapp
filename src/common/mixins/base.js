@@ -99,6 +99,17 @@ export default class base extends wepy.mixin {
         break
     }
   }
+  //    检查是否过期或者删除
+  _isDel(res) {
+    let url = ''
+    if (res.goods_status === 0 || res.activity_status === 0) {
+      url = `/pages/sold-out/sold-out?appId=${res.app_id}&businessCircleId=${res.business_circle_id}&status=1`
+      wepy.redirectTo({url: url})
+    } else if (res.code === 10003) {
+      url = `/pages/sold-out/sold-out?appId=${res.app_id}&businessCircleId=${res.business_circle_id}$status=2`
+      wepy.redirectTo({url: url})
+    }
+  }
 
   methods = {
     nopen() {

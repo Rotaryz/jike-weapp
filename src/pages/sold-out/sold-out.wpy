@@ -29,7 +29,11 @@
     }
 
     onLoad(option) {
-      this.content = option.content || this.content
+      let status = option.status ? option.status * 1 : -1
+      this.content = status === 1 ? '该页面已过期/已下架' : status === 0 ? '该页面已丢失' : this.content
+      this.image = status === 1 ? `${URIS.image}/defaults/c-image/share/icon-soldout@2x.png` : status === 0 ? `${URIS.image}/defaults/c-image/share/icon-lose@2x.png` : this.image
+      this.shop = status === 1 || status === 0
+      console.log(this.shop)
       this.appId = option.appId || ''
       this.businessCircleId = option.businessCircleId || ''
     }
@@ -58,7 +62,9 @@
   .sold-out
     height: 100vh
     width: 100vw
+    overflow :hidden
     display: flex
+    box-sizing :border-box
     flex-direction: column
     align-items: center
     background: $color-white

@@ -1,6 +1,6 @@
 <template>
   <view class="myRedPacket">
-    <view class="ro-my-red-packet">
+    <view class="ro-my-red-packet {{industry}}-bg">
       <view class="ro-my-red-packet-text">总金额(元)</view>
       <view class="ro-my-red-packet-content">
         <view class="ro-my-red-packet-money">{{packetTotalMoney}}</view>
@@ -10,7 +10,7 @@
     </view>
     <!--切换-->
     <view class="ro-my-check">
-      <view class="ro-my-check-item {{checkIdx === index ? 'ro-my-check-item-active' : ''}}" wx:for="{{checkNav}}" wx:key="{{index}}" @tap="checkNav({{index}})">{{item}}</view>
+      <view class="ro-my-check-item {{checkIdx === index ? industry + '-border' : ''}}" wx:for="{{checkNav}}" wx:key="{{index}}" @tap="checkNav({{index}})">{{item}}</view>
     </view>
     <view class="myRedPacket-top" wx:if="{{checkIdx === 0}}">
       <view class="myRedPacket-pandect">
@@ -101,7 +101,7 @@
       Toast,
       Underline
     }
-//    wx.setNavigationBarColor(OBJECT)导航条颜色
+
     data = {
       checkIdx: 0,
       checkNav: ['活动红包', '分享赚钱'],
@@ -175,6 +175,16 @@
       }
     }
     async onLoad() {
+      await this.showIndustry()
+      console.log({backgroundColor: this.industryColor})
+      wx.setNavigationBarColor({
+        backgroundColor: this.industryColor,
+        frontColor: '#ffffff',
+        animation: {
+          duration: 400,
+          timingFunc: 'easeIn'
+        }
+      }) // 导航条颜色
       await Promise.all([
         this.showIndustry(),
         this._getTotalRedpacket(),
@@ -430,13 +440,6 @@
       position: relative
       height: 100%
       line-height: 49px
-      &:before
-        content : ''
-        position: absolute
-        left: 13px
-        bottom: 0px
-        height: 2px
-        width: 30px
     .ro-my-check-item-active
       &:before
         background :$color-theme

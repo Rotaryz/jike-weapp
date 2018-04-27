@@ -144,6 +144,7 @@
 //      详情
       let resDetail = await shareMoney.shareDetail(id)
       this.shareDetail = this.infoRes(resDetail)
+      this._isDel(resDetail)
       this.promotionImages = this.shareDetail ? this.shareDetail.promotion_images : {}
       this.detail = {
         title: this.shareDetail.title, // 标题
