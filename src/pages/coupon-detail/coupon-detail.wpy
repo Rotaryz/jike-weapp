@@ -351,13 +351,15 @@
       this.currentMerchant = this.currentMerchant || wepy.getStorageSync('merchantId')
       this.currentPage = `/pages/coupon-detail/coupon-detail?type=${this.type}&id=${this.id}&merchantId=${this.currentMerchant}`
 //      console.log(this.type)
-      if (this.type === COUPON_TYPE && !this.activityStatus) {
-        await this._getCouponDetail()
-        if (this.activityStatus === 'group' && this.goodsStatus !== 3) {
+      if (this.type === COUPON_TYPE) {
+        if (this.activityStatus === 'group') {
+          await this._getCouponDetail()
           await this._getGroupDetail()
+        } else if (this.activityStatus === 'share') {
+          await this._getShareMoney()
+        } else {
+          await this._getCouponDetail()
         }
-      } else if (this.activityStatus === 'share') {
-        await this._getShareMoney()
       } else if (this.type === PACKAGE_TYPE) {
         await this._getPackageDetail()
       }
@@ -503,9 +505,11 @@
 
     async _getGroupDetail() {
       const resData = await GroupApi.getGroupDetail(this.groupId)
-      if (resData.error !== ERR_OK || !resData.activity_status) {
+      if (resData.error !== ERR_OK) {
+        this.loaded()
         return
       }
+      this.activitiesStatus = resData.activity_status
       let res = resData.data
       wepy.setNavigationBarTitle({title: res.promotion_name})
       this.personList = res.earn_lists
