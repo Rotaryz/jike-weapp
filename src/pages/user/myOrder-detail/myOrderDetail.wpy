@@ -1,15 +1,15 @@
 <template>
   <view class="orderDetail">
-    <view class="orderDetail-head" wx:if="{{orderMsg.promotion_type * 1 === 1 || orderMsg.promotion_type * 1 === 2 || (orderMsg.promotion_type * 1 === 4 && orderMsg.status * 1 === 0)}}">
+    <view class="orderDetail-head" wx:if="{{orderMsg.promotion_type * 1 === 1 || orderMsg.promotion_type * 1 === 2 || (orderMsg.promotion_type * 1 === 4 && (orderMsg.status * 1 === 0 || orderMsg.status * 1 === 6))}}">
       <view class="orderDetail-head-detailBox" @tap="couponDetail">
         <view class="orderDetail-head-left">
           <view class="orderDetail-head-img-box">
             <image src="{{orderMsg.promotion_type == 1 || 4? orderMsg.promotion.promotion_images[0].image.url : orderMsg.promotion.gift_bag_images[0].image.url}}" mode="widthFix" class="orderDetail-head-img"></image>
           </view>
           <view class="orderDetail-head-msg">
-            <view class="orderDetail-head-msg-title">{{orderMsg.promotion.title}}</view>
+            <view class="orderDetail-head-msg-title">{{orderMsg.title}}</view>
             <view class="orderDetail-head-msg-content">{{orderMsg.promotion.subhead}}</view>
-            <view class="orderDetail-head-msg-pay">¥<text class="orderDetail-head-msg-payMoney">{{orderMsg.price}}</text></view>
+            <view class="orderDetail-head-msg-pay">¥<text class="orderDetail-head-msg-payMoney">{{orderMsg.promotion_type * 1 === 4 ? orderMsg.group_single_price : orderMsg.price}}</text></view>
           </view>
         </view>
 
@@ -28,7 +28,7 @@
       <view class="pay-txt">支付成功</view>
     </view>
 
-    <view class="group-buy-detail" wx:if="{{orderMsg.promotion_type * 1 === 4 && orderMsg.status * 1 !== 0}}">
+    <view class="group-buy-detail" wx:if="{{orderMsg.promotion_type * 1 === 4 && orderMsg.status * 1 !== 0 && orderMsg.status * 1 !== 6}}">
       <view class="group-detail-head">
         <view class="group-avatar-box">
           <image class="avatar-img" src="{{orderMsg.group_user_img}}" mode="aspectFill"></image>
@@ -223,7 +223,8 @@
       groupStatusTxt: GROUPSTATUSTXT,
       groupEndTime: '',
       endTime: '',
-      timer: ''
+      timer: '',
+      timeEnd: false
     }
 
     async onLoad(option) {
@@ -285,6 +286,9 @@
       this.timer = setInterval(() => {
         let res = this._groupTimeCheckout(this.endTime)
         this.groupEndTime = `${res.hour}:${res.minute}:${res.second}`
+        if (this.timeEnd) {
+          clearInterval(this.timer)
+        }
         this.$apply()
       }, 1000)
     }
@@ -315,6 +319,8 @@
           minute: '00',
           second: '00'
         }
+        this.timeEnd = true
+        this.$apply()
       }
       return times
     }
@@ -370,7 +376,12 @@
             } else if (this.orderMsg.promotion_type * 1 === 2) {
               couponType = 2
             }
-            this.$navigate('/pages/coupon-detail/coupon-detail?id=' + this.orderMsg.promotion_id + '&type=' + couponType + '&currentMerchant=' + merchantId)
+            if (this.orderMsg.promotion_type * 1 === 4) {
+              let groupId = this.orderMsg.group_activity_id
+              this.$navigate('/pages/coupon-detail/coupon-detail?status=group&id=' + this.orderMsg.promotion_id + '&type=' + couponType + '&currentMerchant=' + merchantId + '&groupId=' + groupId)
+            } else {
+              this.$navigate('/pages/coupon-detail/coupon-detail?id=' + this.orderMsg.promotion_id + '&type=' + couponType + '&currentMerchant=' + merchantId)
+            }
             break
         }
       },
@@ -388,7 +399,12 @@
         } else if (this.orderMsg.promotion_type * 1 === 2) {
           couponType = 2
         }
-        this.$navigate('/pages/coupon-detail/coupon-detail?id=' + id + '&type=' + couponType + '&currentMerchant=' + merchantId)
+        if (this.orderMsg.promotion_type * 1 === 4) {
+          let groupId = this.orderMsg.group_activity_id
+          this.$navigate('/pages/coupon-detail/coupon-detail?status=group&id=' + id + '&type=' + couponType + '&currentMerchant=' + merchantId + '&groupId=' + groupId)
+        } else {
+          this.$navigate('/pages/coupon-detail/coupon-detail?id=' + id + '&type=' + couponType + '&currentMerchant=' + merchantId)
+        }
       },
       serviceValChange(e) {
         this.refundChecked = e.detail.value

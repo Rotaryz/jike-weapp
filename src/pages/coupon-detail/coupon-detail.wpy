@@ -17,7 +17,7 @@
         </block>
       </slider>
 
-      <view class="group-person-box" wx:if="{{activityStatus === 'group'}}">
+      <view class="group-person-box" wx:if="{{activityStatus === 'group' || personList.length}}">
         <swiper class="group-person-list" autoplay circular vertical="{{true}}">
           <block wx:for="{{personList}}" wx:key="{{index}}">
             <swiper-item class="group-person-item">
@@ -619,6 +619,7 @@
 
     submit(status) {
       wepy.pageScrollTo({scrollTop: 0})
+      console.log(this.currentMerchant)
       if (status === 'group') {
         this.orderInfo = {
           promotionImage: this.promotionImages[0].image.url,
