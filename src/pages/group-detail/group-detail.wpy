@@ -124,7 +124,8 @@
       promotionImages: [],
       activityStatus: 'group',
       orderInfo: {},
-      timer: ''
+      timer: '',
+      timeEnd: false
     }
 
     onShareAppMessage(res) {
@@ -204,6 +205,9 @@
       this.$apply()
       this.timer = setInterval(() => {
         this.groupEndTime = this._groupTimeCheckout(this.endTime)
+        if (this.timeEnd) {
+          clearInterval(this.timer)
+        }
         this.$apply()
       }, 1000)
     }
@@ -234,6 +238,8 @@
           minute: '00',
           second: '00'
         }
+        this.timeEnd = true
+        this.$apply()
       }
       return times
     }
