@@ -446,6 +446,8 @@
               height: 64px
 
           .myOrder-orderList-item-msg
+            flex: 1
+            overflow: hidden
             display: flex
             flex-direction: column
             justify-content: space-between
@@ -455,6 +457,10 @@
               color: $color-text
               line-height: 20px
               margin-bottom: 11px
+              width: 100%
+              overflow: hidden
+              text-overflow: ellipsis
+              white-space: nowrap
 
             .myOrder-orderList-item-detail
               font-size: $font-size-small
