@@ -36,16 +36,7 @@
 
     <view class="group-time-run" wx:if="{{activityStatus === 'group'}}">
       <view class="group-time-left">{{groupBuyDetail.group_number}}人团</view>
-      <view class="group-time-right">距离活动结束还剩:
-        <text class="day-txt">{{groupEndTime.day}}</text>
-        天
-        <text class="time-txt">{{groupEndTime.hour}}</text>
-        时
-        <text class="time-txt">{{groupEndTime.minute}}</text>
-        分
-        <text class="time-txt">{{groupEndTime.second}}</text>
-        秒
-      </view>
+      <view class="group-time-right">距离活动结束还剩:<text class="day-txt">{{groupEndTime.day}}</text>天<text class="time-txt">{{groupEndTime.hour}}</text>时<text class="time-txt">{{groupEndTime.minute}}</text>分<text class="time-txt">{{groupEndTime.second}}</text>秒</view>
     </view>
 
     <view class="desc-wrapper">
@@ -59,8 +50,7 @@
           </view>
           <view class="origin-price" wx:if="{{services.length > 0}}">门市价:¥{{coupon.shop_price !== undefined ? coupon.shop_price : ''}}</view>
           <view class="buy-number">
-            <image class="icon" wx:if="{{imageUri}}"
-                   src="{{imageUri + '/defaults/c-image/recommend/icon-many.png'}}"></image>
+            <image class="icon" wx:if="{{imageUri}}" src="{{imageUri + '/defaults/c-image/recommend/icon-many.png'}}"></image>
             <text class="font">{{coupon.collected !== undefined ? coupon.collected : ''}}人已购买</text>
           </view>
         </view>
@@ -80,10 +70,8 @@
       </view>
       <view class="share-wrapper">
         <view class="share-btn" @tap="showShareModal">
-          <image src="{{imageUri + '/defaults/c-image/recommend/pic-r_share5@2x.png'}}" class="share-img"
-                 wx:if="{{imageUri && !coupon.activity_share}}"></image>
-          <image src="{{imageUri + '/defaults/c-image/recommend/pic-r_share4@2x.png'}}" class="share-img"
-                 wx:if="{{imageUri && coupon.activity_share}}"></image>
+          <image src="{{imageUri + '/defaults/c-image/recommend/pic-r_share5@2x.png'}}" class="share-img" wx:if="{{imageUri && !coupon.activity_share}}"></image>
+          <image src="{{imageUri + '/defaults/c-image/recommend/pic-r_share4@2x.png'}}" class="share-img" wx:if="{{imageUri && coupon.activity_share}}"></image>
           <view class="share-txt" wx:if="{{coupon.activity_share}}">分享有礼</view>
         </view>
       </view>
@@ -103,10 +91,7 @@
               </view>
               <view class="group-swiper-item-right">
                 <view class="group-swiper-time">
-                  <view class="group-swiper-txt">还差
-                    <text class="red-num">{{item.remaining_number}}人</text>
-                    拼成
-                  </view>
+                  <view class="group-swiper-txt">还差<text class="red-num">{{item.remaining_number}}人</text>拼成</view>
                   <view class="group-swiper-time-txt">剩余{{item.endTime}}</view>
                 </view>
                 <view class="group-swiper-item-btn" @tap="joinGroupBuy({{item}})">去参团</view>
@@ -162,9 +147,9 @@
           客服
         </button>
       </view>
-      <view class="buy-btn {{stock === 0 || goodsStatus !== 1 ? 'disable' : ''}}" @tap="postOrder" wx:if="{{activityStatus === 'group'}}">{{ goodsStatus === 0 ? '该商品已下架' : goodsStatus === 1 ? '单买' : goodsStatus === 2  ? '已售罄' : '立即购买'}}</view>
+      <view class="buy-btn {{stock === 0 || goodsStatus !== 1 ? 'disable' : ''}}" @tap="postOrder" wx:if="{{activityStatus === 'group'}}">{{ goodsStatus === 0 ? '该商品已下架' : goodsStatus === 1 ? '¥' + coupon.platform_price + '单买' : goodsStatus === 2  ? '已售罄' : '立即购买'}}</view>
       <view class="buy-btn {{stock === 0 || goodsStatus !== 1 || activitiesStatus !== 1 ? 'disable' : industry + '-bg'}}" @tap="postOrder" wx:if="{{activityStatus !== 'group'}}">{{ goodsStatus === 0 || activitiesStatus === 0 ? '该商品已下架' : goodsStatus === 1 || activitiesStatus === 1 ? '立即购买' : goodsStatus === 2 || activitiesStatus === 2 ? '已售罄' : '立即购买'}}</view>
-      <view class="group-buy-btn {{stock === 0 || activitiesStatus !== 1 ? 'disable' : industry + '-bg'}}" @tap="postGroupOrder" wx:if="{{activityStatus === 'group'}}">{{ activitiesStatus === 0 ? '该商品已下架' : activitiesStatus === 1 ? '¥'+groupBuyDetail.group_price + (groupType === 'join' ? '参团' : '开团') : activitiesStatus === 2 ? '已售罄' : '立即购买'}}</view>
+      <view class="group-buy-btn {{stock === 0 || activitiesStatus !== 1 ? 'disable' : industry + '-bg'}}" @tap="postGroupOrder" wx:if="{{activityStatus === 'group'}}">{{ activitiesStatus === 0 ? '该商品已下架' : activitiesStatus === 1 ? '¥' + groupBuyDetail.group_price + (groupType === 'join' ? '参团' : '开团') : activitiesStatus === 2 ? '已售罄' : '立即购买'}}</view>
     </view>
     <phone-test @isPhoneOk.user="getSymbol" :industry.sync="industry"></phone-test>
     <share :qrcode.sync="qrcode" :detail.sync="coupon" :promotionImages.sync="promotionImages"
@@ -627,6 +612,7 @@
       wepy.pageScrollTo({scrollTop: 0})
       console.log(this.currentMerchant)
       if (status === 'group') {
+        console.log(999)
         this.orderInfo = {
           promotionImage: this.promotionImages[0].image.url,
           promotion_type: 4, // 4为团购
@@ -719,7 +705,7 @@
           this.$invoke('phone-test', 'show', '')
           return
         }
-        this.submit(this.activityStatus)
+        this.submit('')
       },
       async postGroupOrder() {
         if (!this.groupBuyDetail.can_open_group && this.groupType === 'open') {
@@ -763,6 +749,7 @@
         this.$navigate('/pages/group-detail/group-detail?id=' + item.id)
       }
     }
+
     events = {
       async shareBuy(coupon) {
         console.log(coupon)
@@ -786,11 +773,7 @@
         this.$navigate('/pages/group-detail/group-detail?id=' + id)
       }
     }
-    computed = {
-      personBoxHeight() {
-        return this.personList.length * 26
-      }
-    }
+
     components = {
       'phone-test': PhoneTest,
       'service-detail': ServiceDetail,
