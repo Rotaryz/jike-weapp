@@ -492,7 +492,8 @@
         this.loaded()
         return
       }
-      this.activitiesStatus = resData.activity_status !== undefined ? resData.goods_status : 1
+      console.log(resData)
+      this.activitiesStatus = resData.activity_status !== undefined ? resData.activity_status : 1
       let res = resData.data
       wepy.setNavigationBarTitle({title: res.promotion_name})
       this.personList = res.earn_lists
@@ -704,6 +705,9 @@
         this.submit('')
       },
       async postGroupOrder() {
+        if (this.goodsStatus !== 1 || this.activitiesStatus !== 1) {
+          return
+        }
         if (!this.groupBuyDetail.can_open_group && this.groupType === 'open') {
           this.$invoke('toast', 'show', '开团数已达上限')
           return
@@ -751,7 +755,7 @@
         console.log(coupon)
         if (this.getShareCoupon) {
           this.getShareCoupon = false
-          let data = {is_share_money: 1, act_id: this.actId}
+          let data = {is_share_money: 1, act_id: this.actId, share_customer_id: this.fromCustomerId}
           let res = await order.getCoupon(coupon.id, data)
           this.loaded()
           if (res.error === ERR_OK) {
