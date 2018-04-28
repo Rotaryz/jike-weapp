@@ -35,7 +35,7 @@
         </view>
         <view class="group-msg">
           <view class="group-title">{{groupStatusTxt[orderMsg.group_status]}}</view>
-          <view class="group-msg-time"><text class="group-msg-first">剩余时间：</text><text class="group-red-time time-down">{{groupEndTime}}</text></view>
+          <view class="group-msg-time"><text class="group-msg-first">剩余时间：</text><text class="group-red-time {{timeEnd ? '' : 'time-down'}}">{{groupEndTime}}</text></view>
         </view>
       </view>
       <view class="group-detail-progress">
@@ -473,6 +473,7 @@
         height: 64.5px
 
         .orderDetail-head-left
+          width: 100%
           display: flex
 
           .orderDetail-head-img-box
@@ -487,10 +488,15 @@
               width: 120px
 
           .orderDetail-head-msg
-
+            flex: 1
+            overflow: hidden
             .orderDetail-head-msg-title
+              width: 100%
               line-height: 20px
               font-size: $font-size-medium
+              overflow: hidden
+              text-overflow: ellipsis
+              white-space: nowrap
 
             .orderDetail-head-msg-content
               line-height: 17px
