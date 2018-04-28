@@ -60,8 +60,8 @@
         <view class="group-limit">{{groupBuyDetail.buy_number}}人已购买</view>
         <view class="group-money-box">
           <view class="group-icon-box">
-            <image class="group-icon" wx:if="{{imageUri}}" src="{{imageUri + '/defaults/c-image/mine/icon-group_p@2x.png'}}"></image>
-            <view class="group-icon-txt">团购价</view>
+            <image class="group-icon" wx:if="{{imageUri}}" src="{{imageUri + '/defaults/c-image/template/pic-price_'+industry+'@2x.png'}}"></image>
+            <view class="group-icon-txt {{industry}}-text">团购价</view>
           </view>
           <view class="small-money">¥</view>
           <view class="big-money">{{groupBuyDetail.group_price}}</view>
@@ -78,7 +78,7 @@
     </view>
 
     <view class="group-list-box" wx:if="{{activityStatus === 'group' && groupType !== 'join'}}">
-      <view class="group-list-head">小伙伴在开团，可直接参加</view>
+      <view class="group-list-head line-{{industry}}">小伙伴在开团，可直接参加</view>
       <swiper class="group-list-container" autoplay circular vertical="{{true}}" interval="4000" wx:if="{{groupBuyList.length}}">
         <block wx:for="{{groupBuyList}}" wx:key="{{index}}">
           <swiper-item class="group-list-swiper">
@@ -91,10 +91,10 @@
               </view>
               <view class="group-swiper-item-right">
                 <view class="group-swiper-time">
-                  <view class="group-swiper-txt">还差<text class="red-num">{{item.remaining_number}}人</text>拼成</view>
+                  <view class="group-swiper-txt">还差<text class="red-num {{industry}}-text">{{item.remaining_number}}人</text>拼成</view>
                   <view class="group-swiper-time-txt">剩余{{item.endTime}}</view>
                 </view>
-                <view class="group-swiper-item-btn" @tap="joinGroupBuy({{item}})">去参团</view>
+                <view class="group-swiper-item-btn {{industry}}-bg" @tap="joinGroupBuy({{item}})">去参团</view>
               </view>
             </view>
           </swiper-item>
@@ -369,8 +369,8 @@
         return
       }
       const data = res.data
-      this.goodsStatus = res.goods_status
-      this.activitiesStatus = res.activity_status
+      this.goodsStatus = res.goods_status !== undefined ? res.goods_status : 1
+      this.activitiesStatus = res.activity_status !== undefined ? res.goods_status : 1
       console.log()
 //      console.log(data)
       wepy.setNavigationBarTitle({title: data.title})
@@ -468,7 +468,7 @@
       this._isDel(res)
       if (res.error === ERR_OK) {
         const data = res.data
-        this.goodsStatus = res.goods_status
+        this.goodsStatus = res.goods_status !== undefined ? res.goods_status : 1
         if (this.activityStatus !== 'group') {
           wepy.setNavigationBarTitle({title: data.title})
         }
@@ -492,7 +492,7 @@
         this.loaded()
         return
       }
-      this.activitiesStatus = resData.activity_status
+      this.activitiesStatus = resData.activity_status !== undefined ? resData.goods_status : 1
       let res = resData.data
       wepy.setNavigationBarTitle({title: res.promotion_name})
       this.personList = res.earn_lists
@@ -525,7 +525,7 @@
       this._isDel(res)
       if (res.error === ERR_OK) {
         const data = res.data
-        this.goodsStatus = res.goods_status || 1
+        this.goodsStatus = res.goods_status !== undefined ? res.goods_status : 1
         wepy.setNavigationBarTitle({title: data.title})
         this.coupon = data
         this.stock = data.stock
@@ -986,13 +986,13 @@
           .small-money
             font-family: PingFangSC-Regular
             font-size: $font-size-small
-            color: $color-orange
+            color: $color-pay
             margin-bottom: 2px
             margin-right: 1px
           .big-money
             font-family: PingFangSC-Medium
             font-size: $font-size-large-xx
-            color: $color-orange
+            color: $color-pay
             margin-right: 15px
           .gray-money
             font-size: $font-size-small-s
@@ -1014,11 +1014,11 @@
       margin-bottom: 10px
       background: $color-white
       padding-left: 12px
+      padding-top: 13px
       .group-list-head
-        height: 39px
-        padding-right: 12px
+        padding:0 12px 13px 0
+        box-sizing :border-box
         border-bottom: 0.5px solid $color-col-line
-        line-height: 39px
         font-size: $font-size-medium
         color: #6E697F
         text-indent: 7px
@@ -1028,11 +1028,10 @@
           width: 2px
           height: 14px
           position: absolute
-          top: 50%
+          top: 0
           left: 0
           background: $color-orange
           display: block
-          transform: translate(0, -50%)
       .group-nothing
         height: 109px
         line-height: 109px

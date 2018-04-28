@@ -16,7 +16,7 @@
       <input type="number" placeholder="输入银行卡号" maxlength="23" value="{{cardNum}}" class="ro-bank-content" placeholder-class="ro-bank-content-place" @input="getCardNum"/>
     </view>
     <view class="ro-bank-card-btn-box">
-      <view class="ro-bank-card-btn {{submit ? '' : 'ro-bank-card-disable'}}" @tap="setBank">确定</view>
+      <view class="ro-bank-card-btn {{industry}}-bg {{submit ? '' : 'ro-bank-card-disable'}}" @tap="setBank">确定</view>
     </view>
   </view>
   <Toast></Toast>
@@ -66,6 +66,7 @@
       }
     }
     async onLoad() {
+      await this.showIndustry()
       await this._getBankCardDetail()
       await this._banksList()
     }

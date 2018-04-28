@@ -608,7 +608,7 @@
               display: flex
               align-items: flex-end
               font-family: PingFangSC-Semibold
-              color: $color-orange
+              color :$color-pay
               margin: 1.8vw 0
               overflow: hidden
               .small-money
@@ -616,6 +616,7 @@
                 margin-right: 3px
                 margin-bottom: 2px
               .big-money
+                font-family :PingFangSC-Semibold
                 font-size: $font-size-large
               .del-money
                 font-family: PingFangSC-Light

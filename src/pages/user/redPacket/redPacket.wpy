@@ -374,7 +374,7 @@
             font-size: $font-size-small
 
             .myRedPacket-list-item-num-money
-              color: $color-theme
+              color: $color-pay
 
       .myRedPacket-noList
         height: 152px

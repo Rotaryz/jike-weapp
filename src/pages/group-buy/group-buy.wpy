@@ -17,8 +17,8 @@
               </view>
             </view>
             <view class="item-right-down">
-              <text class="sale-count">已团{{item.purchase_count}}件</text>
-              <view class="item-right-btn">去开团</view>
+              <text class="sale-count {{industry + '-opacity'}}">已团{{item.purchase_count}}件</text>
+              <view class="item-right-btn {{industry + '-bg'}}">去开团</view>
             </view>
           </view>
         </view>
@@ -54,6 +54,10 @@
       groupBuyList: [],
       page: 1,
       noMore: false
+    }
+
+    async onShow() {
+      await this.showIndustry()
     }
 
     async onLoad() {
@@ -178,12 +182,12 @@
               .small-money
                 font-family: PingFang-SC-Regular
                 font-size: $font-size-small
-                color: $color-orange
+                color: $color-pay
                 margin-bottom: 2px
               .big-money
                 font-family: PingFangSC-Semibold
                 font-size: $font-size-large-xx
-                color: $color-orange
+                color: $color-pay
                 margin-left: 1px
                 margin-right: 5px
               .del-money

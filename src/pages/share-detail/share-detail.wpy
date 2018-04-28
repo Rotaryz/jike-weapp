@@ -30,7 +30,7 @@
       <view class="ro-share-name">{{shareDetail.title}}</view>
       <view class="ro-share-content-buy">{{shareDetail.sales_volume}}人已购买</view>
       <view class="ro-share-content-price">
-        <image class="ro-share-content-tip" wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/c-image/share/pic-price@2x.png'}}"><text class="ro-share-content-tip-text">券后价</text></image>
+        <image class="ro-share-content-tip" wx:if="{{imageUrl && industry}}" src="{{imageUrl + '/defaults/c-image/template/pic-price_'+industry+'@2x.png'}}"><text class="ro-share-content-tip-text {{industry}}-text">券后价</text></image>
         <view class="ro-share-content-end">¥<view class="ro-share-content-money">{{shareDetail.after_price}}</view>
         </view>
         <view class="ro-share-content-now">现价:￥{{shareDetail.price}}</view>
@@ -62,20 +62,22 @@
         <share-item :shareCoupon.sync="item" :industry.sync="industry"></share-item>
       </repeat>
     </view>
-    <view class="ro-get-share" @tap="shares">立即分享</view>
+    <view class="ro-get-share {{industry}}-bg {{goodsStatus !== 1 || activitiesStatus !== 1 ? 'disable' : ''}}" @tap="shares">{{ goodsStatus === 0 || activitiesStatus === 0 ? '该商品已下架' : goodsStatus === 1 || activitiesStatus === 1 ? '立即分享' : goodsStatus === 2 || activitiesStatus === 2 ? '已售罄' : '立即分享'}}</view>
   </view>
   <toast></toast>
   <rule>
-    <view class="ro-rule-content">
-      <view class="ro-rule-text">推广者 </view>
-      <image class="ro-rule-img" wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/c-image/share/pic-rule_tgz@2x.png'}}"></image>
-      <view class="ro-rule-tip">佣金计算规则：成交价格*佣金比率</view>
-    </view>
-    <view class="ro-rule-content">
-      <view class="ro-rule-text">被推广者</view>
-      <image class="ro-rule-img" wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/c-image/share/pic-rule_btgz@2x.png'}}"></image>
-      <view class="ro-rule-tip">抵用券：仅限该商品和业务使用</view>
-    </view>
+    <block slot="content">
+      <view class="ro-rule-content">
+        <view class="ro-rule-text">推广者 </view>
+        <image class="ro-rule-img" mode="widthFix" wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/c-image/share/pic-rule_tgz@2x.png'}}"></image>
+        <view class="ro-rule-tip">佣金计算规则：成交价格*佣金比率</view>
+      </view>
+      <view class="ro-rule-content">
+        <view class="ro-rule-text">被推广者</view>
+        <image class="ro-rule-img" mode="widthFix" wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/c-image/share/pic-rule_btgz@2x.png'}}"></image>
+        <view class="ro-rule-tip ro-rule-none">抵用券：仅限该商品和业务使用</view>
+      </view>
+    </block>
   </rule>
   <share :qrcode.sync="qrcode" :detail.sync="detail" :promotionImages.sync="promotionImages"></share>
 </template>
@@ -111,15 +113,20 @@
       shareList: [],
       shareDetail: {},
       shareNotice: [],
-      detail: {}
+      detail: {},
+      goodsStatus: 1, // 商品状态
+      activitiesStatus: 1 // 活动状态
     }
 
     async onLoad(option) {
-      await this.showIndustry()
       let id = option.id || 0
       await this._load(id)
       await this._createQrcode()
       this.$apply()
+    }
+
+    async onShow() {
+      await this.showIndustry()
     }
 //    分享
     onShareAppMessage(res) {
@@ -145,6 +152,8 @@
       let resDetail = await shareMoney.shareDetail(id)
       this.shareDetail = this.infoRes(resDetail)
       this._isDel(resDetail)
+      this.goodsStatus = resDetail.goods_status !== undefined ? resDetail.goods_status : 1
+      this.activitiesStatus = resDetail.activity_status !== undefined ? resDetail.goods_status : 1
       this.promotionImages = this.shareDetail ? this.shareDetail.promotion_images : {}
       this.detail = {
         title: this.shareDetail.title, // 标题
@@ -201,7 +210,7 @@
       },
       getRule() {
         this.scroll = false
-        this.$invoke('rule', 'shoeRule')
+        this.$invoke('rule', 'showRule')
       }
     }
 
@@ -284,14 +293,13 @@
       .ro-share-content-end
         display:flex
         align-items :flex-end
-        color: $color-theme
+        color: $color-pay
         font-size: $font-size-small
         .ro-share-content-money
           line-height: 1
-          color: $color-theme
+          color: $color-pay
           font-family: $font-family-meddle
           font-size: $font-size-large
-          transform :translateY(2px)
       .ro-share-content-now
         font-size :$font-size-small-s
         color :$color-text
@@ -393,10 +401,11 @@
     background :$color-pay
     line-height: 44px
     z-index: 1500
+  .disable
+    opacity: .2
 
   .ro-rule-content
     margin-top: 12px
-    padding :0 9.5px 19.75px
     border-bottom 0.5px dashed $color-col-line
     &:last-child
       border-bottom :none
@@ -407,14 +416,15 @@
     .ro-rule-img
       margin-top: 10px
       width: 192.5px
-      height: 47px
-      margin-left: 47px
+      margin-left: 16px
     .ro-rule-tip
-      margin-top: 15px
+      margin: 15px 0 19.5px
       font-size :$font-size-small
       font-family :$font-family-light
       text-align :center
       color :$color-text-d
+    .ro-rule-none
+      margin-bottom: 0px
 
 
   .ro-share-peo-cover
