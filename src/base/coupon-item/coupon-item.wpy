@@ -100,9 +100,9 @@
           </view>
         </view>
         <view class="coupon-right">
-          <image class="right-img" wx:if="{{imageUrlHead && coupon.deduction_status === 0 && coupon.checked}}" src="{{imageUrlHead + '/defaults/c-image/template/icon-select_'+industry+'@2x.png'}}"></image>
-          <image class="right-img" wx:if="{{imageUrlHead && coupon.deduction_status === 0 && !coupon.checked}}" src="{{imageUrlHead + '/defaults/c-image/pay/icon-notselect_syyh@2x.png'}}"></image>
-          <image class="right-img" wx:if="{{imageUrlHead && coupon.deduction_status !== 0}}" src="{{imageUrlHead + '/defaults/c-image/pay/icon-notselect@2x.png'}}"></image>
+          <image class="right-img" wx:if="{{imageUrlHead && coupon.status === 0 && coupon.checked}}" src="{{imageUrlHead + '/defaults/c-image/template/icon-select_'+industry+'@2x.png'}}"></image>
+          <image class="right-img" wx:if="{{imageUrlHead && coupon.status === 0 && !coupon.checked}}" src="{{imageUrlHead + '/defaults/c-image/pay/icon-notselect_syyh@2x.png'}}"></image>
+          <image class="right-img" wx:if="{{imageUrlHead && coupon.status !== 0}}" src="{{imageUrlHead + '/defaults/c-image/pay/icon-notselect@2x.png'}}"></image>
         </view>
       </view>
       <!--我的-->

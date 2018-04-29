@@ -216,10 +216,12 @@
             this._hide()
           },
           fail: (res) => {
-            if (res.errMsg === 'requestPayment:fail cancel' && this.activityStatus === 'share') {
-              this.userCoupon = ''
-              this.$apply()
+            if (this.status === 'share') {
+              this.orderInfo.deduction_id = 0
             }
+//              单成功生成订单时需要锁定优惠券
+            this.$emit('failPay')
+
 //            const orderId = res.order_id
 //            const total = this.total
 //            const status = 'fail'

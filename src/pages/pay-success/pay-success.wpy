@@ -39,12 +39,10 @@
     async onLoad() {
       await this.showIndustry()
       let id = wepy.getStorageSync('merchantId')
-      console.log(id)
       let res = await merchants.getCoupons(id)
       if (res.error === ERR_OK) {
         this.loaded()
         this.buyList = res.data
-        console.log(this.buyList)
       }
     }
 

@@ -126,7 +126,6 @@
       checkNav(index) {
         this.checkIdx = index * 1
         this._isNone()
-        console.log(this.shareTop)
       },
       getShareTop(e) {
         this.shareTop = e.detail.scrollLeft * 1
@@ -141,7 +140,6 @@
         switch (this.checkIdx) {
           case 0:
             this.page++
-            console.log(5545)
             if (!this.redNothing) {
               let res = await this._getRedPacketList(this.page)
               this.packetList.push(...res)
@@ -176,7 +174,6 @@
     }
     async onLoad() {
       await this.showIndustry()
-      console.log({backgroundColor: this.industryColor})
       wx.setNavigationBarColor({
         backgroundColor: this.industryColor,
         frontColor: '#ffffff',
@@ -198,7 +195,6 @@
     }
 //    判断是否有数据
     async _isNone() {
-      console.log(this.checkIdx)
       switch (this.checkIdx) {
         case 0:
           this.showNone = !this.packetList.length

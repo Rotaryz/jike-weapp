@@ -167,9 +167,9 @@
         this.$navigate('/pages/coupon-particulars/coupon-particulars?id=' + id)
       },
       showQrcord(item) {
-//        `/pages/coupon-detail/coupon-detail?actId=${atcId}&type=1&merchantId=${item.merchant_id}&fromCustomerId=${fromCustomerId}&id=${promotionId}&status=share&isShowCoupon=1`
         if (item.promotion.promotion_type === 'deduction') {
-          console.log(item)
+          console.log(item.id)
+          this.$navigate(`/pages/coupon-detail/coupon-detail?actId=${item.promotion.act_id}&type=1&merchantId=${item.merchant_id}&fromCustomerId=${item.promotion.share_customer_id}&id=${item.promotion.promotion_id}&status=share&isShowCoupon=1`)
           return
         }
         let type = item.promotion.promotion_type

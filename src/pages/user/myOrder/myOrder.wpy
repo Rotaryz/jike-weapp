@@ -215,7 +215,6 @@
             break
           case 2:
             this.$invoke('Appraise', 'showCover')
-            console.log(item)
             this.$broadcast('sendCouponMsg', item.id, item.promotion.id)
             break
           default:
@@ -263,7 +262,6 @@
     }
 
     async load(option) {
-      console.log(option)
 //     判断type值
       let type = option.idx ? option.idx * 1 : 4
       this.menuIdx = this.menuItems.findIndex((item) => item.type === type)
@@ -284,7 +282,6 @@
         return
       }
       this.orderList = resList.data
-      console.log(this.orderList)
       this.noOrder = this.orderList.length === 0 ? 1 : false
       let mobile = wx.getStorageSync('mobile')
       if (mobile) {

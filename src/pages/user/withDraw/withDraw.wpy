@@ -94,7 +94,6 @@
         this.$apply()
       },
       async submitMoney() {
-        console.log()
         if (this.isPhone !== 1) {
           this.$invoke('PhoneTest', 'bindPhone')
           return

@@ -69,22 +69,24 @@
       let noarr = []
       // 从全局变量拿优惠列表遍历可用和不可用
       this.$parent.globalData.couponList.map((item) => {
-        if (parseInt(item.promotion.config.meet_money) <= parseInt(ids) && item.promotion.promotion_type !== 'cash' && parseInt(item.id) === parseInt(couponId)) {
-          item.canUsePay = true
-          item.checked = true
-          arr.push(item)
-        } else if (parseInt(item.promotion.config.meet_money) <= parseInt(ids) && item.promotion.promotion_type !== 'cash' && parseInt(item.id) !== parseInt(couponId)) {
-          item.canUsePay = true
-          item.checked = false
-          arr.push(item)
-        } else if (parseInt(item.promotion.config.meet_money) > parseInt(ids) && item.promotion.promotion_type !== 'cash') {
-          item.canUsePay = false
-          item.nocanUsecondtion = '满' + item.promotion.config.meet_money + '元可用'
-          noarr.push(item)
-        } else {
-          item.canUsePay = false
-          item.nocanUsecondtion = '请联系卖家核销，不支持买单使用'
-          noarr.push(item)
+        if (item.promotion.config) {
+          if (parseInt(item.promotion.config.meet_money) <= parseInt(ids) && item.promotion.promotion_type !== 'cash' && parseInt(item.id) === parseInt(couponId)) {
+            item.canUsePay = true
+            item.checked = true
+            arr.push(item)
+          } else if (parseInt(item.promotion.config.meet_money) <= parseInt(ids) && item.promotion.promotion_type !== 'cash' && parseInt(item.id) !== parseInt(couponId)) {
+            item.canUsePay = true
+            item.checked = false
+            arr.push(item)
+          } else if (parseInt(item.promotion.config.meet_money) > parseInt(ids) && item.promotion.promotion_type !== 'cash') {
+            item.canUsePay = false
+            item.nocanUsecondtion = '满' + item.promotion.config.meet_money + '元可用'
+            noarr.push(item)
+          } else {
+            item.canUsePay = false
+            item.nocanUsecondtion = '请联系卖家核销，不支持买单使用'
+            noarr.push(item)
+          }
         }
       })
       this.couponList = arr
@@ -216,11 +218,14 @@
       shareChoice(coupon) {
         this.noUseDiscountBtn = false
         this.couponList.map((item) => {
+          console.log(item, coupon)
           if (item.id === coupon.id) {
             item.checked = true
+            this.$apply()
             wepy.setStorageSync('shareCoupon', coupon)
           } else {
             item.checked = false
+            this.$apply()
           }
           return item
         })
@@ -229,7 +234,7 @@
             delta: 1
           })
         }, 500)
-        this.$apply()
+
       }
     }
   }

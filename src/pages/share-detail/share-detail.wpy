@@ -151,7 +151,6 @@
 //      详情
       let resDetail = await shareMoney.shareDetail(id)
       this.shareDetail = this.infoRes(resDetail)
-      this._isDel(resDetail)
       this.goodsStatus = resDetail.goods_status !== undefined ? resDetail.goods_status : 1
       this.activitiesStatus = resDetail.activity_status !== undefined ? resDetail.goods_status : 1
       this.promotionImages = this.shareDetail ? this.shareDetail.promotion_images : {}
@@ -186,7 +185,6 @@
         let fromCustomerId = this.shareDetail ? this.shareDetail.from_customer_id : 0 // 分享者id
         let promotionId = this.shareDetail ? this.shareDetail.promotion_id : 0
         this.currentPage = `/pages/coupon-detail/coupon-detail?actId=${atcId}&type=1&merchantId=${currentMerchant}&fromCustomerId=${fromCustomerId}&id=${promotionId}&status=share`
-        console.log(this.currentPage)
         const res = await Info.createQrode({path: this.currentPage})
         this.loaded()
         this.qrcode = res.data.image_url

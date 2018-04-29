@@ -216,7 +216,6 @@
       this.logTimes = this.$parent.globalData.logTimes && !logStatus ? this.$parent.globalData.logTimes : 0
       this.getLogs = logStatus || this.logTimes < 3
       if (this.getLogs) {
-        console.log('日志')
         await this._saveLog()
         this.$parent.updateGlobalData('nowTimes', timestamp)
         this.$parent.updateGlobalData('logTimes', ++this.logTimes)
