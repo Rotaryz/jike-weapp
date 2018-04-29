@@ -3,7 +3,7 @@
     <repeat for="{{shareList}}" key="index" index="index" item="item">
       <share-item :shareCoupon.sync="item" :industry.sync="industry"></share-item>
     </repeat>
-    <view class="ro-share-none" wx:if="{{shareNone}}">
+    <view class="ro-share-none" wx:if="{{shareNone || shareList.length < 10}}">
       <image class="ro-share-none-img" wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/b-image/common/pic-empty_city@2x.png'}}"></image>
       <view class="ro-share-none-text">暂无数据</view>
     </view>
