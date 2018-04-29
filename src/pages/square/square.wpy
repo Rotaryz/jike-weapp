@@ -1,158 +1,70 @@
 <template>
-  <map id="map"
-       scale="18"
-       longitude="{{longitude}}"
-       latitude="{{latitude}}"
-       controls="{{controls}}"
-       bindcontroltap="controltap"
-       markers="{{markers}}"
-       bindmarkertap="markertap"
-       polyline="{{polyline}}"
-       bindtap="tapMap"
-       bindregionchange="regionchange">
-    <cover-view class="shop-modal {{showSlide ? 'show' : ''}}">
-      <cover-view class="modal-bg-wrapper">
-        <cover-image class="modal-bg" wx:if="{{imageUri}}"
-                     src="{{imageUri + '/defaults/c-image/square/pic-s_bg@2x.png'}}"></cover-image>
-      </cover-view>
-      <cover-view class="modal">
-        <cover-view class="location">
-          <cover-image wx:if="{{imageUri}}"
-                       src="{{imageUri + '/defaults/c-image/square/icon-s_location@2x.png'}}"
-                       mode="scaleToFill" class="icon-location"></cover-image>
-          <cover-view class="content">{{currentMerchant.particular_address}}
-          </cover-view>
-        </cover-view>
-        <cover-view class="shop">
-          <cover-view class="top" @tap="switchRecommend">
-            <cover-view class="desc">
-              <cover-view class="title">{{currentMerchant.shop_name}}
-              </cover-view>
-              <cover-view class="subhead">{{currentMerchant.describe}}
-              </cover-view>
-            </cover-view>
-            <cover-view class="logo-wrapper">
-              <cover-image wx:if="{{imageUri}}"
-                           src="{{imageUri + '/defaults/c-image/square/pic-s_shopbg@2x.png'}}"
-                           class="image"></cover-image>
-              <cover-image wx:if="{{imageUri && currentMerchant.code_name}}"
-                           class="industry"
-                           src="{{imageUri + '/defaults/c-image/square/icon-s_' + currentMerchant.code_name + '@2x.png'}}"></cover-image>
-              <cover-image wx:if="{{currentMerchant.logo_image}}"
-                           src="{{currentMerchant.logo_image}}"
-                           class="logo"></cover-image>
-            </cover-view>
-            <cover-view class="comment">
-              <cover-view class="comment-content">
-                <cover-view class="stars">
-                  <repeat for="{{stars}}" index="{{index}}" key="{{index}}">
-                    <cover-image wx:if="{{imageUri}}"
-                                 src="{{imageUri + '/defaults/c-image/square/icon-s_evaluate@2x.png'}}"
-                                 class="icon-star"></cover-image>
-                  </repeat>
-                  <cover-view class="star-level">
-                    {{currentMerchant.star_level !== '0.0' ? currentMerchant.star_level : '5.0'}}
-                  </cover-view>
-                </cover-view>
-                <cover-view class="store">
-                  {{currentMerchant.favorite_count}}人已收藏
-                </cover-view>
-              </cover-view>
-            </cover-view>
-          </cover-view>
-          <cover-view class="bottom">
-            <cover-image class="line"
-                         wx:if="{{imageUri}}"
-                         src="{{imageUri + '/defaults/c-image/square/pic-s_line@2x.png'}}"></cover-image>
-            <cover-view class="content-wrapper">
-              <cover-view class="item">
-                <cover-image wx:if="{{imageUri}}"
-                             src="{{imageUri + '/defaults/c-image/square/icon-s_distance@2x.png'}}"
-                             class="icon"></cover-image>
-                <cover-view class="content">距离{{distance}}米</cover-view>
-              </cover-view>
-              <cover-view class="item">
-                <cover-image wx:if="{{imageUri}}"
-                             src="{{imageUri + '/defaults/c-image/square/icon-s_swalk@2x.png'}}"
-                             class="icon"></cover-image>
-                <cover-view class="content">步行{{duration}}分钟</cover-view>
-              </cover-view>
-              <cover-view class="item" @tap="openLocation">
-                <cover-image wx:if="{{imageUri}}"
-                             src="{{imageUri + '/defaults/c-image/square/icon-s_navigation@2x.png'}}"
-                             class="icon"></cover-image>
-                <cover-view class="content">开始导航</cover-view>
-              </cover-view>
-              <cover-view class="item" @tap="makePhoneCall">
-                <cover-image wx:if="{{imageUri}}"
-                             src="{{imageUri + '/defaults/c-image/square/icon-s_tel@2x.png'}}"
-                             class="icon"></cover-image>
-                <cover-view class="content">打电话</cover-view>
-              </cover-view>
-            </cover-view>
-          </cover-view>
-        </cover-view>
-        <cover-view class="tip-wrapper" @tap="switchRecommend">
-          <cover-view class="hot-wrapper">
-            <cover-image class="hot"
-                         wx:if="{{imageUri}}"
-                         src="{{imageUri + '/defaults/c-image/square/pic-s_hot@2x.png'}}"></cover-image>
-          </cover-view>
-          <cover-view class="tips">
-            <cover-view class="box"
-                        style="height: {{scrollHeight}}px;transition: {{transition}};transform: {{transform}}">
-              <repeat for="{{tips}}" key="index" index="index" item="item">
-                <cover-view class="tip">
-                  <cover-view class="item-wrapper">
-                    <cover-view class="icon-wrapper">
-                      <cover-image class="icon"
-                                   wx:if="{{imageUri}}"
-                                   src="{{imageUri + '/defaults/c-image/square/pic-s_activity@2x.png'}}"></cover-image>
-                    </cover-view>
-                    <cover-view class="word">
-                      {{item.activity}}活动开启中
-                    </cover-view>
-                  </cover-view>
-                  <cover-view class="item-wrapper">
-                    <cover-view class="icon-wrapper">
-                      <cover-image class="icon"
-                                   wx:if="{{imageUri}}"
-                                   src="{{imageUri + '/defaults/c-image/square/pic-s_coupon@2x.png'}}"></cover-image>
-                    </cover-view>
-                    <cover-view class="word">
-                      {{item.title ? item.title + '正在疯抢中' : '您的优惠券正在路上'}}
-                    </cover-view>
-                  </cover-view>
-                </cover-view>
-              </repeat>
-              <cover-view class="tip" wx:if="{{tips.length > 0}}">
-                <cover-view class="item-wrapper">
-                  <cover-view class="icon-wrapper">
-                    <cover-image class="icon"
-                                 wx:if="{{imageUri}}"
-                                 src="{{imageUri + '/defaults/c-image/square/pic-s_activity@2x.png'}}"></cover-image>
-                  </cover-view>
-                  <cover-view class="word">
-                    {{tips[0].activity}}活动开启中
-                  </cover-view>
-                </cover-view>
-                <cover-view class="item-wrapper">
-                  <cover-view class="icon-wrapper">
-                    <cover-image class="icon"
-                                 wx:if="{{imageUri}}"
-                                 src="{{imageUri + '/defaults/c-image/square/pic-s_coupon@2x.png'}}"></cover-image>
-                  </cover-view>
-                  <cover-view class="word">
-                    {{tips[0].title ? tips[0].title + '正在疯抢中' : '您的优惠券正在路上'}}
-                  </cover-view>
-                </cover-view>
-              </cover-view>
-            </cover-view>
-          </cover-view>
-        </cover-view>
-      </cover-view>
-    </cover-view>
-  </map>
+  <view class="view-page">
+    <view class="view-scroll">
+      <swiper class="swiper" bindchange="swBindchange">
+        <repeat for="{{titleList}}" key="index" index="index" item="item">
+          <swiper-item class="item-swi">
+            <view class="swiper-info"></view>
+            <view class="swiper-info-s">
+              <view class="swiper-info-title">
+                <view class="swiper-info-shop">
+                  <view class="view_1">白云店</view>
+                  <view class="view_2">800米</view>
+                </view>
+                <view class="swiper-info-remark">
+                  <view class="view_1">
+                    <view class="view_1_1"><view class="bg"></view>大众点评4.5分</view>
+                    <view class="view_1_2">团</view>
+                    <view class="view_1_2">买</view>
+                    <view class="view_1_2">券</view>
+                  </view>
+                  <view class="view_2">
+                    <image src="{{imageUri + '/defaults/c-image/square/icon-s_right2@2x.png'}}"></image>
+                  </view>
+                </view>
+              </view>
+              <view class="border-1px"></view>
+              <view class="swiper-info-nav">
+                <view class="nav-item">
+                  <image src="{{imageUri + '/defaults/c-image/square/icon-address_home@2x.png'}}"></image>
+                  <view>精选优惠</view>
+                </view>
+                <view class="nav-item">
+                  <image src="{{imageUri + '/defaults/c-image/square/icon-address_home@2x.png'}}"></image>
+                  <view>优质内容</view>
+                </view>
+                <view class="nav-item">
+                  <image src="{{imageUri + '/defaults/c-image/square/icon-address_home@2x.png'}}"></image>
+                  <view>快捷买单</view>
+                </view>
+              </view>
+            </view>
+            <image class="item-img" src="{{item.shop_image}}"></image>
+          </swiper-item>
+        </repeat>
+      </swiper>
+      <view class="swiper-active">
+        <view class="swiper-active-t">
+          <repeat for="{{titleList}}" key="index" index="index" item="item">
+            <view class="item-swi {{index === topFlag ? 'action' : ''}}"></view>
+          </repeat>
+        </view>
+      </view>
+    </view>
+    <map id="map"
+         scale="18"
+         longitude="{{longitude}}"
+         latitude="{{latitude}}"
+         controls="{{controls}}"
+         bindcontroltap="controltap"
+         markers="{{markers}}"
+         bindmarkertap="markertap"
+         polyline="{{polyline}}"
+         bindtap="tapMap"
+         bindregionchange="regionchange">
+      <cover-view class="modal-bg-wrapper"></cover-view>
+    </map>
+  </view>
 </template>
 <script>
   import wepy from 'wepy'
@@ -194,7 +106,9 @@
       scrollHeight: 60,
       activeIndex: 0,
       transform: '',
-      transition: ''
+      transition: '',
+      titleList: [],
+      topFlag: 0
     }
 
     async onLoad() {
@@ -202,7 +116,9 @@
       await this.load()
       this.loaded()
     }
+    async getShop() {
 
+    }
     async onShow() {
       console.log(this)
       await this.showIndustry()
@@ -291,7 +207,13 @@
     }
 
     async _getPlazaMerchants() {
-      const json = await Merchants.getPlazaMerchants()
+      const json = await Merchants.getPlazaMerchantsNew()
+      console.log(json)
+      for (let i = 0; i < 3; i++) {
+        console.log(i)
+        this.titleList.push(json.data[0])
+      }
+      this.$apply()
       if (json.error === ERR_OK) {
         const res = json.data
         this.merchants = res
@@ -513,6 +435,10 @@
     }
 
     methods = {
+      swBindchange (e) {
+        this.topFlag = e.detail.current
+        this.$apply()
+      },
       switchRecommend() {
         const merchantId = this.currentMerchant.merchant_id
 //        this.$parent.updateGlobalData('merchantId', merchantId)
@@ -610,210 +536,171 @@
 <style lang="stylus">
   @import "../../common/stylus/variable.styl"
   @import "../../common/stylus/mixin.styl"
-
+  .view-page
+    display: flex
+    flex-direction: column
+    .view-scroll
+      height: 190px
+      box-shadow: 0 6px 4px 0 rgba(0,0,0,0.06);
+      background: #FFFFFF
+      position: relative
+      .swiper
+        height: 160px
+        border-radius: 4px
+        display: flex
+        .item-swi
+          height 160px
+          text-align: center
+          position: relative
+          .swiper-info
+            position: absolute
+            top: 0
+            left: 0
+            right: 0
+            bottom: 0
+            z-index: 1
+            height: 100%
+            width: 94%
+            margin: auto
+            opacity: 0.5
+            background-image: linear-gradient(-90deg, #000000 1%, #000000 100%)
+            border-radius: 4px
+          .swiper-info-s
+            position: absolute
+            top: 0
+            left: 0
+            right: 0
+            bottom: 0
+            z-index: 2
+            height: 100%
+            width: 94%
+            margin: auto
+            border-radius: 4px
+            .swiper-info-title
+              height: 60px
+              margin: 0px 10px
+              .swiper-info-shop
+                justify-content:space-between
+                display: flex
+                padding: 10px 0px 6px 0px
+                .view_1
+                  color: $color-white
+                  font-family: $font-family-meddle
+                  font-size: $font-size-medium-x
+                .view_2
+                  font-family: $font-family-light
+                  font-size: $font-size-small-s
+                  color: $color-white
+                  line-height: 20px
+              .swiper-info-remark
+                justify-content:space-between
+                display: flex
+                .view_1
+                  display: flex
+                  flex-direction: row
+                  .view_1_1
+                    line-height: 18px
+                    width: 74px
+                    height: 18px
+                    border-radius: 4px
+                    color: $color-white
+                    font-family: $font-family-regular
+                    font-size: $font-size-small-s
+                    position: relative
+                    margin-right: 15px
+                    .bg
+                      position: absolute
+                      top: 0
+                      left: 0
+                      width: 74px
+                      height: 18px
+                      opacity: 0.5
+                      background: #000000
+                      border-radius: 4px
+                      z-index: -1
+                  .view_1_2
+                    width: 18px
+                    height: 18px
+                    background: #FF4E00
+                    border-radius: 4px
+                    font-family: $font-family-regular
+                    font-size: $font-size-small-s
+                    color: #FFFFFF
+                    line-height: 18px
+                    text-align: center
+                    margin-right: 5px
+                .view_2
+                  font-family: $font-family-light
+                  font-size: $font-size-small-s
+                  color: $color-white
+                  width: 8px
+                  height: 10px
+                  margin-top: 4px
+                  image
+                    width: 100%
+                    height: 100%
+            .border-1px
+              opacity: 0.22
+              border: .5px solid $color-white
+              width: 94%
+              margin: auto
+            .swiper-info-nav
+              display: flex
+              justify-content: space-around
+              flex-direction: row
+              z-index: 1
+              .nav-item
+                width: 50px
+                height: 84.5px
+                margin-top: 13.5px
+                image
+                  width: 50px
+                  height: 50px
+                view
+                  color: $color-white
+                  font-family: $font-family-regular
+                  font-size: $font-size-small
+                  line-height: 24px
+          .item-img
+            border-radius: 4px
+            width: 94%
+            height: 100%
+            // opacity: 0.5
+            // background-image: linear-gradient(-90deg, #000000 1%, #000000 100%)
+      .swiper-active
+        height: 5px
+        text-align: center
+        display: flex
+        flex-direction: row
+        .swiper-active-t
+          margin: auto
+          .item-swi
+            width: 5px
+            height: 5px
+            background: #D8D8D8
+            border-radius: 100%
+            display: inline-block
+            margin: 0px 3px
+            transition: all .3s
+          .item-swi.action
+            transition: all .3s
+            width: 10px
+            border-radius: 100px
+            background: #706B81
   #map
     width: 100%
     height: 100vh
-    .shop-modal
-      position: relative
-      width: 100%
-      height: 211px
-      padding: 0 10px
-      padding-top: 10px
-      padding-bottom: 3px
-      box-sizing: border-box
+    position: relative
 
-      .modal-bg-wrapper
-        position: absolute
-        top: 0
-        left: 0
-        display: flex
-        padding: 0
-        box-sizing: border-box
-        left: 0
-        top: 0
-        .modal-bg
-          display: flex
-          width: 100%
-          height: 100%
-      .modal
-        position: relative
-        width: 100%
-        height: 100%
-        border-radius: 3px
-        background-color: $color-white
-        .location
-          display: flex
-          align-items: center
-          height: 30px
-          padding-left: 10px
-          font-size: $font-size-small
-          color: $color-text
-          background: $color-background
-          .icon-location
-            display: flex
-            width: 10px
-            height: 10px
-            margin-right: 3px
-          .content
-            display: flex
-            flex: 1
-        .shop
-          width: 100%
-          .top
-            width: 100%
-            display: flex
-            height: 69.75px
-            .desc
-              flex: 1
-              display: flex
-              flex-direction: column
-              justify-content: center
-              padding-left: 10px
-              color: $color-text
-              position: relative
-              .title
-                width: 100%
-                margin-bottom: 2.5px
-                font-size: $font-size-medium-x
-                overflow: hidden
-                text-overflow: ellipsis
-                white-space: nowrap
-                position: absolute
-                left: 10px
-                top: 18px
-              .subhead
-                position: absolute
-                left: 10px
-                top: 45px
-                font-size: $font-size-small-s
-            .logo-wrapper
-              position: relative
-              flex: 0 0 65px
-              display: flex
-              align-items: center
-              justify-content: center
-              .image
-                display: flex
-                width: 65px
-                height: 52px
-              .industry
-                position: absolute
-                top: 13.5px
-                left: 24.5px
-                display: flex
-                width: 12px
-                height: 12px
-                border-radius: 50%
-              .logo
-                position: absolute
-                bottom: 11.25px
-                right: 3px
-                display: flex
-                width: 24px
-                height: 24px
-                border-radius: 100%
-            .comment
-              flex: 1
-              display: flex
-              flex-direction: column
-              justify-content: center
-              align-items: center
-              position: relative
-              .comment-content
-                position: absolute
-                left: 50%
-                top: 50%
-                transform: translate(-50%, -50%)
-                .stars
-                  display: flex
-                  align-items: center
-                  font-size: $font-size-small-s
-                  .icon-star
-                    display: flex
-                    margin-right: 1.5px
-                    width: 10px
-                    height: 10px
-                  .star-level
-                    display: flex
-                .store
-                  margin-top: 8px
-                  font-size: $font-size-small-s
-                  color: $color-text
-          .bottom
-            position: relative
-            height: 38.25px
-            .line
-              position: absolute
-              top: 0
-              left: 0
-              width: 100%
-              height: 100%
-            .content-wrapper
-              position: absolute
-              top: 0
-              left: 0
-              display: flex
-              width: 100%
-              height: 100%
-              .item
-                flex: 1
-                display: flex
-                align-items: center
-                justify-content: center
-                box-sizing: border-box
-                font-size: $font-size-small-s
-                &:nth-child(4) .icon
-                  padding-left: 20px
-                .icon
-                  display: flex
-                  width: 10px
-                  height: 10px
-                  margin-right: 1px
-                .content
-                  width: 60px
-                  display: flex
-    .tip-wrapper
+    .modal-bg-wrapper
+      height: 1px
+      position: absolute
+      top: 0
+      left: 0
       display: flex
-      height: 60px
-      padding-left: 10px
-      .hot-wrapper
-        flex: 0 0 50px
-        width: 50px
-        display: flex
-        align-items: center
-        justify-content: center
-        .hot
-          display: flex
-          width: 50px
-          height: 41px
-      .tips
-        flex: 1
-        height: 60px
-        padding-left: 10px
-        .box
-          transform: translate3d(0, 0, 0)
-          .tip
-            display: flex
-            flex-direction: column
-            justify-content: center
-            height: 60px
-            .item-wrapper
-              display: flex
-              align-items: center
-              &:first-child
-                margin-bottom: 7px
-              .icon-wrapper
-                flex: 0 0 30px
-                width: 30px
-                .icon
-                  display: flex
-                  width: 30px
-                  height: 14px
-              .word
-                flex: 1
-                display: flex
-                margin-left: 5px
-                font-size: $font-size-small
-                color: $color-text
+      padding: 0
+      box-sizing: border-box
+      box-shadow: 0 6px 4px 0 rgba(0,0,0,0.06);
+      left: 0
+      top: 0
 </style>
