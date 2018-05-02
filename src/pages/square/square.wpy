@@ -13,7 +13,7 @@
                 </view>
                 <view class="swiper-info-remark">
                   <view class="view_1">
-                    <view class="view_1_1"><view class="bg"></view>大众点评4.5分</view>
+                    <view class="view_1_1"><view class="bg"></view>大众点评{{item.shop_power}}分</view>
                     <view class="view_1_2" wx:if="{{item.has_groupon}}">团</view>
                     <view class="view_1_2">买</view>
                     <view class="view_1_2" wx:if="{{item.has_promotion}}">券</view>
