@@ -62,6 +62,7 @@
          bindcontroltap="controltap"
          bindmarkertap="markertap"
          bindregionchange="regionchange">
+      <cover-image class="tab-shadow" wx:if="{{imageUri}}" src="{{imageUri + '/defaults/circle-image/square/bg-s_title@2x.png'}}"></cover-image>
       <integral-popout></integral-popout>
     </map>
   </view>
@@ -503,6 +504,7 @@
       position: relative
       .swiper
         height: 160px
+        margin-top: 5px
         border-radius: 4px
         display: flex
         .item-swi
@@ -625,12 +627,13 @@
             // opacity: 0.5
             // background-image: linear-gradient(-90deg, #000000 1%, #000000 100%)
       .swiper-active
-        height: 5px
+        height: 25px
         text-align: center
         display: flex
         flex-direction: row
         .swiper-active-t
           margin: auto
+          margin-top: -2px
           .item-swi
             width: 5px
             height: 5px
@@ -647,6 +650,7 @@
   #map
     flex: 1
     width: 100vw
+    position: relative
     .modal-bg-wrapper
       height: 1px
       position: absolute
@@ -658,4 +662,9 @@
       box-shadow: 0 6px 4px 0 rgba(0,0,0,0.06);
       left: 0
       top: 0
+    .tab-shadow
+      position: absolute
+      top: -2.885vh
+      width: 100%
+      height: 8.8321vh
 </style>
