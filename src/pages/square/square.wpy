@@ -9,7 +9,7 @@
               <view class="swiper-info-title" @tap="offShop({{item}})">
                 <view class="swiper-info-shop">
                   <view class="view_1">{{item.shop_name}}</view>
-                  <view class="view_2">{{item.distance}}米</view>
+                  <view class="view_2">{{item.distance}}</view>
                 </view>
                 <view class="swiper-info-remark">
                   <view class="view_1">
@@ -151,18 +151,19 @@
     }
     // 显示初始化
     async _toShowInit() {
-      // await this._getAllSenceLocation()
+      await this._getAllSenceLocation()
       await this._setControls()
       await this._getShopList()
-      await this._setSenceLocation(this.selectOption)
+      await this._setSenceLocation()
       await this._addSenceIcon()
       await this._addIcons()
       this.loaded()
     }
     // 获取所有场景信息
     async _getAllSenceLocation() {
-      let current = await this._getLocationInfo(CURRENT)
-      this._setSenceInfos(CURRENT, current)
+      // let current =
+      await this._getLocationInfo(CURRENT)
+      // this._setSenceInfos(CURRENT, current)
       this.$apply()
     }
     // 获取当前的经纬度
@@ -216,6 +217,15 @@
         // // console.log(this.merchantInfos)
         // /** 模拟数据 **/
         this.merchantInfos = res
+        this.merchantInfos.forEach((item) => {
+          if (item.distance >= 1000) {
+            let n = item.distance / 1000
+            item.distance = n.toFixed(2) + 'km'
+          } else {
+            item.distance = item.distance + '米'
+          }
+        })
+        // console.log(this.merchantInfos)
         this.$apply()
       }
     }
@@ -224,6 +234,7 @@
       // const res = this.senceInfos['' + id]
       // this.latitude = res.latitude
       // this.longitude = res.longitude
+      // console.log(this.merchantInfos)
       this.latitude = this.merchantInfos[0].latitude
       this.longitude = this.merchantInfos[0].longitude
       this.$apply()
@@ -546,6 +557,7 @@
                   color: $color-white
                   font-family: $font-family-meddle
                   font-size: $font-size-medium-x
+                  line-height: 20px
                 .view_2
                   font-family: $font-family-light
                   font-size: $font-size-small-s
@@ -585,7 +597,7 @@
                     font-family: $font-family-regular
                     font-size: $font-size-small-s
                     color: #FFFFFF
-                    line-height: 18px
+                    line-height: 20px
                     text-align: center
                     margin-right: 5px
                 .view_2
@@ -600,9 +612,10 @@
                     height: 100%
             .border-1px
               opacity: 0.22
-              border: .5px solid $color-white
+              border-bottom: .5px solid $color-white
               width: 94%
               margin: auto
+              margin-top: 2px
             .swiper-info-nav
               display: flex
               justify-content: space-around
@@ -629,11 +642,9 @@
       .swiper-active
         height: 25px
         text-align: center
-        display: flex
-        flex-direction: row
         .swiper-active-t
           margin: auto
-          margin-top: -2px
+          height: 5px
           .item-swi
             width: 5px
             height: 5px
