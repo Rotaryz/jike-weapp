@@ -11,7 +11,7 @@
     </view>
     <view class="coupon-con">
       <view class="can-coupon" wx:if="{{couponList.length !== 0}}">可用的券</view>
-      <repeat for="{{couponList}}" key="index" index="index" item="item" >
+      <repeat for="{{couponList}}" key="index" index="index" item="item">
         <view class="couponList-box">
           <coupon :coupon.sync="item" :type="type" :industryColor.sync="industryColor" :industry.sync="industry"></coupon>
         </view>
@@ -192,7 +192,6 @@
     }
 
     events = {
-
       // 选择可用优惠卷
       choice(coupon) {
         this.noUseDiscountBtn = false
@@ -234,7 +233,6 @@
             delta: 1
           })
         }, 500)
-
       }
     }
   }
@@ -249,6 +247,7 @@
     width: 100%
     height: 100%
     z-index: 88
+
   .no-use-coupon
     display: flex
     flex-direction: row
@@ -258,8 +257,8 @@
     border-bottom: 1px solid $color-row-line
     padding: 15px 12px
     .no-use-left
-      font-size :$font-size-medium
-      color :$color-text
+      font-size: $font-size-medium
+      color: $color-text
       width: 82%
     .no-use-right
       width: 18%
@@ -268,6 +267,7 @@
         margin: 0 auto
         width: 17px
         height: 17px
+
   .coupon-con
     .couponList-box
       padding: 10px 12px 0
@@ -276,6 +276,7 @@
       color: $color-text
       font-size: $font-size-medium
       margin-top: 20px
+
   .empty-wrapper
     margin-top: 70px
     text-align: center
