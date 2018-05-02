@@ -113,7 +113,7 @@
       transition: '',
       titleList: [],
       topFlag: 0,
-      scale: 14,
+      scale: 18,
       merchantInfos: [],
       senceInfos: [],
       itemId: '',
