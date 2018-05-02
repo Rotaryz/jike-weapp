@@ -152,8 +152,7 @@
       <view class="group-buy-btn {{stock === 0 || activitiesStatus !== 1 ? 'disable' : industry + '-bg'}}" @tap="postGroupOrder" wx:if="{{activityStatus === 'group'}}">{{ activitiesStatus === 0 ? '该商品已下架' : activitiesStatus === 1 ? '¥' + groupBuyDetail.group_price + (groupType === 'join' ? '参团' : '开团') : activitiesStatus === 2 ? '已售罄' : '立即购买'}}</view>
     </view>
     <phone-test @isPhoneOk.user="getSymbol" :industry.sync="industry"></phone-test>
-    <share :qrcode.sync="qrcode" :detail.sync="coupon" :promotionImages.sync="promotionImages"
-           @sharePunchLine.user="sharePunchLine"></share>
+    <share :qrcode.sync="qrcode" :detail.sync="coupon" :promotionImages.sync="promotionImages" @sharePunchLine.user="sharePunchLine"></share>
     <share-modal>
       <view slot="content" class="base-modal-content">
         <view class="header-wrapper">
@@ -491,6 +490,10 @@
         return
       }
       this.activitiesStatus = resData.activity_status !== undefined ? resData.activity_status : 1
+      if (resData.activity_status * 1 !== 1) {
+        this.loaded()
+        return
+      }
       let res = resData.data
       wepy.setNavigationBarTitle({title: res.promotion_name})
       this.personList = res.earn_lists
