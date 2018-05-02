@@ -35,7 +35,7 @@
         </view>
         <view class="group-msg">
           <view class="group-title">{{groupStatusTxt[orderMsg.group_status]}}</view>
-          <view class="group-msg-time"><text class="group-msg-first">剩余时间：</text><text class="group-red-time {{timeEnd ? '' : 'time-down'}}">{{groupEndTime}}</text></view>
+          <view class="group-msg-time"><text class="group-msg-first">剩余时间：</text><text class="group-red-time {{orderMsg.group_status > 2 || timeEnd ? 'time-down' : ''}}">{{orderMsg.group_status > 2 ? '00:00:00' : groupEndTime}}</text></view>
         </view>
       </view>
       <view class="group-detail-progress">
@@ -230,7 +230,12 @@
     async onLoad(option) {
       await this.showIndustry()
       await this.load(option.id)
-      this._groupTimePlay()
+      if (this.orderMsg.group_status > 2) {
+        this.timeEnd = true
+        clearInterval(this.timer)
+      } else {
+        this._groupTimePlay()
+      }
     }
 
     async _getShareSoya(id) {
