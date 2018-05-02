@@ -405,7 +405,7 @@
     methods = {
       offShop (item, key) {
         console.log(key)
-        wepy.setStorageSync('merchant_id', item.merchant_id)
+        wepy.setStorageSync('merchantId', item.merchant_id)
         if (key * 1 === 2) {
           wepy.navigateTo({  // 快捷买单
             url: `/pages/pay/pay`
