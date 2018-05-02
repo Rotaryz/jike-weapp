@@ -52,7 +52,11 @@
           </view>
         </view>
         <view class="myRedPacket-list-item-num"><text class="myRedPacket-list-item-num-money">+{{item.price}}</text></view>
-        <Underline></Underline>
+      </view>
+      <Underline></Underline>
+      <view class="myRedPacket-noList" wx:if="{{!packetList.length}}">
+        <image wx:if="{{imageUrlHead}}" src="{{imageUrlHead + '/defaults/c-image/mine/pic-no_moeny@2x.png'}}" class="myRedPacket-noList-img"></image>
+        <view class="myRedPacket-noList-txt">您还没有红包</view>
       </view>
     </scroll-view>
     <scroll-view scroll-y class="myRedPacket-list" bindscrolltolower="redPacketLower" scroll-top="{{shareTop}}" bindscroll="getShareTop" style="display:{{checkIdx === 1 ? 'block' : 'none'}}">
@@ -65,13 +69,13 @@
           </view>
         </view>
         <view class="myRedPacket-list-item-num"><text class="myRedPacket-list-item-num-money">{{item.money}}</text></view>
-        <Underline></Underline>
+      </view>
+      <shareUnderline></shareUnderline>
+      <view class="myRedPacket-noList" wx:if="{{!shareList.length}}">
+        <image wx:if="{{imageUrlHead}}" src="{{imageUrlHead + '/defaults/c-image/mine/pic-no_moeny@2x.png'}}" class="myRedPacket-noList-img"></image>
+        <view class="myRedPacket-noList-txt">您还没有红包</view>
       </view>
     </scroll-view>
-    <view class="myRedPacket-noList" wx:if="{{showNone}}">
-      <image wx:if="{{imageUrlHead}}" src="{{imageUrlHead + '/defaults/c-image/mine/pic-no_moeny@2x.png'}}" class="myRedPacket-noList-img"></image>
-      <view class="myRedPacket-noList-txt">您还没有红包</view>
-    </view>
     <Toast></Toast>
   </view>
 </template>
@@ -99,7 +103,8 @@
 
     components = {
       Toast,
-      Underline
+      Underline,
+      'shareUnderline': Underline
     }
 
     data = {
@@ -144,6 +149,7 @@
               let res = await this._getRedPacketList(this.page)
               this.packetList.push(...res)
               if (!res.length) {
+                this.$invoke('Underline', 'show')
                 this.redNothing = true
               }
             }
@@ -154,6 +160,7 @@
               let res = await this._shareMoneyProfit()
               this.shareList.push(...res)
               if (!res.length) {
+                this.$invoke('shareUnderline', 'show')
                 this.shareNothing = true
               }
             }
@@ -178,8 +185,8 @@
         backgroundColor: this.industryColor,
         frontColor: '#ffffff',
         animation: {
-          duration: 400,
-          timingFunc: 'easeIn'
+          duration: 30,
+          timingFunc: 'ease'
         }
       }) // 导航条颜色
       await Promise.all([
@@ -187,6 +194,9 @@
         this.shareList = await this._shareMoneyProfit(),
         this._getBankCardDetail()
       ])
+      if (this.shareList.length && this.shareList.length < 10) {
+        this.$invoke('shareUnderline', 'show')
+      }
       this._isNone()
     }
     async onShow() {
@@ -201,6 +211,9 @@
           if (this.showNone) {
             this.packetList = await this._getRedPacketList(1)
             this.showNone = this.packetList.length
+            if (this.packetList.length && this.packetList.length < 10) {
+              this.$invoke('Underline', 'show')
+            }
             this.$apply()
           }
           this.$apply()
@@ -210,6 +223,9 @@
           if (this.showNone) {
             this.shareList = await this._shareMoneyProfit()
             this.showNone = this.shareList.length
+            if (this.shareList.length && this.shareList.length < 10) {
+              this.$invoke('shareUnderline', 'show')
+            }
             this.$apply()
           }
           this.$apply()
@@ -272,10 +288,11 @@
     height: 100vh
     overflow:hidden
     .myRedPacket
-      background: $color-highlight-background
+      background: $color-background
       height: 100%
       overflow:hidden
       .myRedPacket-top
+        background :$color-white
         height:99px
         display: flex
         flex-direction: column
@@ -330,6 +347,7 @@
         background: $color-button-dis
 
       .myRedPacket-list
+        background :$color-white
         max-height: 98.667vw
 
         .myRedPacket-list-item
