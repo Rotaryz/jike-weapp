@@ -3,7 +3,7 @@
     <repeat for="{{shareList}}" key="index" index="index" item="item">
       <share-item :shareCoupon.sync="item" :industry.sync="industry"></share-item>
     </repeat>
-    <view class="ro-share-none" wx:if="{{shareNone || shareList.length < 10}}">
+    <view class="ro-share-none" wx:if="{{shareNone}}">
       <image class="ro-share-none-img" wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/b-image/common/pic-empty_city@2x.png'}}"></image>
       <view class="ro-share-none-text">暂无数据</view>
     </view>
@@ -29,12 +29,15 @@
       backgroundTextStyle: 'dark'
     }
     data = {
+
+
       shareNone: false,
       imageUrl: URIS.image,
       page: 1,
       shareList: [],
       nothing: false
     }
+
     async onPullDownRefresh() {
       this.page = 1
       this.nothing = false
@@ -42,11 +45,14 @@
       wepy.stopPullDownRefresh()
       this.$apply()
     }
+
     async onLoad() {
       await this.showIndustry()
       this.shareList = await this._load()
       if (!this.shareList.length) {
         this.shareNone = true
+      } else if (this.shareList.length < 10) {
+        this.$invoke('underline-block', 'show')
       }
       this.$apply()
     }
@@ -56,6 +62,7 @@
         return res.data
       }
     }
+
     async onReachBottom() {
       if (this.nothing) {
         return
@@ -71,6 +78,7 @@
       }
       this.$apply()
     }
+
     async _load(loading = true) {
       let data = {page: this.page, limit: 10}
       let res = await shareMoney.shareList(data, loading)
@@ -96,6 +104,7 @@
   @import '../../common/stylus/mixin'
   .share-list
     height: 100vh
+
   .ro-share-none
     position: fixed
     top: 45.3vw

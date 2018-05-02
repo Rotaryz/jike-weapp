@@ -148,6 +148,10 @@
       let res = await sharemoney.customerWithdrawalMoney(data)
       this.loaded()
       this.$invoke('Toast', 'show', res.message)
+      this.packetTotal -= this.drawMoney
+      setTimeout(() => {
+        this.$back(-1)
+      }, 500)
     }
 
     events = {
