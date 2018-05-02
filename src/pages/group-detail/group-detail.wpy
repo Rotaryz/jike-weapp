@@ -75,7 +75,7 @@
     </view>
     <toast></toast>
     <share :qrcode.sync="qrcode" :detail.sync="canvasDetail" :promotionImages.sync="promotionImages"></share>
-    <post-order :orderInfo.sync="orderInfo" @throw.user="postOrderFail" :status="activityStatus" :industry="industry"></post-order>
+    <post-order :orderInfo.sync="orderInfo" @throw.user="postOrderFail" :status="activityStatus" :industry.sync="industry"></post-order>
     <phone-test @isPhoneOk.user="getSymbol" :industry="industry"></phone-test>
   </view>
 </template>
