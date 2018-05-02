@@ -183,7 +183,6 @@
         }
       }) // 导航条颜色
       await Promise.all([
-        this.showIndustry(),
         this._getTotalRedpacket(),
         this.shareList = await this._shareMoneyProfit(),
         this._getBankCardDetail()
@@ -191,6 +190,7 @@
       this._isNone()
     }
     async onShow() {
+      await this._getBankCardDetail()
       await this._shareMoneyProfit()
     }
 //    判断是否有数据

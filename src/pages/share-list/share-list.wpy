@@ -29,8 +29,6 @@
       backgroundTextStyle: 'dark'
     }
     data = {
-
-
       shareNone: false,
       imageUrl: URIS.image,
       page: 1,
