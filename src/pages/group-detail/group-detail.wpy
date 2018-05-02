@@ -40,13 +40,13 @@
           <navigator url="/pages/recommend/recommend" hover-class="none" open-type="switchTab" wx:if="{{groupStatus === 1 || groupStatus === 0}}">
             <view class="group-red-btn {{industry}}-bg">查看更多团购</view>
           </navigator>
-          <navigator url="{{'/pages/user/myOrder-detail/myOrderDetail?id=' + groupDetails.order_id}}" hover-class="none" wx:if="{{groupHasJoin && groupStatus === 2}}">
+          <navigator url="{{'/pages/user/myOrder-detail/myOrderDetail?id=' + groupDetails.order_id}}" hover-class="none" wx:if="{{groupHasJoin}}">
             <view class="group-white-btn">查看订单详情</view>
           </navigator>
         </view>
       </view>
     </view>
-    <view class="more-group-list" wx:if="{{groupHasJoin}}">
+    <view class="more-group-list" wx:if="{{groupHasJoin && groupBuyList.length}}">
       <view class="group-list-title">更多团购</view>
       <view class="group-list-item" wx:for="{{groupBuyList}}" wx:key="{{index}}">
         <navigator url="{{'/pages/coupon-detail/coupon-detail?type=1&status=group&id=' + item.promotion_id + '&currentMerchant=' + item.merchant_id + '&groupId=' + item.id}}" hover-class="none">
@@ -159,6 +159,9 @@
 
     async load(id) {
       const resData = await GroupApi.getGroupBuyDetail(id)
+      if (resData.error !== ERR_OK) {
+        return
+      }
       let res = resData.data
       this.groupDetails = res
       this.endTime = res.remaining_time_timestamp
