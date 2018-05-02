@@ -104,7 +104,7 @@
       controls: [],
       includePoints: [],
       promotions: [],
-      bigMarkerIndex: 1,
+      bigMarkerIndex: 0,
       activeMarkerId: '',
       tips: [],
       scrollHeight: 60,
@@ -113,7 +113,7 @@
       transition: '',
       titleList: [],
       topFlag: 0,
-      scale: 18,
+      scale: 14,
       merchantInfos: [],
       senceInfos: [],
       itemId: '',
@@ -150,7 +150,7 @@
     }
     // 显示初始化
     async _toShowInit() {
-      await this._getAllSenceLocation()
+      // await this._getAllSenceLocation()
       await this._setControls()
       await this._getShopList()
       await this._setSenceLocation(this.selectOption)
@@ -258,8 +258,9 @@
           merchantId: item.merchant_id
         })
       })
-      this.markers.push(...markers)
-      this._setPolyline(this.markers[0].id)
+      this.markers = markers
+      this.$apply()
+      this._setPolyline()
     }
     // 设置控件
     async _setControls() {
@@ -353,7 +354,7 @@
     _setPolyline(loc, tar) {
       // 判断源头坐标
       this.markers.forEach((item, index) => {
-        if (this.markers[index + 1] && index > 0) {
+        if (this.markers[index + 1]) {
           let tmp = {
             points: [
               {
@@ -381,7 +382,7 @@
     // 缩放地图标记点尺寸
     _scaleMarker(type) {
       const index = this.bigMarkerIndex
-      if (!this.markers || index <= 0) return
+      if (!this.markers) return
       if (this.markers[index]) {
         this.markers[index].width = type === 1 ? 30 : 26
         this.markers[index].height = type === 1 ? 30 : 26
