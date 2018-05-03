@@ -144,14 +144,16 @@
     }
 
     async _drawMoney() {
-      let data = {money: this.packetTotal}
+      let data = {money: this.drawMoney}
       let res = await sharemoney.customerWithdrawalMoney(data)
       this.loaded()
       this.$invoke('Toast', 'show', res.message)
       this.packetTotal -= this.drawMoney
-      setTimeout(() => {
-        this.$back(-1)
-      }, 500)
+      if (res.error === ERR_OK) {
+        setTimeout(() => {
+          this.$back(-1)
+        }, 500)
+      }
     }
 
     events = {
