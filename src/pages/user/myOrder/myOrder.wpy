@@ -41,9 +41,9 @@
             </view>
             <view class="myOrder-orderList-item-btnBox">
               <view class="myOrder-orderList-item-status">{{item.promotion_type === 3 ? '付款成功' : orderItemStatus[item.status]}}</view>
-              <view class="myOrder-orderList-item-btn {{industry}}-bg" wx:if="{{menuIdx===0 && item.promotion_type !== 3}}" catchtap="useCoupon({{item}})">{{orderItemBtnTxt[item.status]}}</view>
+              <view class="myOrder-orderList-item-btn {{industry}}-bg" wx:if="{{item.promotion_type !== 3}}" catchtap="useCoupon({{item}})">{{orderItemBtnTxt[item.status]}}</view>
               <!--<view class="myOrder-orderList-item-btn {{industry}}-bg" wx:if="{{menuIdx===0 && item.promotion_type !== 3}}" catchtap="useCoupon({{item}})">{{orderItemBtnTxt[item.status]}}</view>-->
-              <view class="myOrder-orderList-item-btn {{industry}}-bg" wx:if="{{menuIdx===0 && item.promotion_type === 3}}" catchtap="orderDetail({{item.id}})">查看详情</view>
+              <view class="myOrder-orderList-item-btn {{industry}}-bg" wx:if="{{item.promotion_type === 3}}" catchtap="orderDetail({{item.id}})">查看详情</view>
             </view>
           </view>
           <repeat key="index" index="index" item="item" wx:if="{{item.promotion_type === 4}}">
