@@ -52,9 +52,9 @@
       <navigator url="{{'/pages/coupon-use/couponUse?id=' + orderMsg.id + '&type=order'}}" hover-class="none" wx:if="{{orderMsg.group_status * 1 === 3 || orderMsg.group_status * 1 === 4}}">
         <view class="group-btn {{industry}}-bg">立即使用</view>
       </navigator>
-      <navigator url="{{'/pages/refund/refund?id=' + orderMsg.id}}" hover-class="none" wx:if="{{orderMsg.group_status * 1 === 5 || orderMsg.group_status * 1 === 6}}">
-        <view class="group-btn {{industry}}-bg">查看退款详情</view>
-      </navigator>
+      <!--<navigator url="{{'/pages/user/refund/refund?id=' + orderMsg.id}}" hover-class="none" wx:if="{{orderMsg.group_status * 1 === 5 || orderMsg.group_status * 1 === 6}}">-->
+        <!--<view class="group-btn {{industry}}-bg">查看退款详情</view>-->
+      <!--</navigator>-->
     </view>
 
     <view class="orderDetail-merchant">
