@@ -490,10 +490,6 @@
         return
       }
       this.activitiesStatus = resData.activity_status !== undefined ? resData.activity_status : 1
-      if (resData.activity_status * 1 !== 1) {
-        this.loaded()
-        return
-      }
       let res = resData.data
       wepy.setNavigationBarTitle({title: res.promotion_name})
       this.personList = res.earn_lists
