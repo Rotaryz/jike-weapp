@@ -1,0 +1,99 @@
+<template>
+  <view class="shareAndPrize-cover" wx:if="{{coverShow}}">
+    <scroll-view scroll-y="{{srcoll}}" class="shareAndPrize-rule">
+      <view class="shareAndPrize-rule-head">
+        <view>{{title}}</view>
+        <view class="shareAndPrize-rule-head-chunk"></view>
+      </view>
+      <slot name="content"></slot>
+    </scroll-view>
+    <view class="close-box" @tap="closeCover">
+      <image wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/c-image/mine/icon-delet@2x.png'}}" class="shareAndPrize-rule-close"></image>
+    </view>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import base from 'common/mixins/base'
+  import URIS from 'common/js/config'
+
+  export default class rule extends wepy.component {
+    mixins = [base]
+    props = {
+      srcoll: {
+        type: Boolean,
+        default: true
+      },
+      title: {
+        type: String,
+        default: '活动规则'
+      }
+    }
+    data = {
+      imageUrl: URIS.image,
+      coverShow: false
+    }
+    methods = {
+      closeCover() {
+        this.coverShow = false
+        this.$apply()
+        this.$emit('closeCover')
+      },
+      showRule() {
+        this.coverShow = true
+        this.$apply()
+        this.$emit('showRule')
+      }
+    }
+  }
+</script>
+
+<style lang="stylus">
+  @import '../../common/stylus/variable'
+  @import '../../common/stylus/mixin'
+  .shareAndPrize-cover
+    position: fixed
+    z-index: 9999
+    left: 0
+    top: 0
+    height: 100vh
+    width: 100vw
+    background: $color-mask-bgc
+
+    .shareAndPrize-rule
+      position: fixed
+      height: 300px
+      width: 250px
+      margin: auto
+      left: 0
+      top: 0
+      right: 0
+      bottom: 0
+      background: #fff
+      border-radius: 2px
+      padding: 10px 12px
+
+      .shareAndPrize-rule-head
+        font-size: $font-size-medium
+        display: flex
+        flex-direction: column
+        align-items: center
+
+        .shareAndPrize-rule-head-chunk
+          width: 20px
+          height: 4px
+          background: $color-row-line
+          margin-top: 4px
+          margin-bottom: 14px
+
+  .close-box
+    position: fixed
+    bottom: 8vh
+    left: 50%
+    transform: translate(-50%, 0)
+    .shareAndPrize-rule-close
+      width: 26px
+      height: 26px
+
+</style>

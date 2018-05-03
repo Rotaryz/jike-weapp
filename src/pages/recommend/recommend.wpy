@@ -4,8 +4,7 @@
       <repeat>
         <Slider :list.sync="shopImages"></Slider>
       </repeat>
-      <image wx:if="{{imageUri}}"
-             src="{{imageUri + '/defaults/c-image/recommend/pic-r_shadow@2x.png'}}"
+      <image wx:if="{{imageUri}}" src="{{imageUri + '/defaults/c-image/recommend/pic-r_shadow@2x.png'}}"
              class="underImage"></image>
     </view>
     <form bindsubmit="submit" report-submit='true'>
@@ -19,15 +18,6 @@
           <view class="content">直播优惠</view>
         </button>
 
-
-        <button form-type="submit"
-                @tap="goToActivity('share', '/pages/shareAndPrize/shareAndPrize')"
-                type="default" size="mini"
-                class="content-wrapper">
-          <image class="icon" wx:if="{{imageUri && industry.length}}"
-                 src="{{imageUri + '/defaults/c-image/recommend/icon-share_'+ industry +'@2x.png'}}"></image>
-          <view class="content">分享有礼</view>
-        </button>
         <button form-type="submit"
                 @tap="goToActivity('sign', '/pages/activity/activity?type=sign')"
                 type="default" size="mini"
@@ -44,6 +34,14 @@
                  src="{{imageUri + '/defaults/c-image/recommend/icon-turntable_'+industry+'@2x.png'}}"></image>
           <view class="content">大转盘</view>
         </button>
+        <button form-type="submit"
+                @tap="goToActivity('share_money', '/pages/share-list/share-list')"
+                type="default" size="mini"
+                class="content-wrapper">
+          <image class="icon" wx:if="{{imageUri && industry.length}}"
+                 src="{{imageUri + '/defaults/c-image/template/icon-share_'+industry+'@2x.png'}}"></image>
+          <view class="content">分享赚钱</view>
+        </button>
       </view>
     </form>
     <recom-buy
@@ -52,6 +50,44 @@
       wx:if="{{giftbagList.length>0}}"
       :list.sync="giftbagList"
     ></recom-giftbat>
+
+    <view class="group-buy" wx:if="{{groupBuyList.length}}">
+      <navigator url="/pages/group-buy/group-buy" hover-class="none">
+        <view class="group-buy-head">
+          <view class="group-buy-title">团购火拼</view>
+          <image class="group-buy-arrow" wx:if="{{imageUri}}" src="{{imageUri + '/defaults/c-image/recom/icon-arrows@2x.png'}}"></image>
+        </view>
+      </navigator>
+      <swiper class="group-buy-content" duration="300" current="{{saleIdx}}" bindchange="swiperMove">
+        <block wx:for="{{groupBuyList}}" wx:key="{{item}}" wx:key="{{index}}">
+          <swiper-item wx:if="{{true}}">
+            <view class="group-buy-item">
+              <view class="group-buy-coupon" wx:for="{{item}}" wx:key="{{index}}" @tap="groupDetail({{item}})">
+                <view class="img-box">
+                  <image class="shop-img" src="{{item.promotion_image}}" mode="aspectFill"></image>
+                  <view class="shop-name">{{item.group_number}}人团</view>
+                </view>
+                <view class="item-down">
+                  <view class="item-money">
+                    <text class="small-money">¥</text>
+                    <text class="big-money">{{item.group_price}}</text>
+                    <text class="del-money">¥ {{item.promotion_price}}</text>
+                  </view>
+                  <view class="item-title">{{item.promotion_name}}</view>
+                  <view class="item-sale">
+                    <text class="sale-count {{industry + '-opacity'}}">已团{{item.purchase_count}}件</text>
+                  </view>
+                </view>
+              </view>
+            </view>
+          </swiper-item>
+        </block>
+      </swiper>
+      <view class="swiper-dots" wx:if="{{groupBuyList.length > 1}}">
+        <view class="dot {{groupBuyIdx === index ? 'active' : ''}}" wx:for="{{groupBuyList}}" wx:key="{{index}}"></view>
+      </view>
+    </view>
+
     <recom-hot
       wx:if="{{hotCouponsList.length>0}}"
       :list.sync="hotCouponsList"
@@ -83,6 +119,7 @@
   import {ERR_OK} from 'api/base'
   import ContentsApi from 'api/contents'
   import Merchants from 'api/merchants'
+  import GroupApi from 'api/groupon'
   import URIS from 'common/js/config'
   import RecomBuy from '@/base/recommend-items/recom-buy'
   import RecomGiftbag from '@/base/recommend-items/recom-merchant-giftbag'
@@ -120,7 +157,11 @@
       hotFirst: [],
       hotSecond: [],
       hotThird: [],
-      activeIsEmpty: true
+      activeIsEmpty: true,
+      logTimes: 0,
+      getLogs: true,
+      groupBuyIdx: 0,
+      groupBuyList: []
     }
 
     onShareAppMessage(res) {
@@ -167,7 +208,19 @@
       this.shopChange = !(oldId === this.merchantId)
       const isAuthorise = await this.isAuthorise(false)
       this.$parent.updateGlobalData('isAuthorise', isAuthorise)
-      await this._saveLog()
+//      一分钟三次收集返问日志
+      //  获取当前时间
+      let timestamp = Date.parse(new Date())
+      let last = this.$parent.globalData.nowTimes ? this.$parent.globalData.nowTimes : timestamp
+      let logStatus = timestamp - last > 60000
+      this.logTimes = this.$parent.globalData.logTimes && !logStatus ? this.$parent.globalData.logTimes : 0
+      this.getLogs = logStatus || this.logTimes < 3
+      if (this.getLogs) {
+        await this._saveLog()
+        this.$parent.updateGlobalData('nowTimes', timestamp)
+        this.$parent.updateGlobalData('logTimes', ++this.logTimes)
+      }
+
       await this._getMechantsMsg()
       // 切店存储对应的商家ID
       if (this.shopChange) {
@@ -177,6 +230,8 @@
             scrollTop: 0,
             duration: 300
           })
+          this.groupBuyIdx = 0
+          this.groupBuyList = []
         } catch (e) {
         }
       }
@@ -203,6 +258,7 @@
     async _init() {
       await Promise.all([
         this._getCouponsAll(),
+        this._getGroupList(),
         this._getContentsAll(),
         this._getGiftBagsAll(),
         this._getUserCouponListAll()
@@ -238,6 +294,26 @@
         this.giftbagList = res.data
         this.$apply()
       }
+    }
+
+    // 获取团购火拼列表（最多9条）
+    async _getGroupList(loading = true) {
+      let resData = await GroupApi.getGroupList(1, 9, loading)
+      if (resData.error !== ERR_OK) {
+        return
+      }
+      if (!resData.activity_status) {
+        this.groupBuyList = []
+        return
+      }
+      let res = resData.data
+      let first = res.slice(0, 3)
+      let second = res.slice(3, 6)
+      let third = res.slice(6, 9)
+      this.groupBuyList = [first, second, third].filter((item) => {
+        return item.length > 0
+      })
+      this.$apply()
     }
 
     // 获取内容列表 (all)+
@@ -358,13 +434,23 @@
         } else {
           this.$invoke('toast', 'show', '暂未开放')
         }
+      },
+      swiperMove(e) {
+        this.groupBuyIdx = e.detail.current * 1
+        this.$apply()
+      },
+      groupDetail(msg) {
+        let groupId = msg.id
+        let promotionId = msg.promotion_id
+        let merchantId = msg.merchant_id
+        this.$navigate('/pages/coupon-detail/coupon-detail?type=1&status=group&id=' + promotionId + '&currentMerchant=' + merchantId + '&groupId=' + groupId)
       }
     }
 
     // 检查活动内容是否为空
     computed = {
       activeIsEmpty() {
-        let flag = this.hotCouponsList.length === 0 && this.giftbagList.length === 0 && this.contentList.length === 0
+        let flag = this.hotCouponsList.length === 0 && this.giftbagList.length === 0 && this.contentList.length === 0 && this.groupBuyList.length === 0
         return flag
       }
     }
@@ -453,6 +539,127 @@
         .content
           margin-top: 4px
           font-size: $font-size-small
+
+  .group-buy
+    background: $color-white
+    margin-bottom: 10px
+    margin-top: 10px
+    .group-buy-head
+      display: flex
+      align-items: center
+      justify-content: space-between
+      height: 50px
+      padding-left: 12px
+      .group-buy-title
+        font-family: PingFangSC-Regular
+        font-size: $font-size-medium-x
+        color: $color-text-title
+      .group-buy-arrow
+        width: 7px
+        height: 12px
+        margin-right: 12px
+    .group-buy-content
+      height: 51vw
+      width: 100%
+      .group-buy-item
+        padding: 0 12px
+        height: 100%
+        display: flex
+        overflow: hidden
+        .group-buy-coupon
+          width: 29.733333vw
+          height: 100%
+          display: flex
+          flex-direction: column
+          margin-right: 2.4vw
+          &:last-child
+            margin-right: 0
+          .img-box
+            width: 29.733333vw
+            height: 29.733333vw
+            box-sizing: border-box
+            border-radius: 3px
+            overflow: hidden
+            border: 0.5px solid $color-col-line
+            position: relative
+            .shop-img
+              width: 100%
+              height: 100%
+            .shop-name
+              width: 100%
+              box-sizing: border-box
+              padding-left: 5px
+              height: 18px
+              line-height: 18px
+              position: absolute
+              text-align: center
+              left: 0
+              bottom: 0
+              background: rgba(0, 0, 0, 0.5)
+              font-family: PingFangSC-Light
+              font-size: $font-size-small-s
+              color: $color-white
+          .item-down
+            flex: 1
+            display: flex
+            flex-direction: column
+            .item-money
+              display: flex
+              align-items: flex-end
+              font-family: PingFangSC-Semibold
+              color :$color-pay
+              margin: 1.8vw 0
+              overflow: hidden
+              .small-money
+                font-size: $font-size-small-s
+                margin-right: 3px
+                margin-bottom: 2px
+              .big-money
+                font-family :PingFangSC-Semibold
+                font-size: $font-size-large
+              .del-money
+                font-family: PingFangSC-Light
+                font-size: $font-size-small
+                color: $color-text-d
+                text-decoration: line-through
+                margin-bottom: 2px
+                white-space: nowrap
+                margin-left: 3px
+            .item-title
+              overflow: hidden
+              text-overflow: ellipsis
+              white-space: nowrap
+              font-family: PingFangSC-Light
+              font-size: $font-size-small
+              color: $color-text
+              margin-bottom: 6px
+            .item-sale
+              .sale-count
+                padding: 2px 4.5px
+                background: rgba(255, 78, 0, 0.1)
+                border-radius: 2px
+                font-size: $font-size-small-s
+                color: $color-orange
+                font-family: PingFangSC-Light
+
+    .swiper-dots
+      width: 100%
+      height: 13px
+      padding-top: 3px
+      display: flex
+      justify-content: center
+      .dot
+        width: 3px
+        height: 3px
+        background: #B8B5C1
+        border-radius: 1.5px
+        margin-right: 8px
+        transition: all .3s
+        &:last-child
+          margin-right: 0
+      .active.dot
+        width: 11px
+        background: #706B82
 
   .nothing-box
     margin-top: 10px

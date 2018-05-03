@@ -140,15 +140,15 @@
       buy(item) {
         let id = item.promotion.id
         let merchantId = item.promotion.merchant_id
-        this.$navigate('/pages/coupon-detail/coupon-detail?type=1&id=' + id + '&currentMerchant=' + merchantId)
+        this.$redirect('/pages/coupon-detail/coupon-detail?type=1&id=' + id + '&currentMerchant=' + merchantId)
       },
       get(item) {
         let id = item.promotion.id
-        this.$navigate('/pages/coupon-particulars/coupon-particulars?id=' + id)
+        this.$redirect('/pages/coupon-particulars/coupon-particulars?id=' + id)
       },
       use(item) {
         let id = item.promotion.id
-        this.$navigate('/pages/coupon-particulars/coupon-particulars?id=' + id)
+        this.$redirect('/pages/coupon-particulars/coupon-particulars?id=' + id)
       }
     }
   }

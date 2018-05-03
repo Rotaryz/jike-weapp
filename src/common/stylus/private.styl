@@ -26,7 +26,7 @@
 .line-title
   position: relative
   text-align: center
-  font-size: $font-size-large
+  font-size: $font-size-large !important
 
 // 宠物
 .pet
@@ -41,7 +41,15 @@
   color: $color-pet-theme !important
 
 .pet-border
-  border-bottom: 2px solid $color-pet-theme !important
+  &:before
+    content : ''
+    width: 30px
+    height: 2px
+    position: absolute
+    left: 50%
+    transform :translateX(-50%)
+    bottom: 0px
+    background :$color-pet-theme !important
 
 .pet-coupon
   width: 3.35px
@@ -61,7 +69,7 @@
     width: 2px
     height: 14px
     content: ''
-    background: $color-pet-theme
+    background: $color-pet-theme !important
 
 .pet-opacity
   color: $color-pet-theme !important
@@ -80,7 +88,15 @@
   color: $color-excercise-theme !important
 
 .excercise-border
-  border-bottom: 2px solid $color-excercise-theme !important
+  &:before
+    content : ''
+    width: 30px
+    height: 2px
+    position: absolute
+    left: 50%
+    transform :translateX(-50%)
+    bottom: 0px
+    background :$color-excercise-theme !important
 
 .excercise-coupon
   width: 3.35px
@@ -100,7 +116,7 @@
     width: 2px
     height: 14px
     content: ''
-    background: $color-excercise-theme
+    background: $color-excercise-theme !important
 
 .excercise-opacity
   color: $color-excercise-theme !important
@@ -119,7 +135,15 @@
   color: $color-study-theme !important
 
 .study-border
-  border-bottom: 2px solid $color-study-theme !important
+  &:before
+    content : ''
+    width: 30px
+    height: 2px
+    position: absolute
+    left: 50%
+    transform :translateX(-50%)
+    bottom: 0px
+    background :$color-study-theme !important
 
 .study-coupon
   width: 3.35px
@@ -158,7 +182,15 @@
   color: $color-beauty-theme !important
 
 .beauty-border
-  border-bottom: 2px solid $color-beauty-theme !important
+  &:before
+    content : ''
+    width: 30px
+    height: 2px
+    position: absolute
+    left: 50%
+    transform :translateX(-50%)
+    bottom: 0px
+    background :$color-beauty-theme !important
 
 .beauty-coupon
   width: 3.35px
@@ -178,7 +210,7 @@
     width: 2px
     height: 14px
     content: ''
-    background: $color-beauty-theme
+    background: $color-beauty-theme !important
 
 .beauty-opacity
   color: $color-beauty-theme !important
@@ -197,7 +229,15 @@
   color: $color-baby-theme !important
 
 .baby-border
-  border-bottom: 2px solid $color-baby-theme !important
+  &:before
+    content : ''
+    width: 30px
+    height: 2px
+    position: absolute
+    left: 50%
+    transform :translateX(-50%)
+    bottom: 0px
+    background :$color-baby-theme !important
 
 .baby-coupon
   width: 3.35px
@@ -217,7 +257,7 @@
     width: 2px
     height: 14px
     content: ''
-    background: $color-baby-theme
+    background: $color-baby-theme !important
 
 .baby-opacity
   color: $color-baby-theme !important
@@ -236,7 +276,15 @@
   color: $color-car-theme !important
 
 .car-border
-  border-bottom: 2px solid $color-car-theme !important
+  &:before
+    content : ''
+    width: 30px
+    height: 2px
+    position: absolute
+    left: 50%
+    transform :translateX(-50%)
+    bottom: 0px
+    background :$color-car-theme !important
 
 .car-coupon
   width: 3.35px
@@ -256,7 +304,7 @@
     width: 2px
     height: 14px
     content: ''
-    background: $color-car-theme
+    background: $color-car-theme !important
 
 .car-opacity
   color: $color-car-theme !important
@@ -275,7 +323,15 @@
   color: $color-ktv-theme !important
 
 .ktv-border
-  border-bottom: 2px solid $color-ktv-theme !important
+  &:before
+    content : ''
+    width: 30px
+    height: 2px
+    position: absolute
+    left: 50%
+    transform :translateX(-50%)
+    bottom: 0px
+    background :$color-ktv-theme !important
 
 .ktv-coupon
   width: 3.35px
@@ -295,7 +351,7 @@
     width: 2px
     height: 14px
     content: ''
-    background: $color-ktv-theme
+    background: $color-ktv-theme !important
 
 .ktv-opacity
   color: $color-ktv-theme !important
@@ -314,7 +370,15 @@
   color: $color-restaurant-theme !important
 
 .restaurant-border
-  border-bottom: 2px solid $color-restaurant-theme !important
+  &:before
+    content : ''
+    width: 30px
+    height: 2px
+    position: absolute
+    left: 50%
+    transform :translateX(-50%)
+    bottom: 0px
+    background :$color-restaurant-theme !important
 
 .restaurant-coupon
   width: 3.35px
@@ -334,7 +398,7 @@
     width: 2px
     height: 14px
     content: ''
-    background: $color-restaurant-theme
+    background: $color-restaurant-theme !important
 
 .restaurant-opacity
   color: $color-restaurant-theme !important
@@ -353,7 +417,15 @@
   color: $color-retail-theme !important
 
 .retail-border
-  border-bottom: 2px solid $color-retail-theme !important
+  &:before
+    content : ''
+    width: 30px
+    height: 2px
+    position: absolute
+    left: 50%
+    transform :translateX(-50%)
+    bottom: 0px
+    background :$color-retail-theme !important
 
 .retail-coupon
   width: 3.35px
@@ -374,7 +446,7 @@
     height: 14px
     content: ''
     background: $color-retail-theme
-    background: $color-restaurant-theme
+    background: $color-restaurant-theme !important
 
 .retail-opacity
   color: $color-retail-theme !important
@@ -393,7 +465,15 @@
   color: $color-photograph-theme !important
 
 .photograph-border
-  border-bottom: 2px solid $color-photograph-theme !important
+  &:before
+    content : ''
+    width: 30px
+    height: 2px
+    position: absolute
+    left: 50%
+    transform :translateX(-50%)
+    bottom: 0px
+    background :$color-photograph-theme !important
 
 .photograph-coupon
   width: 3.35px
@@ -413,7 +493,7 @@
     width: 2px
     height: 14px
     content: ''
-    background: $color-photograph-theme
+    background: $color-photograph-theme !important
 
 .photograph-opacity
   color: $color-photograph-theme !important

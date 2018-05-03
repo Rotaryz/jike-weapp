@@ -2,6 +2,8 @@ import wepy from 'wepy'
 import Tips from './tips'
 
 const SOLD_OUT = 10001 // 店铺下架
+const DEL_OUT = 10003 // 内容被删除
+const NOFOUND_OUT = 10004 // 内容被下线
 
 // HTTP工具类
 export default class http {
@@ -12,10 +14,13 @@ export default class http {
       data: data
     }
     const Authorization = wepy.getStorageSync('token')
+    let Scene = wepy.getStorageSync('scene') || 0
+    let LastMerchant = wepy.getStorageSync('LastMerchant') || 0
+    let LastBusiness = wepy.getStorageSync('LastBusiness') || 0
     if (Authorization) {
       param.header = Object.assign({}, {Authorization}, {'X-Requested-With': 'XMLHttpRequest'})
     }
-    param.header = Object.assign({}, param.header, {'Current-merchant': wepy.getStorageSync('merchantId')})
+    param.header = Object.assign({}, param.header, {'Current-merchant': wepy.getStorageSync('merchantId'), Scene, 'Last-merchant': LastMerchant, 'Last-business': LastBusiness})
     if (loading) {
       Tips.loading()
     }
@@ -24,12 +29,20 @@ export default class http {
       const result = res.data
       return result
     } else if (this.isError(res)) {
+      // 请求出错
       let status = this.isError(res)
       wepy.redirectTo({url: `/pages/error/error?status=${status}`})
       throw this.requestException(res)
     } else if (this.isSoldOut(res)) {
+      // 下架
       const result = res.data.data
       wepy.redirectTo({url: `/pages/sold-out/sold-out?appId=${result.app_id}&businessCircleId=${result.business_circle_id}`})
+      throw this.requestException(res)
+    } else if (this.abnormal(res)) {
+      // 异常
+      let status = this.abnormal(res)
+      const result = res.data.data
+      wepy.redirectTo({url: `/pages/sold-out/sold-out?appId=${result.app_id}&businessCircleId=${result.business_circle_id}&status=${status}`})
       throw this.requestException(res)
     } else {
       throw this.requestException(res)
@@ -86,7 +99,28 @@ export default class http {
     }
     return false
   }
-
+  /**
+   * 判断异常情况（删除，下线）
+   * @param res
+   */
+  static abnormal(res) {
+    const wxCode = res.statusCode
+    let code = res.data.code
+    let status = ''
+    console.log(code)
+    if (wxCode === 200) {
+      switch (code) {
+        case DEL_OUT:
+          status = 2
+          break
+        case NOFOUND_OUT:
+          status = 1
+          break
+      }
+      return status
+    }
+    return false
+  }
   /**
    * 异常页面
    * @param res

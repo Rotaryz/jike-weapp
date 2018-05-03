@@ -25,8 +25,7 @@
       </view>
 
       <view class="mine-order">
-        <view class="mine-order-head"
-              @tap="notestToPage('/pages/user/myOrder/myOrder?idx={{currentIdx}}')">
+        <view class="mine-order-head" @tap="notestToPage('/pages/user/myOrder/myOrder')">
           <view class="mine-order-head-left">
             <text class="mine-order-headTxt line-{{industry}}">我的订单</text>
           </view>
@@ -41,7 +40,7 @@
         <view class="mine-order-menu">
           <view class="mine-order-menuItem" wx:for="{{orderMenu}}"
                 wx:key="{{item.text}}"
-                @tap="notestToPage('/pages/user/myOrder/myOrder?idx={{index}}')">
+                @tap="notestToPage('/pages/user/myOrder/myOrder?idx={{item.type}}')">
             <image src="{{item.imgUrl}}"
                    class="mine-order-menuItem-image"></image>
             <view class="mine-order-menuItem-txt">{{item.text}}</view>
@@ -155,34 +154,42 @@
       orderMenu: [
         {
           imgUrl: URIS.image + '/defaults/c-image/mine/icon-m_ppay@2x.png',
-          text: '待付款'
+          text: '待付款',
+          type: 0
+        }, {
+          imgUrl: URIS.image + '/defaults/c-image/share/icon-group@2x.png',
+          text: '待成团',
+          type: 5
         }, {
           imgUrl: URIS.image + '/defaults/c-image/mine/icon-m_used@2x.png',
-          text: '待使用'
+          text: '待使用',
+          type: 1
         }, {
           imgUrl: URIS.image + '/defaults/c-image/mine/icon-m_evalua@2x.png',
-          text: '待评价'
+          text: '待评价',
+          type: 2
         }, {
           imgUrl: URIS.image + '/defaults/c-image/mine/icon-m_refund@2x.png',
-          text: '退款/售后'
+          text: '退款/售后',
+          type: 3
         }
       ],
       serveMenu: [
         {
           imgUrl: URIS.image + '/defaults/c-image/mine/icon-m_coupon32.png',
-          text: '优惠券',
+          text: '我的优惠券',
           url: '/pages/user/myCoupon/myCoupon'
         }, {
           imgUrl: URIS.image + '/defaults/c-image/mine/icon-m_money32@2x.png',
-          text: '红包',
+          text: '我的钱包',
           url: '/pages/user/redPacket/redPacket'
         }, {
           imgUrl: URIS.image + '/defaults/c-image/mine/icon-m_ dou@2x.png',
-          text: '播豆',
+          text: '我的播豆',
           url: '/pages/user/myIntegral/myIntegral'
         }, {
           imgUrl: URIS.image + '/defaults/c-image/mine/icon-m_ collect32.png',
-          text: '收藏',
+          text: '我的收藏',
           url: '/pages/user/mySelect/mySelect'
         }
       ],

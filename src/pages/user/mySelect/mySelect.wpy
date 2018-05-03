@@ -372,11 +372,8 @@
           text-align: center
           line-height: 8vh
           width: 71px
-          border-bottom: 2px solid #fff
+          position: relative
 
-        .mySelect-tab-itemTxt.active
-          color: $color-text-t
-          border-bottom: 2px solid $color-theme
 
     .mySelect-nothing
       height: 201px

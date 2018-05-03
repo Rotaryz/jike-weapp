@@ -2,7 +2,7 @@
   <view class="withDraw">
     <view class="withDraw-head">
       <view class="withDraw-headTxt">账户余额
-        <text class="withDraw-head-money">{{packetTotal.remaining ? packetTotal.remaining : 0}}</text>
+        <text class="withDraw-head-money">{{packetTotal ? packetTotal : 0}}</text>
         元
       </view>
       <view class="withDraw-headTxt">提现金额</view>
@@ -51,7 +51,7 @@
 <script>
   import wepy from 'wepy'
   import base from 'common/mixins/base'
-  import GetRedPacket from 'api/myRedPacket'
+  import sharemoney from 'api/sharemoney'
   import Toast from '@/base/toast/toast'
   import PhoneTest from '@/base/phoneTest/phoneTest'
   import URIS from 'common/js/config'
@@ -86,19 +86,19 @@
         this.$apply()
       },
       allIn() {
-        this.drawMoney = this.packetTotal.remaining
+        this.drawMoney = this.packetTotal
         this.$apply()
       },
       closeCover() {
         this.coverShow = false
         this.$apply()
       },
-      submitMoney() {
+      async submitMoney() {
         if (this.isPhone !== 1) {
           this.$invoke('PhoneTest', 'bindPhone')
           return
         }
-        if (this.packetTotal.remaining * 1 === 0) {
+        if (this.packetTotal * 1 === 0) {
           this.$invoke('Toast', 'show', '没有可提现余额')
           return
         }
@@ -110,11 +110,11 @@
           this.$invoke('Toast', 'show', '提现金额不能小于1元')
           return
         }
-        if (this.drawMoney > this.packetTotal.remaining) {
+        if (this.drawMoney * 1 > this.packetTotal * 1) {
           this.$invoke('Toast', 'show', '账户余额不足')
           return
         }
-        this.$invoke('Toast', 'show', '功能暂未开放')
+        await this._drawMoney()
       }
     }
 
@@ -134,13 +134,24 @@
     }
 
     async load() {
-      let Json = await GetRedPacket.getTotalRedpacket()
+      let Json = await sharemoney.shareMoneyProfit()
       this.loaded()
       if (Json.error !== ERR_OK) {
         return
       }
-      this.packetTotal = Json.data
+      this.packetTotal = Json.total_money
       this.$apply()
+    }
+
+    async _drawMoney() {
+      let data = {money: this.packetTotal}
+      let res = await sharemoney.customerWithdrawalMoney(data)
+      this.loaded()
+      this.$invoke('Toast', 'show', res.message)
+      this.packetTotal -= this.drawMoney
+      setTimeout(() => {
+        this.$back(-1)
+      }, 500)
     }
 
     events = {

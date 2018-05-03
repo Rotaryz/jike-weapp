@@ -88,7 +88,7 @@
       industryColor: ''
     }
 
-    methods = {
+    methods={
       setIndustry(industry, industryColor) {
         this.industry = industry
         this.industryColor = industryColor
@@ -98,23 +98,19 @@
 
     computed = {
       isOnlyOneStyle() {
-        if (this.list[0] != null) {
-          return this.list[0].length <= 1 ? 'only-one' : 'not-only-one-undef'
-        } else {
-          return 'only-one'
-        }
+        return this.list[0] && (this.list[0].length <= 1 ? 'only-one' : '')
       },
       isShowInfoStyle() {
-        return (this.length * 1 && true) || false
+        return this.length && true
       },
       first() {
-        return this.hotFirst ? this.hotFirst : []
+        return this.hotFirst || []
       },
       second() {
-        return this.hotSecond ? this.hotSecond : []
+        return this.hotSecond || []
       },
       third() {
-        return this.hotThird ? this.hotThird : []
+        return this.hotThird || []
       }
     }
 

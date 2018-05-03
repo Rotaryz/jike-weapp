@@ -10,12 +10,12 @@
       </view>
     </view>
     <view class="coupon-con">
-        <view class="can-coupon" wx:if="{{couponList.length !== 0}}">可用的券</view>
-        <repeat for="{{couponList}}" key="index" index="index" item="item" >
-          <view class="couponList-box">
-            <coupon :coupon.sync="item" :type="type" :industryColor.sync="industryColor" :industry.sync="industry"></coupon>
-          </view>
-        </repeat>
+      <view class="can-coupon" wx:if="{{couponList.length !== 0}}">可用的券</view>
+      <repeat for="{{couponList}}" key="index" index="index" item="item">
+        <view class="couponList-box">
+          <coupon :coupon.sync="item" :type="type" :industryColor.sync="industryColor" :industry.sync="industry"></coupon>
+        </view>
+      </repeat>
       <view class="can-coupon" wx:if="{{noCouponList.length !== 0}}">不可用的券</view>
       <repeat for="{{noCouponList}}" key="index" index="index" item="item">
         <view class="couponList-box">
@@ -39,6 +39,7 @@
   import URIS from 'common/js/config'
   import base from 'common/mixins/base'
   import Coupon from 'api/coupon'
+  import ShareMoney from 'api/sharemoney'
   import {ERR_OK} from '@/api/base'
   import coupon from '@/base/coupon-item/coupon-item'
 
@@ -51,33 +52,41 @@
       noCouponList: [],
       type: 'pay',
       noUseDiscountBtn: false,
-      couponBlock: false
+      couponBlock: false,
+      status: ''
     }
 
     async onLoad(options) {
       await this.showIndustry()
+      this.status = options.status || ''
+      if (options.status === 'share') {
+        await this._shareMoney(options)
+        return
+      }
       let ids = options.discountMoney
       let couponId = options.couponId
       let arr = []
       let noarr = []
       // 从全局变量拿优惠列表遍历可用和不可用
       this.$parent.globalData.couponList.map((item) => {
-        if (parseInt(item.promotion.config.meet_money) <= parseInt(ids) && item.promotion.promotion_type !== 'cash' && parseInt(item.id) === parseInt(couponId)) {
-          item.canUsePay = true
-          item.checked = true
-          arr.push(item)
-        } else if (parseInt(item.promotion.config.meet_money) <= parseInt(ids) && item.promotion.promotion_type !== 'cash' && parseInt(item.id) !== parseInt(couponId)) {
-          item.canUsePay = true
-          item.checked = false
-          arr.push(item)
-        } else if (parseInt(item.promotion.config.meet_money) > parseInt(ids) && item.promotion.promotion_type !== 'cash') {
-          item.canUsePay = false
-          item.nocanUsecondtion = '满' + item.promotion.config.meet_money + '元可用'
-          noarr.push(item)
-        } else {
-          item.canUsePay = false
-          item.nocanUsecondtion = '请联系卖家核销，不支持买单使用'
-          noarr.push(item)
+        if (item.promotion.config) {
+          if (parseInt(item.promotion.config.meet_money) <= parseInt(ids) && item.promotion.promotion_type !== 'cash' && parseInt(item.id) === parseInt(couponId)) {
+            item.canUsePay = true
+            item.checked = true
+            arr.push(item)
+          } else if (parseInt(item.promotion.config.meet_money) <= parseInt(ids) && item.promotion.promotion_type !== 'cash' && parseInt(item.id) !== parseInt(couponId)) {
+            item.canUsePay = true
+            item.checked = false
+            arr.push(item)
+          } else if (parseInt(item.promotion.config.meet_money) > parseInt(ids) && item.promotion.promotion_type !== 'cash') {
+            item.canUsePay = false
+            item.nocanUsecondtion = '满' + item.promotion.config.meet_money + '元可用'
+            noarr.push(item)
+          } else {
+            item.canUsePay = false
+            item.nocanUsecondtion = '请联系卖家核销，不支持买单使用'
+            noarr.push(item)
+          }
         }
       })
       this.couponList = arr
@@ -85,10 +94,53 @@
       this.$apply()
     }
 
+    async _shareMoney(option) {
+      this.type = 'share'
+      let actId = option.actId || 0
+      let data = {act_id: actId, page: 1}
+      let res = await ShareMoney.deductionPromotionList(data)
+      this.loaded()
+      if (res.error !== ERR_OK && !res.data.length) {
+        return
+      }
+      res.data.forEach((item) => {
+        if (item.status === 0) {
+          this.couponList.push(item)
+        } else {
+          this.noCouponList.push(item)
+        }
+      })
+      let shareCoupon = wepy.getStorageSync('shareCoupon')
+      let type = typeof (shareCoupon)
+      if (this.couponList.length) {
+        switch (type) {
+          case 'object':
+//          有选择券再次进入时
+            this.noUseDiscountBtn = false
+            let index = this.couponList.findIndex(item => item.id === shareCoupon.id)
+            this.couponList[index].checked = true
+            break
+          case 'number':
+//            上一次选择不使用优惠券再次进入时
+            this.noUseDiscountBtn = true
+            break
+          case 'string':
+//            首次进入时默认选择第一张可用抵用券
+            this.couponList[0].checked = true
+            break
+        }
+      } else {
+        this.noUseDiscountBtn = true
+      }
+      this.$apply()
+    }
+
     onShow() {
-      if (this.$parent.globalData.noUseDiscountBtn) {
-        this.noUseDiscountBtn = this.$parent.globalData.noUseDiscountBtn
-        this.$apply()
+      if (!this.status) {
+        if (this.$parent.globalData.noUseDiscountBtn) {
+          this.noUseDiscountBtn = this.$parent.globalData.noUseDiscountBtn
+          this.$apply()
+        }
       }
     }
 
@@ -104,6 +156,11 @@
       // 选择不使用优惠卷
       noUseDiscount() {
         if (this.couponList.length === 0 && this.noCouponList.length === 0) {
+          setTimeout(() => {
+            wepy.navigateBack({
+              delta: 1
+            })
+          }, 500)
           return
         }
         this.couponList.map((item) => {
@@ -115,7 +172,8 @@
         this.$apply()
         wepy.removeStorageSync('choiceCoupon')
         wepy.setStorageSync('discountType', 'you')
-        this.$parent.globalData.noUseDiscountBtn = true
+        this.$parent.updateGlobalData('noUseDiscountBtn', true)
+        wepy.setStorageSync('shareCoupon', 0)
         setTimeout(() => {
           wepy.navigateBack({
             delta: 1
@@ -134,7 +192,6 @@
     }
 
     events = {
-
       // 选择可用优惠卷
       choice(coupon) {
         this.noUseDiscountBtn = false
@@ -156,6 +213,26 @@
             delta: 1
           })
         }, 500)
+      },
+      shareChoice(coupon) {
+        this.noUseDiscountBtn = false
+        this.couponList.map((item) => {
+          console.log(item, coupon)
+          if (item.id === coupon.id) {
+            item.checked = true
+            this.$apply()
+            wepy.setStorageSync('shareCoupon', coupon)
+          } else {
+            item.checked = false
+            this.$apply()
+          }
+          return item
+        })
+        setTimeout(() => {
+          wepy.navigateBack({
+            delta: 1
+          })
+        }, 500)
       }
     }
   }
@@ -170,6 +247,7 @@
     width: 100%
     height: 100%
     z-index: 88
+
   .no-use-coupon
     display: flex
     flex-direction: row
@@ -179,8 +257,8 @@
     border-bottom: 1px solid $color-row-line
     padding: 15px 12px
     .no-use-left
-      font-size :$font-size-medium
-      color :$color-text
+      font-size: $font-size-medium
+      color: $color-text
       width: 82%
     .no-use-right
       width: 18%
@@ -189,6 +267,7 @@
         margin: 0 auto
         width: 17px
         height: 17px
+
   .coupon-con
     .couponList-box
       padding: 10px 12px 0
@@ -197,6 +276,7 @@
       color: $color-text
       font-size: $font-size-medium
       margin-top: 20px
+
   .empty-wrapper
     margin-top: 70px
     text-align: center

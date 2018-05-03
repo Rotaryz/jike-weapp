@@ -24,10 +24,17 @@
         </view>
       </view>
       <view class="price-wrapper border-top-1px border-bottom-1px">
+        <view class="content border-bottom-1px" wx:if="{{status === 'group' || status === 'share'}}" @tap.stop="shareCoupon({{status}})">
+          <view class="label">店铺优惠</view>
+          <view class="content-right">
+            <view class="content-right-txt {{userCoupon ? 'content-right-txt-user' : ''}}"><text class="content-right-title" wx:if="{{userCoupon}}">抵用券</text>{{userCoupon || '无可用券'}}<text class="content-right-money" wx:if="{{userCoupon}}">元</text> </view>
+            <image class="content-right-icon" wx:if="{{imageUri}}" src="{{imageUri + '/defaults/c-image/share/icon-arrows@2x.png'}}"></image>
+          </view>
+        </view>
         <view class="content">
           <view class="label">订单总价</view>
           <view class="price">
-            <text class="number">{{total}}</text>
+            <text class="number">{{orderInfo.from === 'C_sharemoney' ? shareMoney :total}}</text>
             <text class="yuan">元</text>
           </view>
         </view>
@@ -44,6 +51,7 @@
   import {ERR_OK} from 'api/base'
   import Order from 'api/order'
   import base from 'common/mixins/base'
+  import URIS from 'common/js/config'
 
   export default class PostOrder extends wepy.component {
     mixins = [base]
@@ -53,17 +61,23 @@
       industry: {
         type: String,
         default: ''
+      },
+      userCoupon: {
+        type: String,
+        default: ''
       }
     }
 
     data = {
+      imageUri: URIS.image,
       show: false,
       maskAnimation: '',
       modalAnimation: '',
       count: 1,
       stock: 0,
       peopleStock: -1,
-      total: 0
+      total: 0,
+      status: ''
     }
 
     _hide() {
@@ -91,15 +105,34 @@
         this.$apply()
       }, 200)
     }
-
+    onShow() {
+      if (this.activityStatus === 'share') {
+        let shareCoupon = wepy.getStorageSync('shareCoupon')
+        this.userCoupon = typeof (shareCoupon) === 'object' ? ` - ${shareCoupon.money}` : ''
+        this.$apply()
+      }
+    }
     methods = {
+      shareCoupon(status) {
+        if (status === 'share') {
+          let shareCoupon = wepy.getStorageSync('shareCoupon')
+          this.orderInfo.deduction_id = typeof (shareCoupon) === 'object' ? shareCoupon.id : 0
+          let activityId = this.orderInfo.activity_id
+          let url = `/pages/pay-coupon/pay-coupon?status=share&actId=${activityId}`
+          this.$parent.$navigate(url)
+        }
+      },
       descCount() {
         if (this.count <= 1) {
           this.count = 1
         } else {
           this.count -= 1
         }
-        this.total = this.count * this.orderInfo.price
+        if (this.orderInfo.from === 'C_sharemoney') {
+          this.total = (this.count * this.orderInfo.price).toFixed(1)
+          return
+        }
+        this.total = (this.count * this.orderInfo.price).toFixed(1)
       },
       addCount() {
         if (this.stock !== -1 && this.peopleStock === -1) {
@@ -113,17 +146,49 @@
         } else {
           this.count += 1
         }
-        this.total = this.count * this.orderInfo.price
+        if (this.orderInfo.from === 'C_sharemoney') {
+          this.total = (this.count * this.orderInfo.price).toFixed(1)
+          return
+        }
+        this.total = (this.count * this.orderInfo.price).toFixed(1)
       },
       async postOrder() {
         /* eslint-disable no-undef */
-        const {current_merchant, promotion_type, promotion_id, price} = this.orderInfo
-        const data = {
-          current_merchant,
-          promotion_type,
-          promotion_id,
-          price,
-          count: this.count
+        const {current_merchant, promotion_type, promotion_id, price, from, group_type, group_id, activity_id, deduction_id, is_share_money, share_customer_id} = this.orderInfo
+        let data
+        if (from === 'c_groupon') {
+          data = {
+            current_merchant,
+            promotion_type,
+            promotion_id,
+            price,
+            count: this.count,
+            from,
+            group_type,
+            group_id,
+            activity_id
+          }
+        } else if (from === 'C_sharemoney') {
+          data = {
+            current_merchant,
+            promotion_type,
+            promotion_id,
+            price,
+            from,
+            count: this.count,
+            activity_id,
+            deduction_id,
+            is_share_money,
+            share_customer_id
+          }
+        } else {
+          data = {
+            current_merchant,
+            promotion_type,
+            promotion_id,
+            price,
+            count: this.count
+          }
         }
         const json = await Order.operation(data)
         this.loaded()
@@ -143,10 +208,20 @@
             const orderId = res.order_id
             const total = this.total
             const status = 'success'
-            this.$parent.$navigate(`/pages/pay-result/pay-result?orderId=${orderId}&total=${total}&status=${status}`)
+            if (this.status === 'group') {
+              this.$emit('postSuccess', res.group_id)
+            } else {
+              this.$parent.$navigate(`/pages/pay-result/pay-result?orderId=${orderId}&total=${total}&status=${status}`)
+            }
             this._hide()
           },
-          fail: () => {
+          fail: (res) => {
+            if (this.status === 'share') {
+              this.orderInfo.deduction_id = 0
+            }
+//              单成功生成订单时需要锁定优惠券
+            this.$emit('failPay')
+
 //            const orderId = res.order_id
 //            const total = this.total
 //            const status = 'fail'
@@ -160,9 +235,10 @@
       hide() {
         this._hide()
       },
-      show() {
+      show(status = '') {
         this.total = this.count * this.orderInfo.price
         this.stock = this.orderInfo.stock
+        this.status = status
         this.peopleStock = this.orderInfo.peopleStock
         let modalAnimation = wepy.createAnimation({
           duration: 200,
@@ -187,6 +263,23 @@
           this.$apply()
         }, 200)
       }
+    }
+    computed = {
+      shareMoney() {
+        let shareMoney = this.userCoupon.slice(3)
+        return this.total - Math.abs(shareMoney)
+      }
+    }
+    watch = {
+      userCoupon(newVal) {
+//        let a = this.$parent.$parent.globalData('shareId')
+//        console.log(newVal, a)
+//        未确定
+        if (!newVal) {
+//          this.orderInfo.deduction_id = this.userCoupon ? this.orderInfo.deduction_id : 0
+        }
+      }
+
     }
   }
 </script>
@@ -272,6 +365,25 @@
               font-size: $font-size-large
             .yuan
               font-size: $font-size-small-s
+          .content-right
+            display: flex
+            align-items: center
+            height: 42px
+            .content-right-txt
+              font-size: $font-size-small
+              color: #A1A1A1
+            .content-right-txt-user
+              color :$color-text
+              font-family :$font-family-meddle
+              .content-right-money
+                font-size : $font-size-small-s
+                font-family :$font-family-regular
+              .content-right-title
+                font-family :$font-family-regular
+            .content-right-icon
+              width: 7px
+              height: 12px
+              margin-left: 5px
       .post-btn
         position: fixed
         bottom: 0

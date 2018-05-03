@@ -16,8 +16,8 @@ export default class Order extends base {
    * @param data
    * @returns {Promise.<*>}
    */
-  static async getCoupon(id) {
+  static async getCoupon(id, data = {}) {
     const url = `${this.baseUrl}/api/orders/get-coupon/${id}`
-    return await this.get(url)
+    return await this.get(url, data)
   }
 }

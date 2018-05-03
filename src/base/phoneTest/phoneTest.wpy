@@ -75,7 +75,8 @@
       phoneTestCover: false,
       phoneNum: 0,
       phoneCode: 0,
-      modify: false
+      modify: false,
+      type: ''
     }
 
     components = {
@@ -192,7 +193,7 @@
             self.$apply()
             tips.success(tipsMsg + '成功')
             setTimeout(() => {
-              self.$emit('isPhoneOk')
+              self.$emit('isPhoneOk', self.type)
             }, 500)
           } else {
             this.$invoke('Toast', 'show', resData.message)
@@ -201,8 +202,9 @@
       }
     }
 
-    show() {
+    show(type = '') {
       this.phoneTestCover = true
+      this.type = type
       this.$apply()
     }
 

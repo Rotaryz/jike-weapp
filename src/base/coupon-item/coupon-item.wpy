@@ -2,9 +2,16 @@
   <view class="coupon">
     <view class="coupon-item">
       <image class="coupon-bc" wx:if="{{imageUrlHead && type === 'buy'}}" src="{{imageUrlHead + '/defaults/c-image/mine/bg-coupon_yhq@2x.png'}}"></image>
-      <image class="coupon-bc" wx:if="{{imageUrlHead && type === 'pay' && coupon.canUsePay}}" src="{{imageUrlHead + '/defaults/c-image/template/bg-kycoupon_'+industry+'@2x.png'}}"></image>
-      <image class="coupon-bc" wx:if="{{imageUrlHead && type === 'pay' && !coupon.canUsePay}}" src="{{imageUrlHead + '/defaults/c-image/mine/bg-coupon_sxsyyh@2x.png'}}"></image>
-      <image class="coupon-bc" wx:if="{{imageUrlHead && type === 'mine' && coupon.promotion.promotion_type !== 'exchange' && coupon.promotion.status * 1 === 0}}" src="{{imageUrlHead + '/defaults/c-image/template/bg-kycoupon_'+industry+'@2x.png'}}"></image>
+      <image class="coupon-bc" wx:if="{{imageUrlHead && type === 'pay'  && coupon.canUsePay}}" src="{{imageUrlHead + '/defaults/c-image/template/bg-kycoupon_'+industry+'@2x.png'}}"></image>
+      <image class="coupon-bc" wx:if="{{imageUrlHead && type === 'pay'  && !coupon.canUsePay}}" src="{{imageUrlHead + '/defaults/c-image/mine/bg-coupon_sxsyyh@2x.png'}}"></image>
+      <!--分享赚钱使用优惠券-->
+      <image class="coupon-bc" wx:if="{{imageUrlHead && type ==='share' && coupon.status === 0}}" src="{{imageUrlHead + '/defaults/c-image/template/bg-kycoupon_'+industry+'@2x.png'}}"></image>
+      <image class="coupon-bc" wx:if="{{imageUrlHead && type === 'share' && coupon.status !== 0}}" src="{{imageUrlHead + '/defaults/c-image/mine/bg-coupon_sxsyyh@2x.png'}}"></image>
+
+      <image class="coupon-bc" wx:if="{{imageUrlHead && type === 'mine' && (coupon.promotion.promotion_type !== 'exchange' || coupon.promotion_type !== 'deduction') && coupon.promotion.status * 1 === 0}}" src="{{imageUrlHead + '/defaults/c-image/template/bg-kycoupon_'+industry+'@2x.png'}}"></image>
+      <!--分享赚钱-->
+      <image class="coupon-bc" wx:if="{{imageUrlHead &&  type === 'shareBuy' && coupon.deduction_status * 1 === 0}}" src="{{imageUrlHead + '/defaults/c-image/template/bg-kycoupon_'+industry+'@2x.png'}}"></image>
+      <image class="coupon-bc" wx:if="{{imageUrlHead &&  type === 'shareBuy' && coupon.deduction_status * 1 !== 0}}" src="{{imageUrlHead + '/defaults/c-image/template/bg-coupon_disable@2x.png'}}"></image>
       <image class="coupon-bc" wx:if="{{imageUrlHead && type === 'mine' && coupon.promotion.promotion_type !== 'exchange' && coupon.promotion.status * 1 !== 0}}" src="{{imageUrlHead + '/defaults/c-image/mine/bg-coupon_disable@2x.png'}}"></image>
       <image class="coupon-bc" wx:if="{{imageUrlHead && type === 'mine' && coupon.promotion.promotion_type === 'exchange'}}" src="{{imageUrlHead + '/defaults/c-image/mine/bg-coupon-dhq@2x.png'}}"></image>
       <view class="coupon-content" wx:if="{{type === 'buy'}}" @tap="buyCouponClick('buy', {{coupon}})">
@@ -52,6 +59,8 @@
             <view class="small-money" style="font-size:18px" wx:if="{{coupon.promotion.promotion_type === 'discount'}}">折</view>
           </view>
           <view class="left-sub" wx:if="{{coupon.promotion.promotion_type === 'reduction' || coupon.promotion.promotion_type === 'discount'}}">{{coupon.promotion.config.meet_money === -1 ? '无限制使用' : '满' + coupon.promotion.config.meet_money + '可用'}}</view>
+          <!--分享赚钱的标签-->
+          <!--<view class="left-sub" wx:if="{{coupon.promotion.promotion_type === 'reduction'}}">仅分享赚钱</view>-->
         </view>
         <view class="coupon-middle">
           <view class="coupon-middle-top">
@@ -70,8 +79,34 @@
           <image class="right-img" wx:if="{{imageUrlHead && !coupon.canUsePay}}" src="{{imageUrlHead + '/defaults/c-image/pay/icon-notselect@2x.png'}}"></image>
         </view>
       </view>
-
-      <view class="mine-coupon-content {{coupon.promotion.status * 1 === 0 ? '' : 'dis'}}" wx:if="{{type === 'mine' && coupon.promotion.promotion_type !== 'exchange'}}" @tap="buyCouponClick('mine', {{coupon}})">
+      <!--分享赚钱列表-->
+      <view class="pay-coupon-content share-coupon-content {{coupon.canUsePay ? '' : 'dis'}}" wx:if="{{type === 'share'}}" @tap="buyCouponClick('share', {{coupon}})">
+        <view class="coupon-left">
+          <view class="left-money">
+            <view class="small-money" style="font-size:{{coupon.promotion.flag.length > 4 ?'10px' : '18px'}}">¥</view>
+            <view class="big-money" style="font-size:{{coupon.promotion.flag.length > 4 ?'18px' : '30px'}}">{{coupon.money}}</view>
+          </view>
+          <view class="left-sub">仅分享赚钱</view>
+        </view>
+        <view class="coupon-middle">
+          <view class="coupon-middle-top">
+            <view class="share-top-name">
+              <text class="top-label">{{coupon.promotion_type_cn}}</text><text class="share-name">{{coupon.title}}</text>
+            </view>
+            <!--<view class="top-title">{{coupon.title}}</view>-->
+          </view>
+          <view class="coupon-middle-down">
+            <text class="down-time {{industry + '-opacity'}}">{{coupon.end_at}}到期</text>
+          </view>
+        </view>
+        <view class="coupon-right">
+          <image class="right-img" wx:if="{{imageUrlHead && coupon.status === 0 && coupon.checked}}" src="{{imageUrlHead + '/defaults/c-image/template/icon-select_'+industry+'@2x.png'}}"></image>
+          <image class="right-img" wx:if="{{imageUrlHead && coupon.status === 0 && !coupon.checked}}" src="{{imageUrlHead + '/defaults/c-image/pay/icon-notselect_syyh@2x.png'}}"></image>
+          <image class="right-img" wx:if="{{imageUrlHead && coupon.status !== 0}}" src="{{imageUrlHead + '/defaults/c-image/pay/icon-notselect@2x.png'}}"></image>
+        </view>
+      </view>
+      <!--我的-->
+      <view class="mine-coupon-content {{coupon.promotion.status * 1 === 0 ? '' : 'dis'}}" wx:if="{{(type === 'mine') && coupon.promotion.promotion_type !== 'exchange'}}" @tap="buyCouponClick('mine', {{coupon}})">
         <view class="coupon-left">
           <view class="left-money">
             <view class="small-money" style="font-size:{{coupon.promotion.flag.length > 4 ?'10px' : '18px'}}" wx:if="{{coupon.promotion.promotion_type !== 'discount'}}">¥</view>
@@ -95,6 +130,35 @@
           <view class="use-btn {{industry + '-bg'}}" wx:if="{{coupon.promotion.status * 1 === 0}}">立即使用</view>
           <image class="right-img" wx:if="{{imageUrlHead && coupon.promotion.status * 1 === 1}}" src="{{imageUrlHead + '/defaults/c-image/mine/pic-my_already .png'}}"></image>
           <image class="right-img" wx:if="{{imageUrlHead && coupon.promotion.status * 1 === 2}}" src="{{imageUrlHead + '/defaults/c-image/mine/icon_overdue@2x.png'}}"></image>
+        </view>
+      </view>
+      <!--分享-->
+      <view class="mine-coupon-content {{coupon.deduction_status * 1 === 0 ? '' : 'dis'}}" wx:if="{{ type === 'shareBuy'}}" @tap="buyCouponClick('shareBuy', {{coupon}})">
+        <view class="coupon-left">
+          <view class="left-money">
+            <view class="small-money" style="font-size:{{coupon.promotion.flag.length > 4 ?'10px' : '18px'}}" wx:if="{{coupon.promotion.promotion_type !== 'discount'}}">¥</view>
+            <view class="big-money" style="font-size:{{coupon.promotion.flag.length > 4 ?'18px' : '30px'}}">{{coupon.price}}</view>
+          </view>
+        </view>
+        <view class="coupon-middle">
+          <view class="ro-coupon-middle-top">
+            <view class="ro-top-shopName">
+              <view class="ro-top-label">{{coupon.promotion_type_cn}}</view><view class="ro-top-big-name">{{coupon.title}}</view>
+            </view>
+            <view class="top-title"></view>
+          </view>
+          <view class="coupon-middle-down">
+            <text class="down-time {{coupon.deduction_status * 1 === 0 ? industry + '-opacity' : ''}}">仅限该商品使用</text>
+          </view>
+        </view>
+        <view class="coupon-right">
+          <view class="use-btn {{industry + '-bg'}}" wx:if="{{coupon.deduction_status * 1 === 0}}">立即领取</view>
+          <!--以领取-->
+          <image class="right-img" wx:if="{{imageUrlHead && coupon.deduction_status * 1 === 1}}" src="{{imageUrlHead + '/defaults/c-image/recommend/icon_receive@2x.png'}}"></image>
+          <!--数量为零-->
+          <image class="right-img" wx:if="{{imageUrlHead && coupon.deduction_status * 1 === 2}}" src="{{imageUrlHead + '/defaults/c-image/recommend/icon_comprehend@2x.png'}}"></image>
+          <!--过期-->
+          <image class="right-img" wx:if="{{imageUrlHead && coupon.deduction_status * 1 === 3}}" src="{{imageUrlHead + '/defaults/c-image/mine/pic-my_overdue.png'}}"></image>
         </view>
       </view>
 
@@ -176,8 +240,19 @@
           case 'mine':
             if (coupon.promotion.status * 1 === 0 && (coupon.promotion.promotion_type === 'reduction' || coupon.promotion.promotion_type === 'discount')) {
               this.$emit('payUse', coupon) // 折扣券，满减券跳详情
-            } else if (coupon.promotion.status * 1 === 0 && (coupon.promotion.promotion_type === 'voucher' || coupon.promotion.promotion_type === 'cash' || coupon.promotion.promotion_type === 'exchange')) {
+            } else if (coupon.promotion.status * 1 === 0 && (coupon.promotion.promotion_type === 'voucher' || coupon.promotion.promotion_type === 'cash' || coupon.promotion.promotion_type === 'exchange' || coupon.promotion.promotion_type === 'deduction')) {
               this.$emit('showQrcord', coupon) // 套餐券，代金券，兑换券跳二维码
+            }
+            break
+          case 'shareBuy':
+//           分享赚钱
+            if (coupon.deduction_status * 1 === 0) {
+              this.$emit('shareBuy', coupon)
+            }
+            break
+          case 'share':
+            if (coupon.status === 0) {
+              this.$emit('shareChoice', coupon)
             }
             break
         }
@@ -413,6 +488,7 @@
                 color: $color-text
                 font-family: PingFang-SC-Regular
 
+
             .top-title
               font-family: PingFang-SC-Regular
               font-size: $font-size-medium
@@ -489,15 +565,15 @@
           justify-content: space-between
           box-sizing: border-box
           padding: 4.13333vw 3.6vw
-
+          position: relative
           .coupon-middle-top
-            .top-shopName
+            .top-shopName,.ro-top-shopName
               line-height: 18px
               overflow: hidden
               text-overflow: ellipsis
               white-space: nowrap
 
-              .top-label
+              .top-label,.ro-top-label
                 display: inline-block
                 width: 31px
                 height: 14px
@@ -510,16 +586,54 @@
                 line-height: 14px
                 margin-right: 4px
                 vertical-align: middle
-              .top-name
+              .top-name,.ro-top-big-name
                 font-size: $font-size-small
                 color: $color-text
+                font-family: PingFang-SC-Regular
+            .top-title
+              font-family: PingFang-SC-Regular
+              font-size: $font-size-medium
+              min-height: $font-size-medium
+              color: $color-text
+              margin-top: 6px
+              overflow: hidden
+              text-overflow: ellipsis
+              white-space: nowrap
+          .ro-coupon-middle-top
+            position: relative
+            height: 100%
+            .ro-top-shopName
+              position: relative
+              .ro-top-label
+                position: absolute
+                top: 0
+                left: 0
+                width: 31px
+                height: 14px
+                border: 1px solid #5D596F
+                border-radius: 1.5px
+                font-family: PingFang-SC-Regular
+                font-size: 9px
+                color: #706B82
+                text-align: center
+                line-height: 14px
+                margin-right: 4px
+                vertical-align: middle
+              .ro-top-big-name
+                text-indent :35px
+                font-size: $font-size-medium
+                color: $color-text
+                width :35.33vw
+                line-height: 18px
                 font-family: PingFang-SC-Regular
 
             .top-title
               font-family: PingFang-SC-Regular
               font-size: $font-size-medium
+              min-height: $font-size-medium
               color: $color-text
-              margin-top: 6px
+              position: absolute
+              bottom: 19.5px
               overflow: hidden
               text-overflow: ellipsis
               white-space: nowrap
@@ -550,14 +664,14 @@
             height: 60px
       .mine-coupon-content.dis
         .coupon-middle
-          .coupon-middle-top
-            .top-shopName
-              .top-label
+          .coupon-middle-top, .ro-coupon-middle-top
+            .top-shopName, .ro-top-shopName
+              .top-label, .ro-top-label
                 border: 1px solid #DBDBDB
                 color: #DBDBDB
               .top-name
                 color: #DBDBDB
-            .top-title
+            .top-title, .ro-top-big-name
               color: #DBDBDB
           .coupon-middle-down
             .down-time
@@ -679,4 +793,26 @@
       text-align: center
       border-top: 0 none
       background: $color-white
+
+  .share-coupon-content
+    .coupon-middle
+      width: 49% !important
+    .share-top-name
+      .top-label
+        display: inline-block
+        width: 31px
+        height: 14px
+        border: 1px solid #5D596F
+        border-radius: 1.5px
+        font-family: PingFang-SC-Regular
+        font-size: 9px
+        color: #706B82
+        text-align: center
+        line-height: 14px
+        margin-right: 4px
+        vertical-align: middle
+    .share-name
+      color :$color-text
+      font-size :$font-size-medium
+      width :60px
 </style>
