@@ -89,6 +89,8 @@
         border-radius: 2px
         margin-right: 9px
         background: $color-pay
+        box-sizing: border-box
+        border: 0.5px solid $color-col-line
       .ro-order-content
         .ro-order-content-tip-box
           display: flex
