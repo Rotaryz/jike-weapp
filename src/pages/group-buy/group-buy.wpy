@@ -4,7 +4,7 @@
       <navigator url="{{'/pages/coupon-detail/coupon-detail?type=1&status=group&id=' + item.promotion_id + '&currentMerchant=' + item.merchant_id + '&groupId=' + item.id}}" hover-class="none">
         <view class="item-box">
           <view class="item-left">
-            <image class="item-left-img" src="{{item.promotion_image}}"></image>
+            <image class="item-left-img" src="{{item.promotion_image}}" mode="aspectFill"></image>
             <view class="item-left-txt">{{item.group_number}}人团</view>
           </view>
           <view class="item-right">
