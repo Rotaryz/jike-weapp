@@ -9,6 +9,14 @@ export default class Merchants extends base {
     const url = `${this.baseUrl}/api/merchants/plaza-merchants`
     return await this.get(url)
   }
+  /**
+   * 获取广场商家列表new
+   * @returns {Promise.<*>}
+   */
+  static async getPlazaMerchantsNew() {
+    const url = `${this.baseUrl}/api/merchants/plaza/merchants`
+    return await this.get(url)
+  }
 
   /**
    * 获取商家详情

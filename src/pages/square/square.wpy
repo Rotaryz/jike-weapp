@@ -1,158 +1,71 @@
 <template>
-  <map id="map"
-       scale="18"
-       longitude="{{longitude}}"
-       latitude="{{latitude}}"
-       controls="{{controls}}"
-       bindcontroltap="controltap"
-       markers="{{markers}}"
-       bindmarkertap="markertap"
-       polyline="{{polyline}}"
-       bindtap="tapMap"
-       bindregionchange="regionchange">
-    <cover-view class="shop-modal {{showSlide ? 'show' : ''}}">
-      <cover-view class="modal-bg-wrapper">
-        <cover-image class="modal-bg" wx:if="{{imageUri}}"
-                     src="{{imageUri + '/defaults/c-image/square/pic-s_bg@2x.png'}}"></cover-image>
-      </cover-view>
-      <cover-view class="modal">
-        <cover-view class="location">
-          <cover-image wx:if="{{imageUri}}"
-                       src="{{imageUri + '/defaults/c-image/square/icon-s_location@2x.png'}}"
-                       mode="scaleToFill" class="icon-location"></cover-image>
-          <cover-view class="content">{{currentMerchant.particular_address}}
-          </cover-view>
-        </cover-view>
-        <cover-view class="shop">
-          <cover-view class="top" @tap="switchRecommend">
-            <cover-view class="desc">
-              <cover-view class="title">{{currentMerchant.shop_name}}
-              </cover-view>
-              <cover-view class="subhead">{{currentMerchant.describe}}
-              </cover-view>
-            </cover-view>
-            <cover-view class="logo-wrapper">
-              <cover-image wx:if="{{imageUri}}"
-                           src="{{imageUri + '/defaults/c-image/square/pic-s_shopbg@2x.png'}}"
-                           class="image"></cover-image>
-              <cover-image wx:if="{{imageUri && currentMerchant.code_name}}"
-                           class="industry"
-                           src="{{imageUri + '/defaults/c-image/square/icon-s_' + currentMerchant.code_name + '@2x.png'}}"></cover-image>
-              <cover-image wx:if="{{currentMerchant.logo_image}}"
-                           src="{{currentMerchant.logo_image}}"
-                           class="logo"></cover-image>
-            </cover-view>
-            <cover-view class="comment">
-              <cover-view class="comment-content">
-                <cover-view class="stars">
-                  <repeat for="{{stars}}" index="{{index}}" key="{{index}}">
-                    <cover-image wx:if="{{imageUri}}"
-                                 src="{{imageUri + '/defaults/c-image/square/icon-s_evaluate@2x.png'}}"
-                                 class="icon-star"></cover-image>
-                  </repeat>
-                  <cover-view class="star-level">
-                    {{currentMerchant.star_level !== '0.0' ? currentMerchant.star_level : '5.0'}}
-                  </cover-view>
-                </cover-view>
-                <cover-view class="store">
-                  {{currentMerchant.favorite_count}}人已收藏
-                </cover-view>
-              </cover-view>
-            </cover-view>
-          </cover-view>
-          <cover-view class="bottom">
-            <cover-image class="line"
-                         wx:if="{{imageUri}}"
-                         src="{{imageUri + '/defaults/c-image/square/pic-s_line@2x.png'}}"></cover-image>
-            <cover-view class="content-wrapper">
-              <cover-view class="item">
-                <cover-image wx:if="{{imageUri}}"
-                             src="{{imageUri + '/defaults/c-image/square/icon-s_distance@2x.png'}}"
-                             class="icon"></cover-image>
-                <cover-view class="content">距离{{distance}}米</cover-view>
-              </cover-view>
-              <cover-view class="item">
-                <cover-image wx:if="{{imageUri}}"
-                             src="{{imageUri + '/defaults/c-image/square/icon-s_swalk@2x.png'}}"
-                             class="icon"></cover-image>
-                <cover-view class="content">步行{{duration}}分钟</cover-view>
-              </cover-view>
-              <cover-view class="item" @tap="openLocation">
-                <cover-image wx:if="{{imageUri}}"
-                             src="{{imageUri + '/defaults/c-image/square/icon-s_navigation@2x.png'}}"
-                             class="icon"></cover-image>
-                <cover-view class="content">开始导航</cover-view>
-              </cover-view>
-              <cover-view class="item" @tap="makePhoneCall">
-                <cover-image wx:if="{{imageUri}}"
-                             src="{{imageUri + '/defaults/c-image/square/icon-s_tel@2x.png'}}"
-                             class="icon"></cover-image>
-                <cover-view class="content">打电话</cover-view>
-              </cover-view>
-            </cover-view>
-          </cover-view>
-        </cover-view>
-        <cover-view class="tip-wrapper" @tap="switchRecommend">
-          <cover-view class="hot-wrapper">
-            <cover-image class="hot"
-                         wx:if="{{imageUri}}"
-                         src="{{imageUri + '/defaults/c-image/square/pic-s_hot@2x.png'}}"></cover-image>
-          </cover-view>
-          <cover-view class="tips">
-            <cover-view class="box"
-                        style="height: {{scrollHeight}}px;transition: {{transition}};transform: {{transform}}">
-              <repeat for="{{tips}}" key="index" index="index" item="item">
-                <cover-view class="tip">
-                  <cover-view class="item-wrapper">
-                    <cover-view class="icon-wrapper">
-                      <cover-image class="icon"
-                                   wx:if="{{imageUri}}"
-                                   src="{{imageUri + '/defaults/c-image/square/pic-s_activity@2x.png'}}"></cover-image>
-                    </cover-view>
-                    <cover-view class="word">
-                      {{item.activity}}活动开启中
-                    </cover-view>
-                  </cover-view>
-                  <cover-view class="item-wrapper">
-                    <cover-view class="icon-wrapper">
-                      <cover-image class="icon"
-                                   wx:if="{{imageUri}}"
-                                   src="{{imageUri + '/defaults/c-image/square/pic-s_coupon@2x.png'}}"></cover-image>
-                    </cover-view>
-                    <cover-view class="word">
-                      {{item.title ? item.title + '正在疯抢中' : '您的优惠券正在路上'}}
-                    </cover-view>
-                  </cover-view>
-                </cover-view>
-              </repeat>
-              <cover-view class="tip" wx:if="{{tips.length > 0}}">
-                <cover-view class="item-wrapper">
-                  <cover-view class="icon-wrapper">
-                    <cover-image class="icon"
-                                 wx:if="{{imageUri}}"
-                                 src="{{imageUri + '/defaults/c-image/square/pic-s_activity@2x.png'}}"></cover-image>
-                  </cover-view>
-                  <cover-view class="word">
-                    {{tips[0].activity}}活动开启中
-                  </cover-view>
-                </cover-view>
-                <cover-view class="item-wrapper">
-                  <cover-view class="icon-wrapper">
-                    <cover-image class="icon"
-                                 wx:if="{{imageUri}}"
-                                 src="{{imageUri + '/defaults/c-image/square/pic-s_coupon@2x.png'}}"></cover-image>
-                  </cover-view>
-                  <cover-view class="word">
-                    {{tips[0].title ? tips[0].title + '正在疯抢中' : '您的优惠券正在路上'}}
-                  </cover-view>
-                </cover-view>
-              </cover-view>
-            </cover-view>
-          </cover-view>
-        </cover-view>
-      </cover-view>
-    </cover-view>
-  </map>
+  <view class="view-page">
+    <view class="view-scroll">
+      <swiper class="swiper" bindchange="swBindchange"  current="{{itemId}}">
+        <repeat for="{{merchantInfos}}" key="index" index="index" item="item">
+          <swiper-item class="item-swi">
+            <view class="swiper-info"></view>
+            <view class="swiper-info-s">
+              <view class="swiper-info-title" @tap="offShop({{item}})">
+                <view class="swiper-info-shop">
+                  <view class="view_1">{{item.shop_name}}</view>
+                  <view class="view_2">{{item.distance}}</view>
+                </view>
+                <view class="swiper-info-remark">
+                  <view class="view_1">
+                    <view class="view_1_1"><view class="bg"></view>大众点评{{item.shop_power}}分</view>
+                    <view class="view_1_2" wx:if="{{item.has_groupon}}">团</view>
+                    <view class="view_1_2">买</view>
+                    <view class="view_1_2" wx:if="{{item.has_promotion}}">券</view>
+                  </view>
+                  <view class="view_2">
+                    <image src="{{imageUri + '/defaults/c-image/square/icon-s_right2@2x.png'}}"></image>
+                  </view>
+                </view>
+              </view>
+              <view class="border-1px"></view>
+              <view class="swiper-info-nav">
+                <view class="nav-item" @tap="offShop({{item}},0)">
+                  <image src="{{imageUri + '/defaults/c-image/square/icon-choiceness@2x.png'}}"></image>
+                  <view>精选优惠</view>
+                </view>
+                <view class="nav-item" @tap="offShop({{item}},1)">
+                  <image src="{{imageUri + '/defaults/c-image/square/icon-content@2x.png'}}"></image>
+                  <view>优质内容</view>
+                </view>
+                <view class="nav-item" @tap="offShop({{item}},2)">
+                  <image src="{{imageUri + '/defaults/c-image/square/icon-pay@2x.png'}}"></image>
+                  <view>快捷买单</view>
+                </view>
+              </view>
+            </view>
+            <image class="item-img" src="{{item.shop_image}}"></image>
+          </swiper-item>
+        </repeat>
+      </swiper>
+      <view class="swiper-active">
+        <view class="swiper-active-t">
+          <repeat for="{{merchantInfos}}" key="index" index="index" item="item">
+            <view class="item-swi {{index === topFlag ? 'action' : ''}}"></view>
+          </repeat>
+        </view>
+      </view>
+    </view>
+    <map id="map"
+         scale="{{scale}}"
+         show-location="true"
+         longitude="{{longitude}}"
+         latitude="{{latitude}}"
+         controls="{{controls}}"
+         markers="{{markers}}"
+         polyline="{{polyline}}"
+         bindcontroltap="controltap"
+         bindmarkertap="markertap"
+         bindregionchange="regionchange">
+      <cover-image class="tab-shadow" wx:if="{{imageUri}}" src="{{imageUri + '/defaults/circle-image/square/bg-s_title@2x.png'}}"></cover-image>
+      <integral-popout></integral-popout>
+    </map>
+  </view>
 </template>
 <script>
   import wepy from 'wepy'
@@ -162,10 +75,14 @@
   import Merchants from 'api/merchants'
   import URIS from 'common/js/config'
   import GDMap from 'common/libs/amap-wx'
-
+  import IntegralPopout from '@/base/integral-popout/integral-popout'
+  // const json = await Merchants.getPlazaMerchantsNew()
+  const CURRENT = 0
   export default class Square extends wepy.page {
     mixins = [users, base]
-
+    components = {
+      'integral-popout': IntegralPopout
+    }
     data = {
       imageUri: URIS.image,
       firstUpdate: false,
@@ -173,8 +90,8 @@
       isControlSlide: false,
       showSlide: true,
       location: {},
-      longitude: '',
-      latitude: '',
+      longitude: 0,
+      latitude: 0,
       moveLongitude: '',
       moveLatitude: '',
       merchants: [],
@@ -194,88 +111,176 @@
       scrollHeight: 60,
       activeIndex: 0,
       transform: '',
-      transition: ''
+      transition: '',
+      titleList: [],
+      topFlag: 0,
+      scale: 18,
+      merchantInfos: [],
+      senceInfos: [],
+      itemId: '',
+      mapContext: {}
     }
 
     async onLoad() {
-      this._newMap()
-      await this.load()
-      this.loaded()
+      await this._init()
     }
 
-    async onShow() {
-      await this.showIndustry()
-      let shopName = wepy.getStorageSync('shop') ? wepy.getStorageSync('shop').shop_name : this.shopName
-      this.clearTimer()
-      await this.show()
-      wepy.setNavigationBarTitle({
-        title: shopName
-      })
-      this.loaded()
+    // 初始化
+    async _init() {
+      this._newMapGD()
+      await this.isAuthorise()
+      await this._getVia()
+      await this._getMapContext()
     }
-
-    onHide() {
-      this.clearTimer()
-      this.isControlSlide = true
-    }
-
-    _newMap() {
+    // 创建高德地图
+    _newMapGD() {
       this.gdmapsdk = new GDMap.AMapWX({key: 'd3950730147fbf5fe991ecc0344968b4'})
     }
-
-    async load() {
-      await this._newMapContext()
-    }
-
-    async show() {
-      await this._setLoaction()
-      await this._setControls()
-      await this._getPlazaMerchants()
-//      await this._translateMarkers()
-      if (this.isControlSlide) {
-        this.controlSlide()
-      }
-    }
-
-    controlSlide() {
-      const activeIndex = this.markers.find((item) => item.id === this.activeMarkerId)
-      if (activeIndex === -1) {
-        this.showSlide = false
-        this.$apply()
-        return
-      }
-      this.activeIndex = 0
-      this.transition = ''
-      this.transform = 'translate3d(0, 0, 0)'
-      this._setTipTimer()
-    }
-
-    async _newMapContext() {
-      this.mapContext = wepy.createMapContext('map')
-    }
-
-    async _setLoaction() {
-      const res = await wepy.getLocation({type: 'gcj02'})
-      this.location = {
-        latitude: res.latitude,
-        longitude: res.longitude
-      }
-      const location = [{
-        id: 0,
-        iconPath: './icon-s_sister@2x.png',
-        latitude: res.latitude,
-        longitude: res.longitude,
-        width: 18,
-        height: 27
-      }]
-      this.locations = location
+    // 获取微信头像
+    async _getVia() {
+      const userInfo = await this.$getUser()
+      this.avatarUrl = userInfo.avatarUrl
       this.$apply()
     }
+    // 获取map上下文
+    async _getMapContext() {
+      this.mapContext = await wepy.createMapContext('map')
+    }
+    async onShow() {
+      await this._toShowInit()
+    }
+    // 显示初始化
+    async _toShowInit() {
+      await this._getAllSenceLocation()
+      await this._setControls()
+      await this._getShopList()
+      await this._setSenceLocation()
+      await this._addSenceIcon()
+      await this._addIcons()
+      this.loaded()
+    }
+    // 获取所有场景信息
+    async _getAllSenceLocation() {
+      // let current =
+      await this._getLocationInfo(CURRENT)
+      // this._setSenceInfos(CURRENT, current)
+      this.$apply()
+    }
+    // 获取当前的经纬度
+    async _getLocationInfo(type) {
+      let longitude = 0
+      let latitude = 0
+      if (type * 1) {
+        type = Math.abs(type)
+        const res = await Merchants.getDimension(type)
+        if (res.error === ERR_OK) {
+          longitude = res.data.app_longitude
+          latitude = res.data.app_latitude
+        }
+      } else {
+        const res = await wepy.getLocation({type: 'gcj02'})
+        latitude = res.latitude
+        longitude = res.longitude
+      }
+      return {longitude, latitude}
+    }
 
+    // 设置当前场景信息
+    async _setSenceInfos(id, res) {
+      // 经纬度都为0时return
+      if (!(res.longitude && res.latitude)) return
+      let iconPath = '' // ./icon-s_sister@2x.png
+      this.senceInfos[id] = {
+        id,
+        longitude: res.longitude,
+        latitude: res.latitude,
+        width: 18,
+        height: 18,
+        iconPath: iconPath
+      }
+      this.$apply()
+    }
+    // 获取单店信息
+    async _getShopList() {
+      const json = await Merchants.getPlazaMerchantsNew()
+      if (json.error === ERR_OK) {
+        const res = json.data
+        // /** 模拟数据 **/
+        // for (let i = 0; i < 5; i++) {
+        //   this.merchantInfos.push(Object.assign({}, res[0]))
+        // }
+        // this.merchantInfos.forEach((item, index) => {
+        //   item.id = index + 1
+        //   item.latitude = index / 200 + parseFloat(item.latitude)
+        //   item.longitude = index / 200 + parseFloat(item.longitude)
+        // })
+        // // console.log(this.merchantInfos)
+        // /** 模拟数据 **/
+        this.merchantInfos = res
+        this.merchantInfos.forEach((item) => {
+          if (item.distance >= 1000) {
+            let n = item.distance / 1000
+            item.distance = n.toFixed(2) + 'km'
+          } else {
+            item.distance = item.distance + '米'
+          }
+        })
+        // console.log(this.merchantInfos)
+        this.$apply()
+      }
+    }
+    // 设置场景经纬度
+    async _setSenceLocation(id) {
+      // const res = this.senceInfos['' + id]
+      // this.latitude = res.latitude
+      // this.longitude = res.longitude
+      // console.log(this.merchantInfos)
+      this.latitude = this.merchantInfos[0].latitude
+      this.longitude = this.merchantInfos[0].longitude
+      this.$apply()
+    }
+    // 添加当前场景icon
+    async _addSenceIcon() {
+      let obj = this.senceInfos[0]
+      this.markers.push(obj)
+    }
+    // 添加map上的图标
+    async _addIcons() {
+      let markers = []
+      this.merchantInfos.map((item, index) => {
+        let icon = 'black_'
+        let w = 26
+        let h = 26
+        if (this.activeMarkerId === item.id) {
+          icon = 'red_'
+        }
+        if (index === 0) {
+          icon = 'red_'
+          w = 30
+          h = 30
+        }
+        markers.push({ // icon-black_baby@2x
+          iconPath: `./icon-${icon + item.industry.code_name}@2x.png`,
+          id: item.id,
+          latitude: item.latitude,
+          longitude: item.longitude,
+          width: w,
+          height: h,
+          hasActivity: item.has_activity,
+          merchantId: item.merchant_id
+        })
+      })
+      this.markers = markers
+      this.$apply()
+      this._setPolyline()
+    }
+    // 设置控件
     async _setControls() {
       const res = await wepy.getSystemInfo()
       let width = res.windowWidth
-      let height = res.windowHeight
+      let height = res.windowHeight - 190 - 50
+      // 判断是否有控件
+      if (this.controls.length > 0) return
       this.controls.push({
         id: 1,
         iconPath: './icon-s_return@2x.png',
@@ -283,316 +288,202 @@
         position: {
           width: 36,
           height: 36,
-          left: width - 49,
-          top: height - 85
+          left: width - 50,
+          top: height
         }
       })
     }
-
-    async _getPlazaMerchants() {
-      const json = await Merchants.getPlazaMerchants()
-      if (json.error === ERR_OK) {
-        const res = json.data
-        this.merchants = res
-        res.forEach((item) => {
-          if (item.current_merchant) {
-            this.activeMarkerId = item.id
-            this.longitude = item.longitude
-//            this.latitude = item.latitude
-            this.latitude = item.latitude + 0.001
-            this.$apply()
-          }
-        })
-        const markers = res.map((item) => {
-          if (item.id === this.activeMarkerId) {
-            return {
-              iconPath: `./icon-s_${item.industry.code_name}@2x.png`,
-              id: item.id,
-              latitude: item.latitude,
-              longitude: item.longitude,
-              width: 48,
-              height: 50,
-              hasActivity: item.has_activity
-            }
-          }
-          return {
-            iconPath: `./icon-s_${item.industry.code_name}@2x.png`,
-            id: item.id,
-            latitude: item.latitude,
-            longitude: item.longitude,
-            width: 32,
-            height: 34,
-            hasActivity: item.has_activity
-          }
-        })
-        this.markers = [...this.locations, ...markers]
-        this.bigMarkerIndex = this.markers.findIndex((item) => item.id === this.activeMarkerId)
-        this._setPolyline(this.markers[this.bigMarkerIndex].id)
-        this._scaleMarker(1)
-        const currentMerchant = res.find((item) => item.id === this.activeMarkerId)
-        await this._getMerchantDetail(currentMerchant.merchant_id)
-//          setTimeout(() => {
-//            this.showSlide = true
-//            this.$apply()
-//          }, 3000)
-        this._setIncludePoints([])
-        this.$apply()
-      }
+    // 清除
+    onHide() {
+      this._clearMapData()
     }
-
-    _setIncludePoints(points) {
-      this.includePoints = points
+    // 清理地图数据
+    _clearMapData() {
+      this.merchantInfos = []
+      this.senceInfos = {}
+      this.markers = []
       this.$apply()
     }
-
-    _setPolyline(id) {
-      const location = this.markers.find((item) => item.id === 0)
-      const target = this.markers.find((item) => item.id === id)
-      this.polyline = [{
-        points: [
-          {
-            latitude: location.latitude,
-            longitude: location.longitude
-          }, {
-            latitude: target.latitude,
-            longitude: target.longitude
-          }
-        ],
-        color: '#706B82AA',
-        width: 2,
-        dottedLine: true
-      }]
+    // icon关联商铺
+    async setNav(e) {
+      // 商铺关联icon
+      let id = e.markerId
+      let data = {}
+      this.merchantInfos.forEach((item, index) => {
+        if (item.id === id) {
+          this.navIndex = index
+          data = item
+          this.$apply()
+        }
+      }) // leftIndex
+      this.itemId = this.navIndex
+      this.topFlag = this.navIndex
+      this.translateMarker(data)
       this.$apply()
     }
+    // 定位到中间
+    translateMarker(e) {
+      // console.log(e)
+      // this.mapContext.translateMarker({
+      //   markerId: e.id,
+      //   autoRotate: true,
+      //   duration: 1000,
+      //   destination: {
+      //     latitude: e.latitude,
+      //     longitude: e.longitude
+      //   },
+      //   animationEnd() {
+      //     console.log('animation end')
+      //   }
+      // })
+      this.longitude = e.longitude
+      this.latitude = e.latitude
+      this.$apply()
+    }
+    // 商铺关联icon
+    async setIcons(e) {
+      let markerId = e.id
+      // 点击当前或家或公司return
+      if (markerId <= 0) {
+        return
+      }
+      // 如果id相同则return
+      if (this.activeMarkerId === markerId) {
+        return
+      }
+      this._scaleMarker(0)
+      // 获取店家信息
+      this.activeMarkerId = markerId
+      let currentMerchant = this.markers.find((item) => item.id === markerId)
+      currentMerchant && await this._getMerchantDetail(currentMerchant.merchantId)
 
-    async _translateMarkers() {
-      this.markers.forEach((item) => {
-//        console.log(item)
-      })
+      // 改变店家显示状态
+      await this._setCurrentMerchantStatus()
+      this.translateMarker(e)
     }
 
-    async _getMerchantDetail(id) {
-      const json = await Merchants.getMerchantsDetail(id)
-      if (json.error === ERR_OK) {
-        const res = json.data
-        this.currentMerchant = res
-        let shop = wepy.getStorageSync('shop')
-        shop.shop_name = res.shop_name
-        wepy.setStorageSync('shop', shop)
-        this.promotions = res.promotions
-        const starLevel = res.star_level === '0.0' ? 5 : res.star_level
-        this.stars = new Array(Math.floor(starLevel))
-
-        this.$apply()
-        this.loaded()
-        this._setTips()
-        this._caculateDistance()
-        this._setTipInterval()
-      }
-    }
-
-    _setTips() {
-      const activities = this.currentMerchant.activities
-      const promotions = this.promotions
-      let tips = []
-      for (let key in activities) {
-        if (activities[key]) {
-          tips.push({activity: this._translateActivityKey(key)})
-        }
-      }
-      tips.forEach((item, index) => {
-        let init = {title: ''}
-        if (promotions[index]) {
-          init = promotions[index]
-        }
-        item = Object.assign(item, init)
-      })
-      if (tips.length) {
-        tips.push(tips[0])
-      }
-      this.tips = tips
-    }
-
-    _translateActivityKey(key) {
-      switch (key) {
-        case 'lucky_draw':
-          return '幸运大转盘'
-        case 'sign':
-          return '签到红包'
-        case 'video_live':
-          return '直播优惠'
-        case 'share':
-          return '分享有礼'
-        default:
-          return ''
-      }
-    }
-
-    _caculateDistance() {
-      // 腾讯
-//      this.qqmapsdk.calculateDistance({
-//        mode: 'driving',
-//        from: this.location,
-//        to: [{
-//          latitude: this.currentMerchant.latitude,
-//          longitude: this.currentMerchant.longitude
-//        }],
-//        success: (res) => {
-//          console.log(res)
-//          const result = res.result.elements[0]
-//          this.distance = Math.floor(result.distance)
-//          this.duration = Math.floor(result.duration / 60)
-//          this.$apply()
-//        }
-//      })
-      // 高德
-      this.gdmapsdk.getWalkingRoute({
-        origin: this.location.longitude + ',' + this.location.latitude,
-        destination: this.currentMerchant.longitude + ',' + this.currentMerchant.latitude,
-        success: (res) => {
-          const result = res.paths[0]
-          this.distance = Math.floor(result.distance)
-          this.duration = Math.floor(result.duration / 60)
+    // 设置路线
+    _setPolyline(loc, tar) {
+      // 判断源头坐标
+      this.markers.forEach((item, index) => {
+        if (this.markers[index + 1]) {
+          let tmp = {
+            points: [
+              {
+                latitude: this.markers[index].latitude,
+                longitude: this.markers[index].longitude
+              }, {
+                latitude: this.markers[index + 1].latitude,
+                longitude: this.markers[index + 1].longitude
+              }
+            ],
+            color: '#706B82AA',
+            width: 2,
+            dottedLine: true
+          }
+          this.polyline.push(tmp)
           this.$apply()
         }
       })
+      this.$apply()
     }
-
+    // 移动到当前位置
+    moveToLocation() {
+      this.mapContext.moveToLocation()
+    }
+    // 缩放地图标记点尺寸
     _scaleMarker(type) {
       const index = this.bigMarkerIndex
-      if (index === 0) {
-        return
+      if (!this.markers) return
+      if (this.markers[index]) {
+        this.markers[index].width = type === 1 ? 30 : 26
+        this.markers[index].height = type === 1 ? 30 : 26
+        this.markers[index].iconPath = type === 1 ? this.markers[index].iconPath.replace('black', 'red') : this.markers[index].iconPath.replace('red', 'black')
       }
-      this.markers[index].width = type === 1 ? 48 : 32
-      this.markers[index].height = type === 1 ? 50 : 34
       this.$apply()
     }
-
-    _setTipInterval() {
-      const tipsLength = this.tips.length
-      this.scrollHeight = 60 * tipsLength
-      this._setTipTimer()
-    }
-
-    _setTipTimer() {
-      const tipsLength = this.tips.length
-      if (!tipsLength) {
-        return
-      }
-      clearInterval(this.tipTimer)
-      this.tipTimer = setInterval(() => {
-        this.activeIndex += 1
-        if (this.activeIndex === tipsLength) {
-          this.tipTimeOuter = setTimeout(() => {
-            this.activeIndex = 0
-            this.transition = ''
-            this.transform = 'translate3d(0, 0, 0)'
-            this.$apply()
-          }, 500)
-        } else {
-          this.transition = 'all .5s'
-          this.transform = `translate3d(0, -${this.activeIndex * 60}px, 0)`
-        }
-        this.$apply()
-      }, 3000)
-    }
-
-    clearData() {
-      this.clearTimer()
-      this._scaleMarker(0)
-      this._setPolyline(0)
+    // 获取商家详细信息
+    async _getMerchantDetail(id) {
+      let data = this.merchantInfos.filter(item => {
+        return item.merchant_id === id
+      })
+      this.currentMerchant = data[0]
+      wepy.setStorageSync('currentMerchant', this.currentMerchant)
       this.$apply()
     }
-
-    clearTimer() {
-      this.activeIndex = 0
-      this.tipTimer && clearInterval(this.tipTimer)
-      this.tipTimeOuter && clearTimeout(this.tipTimeOuter)
-      this.$apply()
+    regionchange() {
+      // 切换地图时事件
     }
-
     methods = {
-      switchRecommend() {
-        const merchantId = this.currentMerchant.merchant_id
-
-//        this.$parent.updateGlobalData('merchantId', merchantId)
-        let lastMerchantId = wepy.getStorageSync('merchantId') ? wepy.getStorageSync('merchantId') : ''
-        wepy.setStorageSync('LastMerchant', lastMerchantId)
-        wepy.setStorageSync('scene', 11001)
-        wepy.setStorageSync('merchantId', merchantId)
-        wepy.switchTab({url: '/pages/recommend/recommend'})
-      },
-      async tapMap(e) {
-//        if (!this.showSlide) {
-//          return
-//        }
-//        this.clearData()
-//        this.showSlide = false
-      },
-      async regionchange(e) {
-//        this.mapContext.getCenterLocation({
-//          success: (res) => {
-//            this.moveLongitude = res.longitude
-//            this.moveLatitude = res.latitude
-//            if ((this.moveLongitude !== this.longitude || this.moveLatitude !== this.latitude) && this.showSlide) {
-//              this.clearData()
-//              this.showSlide = false
-//            }
-//            this.$apply()
-//          }
-//        })
-      },
-      controltap(e) {
-        if (e.controlId === 1) {
-          this.latitude = this.moveLatitude
-          this.longitude = this.moveLongitude
-          setTimeout(() => {
-            this.latitude = this.location.latitude
-            this.longitude = this.location.longitude
-            this.$apply()
-          }, 20)
+      offShop (item, key) {
+        console.log(key)
+        wepy.setStorageSync('merchantId', item.merchant_id)
+        if (key * 1 === 2) {
+          wepy.navigateTo({  // 快捷买单
+            url: `/pages/pay/pay`
+          })
+        } else {
+          wepy.switchTab({
+            url: `/pages/recommend/recommend`
+          })
         }
       },
-      async markertap(e) {
-        let markerId = e.markerId
-        if (this.activeMarkerId === markerId && this.showSlide) {
-          return
-        }
-        this.activeMarkerId = markerId
-        this.clearData()
-        if (markerId === 0) {
-          return
-        }
-        let currentMerchant = this.merchants.find((item) => item.id === markerId)
-        await this._getMerchantDetail(currentMerchant.merchant_id)
-        this.activeIndex = 0
-        this.transition = ''
-        this.transform = 'translate3d(0, 0, 0)'
-        this._setPolyline(markerId)
-        this.bigMarkerIndex = this.markers.findIndex((item) => item.id === markerId)
-        this._scaleMarker(1)
-        this.$apply()
-        setTimeout(() => {
-          if (!this.showSlide) {
-            this.showSlide = true
-          }
-          this.transition = 'all .5s'
-          this.$apply()
-        }, 500)
-      },
-      makePhoneCall() {
-        const phone = this.currentMerchant.mobile
-        wepy.makePhoneCall({phoneNumber: phone})
-      },
-      openLocation() {
-        wepy.openLocation({
-          latitude: this.currentMerchant.latitude,
-          longitude: this.currentMerchant.longitude,
-          scale: 28,
-          name: this.currentMerchant.shop_name,
-          address: this.currentMerchant.particular_address
+      // 切换导航
+      swBindchange (e) {
+        let id = e.detail.current
+        this.topFlag = id
+        let res = this.merchantInfos.find((item, index) => {
+          return id === index
         })
+        this.setIcons(res)
+        this.$apply()
+      },
+      // 点击控件
+      controltap(e) {
+        this.moveToLocation()
+      },
+      // 点击气泡时触发
+      async markertap(e) {
+        console.log(e)
+        let markerId = e.markerId
+        // 点击当前或家或公司return
+        if (markerId <= 0) {
+          return
+        }
+        // 如果id相同则return
+        if (this.activeMarkerId === markerId) {
+          return
+        }
+        this._scaleMarker(0)
+        // 获取店家信息
+        this.activeMarkerId = markerId
+        let currentMerchant = this.markers.find((item) => item.id === markerId)
+        currentMerchant && await this._getMerchantDetail(currentMerchant.merchantId)
+
+        // 改变店家显示状态
+        await this._setCurrentMerchantStatus()
+        this.setNav(e)
+        // await this._addIcons()
       }
+    }
+    // 设置当前店家信息状态
+    _setCurrentMerchantStatus() {
+      this.$apply()
+      this.activeIndex = 0
+      this.transition = ''
+      this.transform = 'translate3d(0, 0, 0)'
+      this.bigMarkerIndex = this.markers.findIndex((item) => item.id === this.activeMarkerId)
+
+      this.$apply()
+      setTimeout(() => {
+        if (!this.showSlide) {
+          this.showSlide = true
+        }
+        this.transition = 'all .5s'
+        this.$apply()
+      }, 500)
+      // this._setPolyline(this.activeMarkerId) // 设置路线
+      this._scaleMarker(1)
     }
 
     // 分享
@@ -613,210 +504,178 @@
 <style lang="stylus">
   @import "../../common/stylus/variable.styl"
   @import "../../common/stylus/mixin.styl"
-
-  #map
-    width: 100%
+  .view-page
+    display: flex
+    flex-direction: column
     height: 100vh
-    .shop-modal
+    .view-scroll
+      height: 190px
+      box-shadow: 0 6px 4px 0 rgba(0,0,0,0.06);
+      background: #FFFFFF
       position: relative
-      width: 100%
-      height: 211px
-      padding: 0 10px
-      padding-top: 10px
-      padding-bottom: 3px
-      box-sizing: border-box
-
-      .modal-bg-wrapper
-        position: absolute
-        top: 0
-        left: 0
+      .swiper
+        height: 160px
+        margin-top: 5px
+        border-radius: 4px
         display: flex
-        padding: 0
-        box-sizing: border-box
-        left: 0
-        top: 0
-        .modal-bg
-          display: flex
-          width: 100%
-          height: 100%
-      .modal
-        position: relative
-        width: 100%
-        height: 100%
-        border-radius: 3px
-        background-color: $color-white
-        .location
-          display: flex
-          align-items: center
-          height: 30px
-          padding-left: 10px
-          font-size: $font-size-small
-          color: $color-text
-          background: $color-background
-          .icon-location
-            display: flex
-            width: 10px
-            height: 10px
-            margin-right: 3px
-          .content
-            display: flex
-            flex: 1
-        .shop
-          width: 100%
-          .top
-            width: 100%
-            display: flex
-            height: 69.75px
-            .desc
-              flex: 1
-              display: flex
-              flex-direction: column
-              justify-content: center
-              padding-left: 10px
-              color: $color-text
-              position: relative
-              .title
-                width: 100%
-                margin-bottom: 2.5px
-                font-size: $font-size-medium-x
-                overflow: hidden
-                text-overflow: ellipsis
-                white-space: nowrap
-                position: absolute
-                left: 10px
-                top: 18px
-              .subhead
-                position: absolute
-                left: 10px
-                top: 45px
-                font-size: $font-size-small-s
-            .logo-wrapper
-              position: relative
-              flex: 0 0 65px
-              display: flex
-              align-items: center
-              justify-content: center
-              .image
+        .item-swi
+          height 160px
+          text-align: center
+          position: relative
+          .swiper-info
+            position: absolute
+            top: 0
+            left: 0
+            right: 0
+            bottom: 0
+            z-index: 1
+            height: 100%
+            width: 94%
+            margin: auto
+            opacity: 0.5
+            background-image: linear-gradient(-90deg, #000000 1%, #000000 100%)
+            border-radius: 4px
+          .swiper-info-s
+            position: absolute
+            top: 0
+            left: 0
+            right: 0
+            bottom: 0
+            z-index: 2
+            height: 100%
+            width: 94%
+            margin: auto
+            border-radius: 4px
+            .swiper-info-title
+              height: 60px
+              margin: 0px 10px
+              .swiper-info-shop
+                justify-content:space-between
                 display: flex
-                width: 65px
-                height: 52px
-              .industry
-                position: absolute
-                top: 13.5px
-                left: 24.5px
-                display: flex
-                width: 12px
-                height: 12px
-                border-radius: 50%
-              .logo
-                position: absolute
-                bottom: 11.25px
-                right: 3px
-                display: flex
-                width: 24px
-                height: 24px
-                border-radius: 100%
-            .comment
-              flex: 1
-              display: flex
-              flex-direction: column
-              justify-content: center
-              align-items: center
-              position: relative
-              .comment-content
-                position: absolute
-                left: 50%
-                top: 50%
-                transform: translate(-50%, -50%)
-                .stars
-                  display: flex
-                  align-items: center
+                padding: 10px 0px 6px 0px
+                .view_1
+                  color: $color-white
+                  font-family: $font-family-meddle
+                  font-size: $font-size-medium-x
+                  line-height: 20px
+                .view_2
+                  font-family: $font-family-light
                   font-size: $font-size-small-s
-                  .icon-star
-                    display: flex
-                    margin-right: 1.5px
-                    width: 10px
-                    height: 10px
-                  .star-level
-                    display: flex
-                .store
-                  margin-top: 8px
-                  font-size: $font-size-small-s
-                  color: $color-text
-          .bottom
-            position: relative
-            height: 38.25px
-            .line
-              position: absolute
-              top: 0
-              left: 0
-              width: 100%
-              height: 100%
-            .content-wrapper
-              position: absolute
-              top: 0
-              left: 0
-              display: flex
-              width: 100%
-              height: 100%
-              .item
-                flex: 1
+                  color: $color-white
+                  line-height: 20px
+              .swiper-info-remark
+                justify-content:space-between
                 display: flex
-                align-items: center
-                justify-content: center
-                box-sizing: border-box
-                font-size: $font-size-small-s
-                &:nth-child(4) .icon
-                  padding-left: 20px
-                .icon
+                .view_1
                   display: flex
-                  width: 10px
+                  flex-direction: row
+                  .view_1_1
+                    line-height: 18px
+                    width: 74px
+                    height: 18px
+                    border-radius: 4px
+                    color: $color-white
+                    font-family: $font-family-regular
+                    font-size: $font-size-small-s
+                    position: relative
+                    margin-right: 15px
+                    .bg
+                      position: absolute
+                      top: 0
+                      left: 0
+                      width: 74px
+                      height: 18px
+                      opacity: 0.5
+                      background: #000000
+                      border-radius: 4px
+                      z-index: -1
+                  .view_1_2
+                    width: 18px
+                    height: 18px
+                    background: #FF4E00
+                    border-radius: 4px
+                    font-family: $font-family-regular
+                    font-size: $font-size-small-s
+                    color: #FFFFFF
+                    line-height: 20px
+                    text-align: center
+                    margin-right: 5px
+                .view_2
+                  font-family: $font-family-light
+                  font-size: $font-size-small-s
+                  color: $color-white
+                  width: 8px
                   height: 10px
-                  margin-right: 1px
-                .content
-                  width: 60px
-                  display: flex
-    .tip-wrapper
-      display: flex
-      height: 60px
-      padding-left: 10px
-      .hot-wrapper
-        flex: 0 0 50px
-        width: 50px
-        display: flex
-        align-items: center
-        justify-content: center
-        .hot
-          display: flex
-          width: 50px
-          height: 41px
-      .tips
-        flex: 1
-        height: 60px
-        padding-left: 10px
-        .box
-          transform: translate3d(0, 0, 0)
-          .tip
-            display: flex
-            flex-direction: column
-            justify-content: center
-            height: 60px
-            .item-wrapper
+                  margin-top: 4px
+                  image
+                    width: 100%
+                    height: 100%
+            .border-1px
+              opacity: 0.22
+              border-bottom: .5px solid $color-white
+              width: 94%
+              margin: auto
+              margin-top: 2px
+            .swiper-info-nav
               display: flex
-              align-items: center
-              &:first-child
-                margin-bottom: 7px
-              .icon-wrapper
-                flex: 0 0 30px
-                width: 30px
-                .icon
-                  display: flex
-                  width: 30px
-                  height: 14px
-              .word
-                flex: 1
-                display: flex
-                margin-left: 5px
-                font-size: $font-size-small
-                color: $color-text
+              justify-content: space-around
+              flex-direction: row
+              z-index: 1
+              .nav-item
+                width: 50px
+                height: 84.5px
+                margin-top: 13.5px
+                image
+                  width: 50px
+                  height: 50px
+                view
+                  color: $color-white
+                  font-family: $font-family-regular
+                  font-size: $font-size-small
+                  line-height: 24px
+          .item-img
+            border-radius: 4px
+            width: 94%
+            height: 100%
+            // opacity: 0.5
+            // background-image: linear-gradient(-90deg, #000000 1%, #000000 100%)
+      .swiper-active
+        height: 25px
+        text-align: center
+        .swiper-active-t
+          margin: auto
+          height: 5px
+          .item-swi
+            width: 5px
+            height: 5px
+            background: #D8D8D8
+            border-radius: 100%
+            display: inline-block
+            margin: 0px 3px
+            transition: all .3s
+          .item-swi.action
+            transition: all .3s
+            width: 10px
+            border-radius: 100px
+            background: #706B81
+  #map
+    flex: 1
+    width: 100vw
+    position: relative
+    .modal-bg-wrapper
+      height: 1px
+      position: absolute
+      top: 0
+      left: 0
+      display: flex
+      padding: 0
+      box-sizing: border-box
+      box-shadow: 0 6px 4px 0 rgba(0,0,0,0.06);
+      left: 0
+      top: 0
+    .tab-shadow
+      position: absolute
+      top: -2.885vh
+      width: 100%
+      height: 8.8321vh
 </style>
