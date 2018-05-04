@@ -69,9 +69,9 @@
                 </view>
                 <view class="item-down">
                   <view class="item-money">
-                    <text class="small-money">¥</text>
-                    <text class="big-money">{{item.group_price}}</text>
-                    <text class="del-money">¥ {{item.promotion_price}}</text>
+                    <text class="small-money {{industry + '-text'}}">¥</text>
+                    <text class="big-money {{industry + '-text'}}">{{item.group_price}}</text>
+                    <text class="del-money">{{item.promotion_price}}元</text>
                   </view>
                   <view class="item-title">{{item.promotion_name}}</view>
                   <view class="item-sale">
@@ -107,6 +107,7 @@
     </view>
     <toast></toast>
     <integral-popout></integral-popout>
+    <view class="test"></view>
   </view>
 </template>
 
@@ -580,8 +581,8 @@
             box-sizing: border-box
             border-radius: 3px
             overflow: hidden
-            border: 0.5px solid $color-col-line
             position: relative
+            border: 0.5px solid $color-col-line
             .shop-img
               width: 100%
               height: 100%
@@ -634,8 +635,9 @@
               color: $color-text
               margin-bottom: 6px
             .item-sale
+              display: flex
               .sale-count
-                padding: 2px 4.5px
+                padding: 3.5px 5px
                 background: rgba(255, 78, 0, 0.1)
                 border-radius: 2px
                 font-size: $font-size-small-s

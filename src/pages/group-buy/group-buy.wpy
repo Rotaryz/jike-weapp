@@ -13,7 +13,7 @@
               <view class="item-right-money">
                 <text class="small-money">¥</text>
                 <text class="big-money">{{item.group_price}}</text>
-                <text class="del-money">¥ {{item.promotion_price}}</text>
+                <text class="del-money">{{item.promotion_price}}元</text>
               </view>
             </view>
             <view class="item-right-down">
@@ -202,7 +202,7 @@
             align-items: flex-end
             justify-content: space-between
             .sale-count
-              padding: 2.5px 5px
+              padding: 3.5px 5px
               font-family: PingFangSC-Light
               font-size: $font-size-small-s
               color: $color-orange
