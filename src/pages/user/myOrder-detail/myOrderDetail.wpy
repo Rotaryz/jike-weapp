@@ -19,7 +19,7 @@
       </view>
       <view class="orderDetail-head-status">
         <view class="orderDetail-head-statusTxt">{{statusTxt[orderMsg.status]}}</view>
-        <view class="orderDetail-head-statusBtn {{industry}}-bg" @tap="followWork({{orderMsg.status}}, {{orderMsg.id}}, {{orderMsg.merchant_id}})" wx:if="{{orderMsg.promotion_type * 1 !== 2 || orderMsg.status != 1}}">{{btnTxt[orderMsg.status]}}</view>
+        <view class="orderDetail-head-statusBtn {{industry}}-bg" @tap="followWork({{orderMsg.status}}, {{orderMsg.id}}, {{orderMsg.merchant_id}})" wx:if="{{!orderMsg.is_share_money && (orderMsg.promotion_type * 1 !== 2 || orderMsg.status != 1)}}">{{btnTxt[orderMsg.status]}}</view>
       </view>
     </view>
 

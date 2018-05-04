@@ -29,9 +29,9 @@ export default class shareMoney extends base {
    * @param data
    * @returns {Promise.<*>}
    */
-  static async profitNotice() {
+  static async profitNotice(data) {
     const url = `${this.baseUrl}/api/sharemoney/profit-notice`
-    return await this.get(url)
+    return await this.get(url, data)
   }
   /**
    * 抵用券列表
