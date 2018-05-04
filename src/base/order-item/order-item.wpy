@@ -1,6 +1,6 @@
 <template>
   <view class="order-item" @tap="goOrderDetail({{order}})">
-    <view class="ro-order-top">
+    <view class="ro-order-top border-bottom-1px">
       <view class="ro-order-shop-name">店铺：{{order.merchant_data.shop_name}}</view>
       <view class="ro-order-tip">{{orderItemStatus[order.status]}}</view>
     </view>
@@ -67,7 +67,6 @@
     font-family: $font-family-light
     position: relative
     .ro-order-top
-      border-bottom: 0.5px solid $color-col-line
       display: flex
       height: 40px
       justify-content: space-between
