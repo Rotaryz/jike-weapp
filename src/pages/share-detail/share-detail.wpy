@@ -293,6 +293,7 @@
         display:flex
         align-items :flex-end
         color: $color-pay
+        font-family :$font-family-regular
         font-size: $font-size-small
         .ro-share-content-money
           line-height: 1

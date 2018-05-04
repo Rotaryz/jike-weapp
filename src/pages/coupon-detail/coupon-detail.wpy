@@ -700,7 +700,7 @@
         this.submit('')
       },
       async postGroupOrder() {
-        if (this.goodsStatus !== 1 || this.activitiesStatus !== 1) {
+        if (this.activitiesStatus !== 1) {
           return
         }
         if (!this.groupBuyDetail.can_open_group && this.groupType === 'open') {
@@ -768,12 +768,17 @@
       },
       failPay() {
         if (this.activityStatus === 'share') {
-          console.log('dsfsf')
 //              单成功生成订单时需要锁定优惠券
           this.userCoupon = ''
           this.shareCouponUserId = 0
           this.$apply()
         }
+      },
+      successShare() {
+//        购买成功时的修改
+        this.userCoupon = ''
+        this.shareCouponUserId = 0
+        this.$apply()
       }
     }
 

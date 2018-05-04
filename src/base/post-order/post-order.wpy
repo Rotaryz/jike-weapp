@@ -38,7 +38,7 @@
         <view class="content">
           <view class="label">订单总价</view>
           <view class="price">
-            <text class="number">{{orderInfo.from === 'C_sharemoney' ? shareMoney : total}}</text>
+            <text class="number">{{orderInfo.from === 'c_sharemoney' ? shareMoney : total}}</text>
             <text class="yuan">元</text>
           </view>
         </view>
@@ -134,7 +134,7 @@
         } else {
           this.count -= 1
         }
-        if (this.orderInfo.from === 'C_sharemoney') {
+        if (this.orderInfo.from === 'c_sharemoney') {
           this.total = (this.count * this.orderInfo.price).toFixed(1)
           return
         }
@@ -152,7 +152,7 @@
         } else {
           this.count += 1
         }
-        if (this.orderInfo.from === 'C_sharemoney') {
+        if (this.orderInfo.from === 'c_sharemoney') {
           this.total = (this.count * this.orderInfo.price).toFixed(1)
           return
         }
@@ -217,6 +217,9 @@
             if (this.status === 'group') {
               this.$emit('postSuccess', res.group_id)
             } else {
+              if (this.status === 'share') {
+                this.$emit('successShare')
+              }
               this.$parent.$navigate(`/pages/pay-result/pay-result?orderId=${orderId}&total=${total}&status=${status}`)
             }
             this._hide()
@@ -275,17 +278,6 @@
         let shareMoney = this.userCoupon.slice(3)
         return this.total - Math.abs(shareMoney)
       }
-    }
-    watch = {
-      userCoupon(newVal) {
-//        let a = this.$parent.$parent.globalData('shareId')
-//        console.log(newVal, a)
-//        未确定
-        if (!newVal) {
-//          this.orderInfo.deduction_id = this.userCoupon ? this.orderInfo.deduction_id : 0
-        }
-      }
-
     }
   }
 </script>
