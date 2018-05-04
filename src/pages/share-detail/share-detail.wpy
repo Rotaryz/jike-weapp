@@ -296,6 +296,7 @@
         font-family :$font-family-regular
         font-size: $font-size-small
         .ro-share-content-money
+          transform : translateY(0.5px)
           line-height: 1
           color: $color-pay
           font-family: $font-family-meddle
