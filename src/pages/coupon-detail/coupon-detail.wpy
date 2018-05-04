@@ -630,7 +630,7 @@
           current_merchant: this.currentMerchant,
           stock: this.coupon.stock,
           peopleStock: this.coupon.note ? this.coupon.note.buy_upper_limit : -1,
-          from: 'C_sharemoney',
+          from: 'c_sharemoney',
           deduction_id: this.shareCouponUserId, // 抵用券ID
           is_share_money: 1,
           share_customer_id: this.fromCustomerId // 分享者id
