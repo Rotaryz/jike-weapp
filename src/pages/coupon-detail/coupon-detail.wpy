@@ -329,7 +329,6 @@
         this.orderInfo.deduction_id = typeof (shareCoupon) === 'object' ? shareCoupon.id : typeof (shareCoupon) === 'string' ? this.orderInfo.deduction_id : 0
         this.shareCouponUserId = this.orderInfo.deduction_id
         this.userCoupon = typeof (shareCoupon) === 'object' ? ` - ${shareCoupon.money}` : typeof (shareCoupon) === 'string' ? this.userCoupon : ''
-        console.log(this.userCoupon)
         this.$apply()
       }
     }
@@ -405,6 +404,8 @@
           this.shareCouponUserId = res[i].id
           this.userCoupon = ` - ${res[i].money} `
           break
+        } else {
+          this.shareCouponUserId = 0
         }
       }
     }

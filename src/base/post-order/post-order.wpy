@@ -27,14 +27,18 @@
         <view class="content border-bottom-1px" wx:if="{{status === 'group' || status === 'share'}}" @tap.stop="shareCoupon({{status}})">
           <view class="label">店铺优惠</view>
           <view class="content-right">
-            <view class="content-right-txt {{userCoupon ? 'content-right-txt-user' : ''}}"><text class="content-right-title" wx:if="{{userCoupon}}">抵用券</text>{{userCoupon || '无可用券'}}<text class="content-right-money" wx:if="{{userCoupon}}">元</text> </view>
+            <view class="content-right-txt {{userCoupon ? 'content-right-txt-user' : ''}}">
+              <text class="content-right-title" wx:if="{{userCoupon}}">抵用券</text>
+              {{userCoupon || '无可用券'}}
+              <text class="content-right-money" wx:if="{{userCoupon}}">元</text>
+            </view>
             <image class="content-right-icon" wx:if="{{imageUri}}" src="{{imageUri + '/defaults/c-image/share/icon-arrows@2x.png'}}"></image>
           </view>
         </view>
         <view class="content">
           <view class="label">订单总价</view>
           <view class="price">
-            <text class="number">{{orderInfo.from === 'C_sharemoney' ? shareMoney :total}}</text>
+            <text class="number">{{orderInfo.from === 'C_sharemoney' ? shareMoney : total}}</text>
             <text class="yuan">元</text>
           </view>
         </view>
@@ -105,6 +109,7 @@
         this.$apply()
       }, 200)
     }
+
     onShow() {
       if (this.activityStatus === 'share') {
         let shareCoupon = wepy.getStorageSync('shareCoupon')
@@ -112,6 +117,7 @@
         this.$apply()
       }
     }
+
     methods = {
       shareCoupon(status) {
         if (status === 'share') {
@@ -168,7 +174,7 @@
             group_id,
             activity_id
           }
-        } else if (from === 'C_sharemoney') {
+        } else if (from === 'c_sharemoney') {
           data = {
             current_merchant,
             promotion_type,
@@ -373,13 +379,13 @@
               font-size: $font-size-small
               color: #A1A1A1
             .content-right-txt-user
-              color :$color-text
-              font-family :$font-family-meddle
+              color: $color-text
+              font-family: $font-family-meddle
               .content-right-money
-                font-size : $font-size-small-s
-                font-family :$font-family-regular
+                font-size: $font-size-small-s
+                font-family: $font-family-regular
               .content-right-title
-                font-family :$font-family-regular
+                font-family: $font-family-regular
             .content-right-icon
               width: 7px
               height: 12px
