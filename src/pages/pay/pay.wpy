@@ -35,7 +35,7 @@
       </view>
     </view>
     <view class="pay-submit">
-      <button class="{{industry + '-bg'}} submit-btn {{needPayMoney !== 0 ? ''  : 'submit-dis'}}" @tap="payOrder">
+      <button class="{{industry}}-bg submit-btn {{needPayMoney !== 0 ? ''  : 'submit-dis'}}" @tap="payOrder">
         <text class="end-moeny" wx:if="{{needPayMoney !== 0}}">{{needPayMoney}}元</text>
         确定买单
       </button>
@@ -71,7 +71,9 @@
     }
 
     async onLoad() {
+      wepy.removeStorageSync('shop')
       await this.showIndustry()
+      this.$apply()
       await this._setGlobaCouponList()
     }
 

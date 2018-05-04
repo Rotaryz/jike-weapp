@@ -27,14 +27,18 @@
         <view class="content border-bottom-1px" wx:if="{{status === 'group' || status === 'share'}}" @tap.stop="shareCoupon({{status}})">
           <view class="label">店铺优惠</view>
           <view class="content-right">
-            <view class="content-right-txt {{userCoupon ? 'content-right-txt-user' : ''}}"><text class="content-right-title" wx:if="{{userCoupon}}">抵用券</text>{{userCoupon || '无可用券'}}<text class="content-right-money" wx:if="{{userCoupon}}">元</text> </view>
+            <view class="content-right-txt {{userCoupon ? 'content-right-txt-user' : ''}}">
+              <text class="content-right-title" wx:if="{{userCoupon}}">抵用券</text>
+              {{userCoupon || '无可用券'}}
+              <text class="content-right-money" wx:if="{{userCoupon}}">元</text>
+            </view>
             <image class="content-right-icon" wx:if="{{imageUri}}" src="{{imageUri + '/defaults/c-image/share/icon-arrows@2x.png'}}"></image>
           </view>
         </view>
         <view class="content">
           <view class="label">订单总价</view>
           <view class="price">
-            <text class="number">{{orderInfo.from === 'C_sharemoney' ? shareMoney :total}}</text>
+            <text class="number">{{orderInfo.from === 'c_sharemoney' ? shareMoney : total}}</text>
             <text class="yuan">元</text>
           </view>
         </view>
@@ -105,6 +109,7 @@
         this.$apply()
       }, 200)
     }
+
     onShow() {
       if (this.activityStatus === 'share') {
         let shareCoupon = wepy.getStorageSync('shareCoupon')
@@ -112,6 +117,7 @@
         this.$apply()
       }
     }
+
     methods = {
       shareCoupon(status) {
         if (status === 'share') {
@@ -128,7 +134,7 @@
         } else {
           this.count -= 1
         }
-        if (this.orderInfo.from === 'C_sharemoney') {
+        if (this.orderInfo.from === 'c_sharemoney') {
           this.total = (this.count * this.orderInfo.price).toFixed(1)
           return
         }
@@ -146,7 +152,7 @@
         } else {
           this.count += 1
         }
-        if (this.orderInfo.from === 'C_sharemoney') {
+        if (this.orderInfo.from === 'c_sharemoney') {
           this.total = (this.count * this.orderInfo.price).toFixed(1)
           return
         }
@@ -168,7 +174,7 @@
             group_id,
             activity_id
           }
-        } else if (from === 'C_sharemoney') {
+        } else if (from === 'c_sharemoney') {
           data = {
             current_merchant,
             promotion_type,
@@ -211,6 +217,9 @@
             if (this.status === 'group') {
               this.$emit('postSuccess', res.group_id)
             } else {
+              if (this.status === 'share') {
+                this.$emit('successShare')
+              }
               this.$parent.$navigate(`/pages/pay-result/pay-result?orderId=${orderId}&total=${total}&status=${status}`)
             }
             this._hide()
@@ -269,17 +278,6 @@
         let shareMoney = this.userCoupon.slice(3)
         return this.total - Math.abs(shareMoney)
       }
-    }
-    watch = {
-      userCoupon(newVal) {
-//        let a = this.$parent.$parent.globalData('shareId')
-//        console.log(newVal, a)
-//        未确定
-        if (!newVal) {
-//          this.orderInfo.deduction_id = this.userCoupon ? this.orderInfo.deduction_id : 0
-        }
-      }
-
     }
   }
 </script>
@@ -373,13 +371,13 @@
               font-size: $font-size-small
               color: #A1A1A1
             .content-right-txt-user
-              color :$color-text
-              font-family :$font-family-meddle
+              color: $color-text
+              font-family: $font-family-meddle
               .content-right-money
-                font-size : $font-size-small-s
-                font-family :$font-family-regular
+                font-size: $font-size-small-s
+                font-family: $font-family-regular
               .content-right-title
-                font-family :$font-family-regular
+                font-family: $font-family-regular
             .content-right-icon
               width: 7px
               height: 12px

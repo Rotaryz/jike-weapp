@@ -53,15 +53,14 @@
     position: relative
     background: $color-white
     margin-bottom: 10.5px
-    display: flex
     border-top: 0.5px solid $color-row-line
     border-bottom: 0.5px solid $color-row-line
     .ro-share-left
+      float :left
       display :flex
-      flex: 7.6
+      width: 75%
       padding: 12px 0 12px 10.5px
       box-sizing: border-box
-      border-right :0.5px dashed #E5E5E5
       .ro-share-item-logo
         height: 76px
         width: @height
@@ -109,6 +108,7 @@
           .ro-share-end-money-tip
             margin-left: 3.5px
             font-family :PingFangSC-Semibold
+            color :$color-pay
           .ro-share-end-price
             transform :translateY(1px)
             line-height: 1
@@ -116,11 +116,21 @@
             font-size :$font-size-large
             color :$color-pay
   .ro-share-right
-    flex :2.4
+    overflow-x:hidden
     display :flex
+    height: 100%
     flex-direction :column
     align-items :center
     justify-content :center
+    position :relative
+    &:after
+      content : ''
+      position: absolute
+      left: 0
+      top: 0
+      height: 100%
+      transform :scaleX(.5)
+      border-left :1px dashed #E5E5E5
     .ro-share-right-icon
       height: 20.5px
       width: 20.5px

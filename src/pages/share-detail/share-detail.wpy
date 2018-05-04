@@ -162,7 +162,8 @@
       }
 //      wepy.setNavigationBarTitle({title: this.shareDetail.title})
 //      公告
-      let resNotice = await shareMoney.profitNotice()
+      let noteData = {act_id: id}
+      let resNotice = await shareMoney.profitNotice(noteData)
       this.shareNotice = this.infoRes(resNotice)
 //      更多优惠券
       let data = {page: 1, limit: 10, unclude_id: id}
@@ -292,6 +293,7 @@
         display:flex
         align-items :flex-end
         color: $color-pay
+        font-family :$font-family-regular
         font-size: $font-size-small
         .ro-share-content-money
           line-height: 1

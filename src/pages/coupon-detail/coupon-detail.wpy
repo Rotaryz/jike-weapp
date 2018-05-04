@@ -329,7 +329,6 @@
         this.orderInfo.deduction_id = typeof (shareCoupon) === 'object' ? shareCoupon.id : typeof (shareCoupon) === 'string' ? this.orderInfo.deduction_id : 0
         this.shareCouponUserId = this.orderInfo.deduction_id
         this.userCoupon = typeof (shareCoupon) === 'object' ? ` - ${shareCoupon.money}` : typeof (shareCoupon) === 'string' ? this.userCoupon : ''
-        console.log(this.userCoupon)
         this.$apply()
       }
     }
@@ -405,6 +404,8 @@
           this.shareCouponUserId = res[i].id
           this.userCoupon = ` - ${res[i].money} `
           break
+        } else {
+          this.shareCouponUserId = 0
         }
       }
     }
@@ -630,7 +631,7 @@
           current_merchant: this.currentMerchant,
           stock: this.coupon.stock,
           peopleStock: this.coupon.note ? this.coupon.note.buy_upper_limit : -1,
-          from: 'C_sharemoney',
+          from: 'c_sharemoney',
           deduction_id: this.shareCouponUserId, // 抵用券ID
           is_share_money: 1,
           share_customer_id: this.fromCustomerId // 分享者id
@@ -699,7 +700,7 @@
         this.submit('')
       },
       async postGroupOrder() {
-        if (this.goodsStatus !== 1 || this.activitiesStatus !== 1) {
+        if (this.activitiesStatus !== 1) {
           return
         }
         if (!this.groupBuyDetail.can_open_group && this.groupType === 'open') {
@@ -767,12 +768,17 @@
       },
       failPay() {
         if (this.activityStatus === 'share') {
-          console.log('dsfsf')
 //              单成功生成订单时需要锁定优惠券
           this.userCoupon = ''
           this.shareCouponUserId = 0
           this.$apply()
         }
+      },
+      successShare() {
+//        购买成功时的修改
+        this.userCoupon = ''
+        this.shareCouponUserId = 0
+        this.$apply()
       }
     }
 
