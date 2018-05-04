@@ -1,7 +1,7 @@
 <template>
   <view class="orderDetail">
     <view class="orderDetail-head" wx:if="{{orderMsg.promotion_type * 1 === 1 || orderMsg.promotion_type * 1 === 2 || (orderMsg.promotion_type * 1 === 4 && (orderMsg.status * 1 === 0 || orderMsg.status * 1 === 6))}}">
-      <view class="orderDetail-head-detailBox" @tap="couponDetail">
+      <view class="orderDetail-head-detailBox border-bottom-1px" @tap="couponDetail">
         <view class="orderDetail-head-left">
           <view class="orderDetail-head-img-box">
             <image src="{{orderMsg.promotion_type == 1 || 4? orderMsg.promotion.promotion_images[0].image.url : orderMsg.promotion.gift_bag_images[0].image.url}}" mode="widthFix" class="orderDetail-head-img"></image>
@@ -58,7 +58,7 @@
     </view>
 
     <view class="orderDetail-merchant">
-      <view class="orderDetail-merchant-title">商家信息</view>
+      <view class="orderDetail-merchant-title border-bottom-1px">商家信息</view>
       <view class="orderDetail-merchant-msgBox">
         <view class="orderDetail-merchant-logo-box">
           <image src="{{orderMsg.merchant_data.logo_image}}" mode="aspectFill" class="orderDetail-merchant-logo"></image>
@@ -68,8 +68,8 @@
           <view class="orderDetail-merchant-msgWork">{{orderMsg.merchant_data.describe}}</view>
         </view>
       </view>
-      <view class="orderDetail-merchant-detail">
-        <view class="orderDetail-merchant-detail-item" @tap="GPSbegin">
+      <view class="orderDetail-merchant-detail border-top-1px">
+        <view class="orderDetail-merchant-detail-item border-right-1px" @tap="GPSbegin">
           <image wx:if="{{imageUrlHead}}" src="{{imageUrlHead + '/defaults/c-image/mine/icon-navigation_1.png'}}" class="orderDetail-merchant-detailIcon"></image>
           <text>开始导航</text>
         </view>
@@ -81,14 +81,14 @@
     </view>
 
     <view class="group-order-msg" wx:if="{{orderMsg.promotion_type * 1 === 4}}">
-      <view class="group-order-msg-item">
+      <view class="group-order-msg-item border-bottom-1px">
         <view class="group-order-title">商品金额</view>
         <view class="group-order-money">
           <view class="small-money">¥</view>
           <view class="big-money">{{goodsTotal}}</view>
         </view>
       </view>
-      <view class="group-order-msg-item">
+      <view class="group-order-msg-item border-bottom-1px">
         <view class="group-order-title">团购金额</view>
         <view class="group-order-money">
           <view class="small-money">¥</view>
@@ -105,7 +105,7 @@
     </view>
 
     <view class="orderDetail-orderList">
-      <view class="orderDetail-orderList-title">订单信息</view>
+      <view class="orderDetail-orderList-title border-bottom-1px">订单信息</view>
       <view class="orderDetail-orderList-msg {{orderMsg.promotion_type * 1 === 3 ? 'pay-padding' : ''}}">
         <view class="orderDetail-orderList-msgItem">订单编号：{{orderMsg.order_sn}}</view>
         <view class="orderDetail-orderList-msgItem">手机号码：{{orderMsg.customer_phone}}</view>
@@ -124,7 +124,7 @@
 
     <view class="orderDetail-refundCover" wx:if="{{refundIng}}">
       <view class="orderDetail-refundCover-Msg">
-        <view class="orderDetail-refundCover-Msghead">
+        <view class="orderDetail-refundCover-Msghead border-bottom-1px">
           <view class="orderDetail-refundCover-closeBtn" @tap="closeRefund">
             <image wx:if="{{imageUrlHead}}" src="{{imageUrlHead + '/defaults/c-image/mine/icon-close_win.png'}}" class="orderDetail-refundCover-closeIcon"></image>
           </view>
@@ -132,7 +132,7 @@
         </view>
         <view class="orderDetail-refundCover-MsgList">
           <radio-group bindchange="serviceValChange">
-            <view class="orderDetail-refundCover-MsgList-item" wx:for="{{refundCause}}" wx:key="{{index}}">
+            <view class="orderDetail-refundCover-MsgList-item border-bottom-1px" wx:for="{{refundCause}}" wx:key="{{index}}">
               <label class="checkbox">
                 <radio value="{{item.value}}" checked="{{item.checked}}" hidden="{{true}}"/>{{item.txt}}
                 <image class="checkbox-Icon" wx:if="{{imageUrlHead}}" src="{{imageUrlHead + (item.value===refundChecked?'/defaults/c-image/mine/icon-selected_green.png':'/defaults/c-image/mine/icon-selected_gray.png')}}"></image>
@@ -470,7 +470,6 @@
       .orderDetail-head-detailBox
         display: flex
         justify-content: space-between
-        border-bottom: 1px solid $color-row-line
         padding-bottom: 11.5px
         height: 64.5px
 
@@ -482,7 +481,7 @@
             width: 120px
             height: 64px
             background: $color-master
-            border: 1px solid $color-row-line
+            border: 0.5px solid $color-row-line
             border-radius: 2px
             margin-right: 9.5px
             overflow: hidden
@@ -540,7 +539,7 @@
           text-align: center
           font-size: $font-size-small
           color: $color-white
-          border: 1px solid $color-row-line
+          border: 0.5px solid $color-row-line
           background: $color-button
 
     .paySuccess-box
@@ -666,7 +665,6 @@
       .orderDetail-merchant-title
         line-height: 38.5px
         margin-left: 12px
-        border-bottom: 1px solid $color-row-line
         font-size: $font-size-medium
         color: $color-text-d
 
@@ -699,11 +697,9 @@
 
       .orderDetail-merchant-detail
         display: flex
-        border-top: 1px solid $color-row-line
 
         .orderDetail-merchant-detail-item
           flex: 1
-          border-right: 1px solid $color-row-line
           display: flex
           height: 39.5px
           align-items: center
@@ -718,9 +714,6 @@
             font-size: $font-size-small-s
             line-height: 16px
 
-        view:last-child
-          border-right: 0 none
-
     .group-order-msg
       margin-top: 10px
       background: $color-white
@@ -730,7 +723,6 @@
         height: 40px
         align-items: center
         justify-content: space-between
-        border-bottom: 0.5px solid $color-col-line
         &:last-child
           border-bottom: 0 none
         .group-order-title
@@ -757,7 +749,6 @@
 
       .orderDetail-orderList-title
         line-height: 38.5px
-        border-bottom: 1px solid $color-row-line
         font-size: $font-size-medium
         color: $color-text-d
 
@@ -766,7 +757,7 @@
         line-height: 30px
 
       .orderDetail-orderList-pay
-        border-top: 1px dashed $color-row-line
+        border-top: 0.5px dashed $color-row-line
 
     .orderDetail-refundCover
       position: fixed
@@ -790,7 +781,6 @@
           line-height: 40px
           position: relative
           font-size: $font-size-medium
-          border-bottom: 1px solid $color-col-line
 
           .orderDetail-refundCover-closeBtn
             position: absolute
@@ -812,7 +802,6 @@
           .orderDetail-refundCover-MsgList-item
             line-height: 36px
             font-size: $font-size-small
-            border-bottom: 1px solid $color-col-line
 
             .checkbox
               display: block
