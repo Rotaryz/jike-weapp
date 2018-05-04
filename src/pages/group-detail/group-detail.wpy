@@ -565,12 +565,14 @@
                 text-overflow: ellipsis
                 white-space: nowrap
               .item-right-money
+                display: flex
+                align-items: flex-end
                 margin-top: 10px
                 .small-money
                   font-family: PingFang-SC-Regular
                   font-size: $font-size-small-s
                   color: $color-pay
-                  margin-bottom: 2px
+                  margin-bottom: 3px
                 .big-money
                   font-family: PingFangSC-Semibold
                   font-size: $font-size-large
@@ -582,7 +584,7 @@
                   font-size: $font-size-small
                   color: $color-text-d
                   text-decoration: line-through
-                  margin-bottom: 2px
+                  margin-bottom: 3px
                   white-space: nowrap
             .item-right-down
               display: flex
