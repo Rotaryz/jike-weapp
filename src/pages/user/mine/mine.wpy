@@ -65,7 +65,7 @@
         </view>
       </view>
       <view class="mine-serve mine-shop">
-        <view class="mine-serve-Item" wx:for="{{shopList}}"
+        <view class="mine-serve-Item mine-serve-shop" wx:for="{{shopList}}"
               wx:key="{{item.text}}" @tap="goShop">
           <view class="mine-serve-Item-left">
             <image src="{{item.imgUrl}}"
@@ -448,23 +448,22 @@
             width: 6px
             height: 10px
 
-      view:last-child
-        border-bottom: 0 none
+        &:last-child
+          border-bottom: 0 none
 
     .mine-shop
       margin-top: 10px
+      border-bottom :none
     .mine-main-under
       background: $color-highlight-background
-      border-bottom: .5px solid $color-row-line
       padding-left: 12px
-
       .mine-serve-Item
         height: 44px
         display: flex
         justify-content: space-between
         align-items: center
-        border-bottom: .5px solid $color-row-line
         padding-right: 12px
+        border-top : .5px solid $color-row-line
 
         .mine-serve-Item-left
           display: flex
@@ -506,8 +505,6 @@
             width: 6px
             height: 10px
 
-      view:last-child
-        border-bottom: 0 none
     .mine-logo
       text-align: center
       margin-top: 3vh
