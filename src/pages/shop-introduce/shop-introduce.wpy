@@ -369,15 +369,17 @@
     methods = {
       switchRecommend() {
         let msg = this.currentMerchant
-        wx.navigateToMiniProgram({
-          appId: msg.app_id,
-          path: msg.path,
-          extraData: {},
-          envVersion: URIS.jumpVersion,
-          success(res) {
-            // 打开成功
-          }
-        })
+        wepy.setStorageSync('merchantId', msg.merchant_id)
+        wepy.switchTab({url: '/pages/recommend/recommend'})
+        // wx.navigateToMiniProgram({
+        //   appId: msg.app_id,
+        //   path: msg.path,
+        //   extraData: {},
+        //   envVersion: URIS.jumpVersion,
+        //   success(res) {
+        //     // 打开成功
+        //   }
+        // })
       },
       makePhoneCalls(tel) {
         wx.makePhoneCall({
