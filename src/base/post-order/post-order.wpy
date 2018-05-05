@@ -27,12 +27,9 @@
         <view class="content border-bottom-1px" wx:if="{{status === 'group' || status === 'share'}}" @tap.stop="shareCoupon({{status}})">
           <view class="label">店铺优惠</view>
           <view class="content-right">
-            <view class="content-right-txt {{userCoupon ? 'content-right-txt-user' : ''}}">
-              <text class="content-right-title" wx:if="{{userCoupon}}">抵用券</text>
-              {{userCoupon || '无可用券'}}
-              <text class="content-right-money" wx:if="{{userCoupon}}">元</text>
+            <view class="content-right-txt {{userCoupon ? 'content-right-txt-user' : ''}}"><text class="content-right-title" wx:if="{{userCoupon}}">抵用券</text>{{userCoupon || '无可用券'}}<text class="content-right-money" wx:if="{{userCoupon}}">元</text>
             </view>
-            <image class="content-right-icon" wx:if="{{imageUri}}" src="{{imageUri + '/defaults/c-image/share/icon-arrows@2x.png'}}"></image>
+            <image class="content-right-icon" wx:if="{{imageUri}}" src="{{userCoupon ? imageUri + '/defaults/c-image/share/Rectangle .png' : imageUri + '/defaults/c-image/share/icon-arrows@2x.png'}}"></image>
           </view>
         </view>
         <view class="content">
@@ -368,20 +365,22 @@
             align-items: center
             height: 42px
             .content-right-txt
-              font-size: $font-size-small
+              font-size: $font-size-medium
               color: #A1A1A1
             .content-right-txt-user
               color: $color-text
               font-family: $font-family-meddle
               .content-right-money
+                margin-bottom: -1px
                 font-size: $font-size-small-s
                 font-family: $font-family-regular
               .content-right-title
+                margin-bottom: -1px
                 font-family: $font-family-regular
             .content-right-icon
               width: 7px
               height: 12px
-              margin-left: 5px
+              margin-left: 3.7px
       .post-btn
         position: fixed
         bottom: 0

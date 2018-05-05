@@ -217,7 +217,6 @@
       shareChoice(coupon) {
         this.noUseDiscountBtn = false
         this.couponList.map((item) => {
-          console.log(item, coupon)
           if (item.id === coupon.id) {
             item.checked = true
             this.$apply()
