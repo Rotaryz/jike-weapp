@@ -371,9 +371,8 @@
       let tmp = []
       this.polyline = []
       this.markers.forEach((item, index) => {
-        console.log(this.markers)
         if (this.markers[index + 1]) {
-          console.log(index)
+         // console.log(index)
           tmp.push({
             points: [
               {
@@ -460,7 +459,6 @@
       },
       // 点击气泡时触发
       async markertap(e) {
-        console.log(e)
         let markerId = e.markerId
         // 点击当前或家或公司return
         if (markerId <= 0) {

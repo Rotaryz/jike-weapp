@@ -1,9 +1,11 @@
 <template>
   <view class="ro-share-coupon {{shareStatus ? 'ro-share-coupon-active' : ''}}" wx:if="{{activityStatus === 'share' && !isShowCoupon}}">
-    <coupon-item :type="shareType" :coupon.sync="deduction" :industry.sync="industry" :industryColor.sync="industryColor"></coupon-item>
+    <view class="ro-share-coupon-box">
+      <coupon-item :type="shareType" :coupon.sync="deduction" :industry.sync="industry" :industryColor.sync="industryColor"></coupon-item>
+    </view>
   </view>
-  <view class="coupon-detail">
-    <!--<cover-view class="ro-share-money" wx:if="{{share}}"></cover-view>-->
+  <view class="coupon-detail coupon-detail-active">
+    <cover-view class="ro-share-money" wx:if="{{share}}" @tap="noCouponShow"></cover-view>
     <view class="slider-wrapper">
       <slider :list.sync="promotionImages">
         <block slot="content">
@@ -239,7 +241,7 @@
       orderInfo: {},
       showSoya: true,
       shopImages: [],
-      share: false,
+      share: true,
       shareStatus: false,
       activityStatus: '',
       personList: [],
@@ -381,16 +383,23 @@
       this.stock = data.stock
       this.deduction = data.deduction
       this.deduction.deduction_status = this.activitiesStatus === 3 ? 3 : this.deduction.deduction_status
+      // 添shop照片
+      this.shopImages = this._formatShopImages(data)
+//     优惠券显示
+      this.share = this.deduction.deduction_status === 2
+      this.$apply()
       if (this.deduction.deduction_status === 1) {
 //        判断是否拥有优惠券
         await this._isShareCoupon()
         this.loaded()
         return
+      } else if (this.deduction.deduction_status === 0 || this.deduction.deduction_status === 2) {
+        setTimeout(() => {
+          this.shareStatus = true
+          this.$apply()
+        }, 1200)
       }
       this.shareCouponUserId = 0
-      // 添shop照片
-      this.shopImages = this._formatShopImages(data)
-      this.$apply()
     }
 
 //    判断是否有优惠券
@@ -402,10 +411,11 @@
       for (let i = 0; i < res.length; i++) {
         if (res[i].status === 0) {
           this.shareCouponUserId = res[i].id
-          this.userCoupon = ` - ${res[i].money} `
+          this.userCoupon = ` - ${res[i].money}`
           break
         } else {
           this.shareCouponUserId = 0
+          this.userCoupon = ''
         }
       }
     }
@@ -654,6 +664,10 @@
     }
 
     methods = {
+      noCouponShow() {
+        this.shareStatus = false
+        this.share = false
+      },
       showShareModal() {
         this.$invoke('share', 'show')
       },
@@ -756,6 +770,10 @@
             tips.success(res.message)
             this.deduction.deduction_status = 1
             await this._isShareCoupon()
+            setTimeout(() => {
+              this.shareStatus = false
+              this.$apply()
+            }, 1000)
             this.$apply()
           } else {
             tips.error(res.message)
@@ -815,6 +833,14 @@
   .coupon-detail
     width: 100%
     padding-bottom: 44px
+    .ro-share-money
+      z-index: 9999
+      position: fixed
+      height: 100vw
+      top: 0
+      left: 0
+      width: 100vh
+      background :transparent
     .slider-wrapper
       position: relative
       width: 100%
@@ -1303,7 +1329,15 @@
   /*分享赚钱*/
 
   .ro-share-coupon
-    padding: 15px 12px
+    height: 0
+    box-sizing :border-box
+    transition : height 0.5s
+    .ro-share-coupon-box
+      box-sizing :border-box
+      padding: 4vw 3.2vw
     .coupon
       margin: 0
+  .ro-share-coupon-active
+    height: 34.67vw
+    transition : height 0.5s
 </style>
