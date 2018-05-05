@@ -41,6 +41,7 @@
       </button>
     </view>
   </view>
+  <Confirm></Confirm>
   <Toast></Toast>
 </template>
 
@@ -52,6 +53,7 @@
   import Coupon from 'api/coupon'
   import Payorder from 'api/pay'
   import {ERR_OK} from '@/api/base'
+  import Confirm from '@/base/confirm-msg/confirm-msg'
 
   export default class Pay extends wepy.page {
     mixins = [base]
@@ -67,13 +69,20 @@
       usableDiscountsMoney: 0, // 优惠金额
       discountType: 'self',
       bigDiscounts: false,
-      usableCoupon: ''
+      usableCoupon: '',
+      mer: 0,
+      shopNames: ''
     }
 
-    async onLoad() {
+    async onLoad(options) {
+      this.mer = 0
+      if (options.merchantId) {
+        this.mer = 1
+        this.shopNames = options.title
+      }
+      this.$apply()
       wepy.removeStorageSync('shop')
       await this.showIndustry()
-      this.$apply()
       await this._setGlobaCouponList()
     }
 
@@ -92,7 +101,11 @@
         this.$apply()
       }
     }
-
+    async toShop() { // 是否切店
+      let name = this.shopNames
+      let data = {title: name, msg: '更多精彩内容...', imgFlag: true}
+      this.$invoke('Confirm', 'show', data)
+    }
     onHide() {
       // 清楚缓存
       wepy.removeStorageSync('choiceCoupon')
@@ -292,6 +305,10 @@
 
       // 跳转选择优惠卷
       choiceCoupon() {
+        if (this.mer) {
+          this.toShop()
+          return
+        }
         let couponId
         if (this.usableCoupon) {
           couponId = this.usableCoupon.id
@@ -305,6 +322,10 @@
 
       // 提交支付订单
       async payOrder() {
+        if (this.mer) {
+          this.toShop()
+          return
+        }
         if (this.needPayMoney < 0) {
           return
         }
@@ -345,9 +366,15 @@
         }
       }
     }
-
+    events = {
+      confirm() {
+        this.mer = 0
+        wepy.setStorageSync('merchantId', this.merchantId)
+      }
+    }
     components = {
-      Toast
+      Toast,
+      Confirm: Confirm
     }
 
     config = {

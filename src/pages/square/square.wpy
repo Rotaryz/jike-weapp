@@ -225,6 +225,9 @@
             item.distance = item.distance + '米'
           }
         })
+        wepy.setNavigationBarTitle({
+          title: wepy.getStorageSync('shop').shop_name
+        })
         // console.log(this.merchantInfos)
         this.$apply()
       }
@@ -299,7 +302,7 @@
     }
     // 清理地图数据
     _clearMapData() {
-      this.merchantInfos = []
+      // this.merchantInfos = []
       this.senceInfos = {}
       this.markers = []
       this.$apply()
@@ -365,9 +368,13 @@
     // 设置路线
     _setPolyline(loc, tar) {
       // 判断源头坐标
+      let tmp = []
+      this.polyline = []
       this.markers.forEach((item, index) => {
+        console.log(this.markers)
         if (this.markers[index + 1]) {
-          let tmp = {
+          console.log(index)
+          tmp.push({
             points: [
               {
                 latitude: this.markers[index].latitude,
@@ -380,11 +387,13 @@
             color: '#706B82AA',
             width: 2,
             dottedLine: true
-          }
-          this.polyline.push(tmp)
+          })
           this.$apply()
         }
       })
+      if (tmp.length > 0) {
+        this.polyline.push(...tmp)
+      }
       this.$apply()
     }
     // 移动到当前位置
@@ -416,15 +425,22 @@
     }
     methods = {
       offShop (item, key) {
-        console.log(key)
-        wepy.setStorageSync('merchantId', item.merchant_id)
-        if (key * 1 === 2) {
+        // wepy.setStorageSync('merchantId', item.merchant_id)
+        if (key * 1 === 0) {
+          wepy.navigateTo({
+            url: `/pages/hot-sale/hot-sale?merchantId=${item.merchant_id}&title=${item.shop_name}`
+          })
+        } else if (key * 1 === 1) {
+          wepy.navigateTo({
+            url: `/pages/content-discovery/content-discovery?merchantId=${item.merchant_id}&title=${item.shop_name}`
+          })
+        } else if (key * 1 === 2) {
           wepy.navigateTo({  // 快捷买单
-            url: `/pages/pay/pay`
+            url: `/pages/pay/pay?merchantId=${item.merchant_id}&title=${item.shop_name}`
           })
         } else {
-          wepy.switchTab({
-            url: `/pages/recommend/recommend`
+          wepy.navigateTo({
+            url: `/pages/shop-introduce/shop-introduce?merchantId=${item.merchant_id}&title=${item.shop_name}`
           })
         }
       },
@@ -516,7 +532,7 @@
       .swiper
         height: 160px
         margin-top: 5px
-        border-radius: 4px
+        border-radius: 2px
         display: flex
         .item-swi
           height 160px
@@ -534,7 +550,7 @@
             margin: auto
             opacity: 0.5
             background-image: linear-gradient(-90deg, #000000 1%, #000000 100%)
-            border-radius: 4px
+            border-radius: 2px
           .swiper-info-s
             position: absolute
             top: 0
@@ -545,14 +561,14 @@
             height: 100%
             width: 94%
             margin: auto
-            border-radius: 4px
+            border-radius: 2px
             .swiper-info-title
               height: 60px
               margin: 0px 10px
               .swiper-info-shop
                 justify-content:space-between
                 display: flex
-                padding: 10px 0px 6px 0px
+                padding: 10px 0px 3px 0px
                 .view_1
                   color: $color-white
                   font-family: $font-family-meddle
@@ -570,15 +586,15 @@
                   display: flex
                   flex-direction: row
                   .view_1_1
-                    line-height: 18px
+                    line-height: 20.7px
                     width: 74px
                     height: 18px
-                    border-radius: 4px
+                    border-radius: 2px
                     color: $color-white
                     font-family: $font-family-regular
                     font-size: $font-size-small-s
                     position: relative
-                    margin-right: 15px
+                    margin-right: 10px
                     .bg
                       position: absolute
                       top: 0
@@ -587,17 +603,17 @@
                       height: 18px
                       opacity: 0.5
                       background: #000000
-                      border-radius: 4px
+                      border-radius: 2px
                       z-index: -1
                   .view_1_2
                     width: 18px
                     height: 18px
                     background: #FF4E00
-                    border-radius: 4px
+                    border-radius: 2px
                     font-family: $font-family-regular
                     font-size: $font-size-small-s
                     color: #FFFFFF
-                    line-height: 20px
+                    line-height: 20.9px
                     text-align: center
                     margin-right: 5px
                 .view_2
@@ -634,7 +650,7 @@
                   font-size: $font-size-small
                   line-height: 24px
           .item-img
-            border-radius: 4px
+            border-radius: 2px
             width: 94%
             height: 100%
             // opacity: 0.5
@@ -643,7 +659,7 @@
         height: 25px
         text-align: center
         .swiper-active-t
-          margin: auto
+          margin: 2px auto 0px
           height: 5px
           .item-swi
             width: 5px

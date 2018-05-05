@@ -120,7 +120,8 @@
         'pages/share-list/share-list',
         'pages/share-detail/share-detail',
         'pages/bank-card/bank-card',
-        'pages/group-detail/group-detail'
+        'pages/group-detail/group-detail',
+        'pages/shop-introduce/shop-introduce'
       ],
       window: {
         backgroundColor: '#F9F9F9',
@@ -138,8 +139,10 @@
           {
             pagePath: 'pages/square/square',
             text: '店铺',
-            iconPath: './icon/icon-tab_square1@2x.png',
-            selectedIconPath: './icon/icon-tab_square2@2x.png'
+            iconPath: './icon/icon-shop81@2x.png',
+            selectedIconPath: './icon/icon-shop81_current@2x.png'
+            // iconPath: './icon/icon-tab_square1@2x.png',
+            // selectedIconPath: './icon/icon-tab_square2@2x.png'
           },
           {
             pagePath: 'pages/recommend/recommend',
