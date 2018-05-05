@@ -33,7 +33,8 @@
       imageUrl: URIS.image,
       page: 1,
       shareList: [],
-      nothing: false
+      nothing: false,
+      ios: false
     }
 
     async onPullDownRefresh() {
@@ -46,6 +47,9 @@
 
     async onLoad() {
       await this.showIndustry()
+      let systemInfo = await wepy.getSystemInfo()
+      let system = systemInfo.system
+      this.ios = system.search('iOS') !== -1
       this.shareList = await this._load()
       if (!this.shareList.length) {
         this.shareNone = true

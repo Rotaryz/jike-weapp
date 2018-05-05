@@ -31,13 +31,14 @@
       <view class="ro-share-content-buy">{{shareDetail.sales_volume}}人已购买</view>
       <view class="ro-share-content-price">
         <image class="ro-share-content-tip" wx:if="{{imageUrl && industry}}" src="{{imageUrl + '/defaults/c-image/template/pic-price_'+industry+'@2x.png'}}"><text class="ro-share-content-tip-text {{industry}}-text">券后价</text></image>
-        <view class="ro-share-content-end">¥<view class="ro-share-content-money">{{shareDetail.after_price}}</view>
+        <view class="ro-share-content-end {{ios ? 'ro-share-content-end-ios' : ''}}">
+          <view class="ro-share-content-money">{{shareDetail.after_price}}</view>
+          <view class="ro-share-content-now">现价:￥{{shareDetail.price}}</view>
         </view>
-        <view class="ro-share-content-now">现价:￥{{shareDetail.price}}</view>
       </view>
       <view class="ro-share-content-aside" @tap="goCouponDetail">
         <view class="ro-share-content-logo-box">
-          <image class="ro-share-content-logo" wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/c-image/share/icon-group@2x.png'}}"></image>
+          <image class="ro-share-content-logo" mode="widthFix" wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/c-image/share/icon-check@2x.png'}}"></image>
         </view>
         <view class="ro-share-content-see">查看详情</view>
       </view>
@@ -101,6 +102,7 @@
       navigationBarTitleText: '分享赚钱'
     }
     data = {
+      ios: false,
       circular: true,
       autoplay: true,
       scroll: true,
@@ -119,6 +121,9 @@
     }
 
     async onLoad(option) {
+      let systemInfo = await wepy.getSystemInfo()
+      let system = systemInfo.system
+      this.ios = system.search('iOS') !== -1
       let id = option.id || 0
       await this._load(id)
       await this._createQrcode()
@@ -281,13 +286,13 @@
       .ro-share-content-tip
         width: 38px
         height: 14px
-        margin-right: 1px
+        margin-right: 2px
         position:relative
         .ro-share-content-tip-text
           font-size :$font-size-small-s
           color :$color-theme
           position: absolute
-          top: 2px
+          top: 2.5px
           left: 3px
       .ro-share-content-end
         display:flex
@@ -295,16 +300,38 @@
         color: $color-pay
         font-family :$font-family-regular
         font-size: $font-size-small
+        position: relative
         .ro-share-content-money
-          transform : translateY(0.5px)
+          margin-left: 2px
           line-height: 1
           color: $color-pay
           font-family: $font-family-meddle
           font-size: $font-size-large
-      .ro-share-content-now
-        font-size :$font-size-small-s
-        color :$color-text
-        margin-left: 5px
+          position: relative
+          text-indent: 9px
+          &:before
+            content : '¥'
+            position: absolute
+            left: -8px
+            bottom: 0
+            font-size: $font-size-small
+            color: $color-pay
+            font-family :$font-family-regular
+        .ro-share-content-now
+          white-space :nowrap
+          position :absolute
+          right: -68px
+          bottom: 0
+          font-size :$font-size-small-s
+          color :$color-text
+          margin-left: 5px
+      .ro-share-content-end-ios
+        .ro-share-content-money
+          transform :translateY(2px)
+          &:before
+            bottom: 2px
+        .ro-share-content-now
+          right: -73px
     .ro-share-content-aside
       position: absolute
       right: 28.75px
@@ -321,8 +348,8 @@
         position: relative
         .ro-share-content-logo
           position: absolute
-          height: 17.5px
-          width :16.25px
+          height: 17.6px
+          width :16.5px
           all-center()
       .ro-share-content-see
         margin-top: 7.5px
@@ -334,6 +361,8 @@
     position: relative
     background :$color-white
     margin-top: 10px
+    border-top :0.5ps solid $color-col-line
+    border-bottom :0.5ps solid $color-col-line
     padding: 2.5px $padding-all 14.5px
     .ro-share-rule-item
       margin-top: 10px
@@ -374,6 +403,7 @@
       text-align :center
       margin :0 0 13px
       position: relative
+      color : $color-text-d
       .ro-share-more-text
         position: relative
         &:before,&:after
@@ -388,6 +418,7 @@
         &:after
           left: -74.25px
     .ro-share-item
+      border-radius : 4px
       border :0.5px solid $color-row-line
   .ro-get-share
     position: fixed
@@ -406,9 +437,9 @@
     opacity: .2
 
   .ro-rule-content
-    margin-top: 12px
     border-bottom 0.5px dashed $color-col-line
     &:last-child
+      margin-top: 12px
       border-bottom :none
     .ro-rule-text
       font-size :$font-size-small

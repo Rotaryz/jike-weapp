@@ -100,14 +100,14 @@
           color :$color-text-d
           margin-bottom: 6px
         .ro-share-end-money
-          font-size :$font-size-small-s
+          font-size :$font-size-small
           color :$color-text-d
           display :flex
           align-items :flex-end
           height: $font-size-large
           .ro-share-end-money-tip
-            margin-left: 3.5px
-            font-family :PingFangSC-Semibold
+            margin: 0 1px 0 3.5px
+            font-family :PingFang-SC-Medium
             color :$color-pay
           .ro-share-end-price
             transform :translateY(1px)

@@ -31,7 +31,7 @@
       <view class="myRedPacket-pandect">
         <view class="myRedPacket-pandect-item">
           <view class="myRedPacket-pandect-item-num">
-            <text>{{shareActive[0]}}</text>
+            {{shareActive[0]}}
             <text class="myRedPacket-pandect-item-num-small"></text>
           </view>
           <view class="myRedPacket-pandect-item-txt">已结算(元)</view>
@@ -72,8 +72,8 @@
       </view>
       <shareUnderline></shareUnderline>
       <view class="myRedPacket-noList" wx:if="{{!shareList.length}}">
-        <image wx:if="{{imageUrlHead}}" src="{{imageUrlHead + '/defaults/c-image/mine/pic-no_moeny@2x.png'}}" class="myRedPacket-noList-img"></image>
-        <view class="myRedPacket-noList-txt">您还没有红包</view>
+        <image wx:if="{{imageUrlHead}}" src="{{imageUrlHead + '/defaults/c-image/share/pic-empty_fxzq@2x.png'}}" class="myRedPacket-noList-img"></image>
+        <view class="myRedPacket-noList-txt">您还没有赚到钱</view>
       </view>
     </scroll-view>
     <Toast></Toast>
@@ -292,6 +292,7 @@
       height: 100%
       overflow:hidden
       .myRedPacket-top
+        box-sizing :border-box
         background :$color-white
         height:99px
         display: flex
@@ -307,26 +308,26 @@
           height: 30px
           position: absolute
           background :#DBDBDB
-          top:35.25px
+          top:40.25px
           left: 50%
         .myRedPacket-pandect-item
           flex: 1
           text-align: center
           .myRedPacket-pandect-item-num
             text-align :center
-            font-size: $font-size-large-xx
+            font-size: $font-size-large
             color: $color-text-t
-            line-height: 33.5px
-            height: 33.5px
-            margin-bottom: 11.5px
-            margin-top: 24.5px
-
+            line-height: 1
+            margin-bottom: 6px
+            margin-top: 35px
+            font-family : PingFangSC-Semibold
             .myRedPacket-pandect-item-num-small
               font-size: $font-size-medium
 
           .myRedPacket-pandect-item-txt
+            font-family :$font-family-light
             font-size: $font-size-small-s
-            color: $color-text
+            color: #666666
             line-height: 14px
 
       .myRedPacket-withDraw
@@ -355,7 +356,6 @@
           height: 45px
           border-bottom: 1px solid $color-row-line
           display: flex
-          align-items: center
           justify-content: space-between
 
           .myRedPacket-list-item-left
@@ -375,16 +375,18 @@
                 font-size :$font-size-small
                 bottom: 0.5px
                 min-height : $font-size-small
+                margin-top: 6.75px
               .myRedPacket-list-item-msg-shop-name
                 font-size: $font-size-small-s
                 color :#B6B6B6
+                margin-top: 0.5px
                 line-height: 14px
               .myRedPacket-list-item-msg-time
                 font-size: $font-size-small-s
                 color: $color-text-ddd
-                line-height: 14px
 
           .myRedPacket-list-item-num
+            line-height: 45.5px
             font-size: $font-size-small
 
             .myRedPacket-list-item-num-money
@@ -399,7 +401,7 @@
         .myRedPacket-noList-img
           width: 100px
           height: 80px
-          margin: 15px 0
+          margin: 55.5px 0 10.5px
 
         .myRedPacket-noList-txt
           font-size: $font-size-small
@@ -444,16 +446,16 @@
   .ro-my-check
     height: 49px
     display :flex
-    align-items :center
     background :$color-white
     justify-content :space-around
     border-bottom :0.5px solid $color-col-line
+    padding-top: 22.5px
+    box-sizing:border-box
     .ro-my-check-item
       font-size :$font-size-medium
       font-family :$font-family-light
       position: relative
       height: 100%
-      line-height: 49px
     .ro-my-check-item-active
       &:before
         background :$color-theme

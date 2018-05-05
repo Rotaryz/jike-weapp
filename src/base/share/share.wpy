@@ -54,7 +54,6 @@
       const ctx = await wepy.createCanvasContext('target')
 //      分享背景
       const bgs = await wepy.downloadFile({url: URIS.image + '/defaults/service-image/pic-sharebg.png'})
-      console.log(URIS.image + '/defaults/service-image/pic-sharebg.png')
 //      分享券卷箭头
       const arrows = await wepy.downloadFile({url: URIS.image + '/defaults/service-image/pic-share_arrow.png'})
 //      小程序码
@@ -174,7 +173,6 @@
     }
 
     async drawActivity(ctx, user, shopName, title, activityTitle) {
-      console.log(this.detail)
       const manys = await wepy.downloadFile({url: URIS.image + '/defaults/service-image/icon-many.png'})
       const activityIcon = await wepy.downloadFile({url: URIS.image + '/defaults/c-image/share/pic-price@2x.png'})
       const avatars = await wepy.downloadFile({url: user.avatarUrl})

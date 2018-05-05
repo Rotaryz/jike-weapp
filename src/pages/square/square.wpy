@@ -416,7 +416,6 @@
     }
     methods = {
       offShop (item, key) {
-        console.log(key)
         wepy.setStorageSync('merchantId', item.merchant_id)
         if (key * 1 === 2) {
           wepy.navigateTo({  // 快捷买单
@@ -444,7 +443,6 @@
       },
       // 点击气泡时触发
       async markertap(e) {
-        console.log(e)
         let markerId = e.markerId
         // 点击当前或家或公司return
         if (markerId <= 0) {
