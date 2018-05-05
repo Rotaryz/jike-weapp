@@ -68,7 +68,7 @@
             <view class="myRedPacket-list-item-msg-shop-name">{{item.shop_name}}</view>
           </view>
         </view>
-        <view class="myRedPacket-list-item-num"><text class="myRedPacket-list-item-num-money">{{item.money}}</text></view>
+        <view class="myRedPacket-list-item-num">{{item.money}}</view>
       </view>
       <shareUnderline></shareUnderline>
       <view class="myRedPacket-noList" wx:if="{{!shareList.length}}">
@@ -352,7 +352,8 @@
         max-height: 98.667vw
 
         .myRedPacket-list-item
-          padding: 0 12px
+          margin-left: 12px
+          box-sizing :border-box
           height: 45px
           border-bottom: 1px solid $color-row-line
           display: flex
@@ -386,6 +387,7 @@
                 color: $color-text-ddd
 
           .myRedPacket-list-item-num
+            margin-right: 12px
             line-height: 45.5px
             font-size: $font-size-small
 
