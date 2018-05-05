@@ -903,7 +903,7 @@
               width: 48px
               margin-left: 6px
             .person-txt
-              width: 95px
+              width: 120px
               margin-left: 5px
 
     .group-time-run
