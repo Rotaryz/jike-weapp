@@ -434,6 +434,7 @@
             border: 0.5px solid $color-row-line
             margin-right: 9px
             background: $color-master-gray
+            border-radius: 2px
             overflow: hidden
 
             .myOrder-orderList-item-logo
