@@ -9,10 +9,10 @@
           <view class="item-right">
             <view class="item-title">{{groupDetails.promotion_name}}</view>
             <view class="item-money">
-              <text class="red-small-txt">团购价：</text>
+              <text class="red-small-txt">团购价:</text>
               <text class="red-small-money">¥</text>
               <text class="red-big-money">{{groupDetails.group_price}}</text>
-              <text class="gray-small-money">原价：¥ </text>
+              <text class="gray-small-money">原价: ¥</text>
               <text class="gray-big-money">{{groupDetails.promotion_price}}</text>
             </view>
             <view class="item-count {{industry}}">{{groupDetails.group_number}}人团</view>
@@ -377,7 +377,7 @@
                 font-family: PingFangSC-Regular
                 font-size: $font-size-small-s
                 color: $color-pay
-                margin-bottom: 1px
+                margin: 0 1px 1px
               .red-big-money
                 font-family: PingFangSC-Semibold
                 font-size: $font-size-large
@@ -387,6 +387,7 @@
                 font-size: $font-size-small-s
                 color: $color-text-ddd
                 margin-bottom: 1px
+                margin-right: 1px
               .gray-big-money
                 font-size: $font-size-small
                 color: $color-text-ddd

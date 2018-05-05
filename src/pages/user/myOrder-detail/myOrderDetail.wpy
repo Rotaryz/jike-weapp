@@ -1,6 +1,6 @@
 <template>
   <view class="orderDetail">
-    <view class="orderDetail-head" wx:if="{{orderMsg.promotion_type * 1 === 1 || orderMsg.promotion_type * 1 === 2 || (orderMsg.promotion_type * 1 === 4 && (orderMsg.status * 1 === 0 || orderMsg.status * 1 === 6))}}">
+    <view class="orderDetail-head border-bottom-1px border-top-1px" wx:if="{{orderMsg.promotion_type * 1 === 1 || orderMsg.promotion_type * 1 === 2 || (orderMsg.promotion_type * 1 === 4 && (orderMsg.status * 1 === 0 || orderMsg.status * 1 === 6))}}">
       <view class="orderDetail-head-detailBox border-bottom-1px" @tap="couponDetail">
         <view class="orderDetail-head-left">
           <view class="orderDetail-head-img-box">
@@ -23,12 +23,12 @@
       </view>
     </view>
 
-    <view class="paySuccess-box" wx:if="{{orderMsg.promotion_type * 1 === 3}}">
+    <view class="paySuccess-box border-bottom-1px border-top-1px" wx:if="{{orderMsg.promotion_type * 1 === 3}}">
       <image class="pay-icon" wx:if="{{imageUrlHead}}" src="{{imageUrlHead + '/defaults/c-image/mine/icon-payok@2x.png'}}"></image>
       <view class="pay-txt">支付成功</view>
     </view>
 
-    <view class="group-buy-detail" wx:if="{{orderMsg.promotion_type * 1 === 4 && orderMsg.status * 1 !== 0 && orderMsg.status * 1 !== 6}}">
+    <view class="group-buy-detail border-bottom-1px border-top-1px" wx:if="{{orderMsg.promotion_type * 1 === 4 && orderMsg.status * 1 !== 0 && orderMsg.status * 1 !== 6}}">
       <view class="group-detail-head">
         <view class="group-avatar-box">
           <image class="avatar-img" src="{{orderMsg.group_user_img}}" mode="aspectFill"></image>
@@ -57,7 +57,7 @@
       <!--</navigator>-->
     </view>
 
-    <view class="orderDetail-merchant">
+    <view class="orderDetail-merchant border-top-1px border-bottom-1px">
       <view class="orderDetail-merchant-title border-bottom-1px">商家信息</view>
       <view class="orderDetail-merchant-msgBox">
         <view class="orderDetail-merchant-logo-box">
@@ -80,7 +80,7 @@
       </view>
     </view>
 
-    <view class="group-order-msg" wx:if="{{orderMsg.promotion_type * 1 === 4}}">
+    <view class="group-order-msg border-bottom-1px border-top-1px" wx:if="{{orderMsg.promotion_type * 1 === 4}}">
       <view class="group-order-msg-item border-bottom-1px">
         <view class="group-order-title">商品金额</view>
         <view class="group-order-money">
@@ -104,7 +104,7 @@
       </view>
     </view>
 
-    <view class="orderDetail-orderList">
+    <view class="orderDetail-orderList border-bottom-1px border-top-1px">
       <view class="orderDetail-orderList-title border-bottom-1px">订单信息</view>
       <view class="orderDetail-orderList-msg">
         <view class="orderDetail-orderList-msgItem">订单编号：{{orderMsg.order_sn}}</view>
@@ -539,7 +539,6 @@
           text-align: center
           font-size: $font-size-small
           color: $color-white
-          border: 0.5px solid $color-row-line
           background: $color-button
 
     .paySuccess-box

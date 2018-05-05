@@ -34,12 +34,12 @@
 
     </view>
 
-    <view class="group-time-run" wx:if="{{activityStatus === 'group'}}">
+    <view class="group-time-run border-bottom-1px" wx:if="{{activityStatus === 'group'}}">
       <view class="group-time-left">{{groupBuyDetail.group_number}}人团</view>
       <view class="group-time-right">距离活动结束还剩:<text class="day-txt">{{groupEndTime.day}}</text>天<text class="time-txt">{{groupEndTime.hour}}</text>时<text class="time-txt">{{groupEndTime.minute}}</text>分<text class="time-txt">{{groupEndTime.second}}</text>秒</view>
     </view>
 
-    <view class="desc-wrapper">
+    <view class="desc-wrapper border-bottom-1px border-top-1px">
       <view class="description" wx:if="{{activityStatus !== 'group'}}">
         <view class="name">{{coupon.title !== undefined ? coupon.title : ''}}</view>
         <view class="limit">{{coupon.stock !== undefined ? coupon.stock * 1 === -1 ? '不限量' : '限量' + coupon.stock + '件' : ''}}</view>
@@ -72,12 +72,12 @@
         <view class="share-btn" @tap="showShareModal">
           <image src="{{imageUri + '/defaults/c-image/recommend/pic-r_share5@2x.png'}}" class="share-img" wx:if="{{imageUri && !coupon.activity_share}}"></image>
           <image src="{{imageUri + '/defaults/c-image/recommend/pic-r_share4@2x.png'}}" class="share-img" wx:if="{{imageUri && coupon.activity_share}}"></image>
-          <view class="share-txt" wx:if="{{coupon.activity_share}}">分享有礼</view>
+          <!--<view class="share-txt" wx:if="{{coupon.activity_share}}">分享有礼</view>-->
         </view>
       </view>
     </view>
 
-    <view class="group-list-box" wx:if="{{activityStatus === 'group' && groupType !== 'join'}}">
+    <view class="group-list-box border-top-1px border-bottom-1px" wx:if="{{activityStatus === 'group' && groupType !== 'join'}}">
       <view class="group-list-head line-{{industry}}">小伙伴在开团，可直接参加</view>
       <swiper class="group-list-container" autoplay circular vertical="{{true}}" interval="4000" wx:if="{{groupBuyList.length}}">
         <block wx:for="{{groupBuyList}}" wx:key="{{index}}">
@@ -110,7 +110,7 @@
       </view>
     </view>
 
-    <view class="promotion-detail" wx:if="{{promotions.length > 0}}">
+    <view class="promotion-detail border-top-1px border-bottom-1px" wx:if="{{promotions.length > 0}}">
       <view class="header">
         <view class="red-title line-{{industry}}">礼包详情</view>
       </view>
@@ -120,15 +120,15 @@
         </repeat>
       </view>
     </view>
-    <view wx:if="{{services.length > 0}}">
+    <view wx:if="{{services.length > 0}}" class="border-top-1px">
       <service-detail :services.sync="services" :industry.sync="industry"></service-detail>
     </view>
-    <view class="shop-image-box" wx:if="{{shopImages.length>0}}">
+    <view class="shop-image-box border-bottom-1px" wx:if="{{shopImages.length>0}}">
       <block wx:for="{{shopImages}}" wx:key="{{item}}">
         <image class="shop-image-item" src="{{item}}" mode="widthFix"></image>
       </block>
     </view>
-    <view wx:if="{{type === 1}}" class="{{services.length === 0 ? 'cash-show' : ''}}">
+    <view wx:if="{{type === 1}}" class="{{services.length === 0 ? 'cash-show border-top-1px' : 'border-top-1px'}}">
       <know-detail :note.sync="note" :notAllowTime.sync="notAllowTime" :industry.sync="industry"></know-detail>
     </view>
     <view class="buy-button-wrapper border-top-1px {{activityStatus === 'group' ? 'group-buy' : ''}}">
@@ -905,6 +905,7 @@
           color: $color-white
           font-size: $font-size-small-s
           text-align: center
+          line-height: 16px
         .day-txt
           display: inline-block
           height: 16px
@@ -915,6 +916,7 @@
           color: $color-white
           font-size: $font-size-small-s
           text-align: center
+          line-height: 16px
     .desc-wrapper
       display: flex
       height: 94px
@@ -990,13 +992,13 @@
               top: 0
             .group-icon-txt
               font-size: $font-size-small-s
+              height: 10px
               color: $color-orange
               width: 38px
               text-align: center
               position: absolute
-              left: 50%
-              top: 50%
-              transform: translate(-50%, -50%)
+              left: 0
+              top: 2.5px
 
           .small-money
             font-family: PingFangSC-Regular
@@ -1147,7 +1149,7 @@
           background: $color-orange
           margin-right: 5px
         .red-title
-          text-indent: 8px
+          text-indent: 7px
           margin-top: 12px
           line-height: 14px
           font-size: $font-size-medium
