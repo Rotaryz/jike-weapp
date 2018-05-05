@@ -38,7 +38,7 @@
       </view>
       <view class="ro-share-content-aside" @tap="goCouponDetail">
         <view class="ro-share-content-logo-box">
-          <image class="ro-share-content-logo" mode="widthFix" wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/c-image/share/icon-check@2x.png'}}"></image>
+          <image class="ro-share-content-logo" mode="widthFix" wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/c-image/share/icon-check@2x(1).png'}}"></image>
         </view>
         <view class="ro-share-content-see">查看详情</view>
       </view>
@@ -344,12 +344,10 @@
         height: 32.5px
         width : @height
         border-radius :50%
-        border: 0.5px solid #E2E2E2
         position: relative
         .ro-share-content-logo
           position: absolute
-          height: 17.6px
-          width :16.5px
+          width :100%
           all-center()
       .ro-share-content-see
         margin-top: 7.5px

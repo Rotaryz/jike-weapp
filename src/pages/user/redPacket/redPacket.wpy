@@ -355,7 +355,7 @@
           margin-left: 12px
           box-sizing :border-box
           height: 45px
-          border-bottom: 1px solid $color-row-line
+          border-bottom: 0.5px solid $color-row-line
           display: flex
           justify-content: space-between
 
