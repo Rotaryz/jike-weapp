@@ -5,7 +5,7 @@
       <image class="ro-share-item-logo" mode="aspectFill" src="{{shareCoupon.image_url}}"><view class="ro-share-item-buy">销售：{{shareCoupon.sales_volume}}</view></image>
       <view class="ro-share-content">
         <view class="ro-share-title">{{shareCoupon.title}}</view>
-        <view class="ro-share-now-money">现价  ¥{{shareCoupon.price}}</view>
+        <view class="ro-share-now-money">原价  ¥{{shareCoupon.price}}</view>
         <view class="ro-share-end-money">券后价<view class="ro-share-end-money-tip">¥</view><view class="ro-share-end-price">{{shareCoupon.after_price}}</view></view>
       </view>
     </view>

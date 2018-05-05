@@ -33,7 +33,7 @@
         <image class="ro-share-content-tip" wx:if="{{imageUrl && industry}}" src="{{imageUrl + '/defaults/c-image/template/pic-price_'+industry+'@2x.png'}}"><text class="ro-share-content-tip-text {{industry}}-text">券后价</text></image>
         <view class="ro-share-content-end {{ios ? 'ro-share-content-end-ios' : ''}}">
           <view class="ro-share-content-money">{{shareDetail.after_price}}</view>
-          <view class="ro-share-content-now">现价:￥{{shareDetail.price}}</view>
+          <view class="ro-share-content-now">原价:￥{{shareDetail.price}}</view>
         </view>
       </view>
       <view class="ro-share-content-aside" @tap="goCouponDetail">
@@ -53,7 +53,7 @@
         <view class="ro-share-rule-item-text">（预计 ¥{{shareDetail.profit_money}}）</view>
       </view>
       <view class="ro-share-rule-aside" @tap="getRule">
-        规则<image class="ro-share-rule-aside-icon" wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/c-image/square/icon-s_right1@2x.png'}}"></image>
+        规则<image class="ro-share-rule-aside-icon" wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/c-image/share/Rectangle .png'}}"></image>
       </view>
     </view>
     <!--更多优惠券-->
@@ -385,13 +385,16 @@
     .ro-share-rule-aside
       position: absolute
       col-center()
-      right: 12px
+      right: 21px
       font-size :$font-size-small
       color :$color-text-d
       margin-right: 3px
       .ro-share-rule-aside-icon
-        height: 10px
-        width: 6px
+        position: absolute
+        col-center()
+        margin-left: 3px
+        height: 12px
+        width: 7px
 
 
   .ro-share-more
