@@ -96,7 +96,7 @@
           width :43vw
           no-wrap()
         .ro-share-now-money
-          font-size :$font-size-small-s
+          font-size :$font-size-small
           color :$color-text-d
           margin-bottom: 6px
         .ro-share-end-money
