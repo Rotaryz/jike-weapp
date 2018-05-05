@@ -71,7 +71,8 @@
       bigDiscounts: false,
       usableCoupon: '',
       mer: 0,
-      shopNames: ''
+      shopNames: '',
+      merchantId: ''
     }
 
     async onLoad(options) {
@@ -79,6 +80,7 @@
       if (options.merchantId) {
         this.mer = 1
         this.shopNames = options.title
+        this.merchantId = options.merchantId
       }
       this.$apply()
       wepy.removeStorageSync('shop')
