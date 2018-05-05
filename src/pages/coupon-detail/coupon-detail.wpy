@@ -709,6 +709,7 @@
         }
         const isAuthorise = await this.isAuthorise()
         if (!isAuthorise) {
+          this.loaded()
           this.$invoke('phone-test', 'show', 'group')
           return
         }
@@ -1154,6 +1155,8 @@
           line-height: 14px
           font-size: $font-size-medium
           color: $color-master
+      .promotion-wrapper
+        width: 100%
 
     .shop-image-box
       layout()
@@ -1212,7 +1215,7 @@
             height: 16px
             margin-bottom: 3px
       .buy-btn
-        flex: 0 0 200px
+        width: 50vw
         line-height: 44px
         text-align: center
         font-size: $font-size-medium
@@ -1224,7 +1227,7 @@
       .button-group
         width: 32vw
       .buy-btn
-        flex: 0 0 32vw
+        width: 32vw
         background-color: $color-button
       .group-buy-btn
         width: 36vw
