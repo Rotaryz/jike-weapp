@@ -1,9 +1,9 @@
 <template>
   <view class="myOrder">
-    <scroll-view scroll-x class="myOrder-menuTab" scroll-with-animation="true" scrollLeft="{{leftIndex}}" bindscroll="setScroll">
+    <scroll-view scroll-x class="myOrder-menuTab border-bottom-1px" scroll-with-animation="true" scrollLeft="{{leftIndex}}" bindscroll="setScroll">
       <!--'myOrder-menuTab-item ' + industry + '-border':'myOrder-menuTab-item'-->
       <view wx:for="{{menuItems}}" wx:key="{{index}}"
-            class="{{index === menuIdx?'myOrder-menuTab-item ' + industry + '-border':'myOrder-menuTab-item'}}"
+            class="{{index === menuIdx?'myOrder-menuTab-item' + industry + '-border':'myOrder-menuTab-item'}}"
             @tap="tabChange({{item.type}},{{index}})">
         <text>{{item.title}}</text>
       </view>
@@ -16,7 +16,7 @@
 
     <scroll-view scroll-y class="myOrder-orderBox"
                  bindscrolltolower="orderLower">
-      <view class="myOrder-noOrderMsg" wx:if="{{noOrder}}">
+      <view class="myOrder-noOrderMsg border-bottom-1px" wx:if="{{noOrder}}">
         <image
           src="{{imageUrlHead + '/defaults/c-image/mine/pic-empty_order@2x.png'}}"
           wx:if="{{imageUrlHead}}" class="myOrder-noOrderMsg-Img"></image>
@@ -354,7 +354,6 @@
       box-sizing: border-box
       flex-wrap: nowrap
       background: $color-highlight-background
-      border-bottom: 1px solid $color-row-line
       white-space: nowrap
       width: auto
       overflow: hidden
@@ -389,7 +388,6 @@
       .myOrder-noOrderMsg
         height: 160px
         background: $color-highlight-background
-        border-bottom: 1px solid $color-row-line
         padding-top: 32px
         display: flex
         flex-direction: column
@@ -408,14 +406,14 @@
         .myOrder-noOrderBtn
           width: 65.5px
           height: 24px
-          border: 1px solid $color-row-line
+          border: 0.5px solid $color-row-line
           text-align: center
           line-height: 24px
           font-size: $font-size-small
           border-radius: 4 rpx
 
           &:active
-            border: 1px solid $color-button
+            border: 0.5px solid $color-button
             color: $color-button
 
       .myOrder-orderList-item
@@ -433,9 +431,10 @@
           .myOrder-orderList-item-logo-box
             width: 64px
             height: 64px
-            border: 1px solid $color-row-line
+            border: 0.5px solid $color-row-line
             margin-right: 9px
             background: $color-master-gray
+            border-radius: 2px
             overflow: hidden
 
             .myOrder-orderList-item-logo
