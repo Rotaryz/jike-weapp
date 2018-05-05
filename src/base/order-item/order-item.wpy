@@ -43,7 +43,6 @@
     }
     methods = {
       goOrderDetail(order) {
-        console.log(order)
         this.$parent.$navigate(`/pages/user/myOrder-detail/myOrderDetail?id=${order.id}`)
       }
     }
