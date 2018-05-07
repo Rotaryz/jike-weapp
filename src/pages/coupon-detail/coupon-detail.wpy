@@ -241,7 +241,7 @@
       orderInfo: {},
       showSoya: true,
       shopImages: [],
-      share: true,
+      share: false,
       shareStatus: false,
       activityStatus: '',
       personList: [],
