@@ -11,20 +11,20 @@
     </view>
     <view class="myCenter-cutLine"></view>
     <view class="myCenter-msgList">
-      <view class="myCenter-msgList-item myCenter-msgList-id">
+      <view class="myCenter-msgList-item border-bottom-1px myCenter-msgList-id">
         <view class="myCenter-msgList-item-title">用户ID</view>
         <view class="myCenter-msgList-item-msg">{{userInfo.user_id}}</view>
       </view>
-      <view class="myCenter-msgList-item myCenter-msgList-phone" @tap="changePhone">
+      <view class="myCenter-msgList-item border-bottom-1px myCenter-msgList-phone" @tap="changePhone">
         <view class="myCenter-msgList-item-title">手机号</view>
         <view class="myCenter-msgList-item-msg">{{phone?phone:'点击绑定手机'}}</view>
       </view>
       <PhoneTest :industry.sync="industry"></PhoneTest>
-      <view class="myCenter-msgList-item myCenter-msgList-name">
+      <view class="myCenter-msgList-item border-bottom-1px myCenter-msgList-name">
         <view class="myCenter-msgList-item-title">昵称</view>
         <view class="myCenter-msgList-item-msg">{{userInfo.nickName}}</view>
       </view>
-      <view class="myCenter-msgList-item myCenter-msgList-gender">
+      <view class="myCenter-msgList-item border-bottom-1px myCenter-msgList-gender">
         <view class="myCenter-msgList-item-title">性别</view>
         <view class="myCenter-msgList-item-msg">
           <picker bindchange="genderChange" value="{{userInfo.sex*1 - 1}}" range="{{genderSelect}}">
@@ -32,7 +32,7 @@
           </picker>
         </view>
       </view>
-      <view class="myCenter-msgList-item myCenter-msgList-birthday">
+      <view class="myCenter-msgList-item border-bottom-1px myCenter-msgList-birthday">
         <view class="myCenter-msgList-item-title">出生日期</view>
         <view class="myCenter-msgList-item-msg">
           <picker mode="date" value="{{userInfo.birth}}" end="{{now}}" bindchange="birthdayChange">
@@ -205,7 +205,7 @@
           height: 48px
           border-radius: 50%
           margin: 7px
-          border:2px solid $color-col-line
+          border: 1px solid $color-col-line
 
         .myCenter-head-txt
           color: $color-text
@@ -226,7 +226,6 @@
         padding: 10px 0
         margin-left: 12px
         display: flex
-        border-bottom: 1px solid $color-row-line
 
         .myCenter-msgList-item-title
           flex: 1
