@@ -1,8 +1,8 @@
 <template>
   <view class="view-page">
     <view class="view-scroll">
-      <swiper class="swiper" bindchange="swBindchange" current="{{itemId}}">
-        <block wx:for="{{merchantInfos}}" wx:key="{{index}}">
+      <swiper wx:if="{{flagTmp}}" class="swiper" bindchange="swBindchange" current="{{itemId}}">
+        <block wx:for="{{merchantInfos}}" wx:key="index">
           <swiper-item class="item-swi">
             <view class="swiper-info"></view>
             <view class="swiper-info-s">
@@ -63,7 +63,6 @@
          bindmarkertap="markertap"
          bindregionchange="regionchange">
       <cover-image class="tab-shadow" wx:if="{{imageUri}}" src="{{imageUri + '/defaults/circle-image/square/bg-s_title@2x.png'}}"></cover-image>
-
     </map>
     <integral-popout></integral-popout>
   </view>
@@ -77,6 +76,7 @@
   import URIS from 'common/js/config'
   import GDMap from 'common/libs/amap-wx'
   import IntegralPopout from '@/base/integral-popout/integral-popout'
+
   // const json = await Merchants.getPlazaMerchantsNew()
   const CURRENT = 0
   export default class Square extends wepy.page {
@@ -119,7 +119,8 @@
       merchantInfos: [],
       senceInfos: [],
       itemId: '',
-      mapContext: {}
+      mapContext: {},
+      flagTmp: true
     }
 
     async onLoad() {
@@ -148,25 +149,23 @@
       this.mapContext = await wepy.createMapContext('map')
     }
     async onShow() {
-      await this._clearMapData()
+      this.flagTmp = true
       await this._toShowInit()
+      this.$apply()
     }
     // 显示初始化
     async _toShowInit() {
       await this._getAllSenceLocation()
       await this._setControls()
       await this._getShopList()
-      // await this._setSenceLocation()
-      // await this._addSenceIcon()
-      // await this._addIcons()
+      await this._setSenceLocation()
+      await this._addSenceIcon()
+      await this._addIcons()
       this.loaded()
     }
     // 获取所有场景信息
     async _getAllSenceLocation() {
-      // let current =
       await this._getLocationInfo(CURRENT)
-      // this._setSenceInfos(CURRENT, current)
-      this.$apply()
     }
     // 获取当前的经纬度
     async _getLocationInfo(type) {
@@ -191,7 +190,7 @@
     async _setSenceInfos(id, res) {
       // 经纬度都为0时return
       if (!(res.longitude && res.latitude)) return
-      let iconPath = '' // ./icon-s_sister@2x.png
+      let iconPath = ''
       this.senceInfos[id] = {
         id,
         longitude: res.longitude,
@@ -205,10 +204,18 @@
     // 获取单店信息
     async _getShopList() {
       const json = await Merchants.getPlazaMerchantsNew()
-      console.log(json, 222)
       if (json.error === ERR_OK) {
         const res = json.data
-        this.merchantInfos = res.map((item) => {
+        this.merchantInfos = res.map((item, index) => {
+          if (index === 0) {
+            console.log(item.shop_name)
+            let shop = {
+              industry: item.industry.code_name,
+              shop_name: item.shop_name
+            }
+            wepy.setStorageSync('shop', shop)
+            wepy.setNavigationBarTitle({title: item.shop_name})
+          }
           if (item.distance >= 1000) {
             let n = item.distance / 1000
             item.distance = n.toFixed(2) + 'km'
@@ -217,11 +224,7 @@
           }
           return item
         })
-        console.log(this)
-        console.log(this.merchantInfos)
-        // wepy.setNavigationBarTitle({
-        //   title: wepy.getStorageSync('shop').shop_name
-        // })
+        this.itemId = 0
         this.$apply()
       }
     }
@@ -287,6 +290,7 @@
     }
     // 清除
     onHide() {
+      this.flagTmp = false
       this._clearMapData()
     }
     // 清理地图数据
@@ -296,6 +300,7 @@
       this.markers = []
       this.itemId = 0
       this.topFlag = 0
+      this.styleS = ''
       this.$apply()
     }
     // icon关联商铺
@@ -317,19 +322,6 @@
     }
     // 定位到中间
     translateMarker(e) {
-      // console.log(e)
-      // this.mapContext.translateMarker({
-      //   markerId: e.id,
-      //   autoRotate: true,
-      //   duration: 1000,
-      //   destination: {
-      //     latitude: e.latitude,
-      //     longitude: e.longitude
-      //   },
-      //   animationEnd() {
-      //     console.log('animation end')
-      //   }
-      // })
       this.longitude = e.longitude
       this.latitude = e.latitude
       this.$apply()
@@ -464,7 +456,6 @@
         this.activeMarkerId = markerId
         let currentMerchant = this.markers.find((item) => item.id === markerId)
         currentMerchant && await this._getMerchantDetail(currentMerchant.merchantId)
-
         // 改变店家显示状态
         await this._setCurrentMerchantStatus()
         this.setNav(e)
@@ -491,6 +482,11 @@
       this._scaleMarker(1)
     }
 
+    computed = {
+      aaa() {
+        return 0
+      }
+    }
     // 分享
     onShareAppMessage() {
       let merchantId = wepy.getStorageSync('merchantId')
