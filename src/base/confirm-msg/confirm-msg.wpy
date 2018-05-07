@@ -92,21 +92,20 @@
             text-align: center
             .danger-wrapper
               margin: 0 auto
-              margin-bottom: 20px
-              width: 51px
-              height: 43px
+              margin-bottom: 19.5px
+              width: 62px
+              height: 57px
             .font
               text-align: center
               font-size: $font-size-medium
               font-family: $font-family-light
               color: $color-error
-              line-height: 28px
             .font.title
               font-family: $font-family-meddle
               font-size: $font-size-medium-x
               color: $color-error
               text-align: center
-              line-height: 32px
+              margin-bottom: 7px
         .btn-group
           display: flex
           height: 40px

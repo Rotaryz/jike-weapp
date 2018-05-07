@@ -1,8 +1,8 @@
 <template>
   <view class="view-page">
     <view class="view-scroll">
-      <swiper class="swiper" bindchange="swBindchange"  current="{{itemId}}">
-        <repeat for="{{merchantInfos}}" key="index" index="index" item="item">
+      <swiper class="swiper" bindchange="swBindchange" current="{{itemId}}">
+        <block wx:for="{{merchantInfos}}" wx:key="{{index}}">
           <swiper-item class="item-swi">
             <view class="swiper-info"></view>
             <view class="swiper-info-s">
@@ -41,7 +41,7 @@
             </view>
             <image class="item-img" src="{{item.shop_image}}"></image>
           </swiper-item>
-        </repeat>
+        </block>
       </swiper>
       <view class="swiper-active">
         <view class="swiper-active-t">
@@ -63,8 +63,9 @@
          bindmarkertap="markertap"
          bindregionchange="regionchange">
       <cover-image class="tab-shadow" wx:if="{{imageUri}}" src="{{imageUri + '/defaults/circle-image/square/bg-s_title@2x.png'}}"></cover-image>
-      <integral-popout></integral-popout>
+
     </map>
+    <integral-popout></integral-popout>
   </view>
 </template>
 <script>
@@ -147,6 +148,7 @@
       this.mapContext = await wepy.createMapContext('map')
     }
     async onShow() {
+      await this._clearMapData()
       await this._toShowInit()
     }
     // 显示初始化
@@ -154,9 +156,9 @@
       await this._getAllSenceLocation()
       await this._setControls()
       await this._getShopList()
-      await this._setSenceLocation()
-      await this._addSenceIcon()
-      await this._addIcons()
+      // await this._setSenceLocation()
+      // await this._addSenceIcon()
+      // await this._addIcons()
       this.loaded()
     }
     // 获取所有场景信息
@@ -203,41 +205,28 @@
     // 获取单店信息
     async _getShopList() {
       const json = await Merchants.getPlazaMerchantsNew()
+      console.log(json, 222)
       if (json.error === ERR_OK) {
         const res = json.data
-        // /** 模拟数据 **/
-        // for (let i = 0; i < 5; i++) {
-        //   this.merchantInfos.push(Object.assign({}, res[0]))
-        // }
-        // this.merchantInfos.forEach((item, index) => {
-        //   item.id = index + 1
-        //   item.latitude = index / 200 + parseFloat(item.latitude)
-        //   item.longitude = index / 200 + parseFloat(item.longitude)
-        // })
-        // // console.log(this.merchantInfos)
-        // /** 模拟数据 **/
-        this.merchantInfos = res
-        this.merchantInfos.forEach((item) => {
+        this.merchantInfos = res.map((item) => {
           if (item.distance >= 1000) {
             let n = item.distance / 1000
             item.distance = n.toFixed(2) + 'km'
           } else {
             item.distance = item.distance + '米'
           }
+          return item
         })
-        wepy.setNavigationBarTitle({
-          title: wepy.getStorageSync('shop').shop_name
-        })
-        // console.log(this.merchantInfos)
+        console.log(this)
+        console.log(this.merchantInfos)
+        // wepy.setNavigationBarTitle({
+        //   title: wepy.getStorageSync('shop').shop_name
+        // })
         this.$apply()
       }
     }
     // 设置场景经纬度
     async _setSenceLocation(id) {
-      // const res = this.senceInfos['' + id]
-      // this.latitude = res.latitude
-      // this.longitude = res.longitude
-      // console.log(this.merchantInfos)
       this.latitude = this.merchantInfos[0].latitude
       this.longitude = this.merchantInfos[0].longitude
       this.$apply()
@@ -302,9 +291,11 @@
     }
     // 清理地图数据
     _clearMapData() {
-      // this.merchantInfos = []
+      this.merchantInfos = []
       this.senceInfos = {}
       this.markers = []
+      this.itemId = 0
+      this.topFlag = 0
       this.$apply()
     }
     // icon关联商铺
@@ -619,7 +610,7 @@
                   font-family: $font-family-light
                   font-size: $font-size-small-s
                   color: $color-white
-                  width: 8px
+                  width: 10px
                   height: 10px
                   margin-top: 4px
                   image

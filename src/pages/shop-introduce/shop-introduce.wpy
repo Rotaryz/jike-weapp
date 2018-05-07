@@ -1,6 +1,6 @@
 <template>
   <view class="trading-area">
-    <view class="area-head">
+    <view class="area-head border-bottom-1px">
       <view class="banner">
         <view class="banner-grade">大众点评{{currentMerchant.shop_power}}分</view>
         <image class="banner-img" src="{{currentMerchant.shop_image[0].image.url}}" mode="aspectFill"></image>
@@ -53,7 +53,7 @@
         </view>
       </view>
     </view>
-    <view class="good-shop">
+    <view class="good-shop border-bottom-1px border-top-1px">
       <view class="item-head">
         <view class="item-title">
           <image class="shop-img" wx:if="{{imageUri}}" src="{{imageUri + '/defaults/c-image/square/icon-album@2x.png'}}"></image>
@@ -68,20 +68,20 @@
         </view>
       </scroll-view>
     </view>
-    <view class="recommend">
-      <view class="item-head">
+    <view class="recommend border-top-1px">
+      <view class="item-head border-top-1px">
         <view class="item-title">
           <image class="shop-img" wx:if="{{imageUri}}" src="{{imageUri + '/defaults/c-image/square/icon-time@2x.png'}}"></image>
           营业时间 {{currentMerchant.open_time}}-{{currentMerchant.close_time}}
         </view>
       </view>
-      <view class="item-head" @tap="makePhoneCalls({{currentMerchant.mobile}})">
+      <view class="item-head border-top-1px" @tap="makePhoneCalls({{currentMerchant.mobile}})">
         <view class="item-title">
           <image class="shop-img" wx:if="{{imageUri}}" src="{{imageUri + '/defaults/c-image/square/icon-call@2x.png'}}"></image>
           联系电话 {{currentMerchant.mobile}}
         </view>
       </view>
-      <view class="item-head" @tap="openLocation">
+      <view class="item-head border-top-1px" @tap="openLocation">
         <view class="item-title">
           <image class="shop-img" wx:if="{{imageUri}}" src="{{imageUri + '/defaults/c-image/square/icon-address-s@2x.png'}}"></image>
           {{currentMerchant.particular_address}}
@@ -442,7 +442,7 @@
     .area-head
       width: 100%
       background: $color-white
-      border-bottom: 0.5px solid $color-ROW-line-s
+      // border-bottom: 0.5px solid $color-ROW-line-s
       margin-bottom: 9px
       .banner
         width: 100%
@@ -586,7 +586,7 @@
                   display: flex
                   align-items: center
                   &:first-child
-                    margin-bottom: 7px
+                    margin-bottom: 4px
                   .icon-wrapper
                     flex: 0 0 30px
                     width: 30px
@@ -610,7 +610,7 @@
             height: 27px
             margin-top: 16.5px
             margin-right: 12px
-            line-height: 29px
+            line-height: 28px
             text-align: center
             font-family: $font-family-light
             font-size: $font-size-medium
@@ -723,8 +723,8 @@
     .good-shop
       background: $color-white
       margin-bottom: 9px
-      border-top: 0.5px solid $color-ROW-line-s
-      border-bottom: 0.5px solid $color-ROW-line-s
+      // border-top: 0.5px solid $color-ROW-line-s
+      // border-bottom: 0.5px solid $color-ROW-line-s
       height: 157.5px
       .item-head
         display: flex
@@ -817,7 +817,7 @@
     .recommend
       background: $color-white
       margin-bottom: 9px
-      border-top: 0.5px solid $color-ROW-line-s
+      // border-top: 0.5px solid $color-ROW-line-s
       .item-head:first-child
         border: none
       .item-head
@@ -826,7 +826,7 @@
         height: 44px
         line-height: 45px
         margin-left: 12px
-        border-top: 0.5px solid $color-ROW-line-s
+        // border-top: 0.5px solid $color-ROW-line-s
         justify-content: space-between
         .shop-img
           height: 12px
