@@ -371,6 +371,9 @@
         let msg = this.currentMerchant
         wepy.setStorageSync('merchantId', msg.merchant_id)
         wepy.switchTab({url: '/pages/recommend/recommend'})
+        let merchantId = wepy.getStorageSync('merchantId')
+        wepy.setStorageSync('scene', 11001)
+        wepy.setStorageSync('LastMerchant', merchantId)
         // wx.navigateToMiniProgram({
         //   appId: msg.app_id,
         //   path: msg.path,
