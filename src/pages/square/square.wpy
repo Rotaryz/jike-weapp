@@ -407,7 +407,6 @@
     }
     methods = {
       offShop (item, key) {
-        // wepy.setStorageSync('merchantId', item.merchant_id)
         if (key * 1 === 0) {
           wepy.navigateTo({
             url: `/pages/hot-sale/hot-sale?merchantId=${item.merchant_id}&title=${item.shop_name}`
@@ -424,7 +423,11 @@
           wepy.navigateTo({
             url: `/pages/shop-introduce/shop-introduce?merchantId=${item.merchant_id}&title=${item.shop_name}`
           })
+          return
         }
+        let merchantId = wepy.getStorageSync('merchantId')
+        wepy.setStorageSync('scene', 11001)
+        wepy.setStorageSync('LastMerchant', merchantId)
       },
       // 切换导航
       swBindchange (e) {
