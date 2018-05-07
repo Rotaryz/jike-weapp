@@ -241,7 +241,7 @@
       orderInfo: {},
       showSoya: true,
       shopImages: [],
-      share: true,
+      share: false,
       shareStatus: false,
       activityStatus: '',
       personList: [],
@@ -1182,7 +1182,7 @@
           font-size: $font-size-medium
           color: $color-master
       .promotion-wrapper
-        width: 100%
+        padding: 0 12px
 
     .shop-image-box
       layout()
