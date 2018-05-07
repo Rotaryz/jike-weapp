@@ -3,7 +3,7 @@
     <scroll-view scroll-x class="myOrder-menuTab border-bottom-1px" scroll-with-animation="true" scrollLeft="{{leftIndex}}" bindscroll="setScroll">
       <!--'myOrder-menuTab-item ' + industry + '-border':'myOrder-menuTab-item'-->
       <view wx:for="{{menuItems}}" wx:key="{{index}}"
-            class="{{index === menuIdx?'myOrder-menuTab-item' + industry + '-border':'myOrder-menuTab-item'}}"
+            class="{{index === menuIdx?'myOrder-menuTab-item ' + industry + '-border':'myOrder-menuTab-item'}}"
             @tap="tabChange({{item.type}},{{index}})">
         <text>{{item.title}}</text>
       </view>
