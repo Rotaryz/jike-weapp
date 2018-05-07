@@ -295,7 +295,7 @@
     }
     // 清理地图数据
     _clearMapData() {
-      this.merchantInfos = []
+      // this.merchantInfos = []
       this.senceInfos = {}
       this.markers = []
       this.itemId = 0
