@@ -584,7 +584,7 @@
                   display: flex
                   flex-direction: row
                   .view_1_1
-                    line-height: 17px
+                    line-height: 15px
                     width: 74px
                     height: 15px
                     border-radius: 2px
@@ -612,7 +612,7 @@
                     font-family: $font-family-regular
                     font-size: $font-size-small-s
                     color: #FFFFFF
-                    line-height: 17px
+                    line-height: 15px
                     text-align: center
                     margin-right: 5px
                 .view_2
