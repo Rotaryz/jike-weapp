@@ -52,9 +52,9 @@
     async onLoad(options) {
       this.mer = 0
       this.merchantId = wepy.getStorageSync('merchantId')
-      if (options.merchantId) {
-        if (options.merchantId * 1 !== wepy.getStorageSync('merchantId')) {
-          this.merchantId = options.merchantId * 1
+      if (options.merchant_id) {
+        if (options.merchant_id * 1 !== wepy.getStorageSync('merchantId')) {
+          this.merchantId = options.merchant_id * 1
           this.shopNames = options.title
           this.mer = 1
         }

@@ -165,9 +165,9 @@
       this.loaded()
     }
     // 获取所有场景信息
-    async _getAllSenceLocation() {
-      await this._getLocationInfo(CURRENT)
-    }
+    // async _getAllSenceLocation() {
+    //   await this._getLocationInfo(CURRENT)
+    // }
     // 获取当前的经纬度
     async _getLocationInfo(type) {
       let longitude = 0
@@ -209,7 +209,6 @@
         const res = json.data
         this.merchantInfos = res.map((item, index) => {
           if (index === 0) {
-            console.log(item.shop_name)
             let shop = {
               industry: item.industry.code_name,
               shop_name: item.shop_name
@@ -244,16 +243,16 @@
     async _addIcons() {
       let markers = []
       this.merchantInfos.map((item, index) => {
-        let icon = 'black_'
-        let w = 26
-        let h = 26
+        let icon = 'red_'
+        let w = 30
+        let h = 30
         if (this.activeMarkerId === item.id) {
           icon = 'red_'
         }
         if (index === 0) {
           icon = 'red_'
-          w = 30
-          h = 30
+          w = 40
+          h = 40
         }
         markers.push({ // icon-black_baby@2x
           iconPath: `./icon-${icon + item.industry.code_name}@2x.png`,
@@ -388,9 +387,9 @@
       const index = this.bigMarkerIndex
       if (!this.markers) return
       if (this.markers[index]) {
-        this.markers[index].width = type === 1 ? 30 : 26
-        this.markers[index].height = type === 1 ? 30 : 26
-        this.markers[index].iconPath = type === 1 ? this.markers[index].iconPath.replace('black', 'red') : this.markers[index].iconPath.replace('red', 'black')
+        this.markers[index].width = type === 1 ? 40 : 30
+        this.markers[index].height = type === 1 ? 40 : 30
+        // this.markers[index].iconPath = type === 1 ? this.markers[index].iconPath.replace('black', 'red') : this.markers[index].iconPath.replace('red', 'black')
       }
       this.$apply()
     }
@@ -410,19 +409,19 @@
       offShop (item, key) {
         if (key * 1 === 0) {
           wepy.navigateTo({
-            url: `/pages/hot-sale/hot-sale?merchantId=${item.merchant_id}&title=${item.shop_name}`
+            url: `/pages/hot-sale/hot-sale?merchant_id=${item.merchant_id}&title=${item.shop_name}`
           })
         } else if (key * 1 === 1) {
           wepy.navigateTo({
-            url: `/pages/content-discovery/content-discovery?merchantId=${item.merchant_id}&title=${item.shop_name}`
+            url: `/pages/content-discovery/content-discovery?merchant_id=${item.merchant_id}&title=${item.shop_name}`
           })
         } else if (key * 1 === 2) {
           wepy.navigateTo({  // 快捷买单
-            url: `/pages/pay/pay?merchantId=${item.merchant_id}&title=${item.shop_name}`
+            url: `/pages/pay/pay?merchant_id=${item.merchant_id}&title=${item.shop_name}`
           })
         } else {
           wepy.navigateTo({
-            url: `/pages/shop-introduce/shop-introduce?merchantId=${item.merchant_id}&title=${item.shop_name}`
+            url: `/pages/shop-introduce/shop-introduce?merchant_id=${item.merchant_id}&title=${item.shop_name}`
           })
           return
         }

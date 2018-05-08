@@ -53,16 +53,16 @@
     async onLoad(options) {
       await this.showIndustry()
       this.mer = 0
-      if (options.merchantId) {
-        if (options.merchantId * 1 !== wepy.getStorageSync('merchantId')) {
-          this.params.merchant_id = options.merchantId * 1
-          this.merchant_id = options.merchantId * 1
+      if (options.merchant_id) {
+        if (options.merchant_id * 1 !== wepy.getStorageSync('merchantId')) {
+          this.params.merchant_id = options.merchant_id * 1
+          this.merchant_id = options.merchant_id * 1
           this.shopNames = options.title
           this.mer = 1
           this.$apply()
         }
       }
-      this.merchantId = options.merchantId || wepy.getStorageSync('merchantId')
+      this.merchantId = options.merchant_id || wepy.getStorageSync('merchantId')
       await this._getNewContents(this.params)
       this.$apply()
       this.loaded()
