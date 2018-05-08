@@ -1,6 +1,6 @@
 <template>
   <view class="trading-area">
-    <view class="area-head">
+    <view class="area-head border-bottom-1px">
       <view class="banner">
         <view class="banner-grade">大众点评{{currentMerchant.shop_power}}分</view>
         <image class="banner-img" src="{{currentMerchant.shop_image[0].image.url}}" mode="aspectFill"></image>
@@ -53,7 +53,7 @@
         </view>
       </view>
     </view>
-    <view class="good-shop">
+    <view class="good-shop border-bottom-1px border-top-1px">
       <view class="item-head">
         <view class="item-title">
           <image class="shop-img" wx:if="{{imageUri}}" src="{{imageUri + '/defaults/c-image/square/icon-album@2x.png'}}"></image>
@@ -61,27 +61,27 @@
         </view>
       </view>
       <scroll-view scroll-x class="item-content">
-        <view class="shop-item" wx:for="{{currentMerchant.shop_image}}" wx:key="{{index}}" @tap="jumpShop({{item}})">
+        <view class="shop-item" wx:for="{{currentMerchant.shop_image}}" wx:key="{{index}}" > <!-- @tap="jumpShop({{item}}) -->
           <view class="img-box">
             <image class="shop-img" src="{{item.image.url}}" mode="aspectFill"></image>
           </view>
         </view>
       </scroll-view>
     </view>
-    <view class="recommend">
-      <view class="item-head">
+    <view class="recommend border-top-1px">
+      <view class="item-head border-top-1px">
         <view class="item-title">
           <image class="shop-img" wx:if="{{imageUri}}" src="{{imageUri + '/defaults/c-image/square/icon-time@2x.png'}}"></image>
           营业时间 {{currentMerchant.open_time}}-{{currentMerchant.close_time}}
         </view>
       </view>
-      <view class="item-head" @tap="makePhoneCalls({{currentMerchant.mobile}})">
+      <view class="item-head border-top-1px" @tap="makePhoneCallsA({{currentMerchant.mobile}})">
         <view class="item-title">
           <image class="shop-img" wx:if="{{imageUri}}" src="{{imageUri + '/defaults/c-image/square/icon-call@2x.png'}}"></image>
           联系电话 {{currentMerchant.mobile}}
         </view>
       </view>
-      <view class="item-head" @tap="openLocation">
+      <view class="item-head border-top-1px" @tap="openLocationA">
         <view class="item-title">
           <image class="shop-img" wx:if="{{imageUri}}" src="{{imageUri + '/defaults/c-image/square/icon-address-s@2x.png'}}"></image>
           {{currentMerchant.particular_address}}
@@ -162,7 +162,7 @@
       activeIndex: 0,
       transform: '',
       transition: '',
-      currentMerchant: [],
+      currentMerchant: {},
       promotions: [],
       scale: 18,
       longitude: 0,
@@ -173,7 +173,7 @@
     }
 
     async onLoad(options) {
-      await this.getShop(options.merchantId)
+      await this.getShop(options.merchant_id)
       await this.getInit()
       wepy.setNavigationBarTitle({
         title: options.title
@@ -181,7 +181,6 @@
     }
 
     async getShop(id) {
-      // 100004
       let ids = id
       const json = await Merchants.getMerchantsDetailNew(ids)
       this.loaded()
@@ -300,17 +299,10 @@
       })
       this.latitude = item.latitude
       this.longitude = item.longitude
-
-      console.log(this.markers)
       this.$apply()
     }
     // 设置控件样式
     async _setControls(item) {
-      // if (this.selectOption !== CURRENT) {
-      //   this.controls = []
-      //   this.$apply()
-      //   return
-      // }
       // 判断是否有控件
       if (this.controls.length > 0) return
       // 加载控件
@@ -332,33 +324,15 @@
       const index = this.bigMarkerIndex
       if (!this.markers || index <= 0) return
       if (this.markers[index]) {
-        this.markers[index].width = type === 1 ? 30 : 26
-        // iconPath
+        this.markers[index].width = type === 1 ? 40 : 30
+        this.markers[index].height = type === 1 ? 40 : 30
         this.markers[index].iconPath = type === 1 ? this.markers[index].iconPath.replace('black', 'red') : this.markers[index].iconPath.replace('red', 'black')
-      }
-      if (this.markers[index]) {
-        this.markers[index].height = type === 1 ? 30 : 26
       }
       this.$apply()
     }
     // 获取map上下文
     async _getMapContext() {
       this.mapContext = await wepy.createMapContext('map')
-    }
-    // 移动位置
-    moveToLocation() {
-      if (this.currentMerchant) {
-        this.longitude = this.currentMerchant.longitude
-        this.latitude = this.currentMerchant.latitude
-        this.$apply()
-      }
-    }
-    async onShow() {
-      this.moveToLocation()
-    }
-    async onHide() {
-      this._clearMapData()
-      this.$apply()
     }
     // 清理地图数据
     _clearMapData() {
@@ -369,23 +343,14 @@
     methods = {
       switchRecommend() {
         let msg = this.currentMerchant
-        wepy.setStorageSync('merchantId', msg.merchant_id)
-        wepy.switchTab({url: '/pages/recommend/recommend'})
         let merchantId = wepy.getStorageSync('merchantId')
         wepy.setStorageSync('scene', 11001)
         wepy.setStorageSync('LastMerchant', merchantId)
-        // wx.navigateToMiniProgram({
-        //   appId: msg.app_id,
-        //   path: msg.path,
-        //   extraData: {},
-        //   envVersion: URIS.jumpVersion,
-        //   success(res) {
-        //     // 打开成功
-        //   }
-        // })
+        wepy.setStorageSync('merchantId', msg.merchant_id)
+        wepy.switchTab({url: '/pages/recommend/recommend'})
       },
-      makePhoneCalls(tel) {
-        wx.makePhoneCall({
+      makePhoneCallsA(tel) {
+        wepy.makePhoneCall({
           phoneNumber: tel
         })
       },
@@ -405,18 +370,7 @@
       couponDetail(item) {
         this.$navigate('/pages/coupon-detail/coupon-detail?type=1&id=' + item.id)
       },
-      jumpShop(item) {
-        wx.navigateToMiniProgram({
-          appId: item.app_id,
-          path: item.path,
-          extraData: {},
-          envVersion: URIS.jumpVersion,
-          success(res) {
-            // 打开成功
-          }
-        })
-      },
-      openLocation() {
+      openLocationA() {
         wepy.openLocation({
           latitude: this.currentMerchant.latitude,
           longitude: this.currentMerchant.longitude,
@@ -424,9 +378,6 @@
           name: this.currentMerchant.shop_name,
           address: this.currentMerchant.particular_address
         })
-      },
-      controltap() {
-        this._moveToLocation()
       },
       regionchange() {
         // 切换地图时事件
@@ -445,7 +396,7 @@
     .area-head
       width: 100%
       background: $color-white
-      border-bottom: 0.5px solid $color-ROW-line-s
+      // border-bottom: 0.5px solid $color-ROW-line-s
       margin-bottom: 9px
       .banner
         width: 100%
@@ -589,7 +540,7 @@
                   display: flex
                   align-items: center
                   &:first-child
-                    margin-bottom: 7px
+                    margin-bottom: 4px
                   .icon-wrapper
                     flex: 0 0 30px
                     width: 30px
@@ -613,7 +564,7 @@
             height: 27px
             margin-top: 16.5px
             margin-right: 12px
-            line-height: 29px
+            line-height: 28px
             text-align: center
             font-family: $font-family-light
             font-size: $font-size-medium
@@ -726,8 +677,8 @@
     .good-shop
       background: $color-white
       margin-bottom: 9px
-      border-top: 0.5px solid $color-ROW-line-s
-      border-bottom: 0.5px solid $color-ROW-line-s
+      // border-top: 0.5px solid $color-ROW-line-s
+      // border-bottom: 0.5px solid $color-ROW-line-s
       height: 157.5px
       .item-head
         display: flex
@@ -820,7 +771,7 @@
     .recommend
       background: $color-white
       margin-bottom: 9px
-      border-top: 0.5px solid $color-ROW-line-s
+      // border-top: 0.5px solid $color-ROW-line-s
       .item-head:first-child
         border: none
       .item-head
@@ -829,7 +780,7 @@
         height: 44px
         line-height: 45px
         margin-left: 12px
-        border-top: 0.5px solid $color-ROW-line-s
+        // border-top: 0.5px solid $color-ROW-line-s
         justify-content: space-between
         .shop-img
           height: 12px

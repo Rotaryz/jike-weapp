@@ -51,12 +51,13 @@
     }
     async onLoad(options) {
       this.mer = 0
-      if (options.merchantId) {
-        this.merchantId = options.merchantId
-        this.shopNames = options.title
-        this.mer = 1
-      } else {
-        this.merchantId = wepy.getStorageSync('merchantId')
+      this.merchantId = wepy.getStorageSync('merchantId')
+      if (options.merchant_id) {
+        if (options.merchant_id * 1 !== wepy.getStorageSync('merchantId')) {
+          this.merchantId = options.merchant_id * 1
+          this.shopNames = options.title
+          this.mer = 1
+        }
       }
       await Promise.all([this.showIndustry(), this._getNewCoupons(this.params)])
       this.$apply()

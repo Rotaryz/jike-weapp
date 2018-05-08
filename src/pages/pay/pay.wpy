@@ -77,10 +77,12 @@
 
     async onLoad(options) {
       this.mer = 0
-      if (options.merchantId) {
-        this.mer = 1
-        this.shopNames = options.title
-        this.merchantId = options.merchantId
+      if (options.merchant_id) {
+        if (options.merchant_id * 1 !== wepy.getStorageSync('merchantId')) {
+          this.mer = 1
+          this.shopNames = options.title
+          this.merchantId = options.merchant_id * 1
+        }
       }
       this.$apply()
       wepy.removeStorageSync('shop')
