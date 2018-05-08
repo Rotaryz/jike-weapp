@@ -1248,7 +1248,7 @@
         color: $color-white
         background-color: $color-button
         &.disable
-          opacity: .2
+          background: #dbdbdb
     .buy-button-wrapper.group-buy
       .button-group
         width: 32vw
@@ -1263,7 +1263,7 @@
         font-size: $font-size-medium
         color: $color-white
       .disable
-        color: #dbdbdb
+        background: #dbdbdb
     .base-modal-content
       .header-wrapper
         height: 124.5px

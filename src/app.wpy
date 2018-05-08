@@ -37,13 +37,13 @@
     }
 
     onShow(options) {
-      let scene = options.scene * 1
-      if (scene !== 1037) {
+      let scene = options.scene ? options.scene * 1 : ''
+      if (scene && scene !== 1037) {
         wepy.setStorageSync('scene', scene)
       }
       //      判断是否由分享的场景值进入
       if (options.query.merchantId) {
-        const merchantId = options.query.merchantId
+        const merchantId = options.query.merchantId * 1
         wepy.setStorageSync('merchantId', merchantId)
       }
     }
