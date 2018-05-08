@@ -33,7 +33,7 @@
         <image class="ro-share-content-tip" wx:if="{{imageUrl && industry}}" src="{{imageUrl + '/defaults/c-image/template/pic-price_'+industry+'@2x.png'}}"><text class="ro-share-content-tip-text {{industry}}-text">券后价</text></image>
         <view class="ro-share-content-end {{ios ? 'ro-share-content-end-ios' : ''}}">
           <view class="ro-share-content-money">{{shareDetail.after_price}}</view>
-          <view class="ro-share-content-now">原价:￥{{shareDetail.price}}</view>
+          <view class="ro-share-content-now">原价: ¥ {{shareDetail.price}}</view>
         </view>
       </view>
       <view class="ro-share-content-aside" @tap="goCouponDetail">
@@ -435,7 +435,7 @@
     line-height: 44px
     z-index: 1500
   .disable
-    opacity: .2
+    background: #dbdbdb
 
   .ro-rule-content
     border-bottom 0.5px dashed $color-col-line
