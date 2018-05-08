@@ -155,9 +155,10 @@
     }
     // 显示初始化
     async _toShowInit() {
-      await this._getAllSenceLocation()
+      // await this._getAllSenceLocation()
+      let res = await this._getLocationInfo(CURRENT)
       await this._setControls()
-      await this._getShopList()
+      await this._getShopList(res)
       await this._setSenceLocation()
       await this._addSenceIcon()
       await this._addIcons()
@@ -202,8 +203,8 @@
       this.$apply()
     }
     // 获取单店信息
-    async _getShopList() {
-      const json = await Merchants.getPlazaMerchantsNew()
+    async _getShopList(data) {
+      const json = await Merchants.getPlazaMerchantsNew(data)
       if (json.error === ERR_OK) {
         const res = json.data
         this.merchantInfos = res.map((item, index) => {
