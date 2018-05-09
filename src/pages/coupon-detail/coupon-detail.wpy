@@ -702,7 +702,7 @@
         }
       },
       async postOrder() {
-        if (this.stock === 0 || this.goodsStatus !== 1 || this.activitiesStatus !== 1) {
+        if (this.stock === 0 || this.goodsStatus !== 1 || (this.activitiesStatus !== 1 && this.activityStatus !== 'group')) {
           return
         }
         const isAuthorise = await this.isAuthorise()
