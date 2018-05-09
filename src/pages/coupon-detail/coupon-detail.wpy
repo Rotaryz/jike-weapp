@@ -150,7 +150,8 @@
         </button>
       </view>
       <view class="buy-btn {{stock === 0 || goodsStatus !== 1 ? 'disable' : ''}}" @tap="postOrder" wx:if="{{activityStatus === 'group'}}">{{ goodsStatus === 0 ? '该商品已下架' : goodsStatus === 1 ? '¥' + coupon.platform_price + '单买' : goodsStatus === 2  ? '已售罄' : '立即购买'}}</view>
-      <view class="buy-btn {{goodsStatus === 1 || activitiesStatus === 1 ? industry + '-bg' : 'disable' }}" @tap="postOrder" wx:if="{{activityStatus !== 'group'}}">{{ goodsStatus === 0 || activitiesStatus === 0 ? '该商品已下架' : goodsStatus === 1 || activitiesStatus === 1 ? '立即购买' : goodsStatus === 2 || activitiesStatus === 2 ? '已售罄' : '立即购买'}}</view>
+      <view class="buy-btn {{goodsStatus === 1? industry + '-bg' : 'disable' }}" @tap="postOrder" wx:if="{{activityStatus === ''}}">{{ goodsStatus === 0 || activitiesStatus === 0 ? '该商品已下架' : goodsStatus === 1 || activitiesStatus === 1 ? '立即购买' : goodsStatus === 2 || activitiesStatus === 2 ? '已售罄' : '立即购买'}}</view>
+      <view class="buy-btn {{activitiesStatus === 1 ? industry + '-bg' : 'disable' }}" @tap="postOrder" wx:if="{{activityStatus === 'share'}}">{{ goodsStatus === 0 || activitiesStatus === 0 ? '该商品已下架' : goodsStatus === 1 || activitiesStatus === 1 ? '立即购买' : goodsStatus === 2 || activitiesStatus === 2 ? '已售罄' : '立即购买'}}</view>
       <view class="group-buy-btn {{stock === 0 || activitiesStatus !== 1 ? 'disable' : industry + '-bg'}}" @tap="postGroupOrder" wx:if="{{activityStatus === 'group'}}">{{ activitiesStatus === 0 ? '该商品已下架' : activitiesStatus === 1 ? '¥' + groupBuyDetail.group_price + (groupType === 'join' ? '参团' : '开团') : activitiesStatus === 2 ? '已售罄' : '立即购买'}}</view>
     </view>
     <phone-test @isPhoneOk.user="getSymbol" :industry.sync="industry"></phone-test>
