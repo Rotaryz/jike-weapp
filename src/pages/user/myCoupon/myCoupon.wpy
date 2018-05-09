@@ -168,7 +168,8 @@
       },
       showQrcord(item) {
         if (item.promotion.promotion_type === 'deduction') {
-          this.$navigate(`/pages/coupon-detail/coupon-detail?actId=${item.promotion.act_id}&type=1&merchantId=${item.merchant_id}&fromCustomerId=${item.promotion.share_customer_id}&id=${item.promotion.promotion_id}&status=share&isShowCoupon=1`)
+          let i = `${item.promotion.act_id},${item.merchant_id},${item.promotion.share_customer_id},${item.promotion.promotion_id}`
+          this.$navigate(`/pages/coupon-detail/coupon-detail?i=${i}&s=s&isShowCoupon=1`)
           return
         }
         let type = item.promotion.promotion_type

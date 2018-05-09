@@ -308,6 +308,22 @@
       if (option.scene) {
         let scene = decodeURIComponent(option.scene)
         const params = getParams(scene)
+        if (params.i) {
+//          分享赚钱识别二维码进入
+          this.activityStatus = params.s === 's' ? 'share' : ''
+          let id = params.i || ''
+          id = id ? id.split(',') : []
+          if (id) {
+            this.actId = id[0] * 1 // 抵用券
+            this.currentMerchant = id[1] * 1// 商家id
+            this.fromCustomerId = id[2] * 1 // 分享者
+            this.id = id[3] * 1 // 券id
+            this.type = 1
+            wepy.setStorageSync('merchantId', id[1])
+            this.$apply()
+          }
+          return
+        }
         this.type = Math.floor(params.type)
         this.id = params.id
         this.groupId = params.groupId
@@ -401,18 +417,18 @@
 //     优惠券显示
       this.share = this.deduction.deduction_status === 2
       this.$apply()
+      this.shareCouponUserId = 0
       if (this.deduction.deduction_status === 1) {
 //        判断是否拥有优惠券
         await this._isShareCoupon()
         this.loaded()
-        return
       } else if (this.deduction.deduction_status === 0 || this.deduction.deduction_status === 2) {
         setTimeout(() => {
           this.shareStatus = true
           this.$apply()
         }, 1200)
       }
-      this.shareCouponUserId = 0
+      this._shareBuy()
     }
 
     _shareBuy() {
@@ -868,10 +884,10 @@
     .ro-share-money
       z-index: 9999
       position: fixed
-      height: 100vw
+      height: 100vh
       top: 0
       left: 0
-      width: 100vh
+      width: 100vw
       background :transparent
     .slider-wrapper
       position: relative
