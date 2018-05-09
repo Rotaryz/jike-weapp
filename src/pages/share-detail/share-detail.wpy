@@ -297,7 +297,8 @@
           font-size :$font-size-small-s
           color :$color-theme
           position: absolute
-          top: 2.5px
+          margin-top: 3px
+          top: 0
           left: 3px
       .ro-share-content-end
         display:flex
