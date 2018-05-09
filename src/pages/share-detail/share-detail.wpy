@@ -63,7 +63,7 @@
         <share-item :shareCoupon.sync="item" :industry.sync="industry"></share-item>
       </repeat>
     </view>
-    <view class="ro-get-share {{industry}}-bg {{goodsStatus !== 1 || activitiesStatus !== 1 ? 'disable' : ''}}" @tap="shares">{{ goodsStatus === 0 || activitiesStatus === 0 ? '该商品已下架' : goodsStatus === 1 || activitiesStatus === 1 ? '立即分享' : goodsStatus === 2 || activitiesStatus === 2 ? '已售罄' : '立即分享'}}</view>
+    <view class="ro-get-share {{activitiesStatus !== 1 ? 'disable' : industry+'-bg'}}" @tap="shares">{{activitiesStatus === 0 ? '该商品已下架' : activitiesStatus === 1 ? '立即分享' : activitiesStatus === 2 ? '已售罄' : '立即分享'}}</view>
   </view>
   <toast></toast>
   <rule>
@@ -141,7 +141,7 @@
       }
       return {
 //        商品名称
-        title: this.shareDetail.title || '',
+        title: this.shareDetail.act_title || '',
         path: this.currentPage,
         success: () => {
 
@@ -190,7 +190,9 @@
         let atcId = this.shareDetail ? this.shareDetail.id : 0 // 活动ID
         let fromCustomerId = this.shareDetail ? this.shareDetail.from_customer_id : 0 // 分享者id
         let promotionId = this.shareDetail ? this.shareDetail.promotion_id : 0
-        this.currentPage = `/pages/coupon-detail/coupon-detail?actId=${atcId}&type=1&merchantId=${currentMerchant}&fromCustomerId=${fromCustomerId}&id=${promotionId}&status=share`
+//        id顺序  活动id,商家id，人id，
+        let i = `${atcId},${currentMerchant},${fromCustomerId},${promotionId}`
+        this.currentPage = `/pages/coupon-detail/coupon-detail?i=${i}&s=s`
         const res = await Info.createQrode({path: this.currentPage})
         this.loaded()
         this.qrcode = res.data.image_url
@@ -209,6 +211,9 @@
         await this.$invoke('share', 'generatePicture')
       },
       shares() {
+        if (this.activitiesStatus !== 1) {
+          return
+        }
 //        console.log( this.detail)
         this.$invoke('share', 'show', 'shareMoney')
       },
@@ -292,7 +297,8 @@
           font-size :$font-size-small-s
           color :$color-theme
           position: absolute
-          top: 2.5px
+          margin-top: 3px
+          top: 0
           left: 3px
       .ro-share-content-end
         display:flex

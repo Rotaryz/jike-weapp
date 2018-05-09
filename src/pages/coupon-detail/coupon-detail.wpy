@@ -150,7 +150,8 @@
         </button>
       </view>
       <view class="buy-btn {{stock === 0 || goodsStatus !== 1 ? 'disable' : ''}}" @tap="postOrder" wx:if="{{activityStatus === 'group'}}">{{ goodsStatus === 0 ? '该商品已下架' : goodsStatus === 1 ? '¥' + coupon.platform_price + '单买' : goodsStatus === 2  ? '已售罄' : '立即购买'}}</view>
-      <view class="buy-btn {{stock === 0 || goodsStatus !== 1 || activitiesStatus !== 1 ? 'disable' : industry + '-bg'}}" @tap="postOrder" wx:if="{{activityStatus !== 'group'}}">{{ goodsStatus === 0 || activitiesStatus === 0 ? '该商品已下架' : goodsStatus === 1 || activitiesStatus === 1 ? '立即购买' : goodsStatus === 2 || activitiesStatus === 2 ? '已售罄' : '立即购买'}}</view>
+      <view class="buy-btn {{goodsStatus === 1? industry + '-bg' : 'disable' }}" @tap="postOrder" wx:if="{{activityStatus === ''}}">{{ goodsStatus === 0 ? '该商品已下架' : goodsStatus === 1 ? '立即购买' : goodsStatus === 2 ? '已售罄' : '立即购买'}}</view>
+      <view class="buy-btn {{(shareBuy === 1) ? industry + '-bg' : 'disable' }}" @tap="postOrder" wx:if="{{activityStatus === 'share'}}">{{shareBuy === 1 ? '立即购买' : shareBuy === 2 ? '已售罄' : '立即购买'}}</view>
       <view class="group-buy-btn {{activitiesStatus !== 1 ? 'disable' : industry + '-bg'}}" @tap="postGroupOrder" wx:if="{{activityStatus === 'group'}}">{{ activitiesStatus === 0 ? '该商品已下架' : activitiesStatus === 1 ? '¥' + groupBuyDetail.group_price + (groupType === 'join' ? '参团' : '开团') : activitiesStatus === 2 ? '已售罄' : '立即购买'}}</view>
     </view>
     <phone-test @isPhoneOk.user="getSymbol" :industry.sync="industry"></phone-test>
@@ -270,7 +271,9 @@
       isShowCoupon: false,
       goodsStatus: 1, // 商品状态
       activitiesStatus: 1, // 活动状态
-      shareCouponUserId: 0
+      shareCouponUserId: 0,
+      shareBuy: 1,
+      used: false
     }
 
     onShareAppMessage(res) {
@@ -298,7 +301,7 @@
     async onLoad(option) {
       this.isShowCoupon = option.isShowCoupon || this.isShowCoupon
       this.getShareCoupon = true
-      this.activityStatus = option.status ? option.status : ''
+      this.activityStatus = option.s ? option.s === 's' ? 'share' : option.s : ''
       this.groupType = option.groupType ? option.groupType : 'open'
       this.joinGroupId = option.joinGroupId ? option.joinGroupId : ''
       await this.showIndustry()
@@ -315,11 +318,21 @@
         }
       } else {
         this.type = Math.floor(option.type)
-        this.id = option.id
+        this.id = option.id || ''
         this.groupId = option.groupId
-        this.actId = option.actId || 0 // 抵用券
-        this.fromCustomerId = option.fromCustomerId || 0 // 分享者
         this.currentMerchant = option.currentMerchant ? option.currentMerchant : 0
+        if (this.activityStatus === 'share') {
+          let id = option.i || ''
+          id = id ? id.split(',') : []
+          if (id) {
+            this.actId = id[0] * 1 // 抵用券
+            this.currentMerchant = id[1] * 1// 商家id
+            this.fromCustomerId = id[2] * 1 // 分享者
+            this.id = id[3] * 1 // 券id
+            this.type = 1
+            this.$apply()
+          }
+        }
       }
       await this.load()
     }
@@ -402,6 +415,15 @@
       this.shareCouponUserId = 0
     }
 
+    _shareBuy() {
+      if ((this.deduction.deduction_status === 1 && this.goodsStatus !== 0) || (this.deduction.deduction_status === 0 && (this.goodsStatus === 1 || this.activitiesStatus === 1))) {
+        this.shareBuy = 1
+//        正常情况
+      } else if ((this.deduction.deduction_status === 0 && this.goodsStatus === 2 && this.activitiesStatus === 2) || (this.used && this.goodsStatus === 2) || (this.goodsStatus === 2 && this.activitiesStatus)) {
+        this.shareBuy = 2
+//        为零情况
+      }
+    }
 //    判断是否有优惠券
     async _isShareCoupon() {
       let data = {act_id: this.actId, page: 1}
@@ -414,6 +436,9 @@
           this.userCoupon = ` - ${res[i].money}`
           break
         } else {
+          if (res[i].status === 2) {
+            this.used = true
+          }
           this.shareCouponUserId = 0
           this.userCoupon = ''
         }
@@ -478,6 +503,7 @@
       if (res.error === ERR_OK) {
         const data = res.data
         this.goodsStatus = res.goods_status !== undefined ? res.goods_status : 1
+        this.activitiesStatus = null
         if (this.activityStatus !== 'group') {
           wepy.setNavigationBarTitle({title: data.title})
         }
@@ -702,7 +728,10 @@
         }
       },
       async postOrder() {
-        if (this.stock === 0 || this.goodsStatus !== 1 || (this.activitiesStatus !== 1 && this.activityStatus !== 'group')) {
+//        活动
+        if (this.activityStatus === 'share' && this.shareBuy !== 1) {
+          return
+        } else if (this.stock === 0 || this.goodsStatus !== 1) {
           return
         }
         const isAuthorise = await this.isAuthorise()
