@@ -36,7 +36,7 @@ export default class http {
     } else if (this.isSoldOut(res)) {
       // 下架
       const result = res.data.data
-      wepy.redirectTo({url: `/pages/sold-out/sold-out?appId=${result.app_id}&businessCircleId=${result.business_circle_id}`})
+      wepy.redirectTo({url: `/pages/sold-out/sold-out?appId=${result.app_id}&businessCircleId=${result.business_circle_id}&status=1`})
       throw this.requestException(res)
     } else if (this.abnormal(res)) {
       // 异常

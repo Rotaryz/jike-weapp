@@ -346,6 +346,7 @@
             this.fromCustomerId = id[2] * 1 // 分享者
             this.id = id[3] * 1 // 券id
             this.type = 1
+            wepy.setStorageSync('merchantId', id[1])
             this.$apply()
           }
         }
