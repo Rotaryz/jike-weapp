@@ -156,8 +156,8 @@
 //      详情
       let resDetail = await shareMoney.shareDetail(id)
       this.shareDetail = this.infoRes(resDetail)
-      this.goodsStatus = resDetail.goods_status !== undefined ? resDetail.goods_status : 1
-      this.activitiesStatus = resDetail.activity_status !== undefined ? resDetail.goods_status : 1
+      this.activitiesStatus = resDetail.activity_status !== undefined ? resDetail.activity_status : 1
+      console.log(this.activitiesStatus)
       this.promotionImages = this.shareDetail ? this.shareDetail.promotion_images : {}
       this.detail = {
         title: this.shareDetail.title, // 标题

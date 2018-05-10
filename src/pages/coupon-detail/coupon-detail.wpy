@@ -401,7 +401,7 @@
       }
       const data = res.data
       this.goodsStatus = res.goods_status !== undefined ? res.goods_status : 1
-      this.activitiesStatus = res.activity_status !== undefined ? res.goods_status : 1
+      this.activitiesStatus = res.activity_status !== undefined ? res.activity_status : 1
 //      console.log(data)
       wepy.setNavigationBarTitle({title: data.title})
       this.promotionImages = data.promotion_images
@@ -433,10 +433,10 @@
     }
 
     _shareBuy() {
-      if ((this.deduction.deduction_status === 1 && this.goodsStatus !== 0) || (this.deduction.deduction_status === 0 && (this.goodsStatus === 1 || this.activitiesStatus === 1))) {
+      if ((this.deduction.deduction_status === 1 && this.goodsStatus !== 0 && !this.used) || (this.deduction.deduction_status === 0 && (this.goodsStatus === 1 || this.activitiesStatus === 1))) {
         this.shareBuy = 1
 //        正常情况
-      } else if ((this.deduction.deduction_status === 0 && this.goodsStatus === 2 && this.activitiesStatus === 2) || (this.used && this.goodsStatus === 2) || (this.goodsStatus === 2 && this.activitiesStatus)) {
+      } else if ((this.deduction.deduction_status === 0 && this.goodsStatus === 2 && this.activitiesStatus === 2) || (this.used && this.goodsStatus === 2) || (this.deduction.deduction_status === 2 && this.goodsStatus === 2)) {
         this.shareBuy = 2
 //        为零情况
       }
