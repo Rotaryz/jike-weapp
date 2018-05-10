@@ -138,12 +138,8 @@
         this.total = (this.count * this.orderInfo.price).toFixed(1)
       },
       addCount() {
-        if (this.stock !== -1 && this.peopleStock === -1) {
+        if (this.stock !== -1) {
           if (this.count < this.stock) {
-            this.count += 1
-          }
-        } else if (this.stock !== -1 && this.peopleStock !== -1) {
-          if (this.count < this.stock && this.count < this.peopleStock) {
             this.count += 1
           }
         } else {
@@ -242,6 +238,9 @@
         this._hide()
       },
       show(status = '') {
+        if (status !== this.status) {
+          this.count = 1
+        }
         this.total = this.count * this.orderInfo.price
         this.stock = this.orderInfo.stock
         this.status = status
