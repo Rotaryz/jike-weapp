@@ -5,6 +5,7 @@
 <script>
   import wepy from 'wepy'
   import 'wepy-async-function'
+  import wxUtils from '@/common/js/wxUtils'
 
   export default class extends wepy.app {
     constructor() {
@@ -14,6 +15,10 @@
     }
 
     onLaunch() {
+      const token = wepy.getStorageSync('token')
+      if (!token) {
+        wepy.reLaunch({url: `/pages/loading/loading`})
+      }
       const tips = wepy.getStorageSync('tips')
       if (!tips) {
         wepy.setStorageSync('tips', {order: false})
@@ -37,6 +42,8 @@
     }
 
     onShow(options) {
+      const targetPage = wxUtils.setPagePath(options.path, options.query) // 获取此次的目标页面路径
+      this.updateGlobalData('targetPage', targetPage)
       let scene = options.scene ? options.scene * 1 : ''
       if (scene && scene !== 1037) {
         wepy.setStorageSync('scene', scene)

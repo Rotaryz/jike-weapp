@@ -1,39 +1,47 @@
 <template>
   <view class="content">
-    <view class="loading">
-      <image wx:if="{{imageUri}}"
-             src="{{imageUri + '/defaults/b-image/page/icon-default-logo@2x.png'}}"></image>
-      <view class="shopText">赞播小程序</view>
-      <view class="load">
-        <text class="{{showLoad === 1 ? 'white-box' : ''}}"></text>
-        <text class="{{showLoad === 2 ? 'white-box' : ''}}"></text>
-        <text class="{{showLoad === 3 ? 'white-box' : ''}}"></text>
+    <view class="bc-box">
+      <image class="bc-img" src="./pic-single_shop@2x.jpg" mode="widthFix"></image>
+    </view>
+    <view class="cover">
+      <view class="cover-top">
+        <image class="cover-top-img" src="./logo-white@2x.png"></image>
+        <view class="cover-top-txt">更多的了解你</view>
+        <view class="cover-top-txt">是为了更好的服务你</view>
+      </view>
+      <view class="btn-box">
+        <button open-type="getUserInfo" bindgetuserinfo="wxGetUserInfo" lang="zh_CN" class="btn">
+          <image class="wx-img" src="./logo-wechat@2x.png"></image>
+          <view class="wx-login-txt">微信快捷登录</view>
+        </button>
       </view>
     </view>
-    <view class="watermark">Copyright © 2018 赞播 All Rights Reserved.</view>
   </view>
 </template>
 
 <script>
   import wepy from 'wepy'
   import URIS from 'common/js/config'
-  import base from 'common/mixins/base'
-  import merchants from 'api/merchants'
-  import users from 'common/mixins/users'
-  import {ERR_OK} from '@/api/base'
+  import User from 'api/user'
+  import {ERR_OK} from 'api/base'
 
-  const INFOURL = '/pages/recommend/recommend'
+  const INFOURL = '/pages/square/square'
+  import users from 'common/mixins/users'
+  import base from 'common/mixins/base'
 
   export default class loading extends wepy.page {
     mixins = [users, base]
     config = {
-      navigationBarTitleText: '',
-      navigationBarBackgroundColor: '#fff'
+      navigationBarTitleText: '登录',
+      backgroundTextStyle: 'light',
+      navigationBarBackgroundColor: '#767286',
+      disableScroll: true
     }
     data = {
       imageUri: URIS.image,
       showLoad: 1,
-      timer: null
+      timer: null,
+      targetPage: INFOURL
     }
 
     show() {
@@ -62,42 +70,65 @@
     }
 
     navTo(type) {
-      if (type.indexOf('square') !== -1 || type.indexOf('recommend') !== -1 ||
-        type.indexOf('mine') !== -1) {
+      if (type.indexOf('square') !== -1 || type.indexOf('recommend') !== -1 || type.indexOf('mine') !== -1) {
         this.$switch({
           url: `${type}`
         })
+      } else if (type.indexOf('loading') !== -1) {
+        this.$switch({url: INFOURL})
       } else {
         wepy.redirectTo({
           url: `${type}`
         })
       }
     }
+
     async onLoad(options) {
-      await this.$getUserInfo(false, true)
-      let id = options.merchantId ? options.merchantId : wepy.getStorageSync('merchantId')
-      let res = await merchants.showShop(id)
-      this.loaded()
-      if (res.error === ERR_OK) {
-        let shop = {
-          industry: res.data.code_name,
-          shop_name: res.data.shop_name
-        }
-        wepy.setStorageSync('shop', shop)
-      }
-      let url = INFOURL
-      if (options.scene) {
-        wepy.setStorageSync('scene', options.scene)
-      } else if (options.lastBusiness) {
-        wepy.setStorageSync('LastBusiness', options.lastBusiness)
+//      await this.$getUserInfo(false, true)
+//        let data = options.param.split(',')
+//        let param = {}
+//        for (let item of data) {
+//          item = item.split(':')
+//          param[item[0]] = item[1]
+//        }
+      if (options.businessCircleId) {
+        wepy.setStorageSync('businessCircleId', options.businessCircleId)
       }
       if (options.path) {
-        url = decodeURIComponent(options.path)
+        this.targetPage = decodeURIComponent(options.path)
+      } else if (this.$parent.globalData.targetPage) {
+        this.targetPage = this.$parent.globalData.targetPage
       }
-      this.navTo(url)
+      const token = wepy.getStorageSync('token')
+      if (token && options.type !== 'tokenOut') {
+        this.navTo(this.targetPage)
+      }
+    }
+
+    methods = {
+      async wxGetUserInfo(e) {
+        const code = await this.$getCode()
+        const wxUser = e.detail
+        const data = {
+          code,
+          iv: wxUser.iv,
+          encryptedData: wxUser.encryptedData
+        }
+        const Json = await User.authorise(data, false)
+        if (Json.error !== ERR_OK) {
+          return ''
+        }
+        const res = Json.data
+        let token = res.jk_token
+        if (token) {
+          wepy.setStorageSync('token', token)
+          this.navTo(this.targetPage)
+        }
+      }
     }
   }
 </script>
+
 <style lang="stylus">
   @import '../../common/stylus/variable'
   @import '../../common/stylus/mixin'
@@ -107,35 +138,56 @@
     overflow-y: hidden
     box-sizing: border-box
     background: $color-white
-    padding-top: 41.33vw
-    .loading
-      display: flex
-      flex-direction: column
-      align-items: center
-      image
-        height: 64px
-        width: 64px
-      .shopText
-        font-size: $font-size-medium
-        line-height: 20px
-        margin-top: 6px
-        color: $color-text-td
-      .load
-        text
-          display: inline-block
-          margin: 0 2px
-          height: 6px
-          width: 6px
-          background: #9b9b9b
-          border-radius: 50%
-        .white-box
-          background: $color-master
-
-    .watermark
+    position: relative
+    .bc-box
       position: absolute
-      bottom: 6.67vw
-      font-size: $font-size-small-s
-      color: #9b9b9b
-      no-wrap()
-      row-center()
+      width: 100%
+      height: 100%
+      overflow: hidden
+      .bc-img
+        position: absolute
+        width: 100%
+    .cover
+      position: absolute
+      width: 100%
+      height: 100%
+      background: rgba(112, 107, 129, 0.95)
+      .cover-top
+        padding-top: 32vw
+        display: flex
+        flex-direction: column
+        align-items: center
+        .cover-top-img
+          width: 44.75px
+          height: 47.4px
+          margin-bottom: 14px
+        .cover-top-txt
+          font-size: $font-size-medium
+          color: $color-white
+          font-family: PingFangSC-Regular
+          line-height: 21px
+      .btn-box
+        position: absolute
+        left: 0
+        bottom: 30px
+        width: 100%
+        height: 12vw
+        box-sizing: border-box
+        padding: 0 12px
+        .btn
+          width: 100%
+          background: #1AC521
+          height: 100%
+          border-radius: 4px
+          display: flex
+          align-items: center
+          justify-content: center
+          .wx-img
+            width: 24px
+            height: 19.5px
+            margin-right: 5.5px
+          .wx-login-txt
+            font-size: $font-size-medium-x
+            color: $color-white
+            font-family: PingFangSC-Regular
 </style>
