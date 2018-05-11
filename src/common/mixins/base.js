@@ -3,13 +3,20 @@ import Tips from 'common/js/tips'
 import Info from 'api/info'
 import merchants from 'api/merchants'
 import {ERR_OK} from 'api/base'
+import URIS from 'common/js/config'
 const COLLECT_COUNT = 20
 
 export default class base extends wepy.mixin {
   data = {
     industry: '',
     shopName: '',
-    industryColor: ''
+    industryColor: '',
+    shareBgs: '',
+    shareArrows: '',
+    shareAvatars: '',
+    shareManys: '',
+    shareActivityIcon: '',
+    shareGife: ''
   }
 
   loaded() {
@@ -21,6 +28,34 @@ export default class base extends wepy.mixin {
   // 卸载清理
   onUnload() {
     Object.assign(this, this.def)
+  }
+  async upLoadImage() {
+    const user = wepy.getStorageSync('user') ? wepy.getStorageSync('user') : {}
+//      分享背景
+    if (!this.$parent.globalData.shareBgsshareBgs) {
+      this.$parent.updateGlobalData('shareBgs', '../../common/image/pic-sharebg.png')
+    }
+//      分享券卷箭头
+    if (!this.$parent.globalData.shareArrows) {
+      this.$parent.updateGlobalData('shareArrows', '../../common/image/pic-share_arrow.png')
+    }
+//      头像
+    if (!this.$parent.globalData.shareAvatars) {
+      let shareAvatars = await wepy.downloadFile({url: user.avatarUrl})
+      this.$parent.updateGlobalData('shareAvatars', shareAvatars)
+    }
+    //
+    if (!this.$parent.globalData.shareManys) {
+      this.$parent.updateGlobalData('shareManys', '../../common/image/icon-many.png')
+    }
+    // 人物icon
+    if (!this.$parent.globalData.shareActivityIcon) {
+      this.$parent.updateGlobalData('shareActivityIcon', '../../common/image/pic-price@2x.png')
+    }
+    // 分享赚钱的礼物icon
+    if (!this.$parent.globalData.shareGife) {
+      this.$parent.updateGlobalData('shareGife', '../../common/image/icon-share_prize.png')
+    }
   }
 
   async collectFormIds(formId) {

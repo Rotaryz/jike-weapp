@@ -121,6 +121,7 @@
     }
 
     async onLoad(option) {
+      await this.upLoadImage()
       let systemInfo = await wepy.getSystemInfo()
       let system = systemInfo.system
       this.ios = system.search('iOS') !== -1
