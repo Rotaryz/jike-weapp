@@ -25,6 +25,7 @@
     }
 
     async onLoad(option) {
+      await this.upLoadImage()
       if (option.scene) {
         let scene = decodeURIComponent(option.scene)
         const params = getParams(scene)

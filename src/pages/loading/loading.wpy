@@ -44,7 +44,7 @@
       targetPage: INFOURL
     }
 
-    show() {
+    async show() {
       clearInterval(this.timer)
       this.timer = setInterval(() => {
         if (this.showLoad < 3) {

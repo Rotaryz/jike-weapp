@@ -114,7 +114,6 @@ export default class http {
     const wxCode = res.statusCode
     let code = res.data.code
     let status = ''
-    console.log(code)
     if (wxCode === 200) {
       switch (code) {
         case DEL_OUT:

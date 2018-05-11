@@ -41,7 +41,7 @@
         </view>
       </view>
       <view class="post-btn {{industry}}-bg" @tap.stop="postOrder">
-        提交订单
+        提交订单{{stock}}
       </view>
     </view>
   </view>
@@ -78,7 +78,8 @@
       stock: 0,
       peopleStock: -1,
       total: 0,
-      status: ''
+      status: '',
+      goOnce: true
     }
 
     _hide() {
@@ -115,9 +116,20 @@
       }
     }
 
+    infoCount() {
+      this.count = 1
+      this.total = this.count * this.orderInfo.price
+      this.$apply()
+    }
+    infoOnce() {
+      this.goOnce = true
+      this.$apply()
+    }
+
     methods = {
       shareCoupon(status) {
-        if (status === 'share') {
+        if (status === 'share' && this.goOnce) {
+          this.goOnce = false
           let shareCoupon = wepy.getStorageSync('shareCoupon')
           this.orderInfo.deduction_id = typeof (shareCoupon) === 'object' ? shareCoupon.id : 0
           let activityId = this.orderInfo.activity_id
@@ -138,8 +150,8 @@
         this.total = (this.count * this.orderInfo.price).toFixed(1)
       },
       addCount() {
-        if (this.stock !== -1) {
-          if (this.count < this.stock) {
+        if (this.orderInfo.stock !== -1) {
+          if (this.count < this.orderInfo.stock) {
             this.count += 1
           }
         } else {
@@ -211,7 +223,8 @@
               this.$emit('postSuccess', res.group_id)
             } else {
               if (this.status === 'share') {
-                this.$emit('successShare')
+                this.$emit('successShare', res.order_id, this.total, status)
+                return
               }
               this.$parent.$navigate(`/pages/pay-result/pay-result?orderId=${orderId}&total=${total}&status=${status}`)
             }
@@ -272,7 +285,8 @@
     computed = {
       shareMoney() {
         let shareMoney = this.userCoupon.slice(3)
-        return this.total - Math.abs(shareMoney)
+        let money = this.total - Math.abs(shareMoney)
+        return money.toFixed(2)
       }
     }
   }

@@ -147,6 +147,7 @@
     }
 
     async onLoad(option) {
+      await this.upLoadImage()
       await this.showIndustry()
       this.id = option.id
       await this.load(this.id)

@@ -28,8 +28,10 @@
   import wepy from 'wepy'
   import Tips from 'common/js/tips'
   import URIS from 'common/js/config'
+  import base from 'common/mixins/base'
 
   export default class Share extends wepy.component {
+    mixins = [base]
     props = {
       promotionImages: {
         type: Array,
@@ -52,24 +54,29 @@
     async _drawCanvas(type) {
       const shopName = wepy.getStorageSync('shop') ? wepy.getStorageSync('shop').shop_name : ''
       const ctx = await wepy.createCanvasContext('target')
+      this.shareBgs = this.$parent.$parent.globalData ? this.$parent.$parent.globalData.shareBgs : this.$parent.$parent.$parent.$parent.globalData.shareBgs
+      this.shareArrows = this.$parent.$parent.globalData ? this.$parent.$parent.globalData.shareArrows : this.$parent.$parent.$parent.$parent.globalData.shareArrows
+      this.shareManys = this.$parent.$parent.globalData ? this.$parent.$parent.globalData.shareManys : this.$parent.$parent.$parent.$parent.globalData.shareManys
+      this.shareActivityIcon = this.$parent.$parent.globalData ? this.$parent.$parent.globalData.shareActivityIcon : this.$parent.$parent.$parent.$parent.globalData.shareActivityIcon
+      this.shareGife = this.$parent.$parent.globalData ? this.$parent.$parent.globalData.shareGife : this.$parent.$parent.$parent.$parent.globalData.shareGife
+      this.shareAvatars = this.$parent.$parent.globalData ? this.$parent.$parent.globalData.shareAvatars : this.$parent.$parent.$parent.$parent.globalData.shareAvatars
 //      分享背景
-      const bgs = await wepy.downloadFile({url: URIS.image + '/defaults/service-image/pic-sharebg.png'})
+//      const bgs = await wepy.downloadFile({url: URIS.image + '/defaults/service-image/pic-sharebg.png'})
 //      分享券卷箭头
-      const arrows = await wepy.downloadFile({url: URIS.image + '/defaults/service-image/pic-share_arrow.png'})
+//      const arrows = await wepy.downloadFile({url: URIS.image + '/defaults/service-image/pic-share_arrow.png'})
 //      小程序码
       const qrcodes = await wepy.downloadFile({url: this.qrcode})
       const user = wepy.getStorageSync('user') ? wepy.getStorageSync('user') : {}
       let qrcode = qrcodes.tempFilePath
-      let bg = bgs.tempFilePath
-      let arrow = arrows.tempFilePath
+      let bg = this.shareBgs
+      let arrow = this.shareArrows
       ctx.drawImage(bg, 0, 0, 1500, 1800)
       ctx.drawImage(arrow, 562, 1432, 300, 100)
       ctx.drawImage(qrcode, 908.6, 1262.6, 380.6, 380.6)
       if (type === 'live') {
-        const avatars = await wepy.downloadFile({url: user.avatarUrl})
         const pics = await wepy.downloadFile({url: this.promotionImages})
         let pic = pics.tempFilePath
-        let avatar = avatars.tempFilePath
+        let avatar = this.shareAvatars.tempFilePath
         ctx.drawImage(avatar, 200, 1340, 96, 96)
         ctx.drawImage(pic, 110, 62, 1280, 852)
         let arr = [{
@@ -102,9 +109,8 @@
         ctx.fillText(shopName, 370, 1700)
       } else if (type === 'content') {
         const pics = await wepy.downloadFile({url: this.detail.image_url})
-        const avatars = await wepy.downloadFile({url: user.avatarUrl})
         let pic = pics.tempFilePath
-        let avatar = avatars.tempFilePath
+        let avatar = this.shareAvatars.tempFilePath
         ctx.drawImage(pic, 110, 62, 1280, 816)
         ctx.setFontSize(72)
         ctx.setFillStyle('#464646')
@@ -135,14 +141,18 @@
 //        团购的活动分享图片
         await this.drawActivity(ctx, user, shopName, '拼团优惠', '团购价')
       } else {
-        const manys = await wepy.downloadFile({url: URIS.image + '/defaults/service-image/icon-many.png'})
-        const shares = await wepy.downloadFile({url: URIS.image + '/defaults/service-image/icon-share_prize.png'})
+//        const manys = await wepy.downloadFile({url: URIS.image + '/defaults/service-image/icon-many.png'})
+//        const shares = await wepy.downloadFile({url: URIS.image + '/defaults/service-image/icon-share_prize.png'})
         const pics = await wepy.downloadFile({url: this.promotionImages[0].image.url})
-        const avatars = await wepy.downloadFile({url: user.avatarUrl})
         let pic = pics.tempFilePath
-        let many = manys.tempFilePath
-        let share = shares.tempFilePath
-        let avatar = avatars.tempFilePath
+        let many = this.shareManys
+        let share = this.shareGife
+        let avatar = this.shareAvatars.tempFilePath
+//        个人信息
+        ctx.setFontSize(48)
+        ctx.drawImage(avatar, 200, 1340, 96, 96)
+        ctx.fillText(user.nickName, 310, 1400)
+        ctx.fillText('邀请你参加活动', 200, 1530)
         ctx.drawImage(pic, 110, 62, 1280, 682)
         ctx.setFontSize(48)
         ctx.setFillStyle('#464646')
@@ -163,24 +173,18 @@
         ctx.drawImage(many, 738, 1045, 32, 30)
         ctx.fillText(this.detail.collected < 100 ? '100人已购买' : `${this.detail.collected}已购买`, 780, 1074)
         ctx.drawImage(share, 1131.4, 807.4, 220, 220)
-
-        ctx.setFontSize(48)
-        ctx.drawImage(avatar, 200, 1340, 96, 96)
-        ctx.fillText(user.nickName, 310, 1400)
-        ctx.fillText('邀请你参加活动', 200, 1530)
       }
       ctx.draw()
     }
 
     async drawActivity(ctx, user, shopName, title, activityTitle) {
-      const manys = await wepy.downloadFile({url: URIS.image + '/defaults/service-image/icon-many.png'})
-      const activityIcon = await wepy.downloadFile({url: URIS.image + '/defaults/c-image/share/pic-price@2x.png'})
-      const avatars = await wepy.downloadFile({url: user.avatarUrl})
+//      const manys = await wepy.downloadFile({url: URIS.image + '/defaults/service-image/icon-many.png'})
+//      const activityIcon = await wepy.downloadFile({url: URIS.image + '/defaults/c-image/share/pic-price@2x.png'})
 //    商品图片
       const pics = await wepy.downloadFile({url: this.promotionImages[0].image.url})
-      let many = manys.tempFilePath
-      let avatar = avatars.tempFilePath
-      let activityIcons = activityIcon.tempFilePath
+      let many = this.shareManys
+      let avatar = this.shareAvatars.tempFilePath
+      let activityIcons = this.shareActivityIcon
       let pic = pics.tempFilePath
 //        活动标题
       let num = 0
@@ -211,9 +215,6 @@
       ctx.setFontSize(64)
       ctx.setFillStyle('#000000')
       ctx.fillText(title, textLeft, 160)
-//        商品图片
-//      ctx.fillRect(140, 210, 1220, 680)
-      ctx.drawImage(pic, 140, 210, 1220, 680)
 //        商品名称
       ctx.setFontSize(48)
       ctx.setFillStyle('#464646')
@@ -245,6 +246,9 @@
       ctx.setFillStyle('#464646')
       ctx.setFontSize(40)
       ctx.fillText(shopName, 370, 1700)
+      //        商品图片
+//      ctx.fillRect(140, 210, 1220, 680)
+      ctx.drawImage(pic, 140, 210, 1220, 680)
     }
 
     methods = {
@@ -259,8 +263,10 @@
           destHeight: 1800,
           canvasId: 'target'
         })
-        await wepy.previewImage({urls: [res.tempFilePath]})
-        Tips.loaded()
+        setTimeout(async () => {
+          await wepy.previewImage({urls: [res.tempFilePath]})
+          Tips.loaded()
+        }, 1000)
 //        await wepy.saveImageToPhotosAlbum({filePath: res.tempFilePath})
         this.$emit('sharePunchLine')
       },
