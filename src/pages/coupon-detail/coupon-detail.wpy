@@ -273,7 +273,9 @@
       activitiesStatus: 1, // 活动状态
       shareCouponUserId: 0,
       shareBuy: 1,
-      used: false
+      used: false,
+      actStock: 0,
+      normalStock: 0
     }
 
     onShareAppMessage(res) {
@@ -410,7 +412,9 @@
       this.note = data.note
       this.notAllowTime = data.not_allow_time
       this.isFavorite = data.is_favorite
-      this.stock = data.stock
+//      根据抵用券判断库存
+      this.normalStock = data.stock
+      this.actStock = data.act_stock
       this.deduction = data.deduction
       this.deduction.deduction_status = this.activitiesStatus === 3 ? 3 : this.deduction.deduction_status
       // 添shop照片
@@ -433,13 +437,19 @@
     }
 
     _shareBuy() {
-      if ((this.deduction.deduction_status === 1 && this.goodsStatus !== 0 && !this.used) || (this.deduction.deduction_status === 0 && (this.goodsStatus === 1 || this.activitiesStatus === 1))) {
-        this.shareBuy = 1
-//        正常情况
-      } else if ((this.deduction.deduction_status === 0 && this.goodsStatus === 2 && this.activitiesStatus === 2) || (this.used && this.goodsStatus === 2) || (this.deduction.deduction_status === 2 && this.goodsStatus === 2)) {
+//     根据销量进行判断
+      if (this.normalStock === 0 && this.actStock === 0) {
         this.shareBuy = 2
-//        为零情况
+      } else {
+        this.shareBuy = 1
       }
+//      if ((this.deduction.deduction_status === 1 && this.goodsStatus !== 0 && !this.used) || (this.deduction.deduction_status === 0 && (this.goodsStatus === 1 || this.activitiesStatus === 1))) {
+//        this.shareBuy = 1
+//        正常情况
+//      } else if ((this.deduction.deduction_status === 0 && this.goodsStatus === 2 && this.activitiesStatus === 2) || (this.used && this.goodsStatus === 2) || (this.deduction.deduction_status === 2 && this.goodsStatus === 2)) {
+//        this.shareBuy = 2
+//        为零情况
+//      }
     }
 //    判断是否有优惠券
     async _isShareCoupon() {
@@ -682,7 +692,7 @@
           title: this.coupon.title,
           price: this.coupon.platform_price,
           current_merchant: this.currentMerchant,
-          stock: this.coupon.stock,
+          stock: this.stock,
           peopleStock: this.coupon.note ? this.coupon.note.buy_upper_limit : -1,
           from: 'c_sharemoney',
           deduction_id: this.shareCouponUserId, // 抵用券ID
@@ -812,6 +822,7 @@
           this.getShareCoupon = false
           let data = {is_share_money: 1, act_id: this.actId, share_customer_id: this.fromCustomerId}
           let res = await order.getCoupon(coupon.id, data)
+          this.loaded()
           if (res.error === ERR_OK) {
             tips.success(res.message)
             this.deduction.deduction_status = 1
@@ -819,13 +830,13 @@
             setTimeout(() => {
               this.shareStatus = false
               this.$apply()
-            }, 1000)
+              this.loaded()
+            }, 500)
             this.$apply()
           } else {
             tips.error(res.message)
             this.getShareCoupon = true
           }
-          this.loaded()
         }
       },
       async postSuccess(id) {
@@ -835,18 +846,31 @@
         if (this.activityStatus === 'share') {
 //              单成功生成订单时需要锁定优惠券
           this.userCoupon = ''
-          this.shareCouponUserId = 0
+          this.orderInfo.deduction_id = 0
           this.$apply()
         }
       },
-      successShare() {
+      successShare(orderId, total, status) {
 //        购买成功时的修改
         this.userCoupon = ''
-        this.shareCouponUserId = 0
+        this.orderInfo.deduction_id = 0
+        this.$navigate(`/pages/pay-result/pay-result?orderId=${orderId}&total=${total}&status=${status}`)
         this.$apply()
       }
     }
-
+    watch = {
+      userCoupon(newVal) {
+        if (newVal) {
+          this.stock = this.actStock
+          this.orderInfo.stock = this.actStock
+        } else {
+          this.stock = this.normalStock
+          this.orderInfo.stock = this.normalStock
+        }
+        this.$invoke('post-order', 'infoCount')
+        this.$apply()
+      }
+    }
     components = {
       'phone-test': PhoneTest,
       'service-detail': ServiceDetail,
