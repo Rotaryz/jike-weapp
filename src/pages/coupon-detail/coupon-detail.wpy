@@ -359,6 +359,7 @@
 //    分享赚钱的选择优惠券判断
     onShow() {
       if (this.activityStatus === 'share') {
+        this.$invoke('post-order', 'infoOnce')
         let shareCoupon = wepy.getStorageSync('shareCoupon')
         this.orderInfo.deduction_id = typeof (shareCoupon) === 'object' ? shareCoupon.id : typeof (shareCoupon) === 'string' ? this.orderInfo.deduction_id : 0
         this.shareCouponUserId = this.orderInfo.deduction_id
