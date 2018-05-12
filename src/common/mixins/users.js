@@ -119,8 +119,8 @@ export default class userMixin extends wepy.mixin {
    * 获取数据库用户信息
    * @returns {Promise.<*>}
    */
-  async $getUserInfo(loading, isFirst) {
-    const token = await this.$getToken(isFirst)
+  async $getUserInfo(loading) {
+    const token = await this.$getToken()
     if (!token) {
       console.log('not token')
       return
@@ -153,6 +153,7 @@ export default class userMixin extends wepy.mixin {
     }
     // }
     this.$parent.updateGlobalData('user', user)
+    wepy.setStorageSync('user', user)
     return user
   }
 
