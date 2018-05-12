@@ -301,7 +301,6 @@
     }
 
     async onLoad(option) {
-      console.log('dffdd')
       await this.upLoadImage()
       this.isShowCoupon = option.isShowCoupon || this.isShowCoupon
       this.getShareCoupon = true
