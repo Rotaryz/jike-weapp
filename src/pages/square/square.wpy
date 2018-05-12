@@ -130,19 +130,11 @@
     // 初始化
     async _init() {
       this._newMapGD()
-      await this.isAuthorise()
-      await this._getVia()
       await this._getMapContext()
     }
     // 创建高德地图
     _newMapGD() {
       this.gdmapsdk = new GDMap.AMapWX({key: 'd3950730147fbf5fe991ecc0344968b4'})
-    }
-    // 获取微信头像
-    async _getVia() {
-      const userInfo = await this.$getUser()
-      this.avatarUrl = userInfo.avatarUrl
-      this.$apply()
     }
     // 获取map上下文
     async _getMapContext() {

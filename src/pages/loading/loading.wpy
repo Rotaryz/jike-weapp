@@ -125,6 +125,7 @@
         let token = res.jk_token
         if (token) {
           wepy.setStorageSync('token', token)
+          await this.$getUserInfo(true)
           this.navTo(this.targetPage)
         }
       }
