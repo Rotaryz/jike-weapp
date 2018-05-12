@@ -107,6 +107,9 @@
 
     methods = {
       async wxGetUserInfo(e) {
+        if (e.detail.errMsg !== 'getUserInfo:ok') {
+          return
+        }
         const code = await this.$getCode()
         const wxUser = e.detail
         const data = {
