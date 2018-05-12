@@ -187,7 +187,7 @@
         this.coupon = coupon
         this.$apply()
         if (!this.mer) {
-          this.get()
+          this._get()
         } else {
           this.toShop()
         }
@@ -197,7 +197,7 @@
         this.coupon = coupon
         this.$apply()
         if (!this.mer) {
-          this.get()
+          this._use()
         } else {
           this.toShop()
         }
