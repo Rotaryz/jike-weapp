@@ -266,7 +266,7 @@
       actId: 0,
       deduction: {},
       timer: '',
-      userCoupon: '', // 抵用券的文案
+      userCoupon: '0', // 抵用券的文案
       getShareCoupon: true,
       isShowCoupon: false,
       goodsStatus: 1, // 商品状态
@@ -301,6 +301,7 @@
     }
 
     async onLoad(option) {
+      console.log('dffdd')
       await this.upLoadImage()
       this.isShowCoupon = option.isShowCoupon || this.isShowCoupon
       this.getShareCoupon = true
@@ -425,6 +426,7 @@
       this.share = this.deduction.deduction_status === 2
       this.$apply()
       this.shareCouponUserId = 0
+      this.userCoupon = ''
       if (this.deduction.deduction_status === 1) {
 //        判断是否拥有优惠券
         await this._isShareCoupon()
