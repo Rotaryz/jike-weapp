@@ -444,7 +444,7 @@
         let groupId = msg.id
         let promotionId = msg.promotion_id
         let merchantId = msg.merchant_id
-        this.$navigate('/pages/coupon-detail/coupon-detail?type=1&status=group&id=' + promotionId + '&currentMerchant=' + merchantId + '&groupId=' + groupId)
+        this.$navigate('/pages/coupon-detail/coupon-detail?type=1&s=group&id=' + promotionId + '&currentMerchant=' + merchantId + '&groupId=' + groupId)
       }
     }
 

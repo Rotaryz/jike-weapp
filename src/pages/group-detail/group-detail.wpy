@@ -49,7 +49,7 @@
     <view class="more-group-list" wx:if="{{groupHasJoin && groupBuyList.length}}">
       <view class="group-list-title">更多团购</view>
       <view class="group-list-item" wx:for="{{groupBuyList}}" wx:key="{{index}}">
-        <navigator url="{{'/pages/coupon-detail/coupon-detail?type=1&status=group&id=' + item.promotion_id + '&currentMerchant=' + item.merchant_id + '&groupId=' + item.id}}" hover-class="none">
+        <navigator url="{{'/pages/coupon-detail/coupon-detail?type=1&s=group&id=' + item.promotion_id + '&currentMerchant=' + item.merchant_id + '&groupId=' + item.id}}" hover-class="none">
           <view class="item-box">
             <view class="item-left">
               <image class="item-left-img" src="{{item.promotion_image}}" mode="aspectFill"></image>
@@ -147,6 +147,7 @@
     }
 
     async onLoad(option) {
+      await this.upLoadImage()
       await this.showIndustry()
       this.id = option.id
       await this.load(this.id)
@@ -276,7 +277,7 @@
         let groupId = this.groupDetails.activity_id
         let joinGroupId = this.id
         let type = this.groupHasJoin ? '' : 'join'
-        this.$navigate('/pages/coupon-detail/coupon-detail?type=1&status=group&groupType=' + type + '&id=' + id + '&currentMerchant=' + currentMerchant + '&groupId=' + groupId + '&joinGroupId=' + joinGroupId)
+        this.$navigate('/pages/coupon-detail/coupon-detail?type=1&s=group&groupType=' + type + '&id=' + id + '&currentMerchant=' + currentMerchant + '&groupId=' + groupId + '&joinGroupId=' + joinGroupId)
       },
       async postOrder() {
         const isAuthorise = await this.isAuthorise()

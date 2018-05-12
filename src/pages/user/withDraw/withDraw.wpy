@@ -26,6 +26,7 @@
     <view class="withDraw-btn {{industry}}-bg {{drawMoney*1===0?'disab':''}}"
           @tap="submitMoney">提现
     </view>
+    <view class="tip">微信按提现金额0.1%收取手续费，最低1元，最高10元。</view>
     <view class="withDraw-time">1-5个工作日到账</view>
 
     <view class="withDraw-successCover" wx:if="{{coverShow}}">
@@ -69,7 +70,8 @@
       drawMoney: '',
       coverShow: false,
       packetTotal: '',
-      isPhone: 0
+      isPhone: 0,
+      serviceCharge: ''
     }
 
     components = {
@@ -169,7 +171,7 @@
   @import "../../../common/stylus/variable"
 
   .withDraw
-    height: 247px
+    height: 267px
     background: $color-highlight-background
     padding: 0 12px
 
@@ -304,5 +306,12 @@
       width: 23px
       height: 23px
       margin-top: 60px
-
+  .tip
+    margin-top: 8px
+    font-size: $font-size-small
+    color: $color-text-d
+  .service-charge
+    margin-bottom: 5px
+    font-size: $font-size-small
+    color: $color-text-d
 </style>

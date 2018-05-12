@@ -1,6 +1,8 @@
 import wepy from 'wepy'
 import Tips from './tips'
+import wxUtils from './wxUtils'
 
+const TOKEN_OUT = 10000 // token 失效
 const SOLD_OUT = 10001 // 店铺下架
 const DEL_OUT = 10003 // 内容被删除
 const NOFOUND_OUT = 10004 // 内容被下线
@@ -36,13 +38,18 @@ export default class http {
     } else if (this.isSoldOut(res)) {
       // 下架
       const result = res.data.data
-      wepy.redirectTo({url: `/pages/sold-out/sold-out?appId=${result.app_id}&businessCircleId=${result.business_circle_id}`})
+      wepy.redirectTo({url: `/pages/sold-out/sold-out?appId=${result.app_id}&businessCircleId=${result.business_circle_id}&status=1`})
       throw this.requestException(res)
     } else if (this.abnormal(res)) {
       // 异常
       let status = this.abnormal(res)
       const result = res.data.data
       wepy.redirectTo({url: `/pages/sold-out/sold-out?appId=${result.app_id}&businessCircleId=${result.business_circle_id}&status=${status}`})
+      throw this.requestException(res)
+    } else if (this.tokenAbnormal(res)) {
+      const currentPage = wxUtils.getCurrentPage()
+      wepy.$instance.globalData.targetPage = currentPage
+      wepy.reLaunch({url: `/pages/loading/loading?type=tokenOut`})
       throw this.requestException(res)
     } else {
       throw this.requestException(res)
@@ -107,7 +114,6 @@ export default class http {
     const wxCode = res.statusCode
     let code = res.data.code
     let status = ''
-    console.log(code)
     if (wxCode === 200) {
       switch (code) {
         case DEL_OUT:
@@ -121,6 +127,20 @@ export default class http {
     }
     return false
   }
+
+  /**
+   * 判断异常情况（token失效）
+   * @param res
+   */
+  static tokenAbnormal(res) {
+    const wxCode = res.statusCode
+    let code = res.data.code
+    if (wxCode === 200 && code === TOKEN_OUT) {
+      return true
+    }
+    return false
+  }
+
   /**
    * 异常页面
    * @param res

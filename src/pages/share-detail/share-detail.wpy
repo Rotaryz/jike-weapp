@@ -33,7 +33,7 @@
         <image class="ro-share-content-tip" wx:if="{{imageUrl && industry}}" src="{{imageUrl + '/defaults/c-image/template/pic-price_'+industry+'@2x.png'}}"><text class="ro-share-content-tip-text {{industry}}-text">券后价</text></image>
         <view class="ro-share-content-end {{ios ? 'ro-share-content-end-ios' : ''}}">
           <view class="ro-share-content-money">{{shareDetail.after_price}}</view>
-          <view class="ro-share-content-now">原价:￥{{shareDetail.price}}</view>
+          <view class="ro-share-content-now">原价: ¥ {{shareDetail.price}}</view>
         </view>
       </view>
       <view class="ro-share-content-aside" @tap="goCouponDetail">
@@ -63,7 +63,7 @@
         <share-item :shareCoupon.sync="item" :industry.sync="industry"></share-item>
       </repeat>
     </view>
-    <view class="ro-get-share {{industry}}-bg {{goodsStatus !== 1 || activitiesStatus !== 1 ? 'disable' : ''}}" @tap="shares">{{ goodsStatus === 0 || activitiesStatus === 0 ? '该商品已下架' : goodsStatus === 1 || activitiesStatus === 1 ? '立即分享' : goodsStatus === 2 || activitiesStatus === 2 ? '已售罄' : '立即分享'}}</view>
+    <view class="ro-get-share {{activitiesStatus !== 1 ? 'disable' : industry+'-bg'}}" @tap="shares">{{activitiesStatus === 0 ? '该商品已下架' : activitiesStatus === 1 ? '立即分享' : activitiesStatus === 2 ? '已售罄' : '立即分享'}}</view>
   </view>
   <toast></toast>
   <rule>
@@ -121,12 +121,12 @@
     }
 
     async onLoad(option) {
+      await this.upLoadImage()
       let systemInfo = await wepy.getSystemInfo()
       let system = systemInfo.system
       this.ios = system.search('iOS') !== -1
       let id = option.id || 0
       await this._load(id)
-      await this._createQrcode()
       this.$apply()
     }
 
@@ -141,7 +141,7 @@
       }
       return {
 //        商品名称
-        title: this.shareDetail.title || '',
+        title: this.shareDetail.act_title || '',
         path: this.currentPage,
         success: () => {
 
@@ -156,8 +156,7 @@
 //      详情
       let resDetail = await shareMoney.shareDetail(id)
       this.shareDetail = this.infoRes(resDetail)
-      this.goodsStatus = resDetail.goods_status !== undefined ? resDetail.goods_status : 1
-      this.activitiesStatus = resDetail.activity_status !== undefined ? resDetail.goods_status : 1
+      this.activitiesStatus = resDetail.activity_status !== undefined ? resDetail.activity_status : 1
       this.promotionImages = this.shareDetail ? this.shareDetail.promotion_images : {}
       this.detail = {
         title: this.shareDetail.title, // 标题
@@ -176,6 +175,8 @@
       this.loaded()
       res = this.infoRes(res)
       this.shareList = res.slice(0, 3)
+      await this._createQrcode()
+      this.$invoke('share', 'drawCanvas', 'shareMoney')
       this.$apply()
     }
     infoRes(res) {
@@ -190,7 +191,9 @@
         let atcId = this.shareDetail ? this.shareDetail.id : 0 // 活动ID
         let fromCustomerId = this.shareDetail ? this.shareDetail.from_customer_id : 0 // 分享者id
         let promotionId = this.shareDetail ? this.shareDetail.promotion_id : 0
-        this.currentPage = `/pages/coupon-detail/coupon-detail?actId=${atcId}&type=1&merchantId=${currentMerchant}&fromCustomerId=${fromCustomerId}&id=${promotionId}&status=share`
+//        id顺序  活动id,商家id，人id，
+        let i = `${atcId},${currentMerchant},${fromCustomerId},${promotionId}`
+        this.currentPage = `/pages/coupon-detail/coupon-detail?i=${i}&s=s`
         const res = await Info.createQrode({path: this.currentPage})
         this.loaded()
         this.qrcode = res.data.image_url
@@ -209,6 +212,9 @@
         await this.$invoke('share', 'generatePicture')
       },
       shares() {
+        if (this.activitiesStatus !== 1) {
+          return
+        }
 //        console.log( this.detail)
         this.$invoke('share', 'show', 'shareMoney')
       },
@@ -292,7 +298,8 @@
           font-size :$font-size-small-s
           color :$color-theme
           position: absolute
-          top: 2.5px
+          margin-top: 3px
+          top: 0
           left: 3px
       .ro-share-content-end
         display:flex
@@ -435,7 +442,7 @@
     line-height: 44px
     z-index: 1500
   .disable
-    opacity: .2
+    background: #dbdbdb
 
   .ro-rule-content
     border-bottom 0.5px dashed $color-col-line

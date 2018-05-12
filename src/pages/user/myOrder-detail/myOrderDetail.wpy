@@ -380,7 +380,7 @@
             }
             if (this.orderMsg.promotion_type * 1 === 4) {
               let groupId = this.orderMsg.group_activity_id
-              this.$navigate('/pages/coupon-detail/coupon-detail?status=group&id=' + this.orderMsg.promotion_id + '&type=' + couponType + '&currentMerchant=' + merchantId + '&groupId=' + groupId)
+              this.$navigate('/pages/coupon-detail/coupon-detail?s=group&id=' + this.orderMsg.promotion_id + '&type=' + couponType + '&currentMerchant=' + merchantId + '&groupId=' + groupId)
             } else {
               this.$navigate('/pages/coupon-detail/coupon-detail?id=' + this.orderMsg.promotion_id + '&type=' + couponType + '&currentMerchant=' + merchantId)
             }
@@ -403,7 +403,7 @@
         }
         if (this.orderMsg.promotion_type * 1 === 4) {
           let groupId = this.orderMsg.group_activity_id
-          this.$navigate('/pages/coupon-detail/coupon-detail?status=group&id=' + id + '&type=' + couponType + '&currentMerchant=' + merchantId + '&groupId=' + groupId)
+          this.$navigate('/pages/coupon-detail/coupon-detail?s=group&id=' + id + '&type=' + couponType + '&currentMerchant=' + merchantId + '&groupId=' + groupId)
         } else {
           this.$navigate('/pages/coupon-detail/coupon-detail?id=' + id + '&type=' + couponType + '&currentMerchant=' + merchantId)
         }

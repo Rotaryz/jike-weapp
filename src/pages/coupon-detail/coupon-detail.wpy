@@ -150,8 +150,9 @@
         </button>
       </view>
       <view class="buy-btn {{stock === 0 || goodsStatus !== 1 ? 'disable' : ''}}" @tap="postOrder" wx:if="{{activityStatus === 'group'}}">{{ goodsStatus === 0 ? '该商品已下架' : goodsStatus === 1 ? '¥' + coupon.platform_price + '单买' : goodsStatus === 2  ? '已售罄' : '立即购买'}}</view>
-      <view class="buy-btn {{stock === 0 || goodsStatus !== 1 || activitiesStatus !== 1 ? 'disable' : industry + '-bg'}}" @tap="postOrder" wx:if="{{activityStatus !== 'group'}}">{{ goodsStatus === 0 || activitiesStatus === 0 ? '该商品已下架' : goodsStatus === 1 || activitiesStatus === 1 ? '立即购买' : goodsStatus === 2 || activitiesStatus === 2 ? '已售罄' : '立即购买'}}</view>
-      <view class="group-buy-btn {{stock === 0 || activitiesStatus !== 1 ? 'disable' : industry + '-bg'}}" @tap="postGroupOrder" wx:if="{{activityStatus === 'group'}}">{{ activitiesStatus === 0 ? '该商品已下架' : activitiesStatus === 1 ? '¥' + groupBuyDetail.group_price + (groupType === 'join' ? '参团' : '开团') : activitiesStatus === 2 ? '已售罄' : '立即购买'}}</view>
+      <view class="buy-btn {{goodsStatus === 1? industry + '-bg' : 'disable' }}" @tap="postOrder" wx:if="{{activityStatus === ''}}">{{ goodsStatus === 0 ? '该商品已下架' : goodsStatus === 1 ? '立即购买' : goodsStatus === 2 ? '已售罄' : '立即购买'}}</view>
+      <view class="buy-btn {{(shareBuy === 1) ? industry + '-bg' : 'disable' }}" @tap="postOrder" wx:if="{{activityStatus === 'share'}}">{{shareBuy === 1 ? '立即购买' : shareBuy === 2 ? '已售罄' : '立即购买'}}</view>
+      <view class="group-buy-btn {{activitiesStatus !== 1 ? 'disable' : industry + '-bg'}}" @tap="postGroupOrder" wx:if="{{activityStatus === 'group'}}">{{ activitiesStatus === 0 ? '该商品已下架' : activitiesStatus === 1 ? '¥' + groupBuyDetail.group_price + (groupType === 'join' ? '参团' : '开团') : activitiesStatus === 2 ? '已售罄' : '立即购买'}}</view>
     </view>
     <phone-test @isPhoneOk.user="getSymbol" :industry.sync="industry"></phone-test>
     <share :qrcode.sync="qrcode" :detail.sync="coupon" :promotionImages.sync="promotionImages" @sharePunchLine.user="sharePunchLine"></share>
@@ -265,12 +266,16 @@
       actId: 0,
       deduction: {},
       timer: '',
-      userCoupon: '', // 抵用券的文案
+      userCoupon: '0', // 抵用券的文案
       getShareCoupon: true,
       isShowCoupon: false,
       goodsStatus: 1, // 商品状态
       activitiesStatus: 1, // 活动状态
-      shareCouponUserId: 0
+      shareCouponUserId: 0,
+      shareBuy: 1,
+      used: false,
+      actStock: 0,
+      normalStock: 0
     }
 
     onShareAppMessage(res) {
@@ -296,15 +301,33 @@
     }
 
     async onLoad(option) {
+      console.log('dffdd')
+      await this.upLoadImage()
       this.isShowCoupon = option.isShowCoupon || this.isShowCoupon
       this.getShareCoupon = true
-      this.activityStatus = option.status ? option.status : ''
+      this.activityStatus = option.s ? option.s === 's' ? 'share' : option.s : ''
       this.groupType = option.groupType ? option.groupType : 'open'
       this.joinGroupId = option.joinGroupId ? option.joinGroupId : ''
       await this.showIndustry()
       if (option.scene) {
         let scene = decodeURIComponent(option.scene)
         const params = getParams(scene)
+        if (params.i) {
+//          分享赚钱识别二维码进入
+          this.activityStatus = params.s === 's' ? 'share' : ''
+          let id = params.i || ''
+          id = id ? id.split(',') : []
+          if (id) {
+            this.actId = id[0] * 1 // 抵用券
+            this.currentMerchant = id[1] * 1// 商家id
+            this.fromCustomerId = id[2] * 1 // 分享者
+            this.id = id[3] * 1 // 券id
+            this.type = 1
+            wepy.setStorageSync('merchantId', id[1])
+            this.$apply()
+          }
+          return
+        }
         this.type = Math.floor(params.type)
         this.id = params.id
         this.groupId = params.groupId
@@ -315,11 +338,22 @@
         }
       } else {
         this.type = Math.floor(option.type)
-        this.id = option.id
+        this.id = option.id || ''
         this.groupId = option.groupId
-        this.actId = option.actId || 0 // 抵用券
-        this.fromCustomerId = option.fromCustomerId || 0 // 分享者
         this.currentMerchant = option.currentMerchant ? option.currentMerchant : 0
+        if (this.activityStatus === 'share') {
+          let id = option.i || ''
+          id = id ? id.split(',') : []
+          if (id) {
+            this.actId = id[0] * 1 // 抵用券
+            this.currentMerchant = id[1] * 1// 商家id
+            this.fromCustomerId = id[2] * 1 // 分享者
+            this.id = id[3] * 1 // 券id
+            this.type = 1
+            wepy.setStorageSync('merchantId', id[1])
+            this.$apply()
+          }
+        }
       }
       await this.load()
     }
@@ -327,6 +361,7 @@
 //    分享赚钱的选择优惠券判断
     onShow() {
       if (this.activityStatus === 'share') {
+        this.$invoke('post-order', 'infoOnce')
         let shareCoupon = wepy.getStorageSync('shareCoupon')
         this.orderInfo.deduction_id = typeof (shareCoupon) === 'object' ? shareCoupon.id : typeof (shareCoupon) === 'string' ? this.orderInfo.deduction_id : 0
         this.shareCouponUserId = this.orderInfo.deduction_id
@@ -371,7 +406,7 @@
       }
       const data = res.data
       this.goodsStatus = res.goods_status !== undefined ? res.goods_status : 1
-      this.activitiesStatus = res.activity_status !== undefined ? res.goods_status : 1
+      this.activitiesStatus = res.activity_status !== undefined ? res.activity_status : 1
 //      console.log(data)
       wepy.setNavigationBarTitle({title: data.title})
       this.promotionImages = data.promotion_images
@@ -380,7 +415,9 @@
       this.note = data.note
       this.notAllowTime = data.not_allow_time
       this.isFavorite = data.is_favorite
-      this.stock = data.stock
+//      根据抵用券判断库存
+      this.normalStock = data.stock
+      this.actStock = data.act_stock
       this.deduction = data.deduction
       this.deduction.deduction_status = this.activitiesStatus === 3 ? 3 : this.deduction.deduction_status
       // 添shop照片
@@ -388,20 +425,36 @@
 //     优惠券显示
       this.share = this.deduction.deduction_status === 2
       this.$apply()
+      this.shareCouponUserId = 0
+      this.userCoupon = ''
       if (this.deduction.deduction_status === 1) {
 //        判断是否拥有优惠券
         await this._isShareCoupon()
         this.loaded()
-        return
       } else if (this.deduction.deduction_status === 0 || this.deduction.deduction_status === 2) {
         setTimeout(() => {
           this.shareStatus = true
           this.$apply()
         }, 1200)
       }
-      this.shareCouponUserId = 0
+      this._shareBuy()
     }
 
+    _shareBuy() {
+//     根据销量进行判断
+      if (this.normalStock === 0 && this.actStock === 0) {
+        this.shareBuy = 2
+      } else {
+        this.shareBuy = 1
+      }
+//      if ((this.deduction.deduction_status === 1 && this.goodsStatus !== 0 && !this.used) || (this.deduction.deduction_status === 0 && (this.goodsStatus === 1 || this.activitiesStatus === 1))) {
+//        this.shareBuy = 1
+//        正常情况
+//      } else if ((this.deduction.deduction_status === 0 && this.goodsStatus === 2 && this.activitiesStatus === 2) || (this.used && this.goodsStatus === 2) || (this.deduction.deduction_status === 2 && this.goodsStatus === 2)) {
+//        this.shareBuy = 2
+//        为零情况
+//      }
+    }
 //    判断是否有优惠券
     async _isShareCoupon() {
       let data = {act_id: this.actId, page: 1}
@@ -414,6 +467,9 @@
           this.userCoupon = ` - ${res[i].money}`
           break
         } else {
+          if (res[i].status === 2) {
+            this.used = true
+          }
           this.shareCouponUserId = 0
           this.userCoupon = ''
         }
@@ -465,7 +521,10 @@
       const res = await Info.createQrode({path: this.currentPage})
       if (res.error === ERR_OK) {
         const data = res.data
-        this.qrcode = data.image_url
+        setTimeout(() => {
+          this.qrcode = data.image_url
+          this.$apply()
+        }, 20)
       }
     }
 
@@ -478,6 +537,7 @@
       if (res.error === ERR_OK) {
         const data = res.data
         this.goodsStatus = res.goods_status !== undefined ? res.goods_status : 1
+        this.activitiesStatus = null
         if (this.activityStatus !== 'group') {
           wepy.setNavigationBarTitle({title: data.title})
         }
@@ -639,7 +699,7 @@
           title: this.coupon.title,
           price: this.coupon.platform_price,
           current_merchant: this.currentMerchant,
-          stock: this.coupon.stock,
+          stock: this.stock,
           peopleStock: this.coupon.note ? this.coupon.note.buy_upper_limit : -1,
           from: 'c_sharemoney',
           deduction_id: this.shareCouponUserId, // 抵用券ID
@@ -702,7 +762,10 @@
         }
       },
       async postOrder() {
-        if (this.stock === 0 || this.goodsStatus !== 1 || this.activitiesStatus !== 1) {
+//        活动
+        if (this.activityStatus === 'share' && this.shareBuy !== 1) {
+          return
+        } else if (this.activityStatus !== 'share' && (this.stock === 0 || this.goodsStatus !== 1)) {
           return
         }
         const isAuthorise = await this.isAuthorise()
@@ -766,6 +829,7 @@
           this.getShareCoupon = false
           let data = {is_share_money: 1, act_id: this.actId, share_customer_id: this.fromCustomerId}
           let res = await order.getCoupon(coupon.id, data)
+          this.loaded()
           if (res.error === ERR_OK) {
             tips.success(res.message)
             this.deduction.deduction_status = 1
@@ -773,13 +837,13 @@
             setTimeout(() => {
               this.shareStatus = false
               this.$apply()
-            }, 1000)
+              this.loaded()
+            }, 500)
             this.$apply()
           } else {
             tips.error(res.message)
             this.getShareCoupon = true
           }
-          this.loaded()
         }
       },
       async postSuccess(id) {
@@ -789,18 +853,31 @@
         if (this.activityStatus === 'share') {
 //              单成功生成订单时需要锁定优惠券
           this.userCoupon = ''
-          this.shareCouponUserId = 0
+          this.orderInfo.deduction_id = 0
           this.$apply()
         }
       },
-      successShare() {
+      successShare(orderId, total, status) {
 //        购买成功时的修改
         this.userCoupon = ''
-        this.shareCouponUserId = 0
+        this.orderInfo.deduction_id = 0
+        this.$navigate(`/pages/pay-result/pay-result?orderId=${orderId}&total=${total}&status=${status}`)
         this.$apply()
       }
     }
-
+    watch = {
+      userCoupon(newVal) {
+        if (newVal) {
+          this.stock = this.actStock
+          this.orderInfo.stock = this.actStock
+        } else {
+          this.stock = this.normalStock
+          this.orderInfo.stock = this.normalStock
+        }
+        this.$invoke('post-order', 'infoCount')
+        this.$apply()
+      }
+    }
     components = {
       'phone-test': PhoneTest,
       'service-detail': ServiceDetail,
@@ -836,10 +913,10 @@
     .ro-share-money
       z-index: 9999
       position: fixed
-      height: 100vw
+      height: 100vh
       top: 0
       left: 0
-      width: 100vh
+      width: 100vw
       background :transparent
     .slider-wrapper
       position: relative
@@ -903,7 +980,7 @@
               width: 48px
               margin-left: 6px
             .person-txt
-              width: 120px
+              width: 103px
               margin-left: 5px
 
     .group-time-run
@@ -1248,7 +1325,7 @@
         color: $color-white
         background-color: $color-button
         &.disable
-          opacity: .2
+          background: #dbdbdb
     .buy-button-wrapper.group-buy
       .button-group
         width: 32vw
@@ -1263,7 +1340,7 @@
         font-size: $font-size-medium
         color: $color-white
       .disable
-        color: #dbdbdb
+        background: #dbdbdb
     .base-modal-content
       .header-wrapper
         height: 124.5px
