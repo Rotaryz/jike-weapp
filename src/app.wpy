@@ -170,7 +170,8 @@
     globalData = {
       isAuthorise: false,
       user: null,
-      orderInfo: {}
+      orderInfo: {},
+      targetPage: ''
     }
   }
 </script>
