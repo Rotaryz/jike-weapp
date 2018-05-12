@@ -3,7 +3,6 @@ import Tips from 'common/js/tips'
 import Info from 'api/info'
 import merchants from 'api/merchants'
 import {ERR_OK} from 'api/base'
-import URIS from 'common/js/config'
 const COLLECT_COUNT = 20
 
 export default class base extends wepy.mixin {

@@ -301,6 +301,7 @@
     }
 
     async onLoad(option) {
+      await this.upLoadImage()
       this.isShowCoupon = option.isShowCoupon || this.isShowCoupon
       this.getShareCoupon = true
       this.activityStatus = option.s ? option.s === 's' ? 'share' : option.s : ''
@@ -518,7 +519,10 @@
       const res = await Info.createQrode({path: this.currentPage})
       if (res.error === ERR_OK) {
         const data = res.data
-        this.qrcode = data.image_url
+        setTimeout(() => {
+          this.qrcode = data.image_url
+          this.$apply()
+        }, 20)
       }
     }
 
