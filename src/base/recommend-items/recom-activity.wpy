@@ -1,0 +1,75 @@
+<template>
+  <view class="recom-merchant-giftbag">
+    <recom-panel
+      title="异业联盟卡"
+      :isShowMore.sync="isShowMore"
+      :isShowInfo.sync="isShowInfo"
+      :targetUrl.sync="targetUrl"
+    >
+      <view class="swiper-wrapper" slot="panel">
+        <recom-swiper :list.sync="list">
+          <repeat for="{{list}}" key="index" index="index" item="item" slot="swiper">
+            <swiper-item>
+              <view class="recom-content">
+                <view class="recom-content-item">
+                  <giftbag-item :type="type" :giftbag.sync="item"></giftbag-item>
+                </view>
+              </view>
+            </swiper-item>
+          </repeat>
+        </recom-swiper>
+      </view>
+    </recom-panel>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import RecomPanel from '@/base/recommend-items/recom-panel'
+  import RecomSwiper from '@/base/recommend-items/recom-swiper'
+  import GiftbagItem from '@/base/giftbag-item/giftbag-item'
+
+  export default class Template extends wepy.component {
+    props = {
+      list: {
+        type: Object,
+        default: {}
+      }
+    }
+    data = {
+      isShowInfo: false,
+      isShowMore: false,
+      targetUrl: '',
+      type: 'buy'
+    }
+    events = {
+      giftbagClick(id, merchantId) {
+        let url = `/pages/activity/activity?type=activity`
+        this.$parent.$navigate(url)
+      }
+    }
+    components = {
+      'recom-panel': RecomPanel,
+      'recom-swiper': RecomSwiper,
+      'giftbag-item': GiftbagItem
+    }
+  }
+</script>
+
+<style lang='stylus'>
+  @import "../../common/stylus/variable"
+  @import "../../common/stylus/mixin"
+
+  .recom-merchant-giftbag
+    .swiper-wrapper
+      height: 44.0159vw
+      .recom-content
+        layout()
+        justify-content: flex-start
+        align-items: center
+        width: 100%
+        .recom-content-item
+          padding:0 12px
+          width: 93.6%
+          margin-bottom: 4.654vw
+</style>
