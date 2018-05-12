@@ -40,8 +40,10 @@ export default class base extends wepy.mixin {
     }
 //      头像
     if (!this.$parent.globalData.shareAvatars) {
-      let shareAvatars = await wepy.downloadFile({url: user.avatarUrl})
-      this.$parent.updateGlobalData('shareAvatars', shareAvatars)
+      if (user.avatarUrl) {
+        let shareAvatars = await wepy.downloadFile({url: user.avatarUrl})
+        this.$parent.updateGlobalData('shareAvatars', shareAvatars)
+      }
     }
     //
     if (!this.$parent.globalData.shareManys) {
