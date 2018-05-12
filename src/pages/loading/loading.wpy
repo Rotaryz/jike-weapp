@@ -25,7 +25,7 @@
   import User from 'api/user'
   import {ERR_OK} from 'api/base'
 
-  const INFOURL = '/pages/square/square'
+  const INFOURL = '/pages/recommend/recommend'
   import users from 'common/mixins/users'
   import base from 'common/mixins/base'
 
@@ -70,6 +70,7 @@
     }
 
     navTo(type) {
+      this.$parent.updateGlobalData('targetPage', '')
       if (type.indexOf('square') !== -1 || type.indexOf('recommend') !== -1 || type.indexOf('mine') !== -1) {
         this.$switch({
           url: `${type}`

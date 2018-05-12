@@ -27,6 +27,7 @@ export default class http {
       Tips.loading()
     }
     const res = await wepy.request(param)
+    wepy.$instance.globalData.targetPage = ''
     if (this.isSuccess(res)) {
       const result = res.data
       return result
