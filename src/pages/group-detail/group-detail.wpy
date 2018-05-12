@@ -183,13 +183,11 @@
     }
 
     async _createQrcode() {
-      console.log(this.currentPage)
       const res = await Info.createQrode({path: this.currentPage})
       if (res.error === ERR_OK) {
         const data = res.data
         this.qrcode = data.image_url
       }
-      console.log(this.qrcode)
     }
 
     async _getGroupList() {
