@@ -127,7 +127,6 @@
       this.ios = system.search('iOS') !== -1
       let id = option.id || 0
       await this._load(id)
-      await this._createQrcode()
       this.$apply()
     }
 
@@ -177,6 +176,8 @@
       this.loaded()
       res = this.infoRes(res)
       this.shareList = res.slice(0, 3)
+      await this._createQrcode()
+      this.$invoke('share', 'drawCanvas', 'shareMoney')
       this.$apply()
     }
     infoRes(res) {

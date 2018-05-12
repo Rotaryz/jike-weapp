@@ -252,6 +252,9 @@
     }
 
     methods = {
+      drawCanvas(type) {
+        this._drawCanvas(type)
+      },
       async generatePicture() {
         Tips.loading('生成中')
         const res = await wepy.canvasToTempFilePath({
@@ -263,10 +266,8 @@
           destHeight: 1800,
           canvasId: 'target'
         })
-        setTimeout(async () => {
-          await wepy.previewImage({urls: [res.tempFilePath]})
-          Tips.loaded()
-        }, 1000)
+        await wepy.previewImage({urls: [res.tempFilePath]})
+        Tips.loaded()
 //        await wepy.saveImageToPhotosAlbum({filePath: res.tempFilePath})
         this.$emit('sharePunchLine')
       },

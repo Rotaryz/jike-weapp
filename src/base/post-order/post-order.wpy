@@ -41,7 +41,7 @@
         </view>
       </view>
       <view class="post-btn {{industry}}-bg" @tap.stop="postOrder">
-        提交订单{{stock}}
+        提交订单
       </view>
     </view>
   </view>
