@@ -6,6 +6,7 @@
   import wepy from 'wepy'
   import 'wepy-async-function'
   import wxUtils from '@/common/js/wxUtils'
+  import './utils/ald-stat.js'
 
   export default class extends wepy.app {
     constructor() {
