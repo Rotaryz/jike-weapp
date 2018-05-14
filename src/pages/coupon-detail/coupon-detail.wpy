@@ -375,6 +375,7 @@
 //      console.log(this.type)
       if (this.type === COUPON_TYPE) {
         if (this.activityStatus === 'group') {
+          this.userCoupon = ''
           await this._getCouponDetail()
           await this._getGroupDetail()
         } else if (this.activityStatus === 'share') {
