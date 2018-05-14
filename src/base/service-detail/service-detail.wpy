@@ -54,7 +54,6 @@
         width: 2px
         height: 14px
         background: $color-orange
-        text-indent: 8px
         margin-right: 5px
         margin-bottom: 2px
     .detail-wrapper

@@ -77,4 +77,28 @@ export default class wxUtils {
       Tips.modal('您的微信版本太低，为确保正常使用，请尽快升级')
     }
   }
+
+  /**
+   * 记录当前页面栈
+   */
+  static getCurrentPage() {
+    let pages = getCurrentPages()
+    let currentPage = pages[pages.length - 1]
+    let url = currentPage.route
+    let options = currentPage.options
+    return this.setPagePath(url, options)
+  }
+
+  static setPagePath(url, options) {
+    // 拼接url的参数
+    let urlWithArgs = '/' + url + '?'
+    for (let key in options) {
+      let value = options[key]
+      if (value) {
+        urlWithArgs += key + '=' + value + '&'
+      }
+    }
+    urlWithArgs = urlWithArgs.substring(0, urlWithArgs.length - 1)
+    return urlWithArgs
+  }
 }

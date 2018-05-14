@@ -133,6 +133,7 @@
     }
 
     async onLoad(option) {
+      await this.upLoadImage()
       await this.showIndustry()
       if (option.scene) {
         let scene = decodeURIComponent(option.scene)

@@ -1,0 +1,141 @@
+<template>
+  <view class="ro-share-item" @tap="shareDetail({{shareCoupon.id}})">
+    <image class="ro-share-item-bk" wx:if="{{false}}"></image>
+    <view class="ro-share-left">
+      <image class="ro-share-item-logo" mode="aspectFill" src="{{shareCoupon.image_url}}"><view class="ro-share-item-buy">销售：{{shareCoupon.sales_volume}}</view></image>
+      <view class="ro-share-content">
+        <view class="ro-share-title">{{shareCoupon.title}}</view>
+        <view class="ro-share-now-money">原价  ¥{{shareCoupon.price}}</view>
+        <view class="ro-share-end-money">券后价<view class="ro-share-end-money-tip">¥</view><view class="ro-share-end-price">{{shareCoupon.after_price}}</view></view>
+      </view>
+    </view>
+    <view class="ro-share-right">
+      <image class="ro-share-right-icon" wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/c-image/template/icon-share2_'+industry+'@2x.png'}}"></image>
+      <view class="ro-share-get-money {{industry}}-text">赚 ¥{{shareCoupon.profit_money}}</view>
+    </view>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import base from 'common/mixins/base'
+  import URIS from 'common/js/config'
+
+  export default class shareItem extends wepy.component {
+    mixins = [base]
+    props = {
+      shareCoupon: {
+        type: Object,
+        default: {}
+      },
+      industry: {
+        type: String,
+        default: ''
+      }
+    }
+    data = {
+      imageUrl: URIS.image
+    }
+    methods ={
+      shareDetail(id) {
+        this.$emit('shareDetail', id)
+      }
+    }
+  }
+</script>
+
+<style lang="stylus">
+  @import '../../common/stylus/variable'
+  @import '../../common/stylus/mixin'
+  .ro-share-item
+    width: 100%
+    height: 100px
+    position: relative
+    background: $color-white
+    margin-bottom: 10.5px
+    border-top: 0.5px solid $color-row-line
+    border-bottom: 0.5px solid $color-row-line
+    .ro-share-left
+      float :left
+      display :flex
+      width: 75%
+      padding: 12px 0 12px 10.5px
+      box-sizing: border-box
+      .ro-share-item-logo
+        height: 76px
+        width: @height
+        background: $color-background
+        position: relative
+        border: 0.5px solid #E5E5E5
+        border-radius: 6px
+        display :block
+        .ro-share-item-buy
+          position: absolute
+          right: 0
+          bottom: 0
+          width: 100%
+          border-bottom-left-radius :6px
+          border-bottom-right-radius :6px
+          z-index :1000
+          background: rgba(0, 0, 0, .6)
+          height: 18px
+          line-height: 18px
+          text-align: center
+          color: $color-white
+          font-size: $font-size-small-s
+          font-family: $font-family-light
+      .ro-share-content
+        margin-left: 10px
+        .ro-share-title
+          margin-top: 3px
+          color :$color-text
+          font-size :$font-size-medium
+          line-height: 18px
+          min-height: 35.5px
+          font-family :$font-family-meddle
+          width :43vw
+          no-wrap()
+        .ro-share-now-money
+          font-size :$font-size-small
+          color :$color-text-d
+          margin-bottom: 6px
+        .ro-share-end-money
+          font-size :$font-size-small
+          color :$color-text-d
+          display :flex
+          align-items :flex-end
+          height: $font-size-large
+          .ro-share-end-money-tip
+            margin: 0 1px 0 3.5px
+            font-family :PingFang-SC-Medium
+            color :$color-pay
+          .ro-share-end-price
+            transform :translateY(1px)
+            line-height: 1
+            font-family :PingFangSC-Semibold
+            font-size :$font-size-large
+            color :$color-pay
+  .ro-share-right
+    overflow-x:hidden
+    display :flex
+    height: 100%
+    flex-direction :column
+    align-items :center
+    justify-content :center
+    position :relative
+    &:after
+      content : ''
+      position: absolute
+      left: 0
+      top: 0
+      height: 100%
+      transform :scaleX(.5)
+      border-left :1px dashed #E5E5E5
+    .ro-share-right-icon
+      height: 20.5px
+      width: 20.5px
+    .ro-share-get-money
+      color :$color-theme
+      margin-top: 2.77vw
+      font-size :$font-size-small
+</style>

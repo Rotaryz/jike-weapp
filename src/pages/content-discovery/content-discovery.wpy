@@ -11,6 +11,7 @@
       <image src="{{imageUri + '/defaults/c-image/recom/icon-blank_content@2x.png'}}" wx:if="{{imageUri}}" class="c-d-nothing-img"></image>
       <view class="c-d-nothing-txt">暂无内容</view>
     </view>
+    <Confirm></Confirm>
     <underline></underline>
     <toast></toast>
   </view>
@@ -27,6 +28,7 @@
   import {ERR_OK} from 'api/base'
   import ContentsApi from 'api/contents'
   import ContentItem from '@/base/content-item/content-item'
+  import Confirm from '@/base/confirm-msg/confirm-msg'
 
   const PAGELIMIT = 10
 
@@ -41,12 +43,26 @@
         page: 1,
         limit: PAGELIMIT
       },
-      isAll: false
+      merchant_id: '',
+      isAll: false,
+      coupon: '',
+      mer: 0,
+      shopNames: ''
     }
 
-    async onLoad() {
+    async onLoad(options) {
       await this.showIndustry()
-      this.merchantId = wepy.getStorageSync('merchantId')
+      this.mer = 0
+      if (options.merchant_id) {
+        if (options.merchant_id * 1 !== wepy.getStorageSync('merchantId')) {
+          this.params.merchant_id = options.merchant_id * 1
+          this.merchant_id = options.merchant_id * 1
+          this.shopNames = options.title
+          this.mer = 1
+          this.$apply()
+        }
+      }
+      this.merchantId = options.merchant_id || wepy.getStorageSync('merchantId')
       await this._getNewContents(this.params)
       this.$apply()
       this.loaded()
@@ -70,7 +86,8 @@
       this.$invoke('underline', 'hide')
       this.params = {
         page: 1,
-        limit: PAGELIMIT
+        limit: PAGELIMIT,
+        merchant_id: this.merchant_id
       }
       this.isAll = false
       this.$apply()
@@ -122,11 +139,29 @@
       }
       return list
     }
-
+    async toShop() { // 是否切店
+      let name = this.shopNames
+      let data = {title: name, msg: '更多精彩内容...', imgFlag: true}
+      this.$invoke('Confirm', 'show', data)
+    }
+    _contentClick() {
+      let url = `/pages/content-detail/content-detail?id=${this.coupon.id}&currentMerchant=${this.coupon.merchantId}`
+      this.$navigate(url)
+    }
     events = {
+      confirm() {
+        this.mer = 0
+        wepy.setStorageSync('merchantId', this.merchantId)
+        this._contentClick()
+      },
       contentClick(id, merchantId) {
-        let url = `/pages/content-detail/content-detail?id=${id}&currentMerchant=${merchantId}`
-        this.$navigate(url)
+        this.coupon = {id, merchantId}
+        this.$apply()
+        if (!this.mer) {
+          this._contentClick()
+        } else {
+          this.toShop()
+        }
       }
     }
 
@@ -141,7 +176,8 @@
     components = {
       toast: Toast,
       underline: Underline,
-      'content-item': ContentItem
+      'content-item': ContentItem,
+      Confirm: Confirm
     }
 
     config = {

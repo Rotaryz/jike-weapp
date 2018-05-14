@@ -1,7 +1,7 @@
 <template>
   <view class="myCoupon">
     <view class="myCoupon-tab">
-      <view class="myCoupon-tab-item" wx:for="{{tabList}}" wx:key="{{item}}">
+      <view class="myCoupon-tab-item border-bottom-1px" wx:for="{{tabList}}" wx:key="{{item}}">
         <view class="{{index===menuIdx?'myCoupon-tab-itemTxt '+industry+'-border':'myCoupon-tab-itemTxt'}}" @tap="changeTab({{index}})">{{item}}</view>
       </view>
     </view>
@@ -70,14 +70,12 @@
       async changeTab(idx) {
         this.menuIdx = idx
         this.couponList = []
-        let resList = await this._getCouponList(this.menuIdx, 1)
-        if (resList.error !== ERR_OK) {
-          return
-        }
+        let status = this.menuIdx === 0 ? 3 : this.menuIdx
+        let resList = await this._getCouponList(status, 1)
         this.page = 1
         this.nothingAdd = false
         this.$invoke('Underline', 'hide')
-        this.couponList = resList.data
+        this.couponList = resList
         this.$apply()
         this.loaded()
       },
@@ -85,15 +83,13 @@
         if (!this.LowerLoading && !this.nothingAdd) {
           this.LowerLoading = true
           this.page++
-          let res = await this._getCouponList(this.menuIdx, this.page)
-          if (res.error !== ERR_OK) {
-            return
-          }
-          if (res.data.length === 0) {
+          let status = this.menuIdx === 0 ? 3 : this.menuIdx
+          let res = await this._getCouponList(status, this.page)
+          if (res.length === 0) {
             this.nothingAdd = true
             this.$invoke('Underline', 'show')
           }
-          let resArr = res.data
+          let resArr = res
           this.couponList.push(...resArr)
           this.LowerLoading = false
           this.$apply()
@@ -147,18 +143,26 @@
       } else {
         limit = Math.ceil(this.couponList.length / 10) * 10 || 10
       }
-      let resList = await this._getCouponList(this.menuIdx, 1, limit)
-      if (resList.error !== ERR_OK) {
-        this.loaded()
-        return
-      }
-      this.couponList = resList.data
+      let status = this.menuIdx === 0 ? 3 : this.menuIdx
+      let resList = await this._getCouponList(status, 1, limit)
+      this.couponList = resList
       this.loaded()
       this.$apply()
     }
 
     async _getCouponList(idx, page, limit = 10) {
-      return await myCoupon.getUserCouponList(idx, page, limit)
+      let res = await myCoupon.getUserCouponList(idx, page, limit)
+      let Json = []
+      if (res.error === ERR_OK) {
+        Json = res.data
+        if (idx === 3) {
+          Json = res.data.map((item) => {
+            item.promotion.status = 0
+            return item
+          })
+        }
+        return Json
+      }
     }
 
     events = {
@@ -167,6 +171,11 @@
         this.$navigate('/pages/coupon-particulars/coupon-particulars?id=' + id)
       },
       showQrcord(item) {
+        if (item.promotion.promotion_type === 'deduction') {
+          let i = `${item.promotion.act_id},${item.merchant_id},${item.promotion.share_customer_id},${item.promotion.promotion_id}`
+          this.$navigate(`/pages/coupon-detail/coupon-detail?i=${i}&s=s&isShowCoupon=1`)
+          return
+        }
         let type = item.promotion.promotion_type
         let id = item.id
         this.$navigate('/pages/coupon-use/couponUse?type=' + type + '&id=' + id)
@@ -204,8 +213,7 @@
         text-align: center
         line-height: 8vh
         width: 71px
-        border-bottom: 2px solid #fff
-
+        position: relative
       .myCoupon-tab-itemTxt.active
         color: $color-text-t
         border-bottom: 2px solid $color-theme

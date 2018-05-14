@@ -1,0 +1,123 @@
+<template>
+  <view class="share-list">
+    <repeat for="{{shareList}}" key="index" index="index" item="item">
+      <share-item :shareCoupon.sync="item" :industry.sync="industry"></share-item>
+    </repeat>
+    <view class="ro-share-none" wx:if="{{shareNone}}">
+      <image class="ro-share-none-img" wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/b-image/common/pic-empty_city@2x.png'}}"></image>
+      <view class="ro-share-none-text">暂无数据</view>
+    </view>
+    <underline-block></underline-block>
+  </view>
+
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import base from 'common/mixins/base'
+  import URIS from 'common/js/config'
+  import {ERR_OK} from 'api/base'
+  import shareMoney from 'api/sharemoney'
+  import UnderlineBlock from '@/base/underline-block/underline-block'
+  import ShareItem from '@/base/share-item/share-item'
+  export default class shareList extends wepy.page {
+    mixins = [base]
+
+    config = {
+      navigationBarTitleText: '分享赚钱',
+      enablePullDownRefresh: true,
+      backgroundTextStyle: 'dark'
+    }
+    data = {
+      shareNone: false,
+      imageUrl: URIS.image,
+      page: 1,
+      shareList: [],
+      nothing: false,
+      ios: false
+    }
+
+    async onPullDownRefresh() {
+      this.page = 1
+      this.nothing = false
+      this.shareList = await this._load(false)
+      wepy.stopPullDownRefresh()
+      this.$apply()
+    }
+
+    async onLoad() {
+      await this.showIndustry()
+      let systemInfo = await wepy.getSystemInfo()
+      let system = systemInfo.system
+      this.ios = system.search('iOS') !== -1
+      this.shareList = await this._load()
+      if (!this.shareList.length) {
+        this.shareNone = true
+      } else if (this.shareList.length < 10) {
+        this.$invoke('underline-block', 'show')
+      }
+      this.$apply()
+    }
+
+    infoRes(res) {
+      if (res.error === ERR_OK) {
+        return res.data
+      }
+    }
+
+    async onReachBottom() {
+      if (this.nothing) {
+        return
+      }
+      this.page++
+      if (this.page > 1) {
+        let res = await this._load()
+        this.shareList.push(...res)
+        if (res.length === 0 && res) {
+          this.$invoke('underline-block', 'show')
+          this.nothing = true
+        }
+      }
+      this.$apply()
+    }
+
+    async _load(loading = true) {
+      let data = {page: this.page, limit: 10}
+      let res = await shareMoney.shareList(data, loading)
+      this.loaded()
+      res = this.infoRes(res)
+      return res
+    }
+
+    events = {
+      shareDetail(id) {
+        this.$navigate(`/pages/share-detail/share-detail?id=${id}`)
+      }
+    }
+    components = {
+      'underline-block': UnderlineBlock,
+      'share-item': ShareItem
+    }
+  }
+</script>
+
+<style lang="stylus">
+  @import '../../common/stylus/variable'
+  @import '../../common/stylus/mixin'
+  .share-list
+    height: 100vh
+
+  .ro-share-none
+    position: fixed
+    top: 45.3vw
+    row-center()
+    .ro-share-none-img
+      width: 86px
+      height: 71px
+    .ro-share-none-text
+      font-size: $font-size-small
+      margin-top: 10px
+      text-align: center
+      color: $color-text
+      font-family: $font-family-light
+</style>

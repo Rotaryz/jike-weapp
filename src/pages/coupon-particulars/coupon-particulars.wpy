@@ -103,8 +103,10 @@
           this.$apply()
         } else {
 //          立即去使用
+          let lastMerchantId = wepy.getStorageSync('merchantId') ? wepy.getStorageSync('merchantId') : ''
+          wepy.setStorageSync('LastMerchant', lastMerchantId)
+          wepy.setStorageSync('scene', 13202)
           wepy.setStorageSync('merchantId', coupon.merchant_id)
-          wepy.setStorageSync('shop', null)
           this.$navigate('/pages/pay/pay')
         }
       }

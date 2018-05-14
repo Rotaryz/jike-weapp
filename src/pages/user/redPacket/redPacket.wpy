@@ -1,43 +1,81 @@
 <template>
   <view class="myRedPacket">
-
-    <view class="myRedPacket-top">
+    <view class="ro-my-red-packet {{industry}}-bg">
+      <view class="ro-my-red-packet-text">总金额(元)</view>
+      <view class="ro-my-red-packet-content">
+        <view class="ro-my-red-packet-money">{{packetTotalMoney}}</view>
+        <view class="ro-my-red-packet-card" @tap="goBank">{{isBank ? '修改银行卡' : '绑定银行卡'}} </view>
+        <view class="ro-my-red-packet-btn" @tap="withDrawSub">提现</view>
+      </view>
+    </view>
+    <!--切换-->
+    <view class="ro-my-check">
+      <view class="ro-my-check-item {{checkIdx === index ? industry + '-border' : ''}}" wx:for="{{checkNav}}" wx:key="{{index}}" @tap="checkNav({{index}})">{{item}}</view>
+    </view>
+    <view class="myRedPacket-top" wx:if="{{checkIdx === 0}}">
       <view class="myRedPacket-pandect">
         <view class="myRedPacket-pandect-item">
           <view class="myRedPacket-pandect-item-num">
-            <text>{{packetTotalNum[0]}}</text>
-            <text class="myRedPacket-pandect-item-num-small">{{packetTotalNum[1]}}</text>
+            <text>{{packetTotal.redpacker_count_monies}}</text>
+            <!--<text class="myRedPacket-pandect-item-num-small"></text>-->
           </view>
-          <view class="myRedPacket-pandect-item-txt">金额（元）</view>
+          <view class="myRedPacket-pandect-item-txt">金额(元)</view>
         </view>
         <view class="myRedPacket-pandect-item">
           <view class="myRedPacket-pandect-item-num">{{packetTotal.redpacker_count}}</view>
-          <view class="myRedPacket-pandect-item-txt">数量（个）</view>
+          <view class="myRedPacket-pandect-item-txt">数量(个)</view>
         </view>
       </view>
-
-      <view class="myRedPacket-withDraw {{industry}}-bg" @tap="withDrawSub">提现</view>
     </view>
-
-    <scroll-view scroll-y class="myRedPacket-list" wx:if="{{packetList.length>0}}" bindscrolltolower="redPacketLower">
+    <view class="myRedPacket-top" wx:if="{{checkIdx === 1}}">
+      <view class="myRedPacket-pandect">
+        <view class="myRedPacket-pandect-item">
+          <view class="myRedPacket-pandect-item-num">
+            {{shareActive[0]}}
+            <text class="myRedPacket-pandect-item-num-small"></text>
+          </view>
+          <view class="myRedPacket-pandect-item-txt">已结算(元)</view>
+        </view>
+        <view class="myRedPacket-pandect-item">
+          <view class="myRedPacket-pandect-item-num">{{shareActive[1]}}</view>
+          <view class="myRedPacket-pandect-item-txt">待结算(元)</view>
+        </view>
+      </view>
+    </view>
+    <scroll-view scroll-y class="myRedPacket-list" bindscrolltolower="redPacketLower" scroll-top="{{redTop}}" bindscroll="getRedTop" style="display:{{checkIdx === 0 ? 'block' : 'none'}}">
       <view class="myRedPacket-list-item" wx:for="{{packetList}}" wx:key="{{index}}">
         <view class="myRedPacket-list-item-left">
-          <image wx:if="{{imageUrlHead}}" src="{{imageUrlHead + '/defaults/c-image/mine/icon-my_money.png'}}" class="myRedPacket-list-item-image"></image>
+          <!--<image wx:if="{{imageUrlHead}}" src="{{imageUrlHead + '/defaults/c-image/mine/icon-my_money.png'}}" class="myRedPacket-list-item-image"></image>-->
           <view class="myRedPacket-list-item-msg">
             <view class="myRedPacket-list-item-msg-title">{{item.activity_name}}</view>
-            <view class="myRedPacket-list-item-msg-time">{{item.created_at}}</view>
+            <view class="myRedPacket-list-item-msg-shop-name">{{item.created_at}}</view>
           </view>
         </view>
-
-        <view class="myRedPacket-list-item-num"><text class="myRedPacket-list-item-num-money">{{item.price}}</text>元</view>
+        <view class="myRedPacket-list-item-num"><text class="myRedPacket-list-item-num-money">+{{item.price}}</text></view>
       </view>
       <Underline></Underline>
+      <view class="myRedPacket-noList" wx:if="{{!packetList.length}}">
+        <image wx:if="{{imageUrlHead}}" src="{{imageUrlHead + '/defaults/c-image/mine/pic-no_moeny@2x.png'}}" class="myRedPacket-noList-img"></image>
+        <view class="myRedPacket-noList-txt">您还没有红包</view>
+      </view>
     </scroll-view>
-
-    <view class="myRedPacket-noList" wx:if="{{packetList.length===0}}">
-      <image wx:if="{{imageUrlHead}}" src="{{imageUrlHead + '/defaults/c-image/mine/pic-no_moeny@2x.png'}}" class="myRedPacket-noList-img"></image>
-      <view class="myRedPacket-noList-txt">您还没有红包</view>
-    </view>
+    <scroll-view scroll-y class="myRedPacket-list" bindscrolltolower="redPacketLower" scroll-top="{{shareTop}}" bindscroll="getShareTop" style="display:{{checkIdx === 1 ? 'block' : 'none'}}">
+      <view class="myRedPacket-list-item" wx:for="{{shareList}}" wx:key="{{index}}">
+        <view class="myRedPacket-list-item-left">
+          <!--<image wx:if="{{imageUrlHead}}" src="{{imageUrlHead + '/defaults/c-image/mine/icon-my_money.png'}}" class="myRedPacket-list-item-image"></image>-->
+          <view class="myRedPacket-list-item-msg">
+            <view class="myRedPacket-list-item-msg-title">{{item.title}}</view>
+            <view class="myRedPacket-list-item-msg-shop-name">{{item.shop_name}}</view>
+          </view>
+        </view>
+        <view class="myRedPacket-list-item-num">{{item.money}}</view>
+      </view>
+      <shareUnderline></shareUnderline>
+      <view class="myRedPacket-noList" wx:if="{{!shareList.length}}">
+        <image wx:if="{{imageUrlHead}}" src="{{imageUrlHead + '/defaults/c-image/share/pic-empty_fxzq@2x.png'}}" class="myRedPacket-noList-img"></image>
+        <view class="myRedPacket-noList-txt">您还没有赚到钱</view>
+      </view>
+    </scroll-view>
     <Toast></Toast>
   </view>
 </template>
@@ -46,91 +84,194 @@
   /* eslint-disable no-undef */
   import wepy from 'wepy'
   import base from 'common/mixins/base'
-  import GetRedPacket from 'api/myRedPacket'
+  import sharemoney from 'api/sharemoney'
+  import myRedPacket from 'api/myRedPacket'
   import Toast from '@/base/toast/toast'
   import URIS from 'common/js/config'
   import {ERR_OK} from '@/api/base'
   import Underline from '@/base/underline-block/underline-block'
+  import Finance from 'api/finance'
 
   export default class RedPacket extends wepy.page {
     mixins = [base]
 
     config = {
-      navigationBarTitleText: '我的红包',
-      navigationBarBackgroundColor: '#fff',
-      navigationBarTextStyle: 'black',
-      backgroundColor: '#F9F9F9'
+      navigationBarTitleText: '我的钱包',
+      navigationBarBackgroundColor: '#706B82',
+      navigationBarTextStyle: 'white'
     }
 
     components = {
       Toast,
-      Underline
+      Underline,
+      'shareUnderline': Underline
     }
 
     data = {
+      checkIdx: 0,
+      checkNav: ['活动红包', '分享赚钱'],
       imageUrlHead: URIS.image,
-      packetTotal: {redpacker_count: 0},
+      packetTotal: 0.00,
       packetList: [],
       packetTotalNum: ['0', '.00'],
-      LowerLoading: false,
+      shareNothing: false,
       page: 1,
-      nothingAdd: false
+      sharePage: 1,
+      redNothing: false,
+      shareActive: [],
+      shareList: [],
+      packetTotalMoney: '',
+      showNone: false,
+      isBank: false,
+      shareTop: 0,
+      redTop: 0
     }
 
     methods = {
+      checkNav(index) {
+        this.checkIdx = index * 1
+        this._isNone()
+      },
+      getShareTop(e) {
+        this.shareTop = e.detail.scrollLeft * 1
+        this.$apply()
+      },
+      getRedTop(e) {
+        this.redTop = e.detail.scrollLeft * 1
+        this.$apply()
+      },
+//      下拉刷新
       async redPacketLower() {
-        if (!this.LowerLoading && !this.nothingAdd) {
-          this.LowerLoading = true
-          this.page++
-          let Json = await this._getRedPacketList(this.page)
-          this.loaded()
-          if (Json.error !== ERR_OK) {
-            return
-          }
-          let res = Json.data
-          if (res.length === 0) {
-            this.nothingAdd = true
-            this.$invoke('Underline', 'show')
-          }
-          this.packetList.push(...res)
-          this.LowerLoading = false
-          this.$apply()
-        } else if (this.nothingAdd) {
-          // 到底
+        switch (this.checkIdx) {
+          case 0:
+            this.page++
+            if (!this.redNothing) {
+              let res = await this._getRedPacketList(this.page)
+              this.packetList.push(...res)
+              if (!res.length) {
+                this.$invoke('Underline', 'show')
+                this.redNothing = true
+              }
+            }
+            break
+          case 1:
+            this.sharePage++
+            if (!this.shareNothing) {
+              let res = await this._shareMoneyProfit()
+              this.shareList.push(...res)
+              if (!res.length) {
+                this.$invoke('shareUnderline', 'show')
+                this.shareNothing = true
+              }
+            }
+            break
         }
+        this.$apply()
       },
       withDrawSub() {
+        if (!this.isBank) {
+          this.$invoke('Toast', 'show', '请绑定银行卡')
+          return
+        }
         this.$navigate('/pages/user/withDraw/withDraw')
+      },
+      goBank() {
+        this.$navigate('/pages/bank-card/bank-card')
+      }
+    }
+    async onLoad() {
+      await this.showIndustry()
+      wx.setNavigationBarColor({
+        backgroundColor: this.industryColor,
+        frontColor: '#ffffff',
+        animation: {
+          duration: 30,
+          timingFunc: 'ease'
+        }
+      }) // 导航条颜色
+      await Promise.all([
+        this._getTotalRedpacket(),
+        this.shareList = await this._shareMoneyProfit(),
+        this._getBankCardDetail()
+      ])
+      if (this.shareList.length && this.shareList.length < 10) {
+        this.$invoke('shareUnderline', 'show')
+      }
+      this._isNone()
+    }
+    async onShow() {
+      await this._getBankCardDetail()
+      await this._shareMoneyProfit()
+    }
+//    判断是否有数据
+    async _isNone() {
+      switch (this.checkIdx) {
+        case 0:
+          this.showNone = !this.packetList.length
+          if (this.showNone) {
+            this.packetList = await this._getRedPacketList(1)
+            this.showNone = this.packetList.length
+            if (this.packetList.length && this.packetList.length < 10) {
+              this.$invoke('Underline', 'show')
+            }
+            this.$apply()
+          }
+          this.$apply()
+          break
+        case 1:
+          this.showNone = !this.shareList.length
+          if (this.showNone) {
+            this.shareList = await this._shareMoneyProfit()
+            this.showNone = this.shareList.length
+            if (this.shareList.length && this.shareList.length < 10) {
+              this.$invoke('shareUnderline', 'show')
+            }
+            this.$apply()
+          }
+          this.$apply()
+          break
       }
     }
 
-    async onLoad() {
-      await this.showIndustry()
-      await this.load()
+//    分享赚钱列表
+    async _shareMoneyProfit() {
+      let data = {page: this.sharePage}
+      let Json = await sharemoney.shareMoneyProfit(data)
+      if (Json.error !== ERR_OK) {
+        this.loaded()
+        return
+      }
+      this.packetTotalMoney = Json.total_money
+      this.shareActive = [Json.settled_money, Json.settling_money]
+      this.$apply()
+      this.loaded()
+      return Json.data
     }
 
-    async load() {
-      let Json = await GetRedPacket.getTotalRedpacket()
+//  红包详情
+    async _getTotalRedpacket() {
+      let Json = await myRedPacket.getTotalRedpacket()
       if (Json.error !== ERR_OK) {
         this.loaded()
         return
       }
       this.packetTotal = Json.data
-      this.packetTotalNum = this._computed(this.packetTotal.redpacker_count_monies)
-      let Json1 = await this._getRedPacketList(1)
-      if (Json1.error !== ERR_OK) {
-        this.loaded()
-        return
-      }
-      this.packetList = Json1.data
-      this.$apply()
       this.loaded()
     }
 
+//    红包列表
     async _getRedPacketList(page) {
-      return await GetRedPacket.getTotalRedpacketList(page)
+      let res = await myRedPacket.getTotalRedpacketList(page)
+      this.loaded()
+      return res.data
     }
-
+//    判断是否有银行卡
+    async _getBankCardDetail() {
+      const res = await Finance.bankCardDetail()
+      this.isBank = res.error === ERR_OK
+      this.loaded()
+      this.$apply()
+    }
     _computed(num) {
       let arr = num.split('.')
       arr[1] = '.' + arr[1]
@@ -144,37 +285,50 @@
 
   page
     background: $color-background
-
+    height: 100vh
+    overflow:hidden
     .myRedPacket
-      background: $color-highlight-background
-
+      background: $color-background
+      height: 100%
+      overflow:hidden
       .myRedPacket-top
-        height: 28vh
+        box-sizing :border-box
+        background :$color-white
+        height:99px
         display: flex
         flex-direction: column
         justify-content: space-between
-
+        border-bottom :0.5px solid $color-col-line
       .myRedPacket-pandect
         display: flex
-
+        position: relative
+        &:before
+          content: ''
+          width: 1px
+          height: 30px
+          transform : scaleX(0.5)
+          position: absolute
+          background :#DBDBDB
+          top:40.25px
+          left: 50%
         .myRedPacket-pandect-item
           flex: 1
           text-align: center
-
           .myRedPacket-pandect-item-num
-            font-size: $font-size-large-xx
+            text-align :center
+            font-size: $font-size-large
             color: $color-text-t
-            line-height: 33.5px
-            height: 33.5px
-            margin-bottom: 11.5px
-            margin-top: 24.5px
-
+            line-height: 1
+            margin-bottom: 6px
+            margin-top: 35px
+            font-family : PingFangSC-Semibold
             .myRedPacket-pandect-item-num-small
               font-size: $font-size-medium
 
           .myRedPacket-pandect-item-txt
+            font-family :$font-family-light
             font-size: $font-size-small-s
-            color: $color-text
+            color: #666666
             line-height: 14px
 
       .myRedPacket-withDraw
@@ -195,14 +349,15 @@
         background: $color-button-dis
 
       .myRedPacket-list
-        max-height: 72vh
+        background :$color-white
+        max-height: 98.667vw
 
         .myRedPacket-list-item
-          padding: 0 12px
+          margin-left: 12px
+          box-sizing :border-box
           height: 45px
-          border-bottom: 1px solid $color-row-line
+          border-bottom: 0.5px solid $color-row-line
           display: flex
-          align-items: center
           justify-content: space-between
 
           .myRedPacket-list-item-left
@@ -216,34 +371,96 @@
             .myRedPacket-list-item-msg
 
               .myRedPacket-list-item-msg-title
-                font-size: $font-size-small
                 color: $color-text
+                font-family :$font-family-light
                 line-height: 16.5px
-
+                font-size :$font-size-small
+                bottom: 0.5px
+                min-height : $font-size-small
+                margin-top: 6.75px
+              .myRedPacket-list-item-msg-shop-name
+                font-size: $font-size-small-s
+                color :#B6B6B6
+                margin-top: 0.5px
+                line-height: 14px
               .myRedPacket-list-item-msg-time
                 font-size: $font-size-small-s
                 color: $color-text-ddd
-                line-height: 14px
 
           .myRedPacket-list-item-num
+            margin-right: 12px
+            line-height: 45.5px
             font-size: $font-size-small
 
             .myRedPacket-list-item-num-money
-              color: $color-text-t
+              color: $color-pay
 
       .myRedPacket-noList
         height: 152px
         display: flex
         flex-direction: column
         align-items: center
-
+        background :$color-background
         .myRedPacket-noList-img
           width: 100px
           height: 80px
-          margin: 15px 0
+          margin: 55.5px 0 10.5px
 
         .myRedPacket-noList-txt
           font-size: $font-size-small
           color: $color-text
+
+  .ro-my-red-packet
+    background :$color-pay
+    padding: 14px 12px 26px
+    .ro-my-red-packet-text
+      color :$color-white
+      font-size :$font-size-small-s
+      font-family :$font-family-light
+    .ro-my-red-packet-content
+      margin-top: 7.5px
+      display :flex
+      position: relative
+      align-items :flex-end
+      .ro-my-red-packet-money
+        line-height: 1
+        transform :translateY(4px)
+        color :$color-white
+        font-size:$font-size-large-xx
+        font-family :$font-family-meddle
+      .ro-my-red-packet-card
+        color :$color-white
+        margin-left: 12.5px
+        font-size :$font-size-small
+        font-family :$font-family-light
+      .ro-my-red-packet-btn
+        color :$color-white
+        position: absolute
+        border-radius :2px
+        bottom: 0px
+        right: 17px
+        height: 24px
+        width: 58px
+        border : 0.5px solid $color-white
+        text-align :center
+        font-size :$font-size-small
+        line-height: 24px
+
+  .ro-my-check
+    height: 49px
+    display :flex
+    background :$color-white
+    justify-content :space-around
+    border-bottom :0.5px solid $color-col-line
+    padding-top: 22.5px
+    box-sizing:border-box
+    .ro-my-check-item
+      font-size :$font-size-medium
+      font-family :$font-family-light
+      position: relative
+      height: 100%
+    .ro-my-check-item-active
+      &:before
+        background :$color-theme
 
 </style>

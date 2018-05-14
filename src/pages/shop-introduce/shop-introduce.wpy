@@ -1,0 +1,966 @@
+<template>
+  <view class="trading-area">
+    <view class="area-head border-bottom-1px">
+      <view class="banner">
+        <view class="banner-grade">大众点评{{currentMerchant.shop_power}}分</view>
+        <image class="banner-img" src="{{currentMerchant.shop_image[0].image.url}}" mode="aspectFill"></image>
+      </view>
+      <view class="shop-logo">
+        <image class="logo-img" src="{{currentMerchant.logo_image}}" mode="aspectFill"></image>
+        <view class="shop-name">{{currentMerchant.shop_name}}</view>
+        <view class="shop-title">{{currentMerchant.describe}}</view>
+        <view>
+          <view class="tip-wrapper" >
+            <view class="hot-wrapper">
+              <image class="hot" wx:if="{{imageUri && tips.length>0}}" src="{{imageUri + '/defaults/c-image/square/pic-hot-top@2x.png'}}"></image>
+            </view>
+            <view class="tips">
+              <view class="box" style="height: {{scrollHeight}}px;transition: {{transition}};transform: {{transform}}">
+                <repeat for="{{tips}}" key="index" index="index" item="item">
+                  <view class="tip">
+                    <view class="item-wrapper">
+                      <view class="icon-wrapper">
+                        <image class="icon" wx:if="{{imageUri}}" src="{{imageUri + '/defaults/c-image/square/pic-s_activity@2x.png'}}"></image>
+                      </view>
+                      <view class="word">{{item.activity}}活动开启中</view>
+                    </view>
+                    <view class="item-wrapper">
+                      <view class="icon-wrapper">
+                        <image class="icon" wx:if="{{imageUri}}" src="{{imageUri + '/defaults/c-image/square/pic-s_coupon@2x.png'}}"></image>
+                      </view>
+                      <view class="word">{{item.title ? item.title + '正在疯抢中' : '您的优惠券正在路上'}}</view>
+                    </view>
+                  </view>
+                </repeat>
+                <view class="tip" wx:if="{{tips.length > 0}}">
+                  <view class="item-wrapper">
+                    <view class="icon-wrapper">
+                      <image class="icon" wx:if="{{imageUri}}" src="{{imageUri + '/defaults/c-image/square/pic-s_activity@2x.png'}}"></image>
+                    </view>
+                    <view class="word">{{tips[0].activity}}活动开启中</view>
+                  </view>
+                  <view class="item-wrapper">
+                    <view class="icon-wrapper">
+                      <image class="icon" wx:if="{{imageUri}}" src="{{imageUri + '/defaults/c-image/square/pic-s_coupon@2x.png'}}"></image>
+                    </view>
+                    <view class="word">{{tips[0].title ? tips[0].title + '正在疯抢中' : '您的优惠券正在路上'}}</view>
+                  </view>
+                </view>
+              </view>
+            </view>
+            <view class="look-shop" @tap="switchRecommend">查看店铺</view>
+          </view>
+        </view>
+      </view>
+    </view>
+    <view class="good-shop border-bottom-1px border-top-1px">
+      <view class="item-head">
+        <view class="item-title">
+          <image class="shop-img" wx:if="{{imageUri}}" src="{{imageUri + '/defaults/c-image/square/icon-album@2x.png'}}"></image>
+          门店相册
+        </view>
+      </view>
+      <scroll-view scroll-x class="item-content">
+        <view class="shop-item" wx:for="{{currentMerchant.shop_image}}" wx:key="{{index}}" > <!-- @tap="jumpShop({{item}}) -->
+          <view class="img-box">
+            <image class="shop-img" src="{{item.image.url}}" mode="aspectFill"></image>
+          </view>
+        </view>
+      </scroll-view>
+    </view>
+    <view class="recommend border-top-1px">
+      <view class="item-head border-top-1px">
+        <view class="item-title">
+          <image class="shop-img" wx:if="{{imageUri}}" src="{{imageUri + '/defaults/c-image/square/icon-time@2x.png'}}"></image>
+          营业时间 {{currentMerchant.open_time}}-{{currentMerchant.close_time}}
+        </view>
+      </view>
+      <view class="item-head border-top-1px" @tap="makePhoneCallsA({{currentMerchant.mobile}})">
+        <view class="item-title">
+          <image class="shop-img" wx:if="{{imageUri}}" src="{{imageUri + '/defaults/c-image/square/icon-call@2x.png'}}"></image>
+          联系电话 {{currentMerchant.mobile}}
+        </view>
+      </view>
+      <view class="item-head border-top-1px" @tap="openLocationA">
+        <view class="item-title">
+          <image class="shop-img" wx:if="{{imageUri}}" src="{{imageUri + '/defaults/c-image/square/icon-address-s@2x.png'}}"></image>
+          {{currentMerchant.particular_address}}
+        </view>
+        <view class="head-right">
+          <image class="icon-arrow" wx:if="{{imageUri}}" src="{{imageUri + '/defaults/c-image/mine/icon-my_Rectangle.png'}}"></image>
+        </view>
+      </view>
+      <view class="map">
+        <map id="map"
+             scale="{{scale}}"
+             show-location="true"
+             longitude="{{longitude}}"
+             latitude="{{latitude}}"
+             controls="{{controls}}"
+             markers="{{markers}}"
+             bindcontroltap="controltap"
+             bindregionchange="regionchange">
+        </map>
+      </view>
+    </view>
+    <integral-popout></integral-popout>
+    <Toast></Toast>
+  </view>
+</template>
+
+<script>
+  /* eslint-disable no-undef */
+  import wepy from 'wepy'
+  import base from 'common/mixins/base'
+  import {ERR_OK} from 'api/base'
+  import URIS from 'common/js/config'
+  import Toast from '@/base/toast/toast'
+  import Merchants from 'api/merchants'
+  import GDMap from 'common/libs/amap-wx'
+  import IntegralPopout from '@/base/integral-popout/integral-popout'
+  function getDeviceInfo() {
+    const res = wepy.getSystemInfoSync()
+    const width = res.windowWidth
+    const height = res.windowHeight
+    return {width, height}
+  }
+
+  const DEVICEINFO = getDeviceInfo()
+  export default class TradingArea extends wepy.page {
+    mixins = [base]
+    components = {
+      'Toast': Toast,
+      'integral-popout': IntegralPopout
+    }
+    config = {
+      navigationBarBackgroundColor: '#fff',
+      navigationBarTextStyle: 'black',
+      backgroundColor: '#f9f9f9',
+      backgroundTextStyle: 'dark'
+    }
+
+    data = {
+      imageUri: URIS.image,
+      grade: 3.5,
+      saleIdx: 0,
+      industryIdx: 1,
+      contentIdx: 0,
+      hotSalesList: [[], [], []],
+      businessName: '',
+      businessAddress: '',
+      businessImg: '',
+      businessImgSmall: '',
+      businessShopCount: 0,
+      businessDiscounts: 0,
+      allShops: [],
+      goodShops: [],
+      contentList: [],
+      moreCircleList: [],
+      star: 3.5,
+      tips: [],
+      scrollHeight: 60,
+      activeIndex: 0,
+      transform: '',
+      transition: '',
+      currentMerchant: {},
+      promotions: [],
+      scale: 18,
+      longitude: 0,
+      latitude: 0,
+      markers: [],
+      polyline: [],
+      controls: []
+    }
+
+    async onLoad(options) {
+      await this.getShop(options.merchant_id)
+      await this.getInit()
+      wepy.setNavigationBarTitle({
+        title: options.title
+      })
+    }
+
+    async getShop(id) {
+      let ids = id
+      const json = await Merchants.getMerchantsDetailNew(ids)
+      this.loaded()
+      if (json.error === ERR_OK) {
+        const res = json.data
+        this.currentMerchant = res
+        this.$apply()
+      }
+    }
+    // 初始化
+    async getInit() {
+      await this._newMapGD()
+      await this._setTips()
+      await this._setTipInterval()
+      await this._addIcons(this.currentMerchant)
+      // await this._setControls(this.currentMerchant) // 定位
+      // await this._getMapContext()
+    }
+    // 设置店家活动tips
+    _setTips() {
+      const activities = this.currentMerchant.activities
+      const promotions = this.currentMerchant.promotions
+      let tips = []
+      for (let key in activities) {
+        if (activities[key]) {
+          tips.push({activity: this._translateActivityKey(key)})
+        }
+      }
+      tips.forEach((item, index) => {
+        let init = {title: ''}
+        if (promotions[index]) {
+          init = promotions[index]
+        }
+        item = Object.assign(item, init)
+      })
+      if (tips.length) {
+        tips.push(tips[0])
+      }
+      this.tips = tips
+    }
+    // 店家活动tips关键字
+    _translateActivityKey(key) {
+      switch (key) {
+        case 'lucky_draw':
+          return '幸运大转盘'
+        case 'sign':
+          return '签到红包'
+        case 'video_live':
+          return '直播优惠'
+        case 'share':
+          return '分享有礼'
+        default:
+          return ''
+      }
+    }
+    // 设置店家tips轮播
+    _setTipInterval() {
+      const tipsLength = this.tips.length
+      this.scrollHeight = 60 * tipsLength
+      this._setTipTimer()
+    }
+    // 店家轮播定时器
+    _setTipTimer() {
+      const tipsLength = this.tips.length
+      if (!tipsLength) {
+        return
+      }
+      clearInterval(this.tipTimer)
+      this.tipTimer = setInterval(() => {
+        this.activeIndex += 1
+        if (this.activeIndex === tipsLength) {
+          this.tipTimeOuter = setTimeout(() => {
+            this.activeIndex = 0
+            this.transition = ''
+            this.transform = 'translate3d(0, 0, 0)'
+            this.$apply()
+          }, 500)
+        } else {
+          this.transition = 'all .5s'
+          this.transform = `translate3d(0, -${this.activeIndex * 60}px, 0)`
+        }
+        this.$apply()
+      }, 3000)
+    }
+    // 清理定时器
+    clearTimer() {
+      this.activeIndex = 0
+      this.tipTimer && clearInterval(this.tipTimer)
+      this.tipTimeOuter && clearTimeout(this.tipTimeOuter)
+      this.$apply()
+    }
+    // 创建高度地图
+    _newMapGD() {
+      this.gdmapsdk = new GDMap.AMapWX({key: 'd3950730147fbf5fe991ecc0344968b4'})
+    }
+    // 添加map上的图标
+    async _addIcons(item) {
+      let icon = item.code_name
+      this.markers.push({
+        iconPath: `./icon-red_${icon}@2x.png`,
+        id: item.id,
+        latitude: item.latitude,
+        longitude: item.longitude,
+        width: 26,
+        height: 26,
+        callout: {
+          content: item.shop_name,
+          color: '#ffffff',
+          padding: 10,
+          fontSize: 14,
+          borderRadius: 4,
+          bgColor: '#464646',
+          display: 'ALWAYS',
+          textAlign: 'textAlign'
+        }
+      })
+      this.latitude = item.latitude
+      this.longitude = item.longitude
+      this.$apply()
+    }
+    // 设置控件样式
+    async _setControls(item) {
+      // 判断是否有控件
+      if (this.controls.length > 0) return
+      // 加载控件
+      this.controls.push({
+        id: item.id,
+        iconPath: './icon-s_return@2x.png',
+        clickable: true,
+        position: {
+          width: 36,
+          height: 36,
+          left: DEVICEINFO.width - 70,
+          top: 140
+        }
+      })
+      this.$apply()
+    }
+    // 缩放地图标记点尺寸
+    _scaleMarker(type) {
+      const index = this.bigMarkerIndex
+      if (!this.markers || index <= 0) return
+      if (this.markers[index]) {
+        this.markers[index].width = type === 1 ? 40 : 30
+        this.markers[index].height = type === 1 ? 40 : 30
+        this.markers[index].iconPath = type === 1 ? this.markers[index].iconPath.replace('black', 'red') : this.markers[index].iconPath.replace('red', 'black')
+      }
+      this.$apply()
+    }
+    // 获取map上下文
+    async _getMapContext() {
+      this.mapContext = await wepy.createMapContext('map')
+    }
+    // 清理地图数据
+    _clearMapData() {
+      this.longitude = 0
+      this.latitude = 0
+      this.$apply()
+    }
+    methods = {
+      switchRecommend() {
+        let msg = this.currentMerchant
+        let merchantId = wepy.getStorageSync('merchantId')
+        wepy.setStorageSync('scene', 11001)
+        wepy.setStorageSync('LastMerchant', merchantId)
+        wepy.setStorageSync('merchantId', msg.merchant_id)
+        wepy.switchTab({url: '/pages/recommend/recommend'})
+      },
+      makePhoneCallsA(tel) {
+        wepy.makePhoneCall({
+          phoneNumber: tel
+        })
+      },
+      swiperMove(e) {
+        this.saleIdx = e.detail.current * 1
+        this.$apply()
+      },
+      industryChange(idx) {
+        this.industryIdx = idx * 1
+        this._filterShops()
+        this.$apply()
+      },
+      contentMove(e) {
+        this.contentIdx = e.detail.current * 1
+        this.$apply()
+      },
+      couponDetail(item) {
+        this.$navigate('/pages/coupon-detail/coupon-detail?type=1&id=' + item.id)
+      },
+      openLocationA() {
+        wepy.openLocation({
+          latitude: this.currentMerchant.latitude,
+          longitude: this.currentMerchant.longitude,
+          scale: 28,
+          name: this.currentMerchant.shop_name,
+          address: this.currentMerchant.particular_address
+        })
+      },
+      regionchange() {
+        // 切换地图时事件
+      }
+    }
+  }
+</script>
+
+<style lang="stylus">
+  @import "../../common/stylus/variable"
+  @import "../../common/stylus/mixin"
+
+  .trading-area
+    width: 100%
+
+    .area-head
+      width: 100%
+      background: $color-white
+      // border-bottom: 0.5px solid $color-ROW-line-s
+      margin-bottom: 9px
+      .banner
+        width: 100%
+        height: 171px
+        position: relative
+        overflow: hidden
+        .banner-grade
+          position: absolute
+          top: 12px
+          right: 12px
+          width: 74px
+          height: 18px
+          opacity: 0.9
+          background: $color-orange
+          border-radius: 2px
+          font-family: $font-family-regular
+          font-size: $font-size-small-s
+          color: $color-white
+          text-align: center
+          line-height: 20px
+          letter-spacing: 1
+
+        .banner-img
+          width: 100%
+          height: 100%
+        .cover
+          position: absolute
+          width: 100%
+          height: 100%
+          background: rgba(0, 0, 0, 0.5)
+          left: 0
+          top: 0
+          display: flex
+          aling-items: center
+          .cover-left
+            width: 71vw
+            display: flex
+            flex-direction: column
+            justify-content: center
+            padding-left: 4vw
+            .left-name
+              font-family: PingFangSC-Medium
+              font-size: $font-size-medium-x
+              color: $color-white
+              margin-bottom: 9px
+            .left-address
+              display: flex
+              height: 10px
+              align-items: center
+              margin-bottom: 14px
+              .address-icon
+                width: 10px
+                height: 10px
+                margin-right: 3px
+                margin-top: 1px
+              .address-txt
+                font-family: PingFangSC-Light
+                font-size: $font-size-small
+                color: $color-white
+            .left-down-box
+              display: flex
+              .down-item
+                padding: 3.5px 5px
+                font-family: PingFangSC-Regular
+                font-size: $font-size-small-s
+                color: $color-white
+                background: rgba(0, 0, 0, 0.50)
+                border-radius: 2px
+                margin-right: 5px
+                .down-title
+                  margin-right: 4px
+
+          .cover-right
+            height: 100%
+            display: flex
+            align-items: center
+            .right-img
+              width: 46px
+              height: 46px
+              border-radius: 50%
+              border: 1px solid rgba(255, 255, 255, 0.3)
+              margin-bottom: 20px
+
+      .shop-logo
+        position: relative
+        width: 100%
+        height: 150px
+        display: flex
+        flex-direction: column
+
+        .logo-img
+          position: absolute
+          margin: auto
+          top: -39px
+          left: 0px
+          right: 0px
+          width: 64px
+          height: 64px
+          border-radius: 4px
+          box-shadow: 0 4px 10px 0 rgba(0,0,0,0.10)
+        .shop-name
+          font-family: $font-family-meddle
+          font-size: $font-size-large
+          color: $color-text-x
+          text-align: center
+          margin-top: 34.5px
+        .shop-title
+          font-family: $font-family-light
+          font-size: $font-size-small
+          color: $color-text-9b
+          text-align: center
+          margin-top: 10px
+          margin-bottom: 10px
+        .tip-wrapper
+          display: flex
+          height: 60px
+          padding-left: 10px
+          .hot-wrapper
+            flex: 0 0 0px
+            width: 35px
+            display: flex
+            align-items: center
+            justify-content: center
+            .hot
+              display: flex
+              width: 35px
+              height: 29px
+          .tips
+            flex: 1
+            height: 60px
+            padding-left: 6px
+            overflow: hidden
+            .box
+              transform: translate3d(0, 0, 0)
+              .tip
+                display: flex
+                flex-direction: column
+                justify-content: center
+                height: 60px
+                .item-wrapper
+                  display: flex
+                  align-items: center
+                  &:first-child
+                    margin-bottom: 4px
+                  .icon-wrapper
+                    flex: 0 0 30px
+                    width: 30px
+                    .icon
+                      display: flex
+                      width: 30px
+                      height: 14px
+                  .word
+                    flex: 1
+                    display: flex
+                    margin-left: 5px
+                    font-size: $font-size-small
+                    color: $color-text
+
+
+
+          .look-shop
+            background: $color-theme
+            border-radius: 2px
+            width: 70px
+            height: 27px
+            margin-top: 16.5px
+            margin-right: 12px
+            line-height: 28px
+            text-align: center
+            font-family: $font-family-light
+            font-size: $font-size-medium
+            color: $color-white
+    .hot-sale
+      background: $color-white
+      margin-bottom: 10px
+      .item-head
+        display: flex
+        align-items: center
+        height: 50px
+        padding-left: 12px
+        .item-title
+          font-family: $font-family-light
+          font-size: $font-size-medium
+          color: $color-error
+
+      .item-content
+        height: 51vw
+        width: 100%
+        .content-item
+          padding: 0 12px
+          height: 100%
+          display: flex
+          overflow: hidden
+          .coupon-item
+            width: 29.733333vw
+            height: 100%
+            display: flex
+            flex-direction: column
+            margin-right: 2.4vw
+            &:last-child
+              margin-right: 0
+            .img-box
+              width: 29.733333vw
+              height: 29.733333vw
+              box-sizing: border-box
+              border-radius: 2px
+              overflow: hidden
+              border: 0.5px solid $color-col-line
+              position: relative
+              .shop-img
+                width: 100%
+                height: 100%
+              .shop-name
+                width: 100%
+                box-sizing: border-box
+                padding-left: 5px
+                height: 18px
+                line-height: 18px
+                position: absolute
+                left: 0
+                bottom: 0
+                background: rgba(0, 0, 0, 0.5)
+                font-family: PingFangSC-Light
+                font-size: $font-size-small-s
+                color: $color-white
+            .item-down
+              flex: 1
+              display: flex
+              flex-direction: column
+              .item-money
+                display: flex
+                align-items: flex-end
+                font-family: PingFangSC-Semibold
+                color: $color-orange
+                margin: 1.8vw 0
+                .small-money
+                  font-size: $font-size-small-s
+                  margin-right: 3px
+                  margin-bottom: 2px
+                .big-money
+                  font-size: $font-size-large
+              .item-title
+                overflow: hidden
+                text-overflow: ellipsis
+                white-space: nowrap
+                font-family: PingFangSC-Light
+                font-size: $font-size-small
+                color: $color-text
+                margin-bottom: 6px
+              .item-sale
+                .sale-count
+                  padding: 2px 4px
+                  background: rgba(255, 78, 0, 0.1)
+                  border-radius: 2px
+                  font-size: $font-size-small-s
+                  color: $color-orange
+                  font-family: PingFangSC-Light
+
+      .swiper-dots
+        width: 100%
+        height: 20px
+        padding-top: 10px
+        display: flex
+        justify-content: center
+        .dot
+          width: 3px
+          height: 3px
+          background: #B8B5C1
+          border-radius: 1.5px
+          margin-right: 8px
+          transition: all .3s
+          &:last-child
+            margin-right: 0
+        .active.dot
+          width: 11px
+          background: #706B82
+
+    .good-shop
+      background: $color-white
+      margin-bottom: 9px
+      // border-top: 0.5px solid $color-ROW-line-s
+      // border-bottom: 0.5px solid $color-ROW-line-s
+      height: 157.5px
+      .item-head
+        display: flex
+        align-items: center
+        height: 43px
+        padding-left: 12px
+        .item-title
+          font-family: $font-family-light
+          font-size: $font-size-medium
+          color: $color-error
+          .shop-img
+            height: 12px
+            width: 12px
+            margin-right: 2px
+            vertical-align:middle
+            margin-top: -2px
+        .head-right
+          display: flex
+          margin-right: 16px
+          .right-item
+            width: 50px
+            height: 24px
+            border-radius: 12px
+            background: $color-white
+            font-family: PingFangSC-Light
+            font-size: $font-size-small
+            color: $color-text
+            text-align: center
+            line-height: 24px
+          .right-item.active
+            background: #706B82
+            color: $color-white
+      .item-content
+        height: 97px
+        white-space: nowrap
+        width: 100%
+        .shop-item
+          width: 130px
+          height: 97px
+          margin-right: 5px
+          display: inline-block
+          &:first-child
+            margin-left: 12px
+          .img-box
+            width: 130px
+            height: 97px
+            box-sizing: border-box
+            border-radius: 2px
+            overflow: hidden
+            margin-bottom: 9.5px
+            .shop-img
+              width: 100%
+              height: 100%
+          .shop-name
+            font-family: PingFangSC-Light
+            font-size: $font-size-small
+            color: $color-text
+            overflow: hidden
+            text-overflow: ellipsis
+            white-space: nowrap
+            margin-bottom: 10px
+          .remark
+            display: flex
+            height: 10px
+            align-items: center
+            .remark-txt
+              font-family: PingFangSC-Light
+              font-size: $font-size-small-s
+              color: $color-orange
+            .starts
+              display: flex
+              margin-left: 3px
+              transform: translate(0, -0.5px)
+              .start
+                width: 8px
+                height: 8px
+                margin-right: 1px
+                &:last-child
+                  margin-right: 0
+
+      .allShop
+        width: 100%
+        height: 40px
+        border-top: 0.5px solid $color-col-line
+        line-height: 40px
+        text-align: center
+        font-family: PingFangSC-Light
+        font-size: $font-size-small
+        color: $color-main
+    .recommend
+      background: $color-white
+      margin-bottom: 9px
+      // border-top: 0.5px solid $color-ROW-line-s
+      .item-head:first-child
+        border: none
+      .item-head
+        display: flex
+        align-items: center
+        height: 44px
+        line-height: 45px
+        margin-left: 12px
+        // border-top: 0.5px solid $color-ROW-line-s
+        justify-content: space-between
+        .shop-img
+          height: 12px
+          width: 12px
+          vertical-align:middle
+          margin-top:-2px
+        .item-title
+          font-family: $font-family-light
+          font-size: $font-size-medium
+          color: $color-error
+        .head-right
+          margin-right: 12px
+          height: 50px
+          display: flex
+          align-items: center
+          .icon-arrow
+            width: 6px
+            height: 10px
+      .item-content
+        height: 29vw
+        width: 100%
+        .content-item
+          padding: 0 12px
+          height: 100%
+          display: flex
+          justify-content: space-between
+          overflow: hidden
+          .item-box
+            height: 0
+            width: 100%
+            padding-bottom: 30.62%
+            position: relative
+            .item-container
+              position: absolute
+              left: 0
+              top: 0
+              width: 100%
+              height: 100%
+              border: 0.5px solid $color-ROW-line-s
+              box-sizing: border-box
+              border-radius: 2px
+              padding: 10.5px
+              display: flex
+              justify-content: space-between
+              .item-left
+                flex: 1
+                padding-right: 15px
+                display: flex
+                flex-direction: column
+                justify-content: space-between
+                .left-title
+                  font-family: PingFangSC-Medium
+                  font-size: $font-size-medium
+                  color: $color-text
+                  letter-spacing: 0.42px
+                  line-height: 18px
+                .left-name
+                  display: flex
+                  height: 12px
+                  align-items: center
+                  margin-bottom: 6px
+                  .left-icon
+                    width: 11px
+                    height: 10px
+                    margin-right: 4px
+                  .name-txt
+                    font-family: PingFangSC-Light
+                    font-size: $font-size-small
+                .left-down
+                  display: flex
+                  .down-item
+                    padding: 3.5px 5px
+                    font-family: PingFangSC-Light
+                    font-size: $font-size-small-s
+                    color: $color-orange
+                    background: rgba(255, 78, 0, 0.1)
+                    border-radius: 2px
+                    margin-right: 5px
+                    .down-title
+                      margin-right: 3px
+              .item-right
+                width: 32.4vw
+                height: 100%
+                border: 0.5px solid $color-ROW-line-s
+                border-radius: 2px
+                overflow: hidden
+                .item-img
+                  width: 100%
+                  height: 100%
+      .swiper-dots
+        width: 100%
+        height: 34px
+        display: flex
+        justify-content: center
+        align-items: center
+        .dot
+          width: 3px
+          height: 3px
+          background: #B8B5C1
+          border-radius: 1.5px
+          margin-right: 8px
+          transition: all .3s
+          &:last-child
+            margin-right: 0
+        .active.dot
+          width: 11px
+          background: #706B82
+      .map
+        height 200px
+        padding: 0 12px
+        #map
+          width: 100%
+          height: 100%
+    .more-area
+      background: $color-white
+      .item-head
+        display: flex
+        padding-top: 20px
+        height: 21px
+        padding-left: 12px
+        .item-title
+          font-family: PingFangSC-Regular
+          font-size: $font-size-medium-x
+          color: $color-text-title
+      .area-item
+        width: 100%
+        height: 94px
+        box-sizing: border-box
+        border-bottom: 0.5px solid $color-ROW-line-s
+        display: flex
+        align-items: center
+        padding-left: 12px
+        .item-left
+          width: 119.5px
+          height: 74px
+          border: 0.5px solid $color-ROW-line-s
+          margin-right: 13px
+          border-radius: 2px
+          overflow: hidden
+          .area-img
+            width: 100%
+            height: 100%
+        .item-right
+          display: flex
+          flex-direction: column
+          .right-top
+            .item-name
+              font-family: PingFangSC-Medium
+              font-size: $font-size-medium
+              letter-spacing: 0.42px
+              margin-bottom: 8px
+            .item-address
+              display: flex
+              height: 12px
+              align-items: center
+              margin-bottom: 15px
+              .address-icon
+                width: 10px
+                height: 10px
+                margin-right: 2px
+              .address-txt
+                width: 54vw
+                overflow: hidden
+                text-overflow: ellipsis
+                white-space: nowrap
+                font-family: PingFangSC-Light
+                font-size: $font-size-small
+          .right-down
+            display: flex
+            .down-item
+              padding: 3.5px 5px
+              font-family: PingFangSC-Light
+              font-size: $font-size-small-s
+              color: $color-text
+              background: $color-white
+              border: 0.5px solid #D3D3D3
+              border-radius: 2px
+              margin-right: 5px
+              margin-left: 0.5px
+              .down-title
+                margin-right: 4px
+
+</style>

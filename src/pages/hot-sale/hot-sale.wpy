@@ -12,6 +12,7 @@
       <view class="h-s-nothing-txt">无可用优惠券</view>
     </view>
     <underline></underline>
+    <Confirm></Confirm>
     <toast></toast>
   </view>
 </template>
@@ -27,6 +28,7 @@
   import {ERR_OK} from 'api/base'
   import Merchants from 'api/merchants'
   import CouponItem from '@/base/coupon-item/coupon-item'
+  import Confirm from '@/base/confirm-msg/confirm-msg'
 
   const PAGELIMIT = 10
 
@@ -41,11 +43,22 @@
         page: 1,
         limit: PAGELIMIT
       },
-      isAll: false
+      isAll: false,
+      coupon: '',
+      clicks: '',
+      mer: 0,
+      shopNames: ''
     }
-
-    async onLoad() {
+    async onLoad(options) {
+      this.mer = 0
       this.merchantId = wepy.getStorageSync('merchantId')
+      if (options.merchant_id) {
+        if (options.merchant_id * 1 !== wepy.getStorageSync('merchantId')) {
+          this.merchantId = options.merchant_id * 1
+          this.shopNames = options.title
+          this.mer = 1
+        }
+      }
       await Promise.all([this.showIndustry(), this._getNewCoupons(this.params)])
       this.$apply()
       this.loaded()
@@ -121,21 +134,73 @@
       }
       return list
     }
-
+    async toShop() { // 是否切店
+      let name = this.shopNames
+      let data = {title: name, msg: '更多精彩内容...', imgFlag: true}
+      this.$invoke('Confirm', 'show', data)
+    }
+    _buy() {
+      let coupon = this.coupon
+      let type = 1 // 1 优惠券 2 礼包
+      let merchantId = coupon.promotion.merchant_id
+      let url = `/pages/coupon-detail/coupon-detail?id=${coupon.promotion.id}&type=${type}&currentMerchant=${merchantId}`
+      this.$navigate(url)
+    }
+    _get() {
+      let coupon = this.coupon
+      let url = `/pages/coupon-particulars/coupon-particulars?id=${coupon.promotion.id}`
+      this.$navigate(url)
+    }
+    _use() {
+      let coupon = this.coupon
+      let url = `/pages/coupon-particulars/coupon-particulars?id=${coupon.promotion.id}`
+      this.$navigate(url)
+    }
     events = {
+      confirm() {
+        this.mer = 0
+        let st = this.clicks
+        wepy.setStorageSync('merchantId', this.merchantId)
+        if (st === 'buy') {
+          this._buy()
+        } else if (st === 'get') {
+          this._get()
+        } else {
+          this._use()
+        }
+      },
+      cancel () {
+        console.log('no')
+      },
       buy(coupon) {
-        let type = 1 // 1 优惠券 2 礼包
-        let merchantId = coupon.promotion.merchant_id
-        let url = `/pages/coupon-detail/coupon-detail?id=${coupon.promotion.id}&type=${type}&currentMerchant=${merchantId}`
-        this.$navigate(url)
+        this.coupon = coupon
+        this.clicks = 'buy'
+        this.$apply()
+        if (!this.mer) {
+          this._buy()
+        } else {
+          this.toShop()
+        }
       },
       get(coupon) {
-        let url = `/pages/coupon-particulars/coupon-particulars?id=${coupon.promotion.id}`
-        this.$navigate(url)
+        this.clicks = 'get'
+        this.coupon = coupon
+        this.$apply()
+        if (!this.mer) {
+          this._get()
+        } else {
+          this.toShop()
+        }
       },
       use(coupon) {
-        let url = `/pages/coupon-particulars/coupon-particulars?id=${coupon.promotion.id}`
-        this.$navigate(url)
+        this.clicks = 'use'
+        this.coupon = coupon
+        this.$apply()
+        if (!this.mer) {
+          this._use()
+        } else {
+          this.toShop()
+        }
       }
     }
 
@@ -150,7 +215,8 @@
     components = {
       toast: Toast,
       underline: Underline,
-      'coupon-item': CouponItem
+      'coupon-item': CouponItem,
+      Confirm: Confirm
     }
 
     config = {

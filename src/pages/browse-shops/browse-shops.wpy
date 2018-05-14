@@ -93,6 +93,9 @@
         if (res.is_expiration) {
           return
         }
+        let lastMerchantId = wepy.getStorageSync('merchantId') ? wepy.getStorageSync('merchantId') : ''
+        wepy.setStorageSync('LastMerchant', lastMerchantId)
+        wepy.setStorageSync('scene', 13201)
         wepy.setStorageSync('merchantId', res.merchant_id)
         wepy.switchTab({url: '/pages/recommend/recommend'})
       }
