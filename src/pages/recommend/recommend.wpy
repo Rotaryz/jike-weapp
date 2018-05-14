@@ -207,8 +207,6 @@
       let oldId = this.merchantId
       this.merchantId = wepy.getStorageSync('merchantId')
       this.shopChange = !(oldId === this.merchantId)
-      const isAuthorise = await this.isAuthorise(false)
-      this.$parent.updateGlobalData('isAuthorise', isAuthorise)
 //      一分钟三次收集返问日志
       //  获取当前时间
       let timestamp = Date.parse(new Date())

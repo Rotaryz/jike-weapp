@@ -91,6 +91,7 @@
     config = {
       current_merchant: 100004,
       pages: [
+        'pages/recommend/recommend',
         'pages/loading/loading',
         'pages/error/error',
         'pages/coupon-particulars/coupon-particulars',
@@ -98,7 +99,6 @@
         'pages/sold-out/sold-out',
         'pages/square/square',
         'pages/live/live',
-        'pages/recommend/recommend',
         'pages/pay-result/pay-result',
         'pages/coupon-detail/coupon-detail',
         'pages/content-detail/content-detail',
