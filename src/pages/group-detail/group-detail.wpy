@@ -157,7 +157,6 @@
       }
       await this.upLoadImage()
       await this.showIndustry()
-
       await this.load(this.id)
       await this._getGroupList()
       this.currentPage = '/pages/group-detail/group-detail?id=' + this.id + '&merchantId=' + this.groupDetails.merchant_id
