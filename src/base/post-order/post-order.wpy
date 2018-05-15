@@ -144,10 +144,10 @@
           this.count -= 1
         }
         if (this.orderInfo.from === 'c_sharemoney') {
-          this.total = (this.count * this.orderInfo.price).toFixed(1)
+          this.total = (this.count * this.orderInfo.price).toFixed(2)
           return
         }
-        this.total = (this.count * this.orderInfo.price).toFixed(1)
+        this.total = (this.count * this.orderInfo.price).toFixed(2)
       },
       addCount() {
         if (this.orderInfo.stock !== -1) {
@@ -158,10 +158,10 @@
           this.count += 1
         }
         if (this.orderInfo.from === 'c_sharemoney') {
-          this.total = (this.count * this.orderInfo.price).toFixed(1)
+          this.total = (this.count * this.orderInfo.price).toFixed(2)
           return
         }
-        this.total = (this.count * this.orderInfo.price).toFixed(1)
+        this.total = (this.count * this.orderInfo.price).toFixed(2)
       },
       async postOrder() {
         /* eslint-disable no-undef */
@@ -254,7 +254,7 @@
         if (status !== this.status) {
           this.count = 1
         }
-        this.total = this.count * this.orderInfo.price
+        this.total = (this.count * this.orderInfo.price).toFixed(2)
         this.stock = this.orderInfo.stock
         this.status = status
         this.peopleStock = this.orderInfo.peopleStock

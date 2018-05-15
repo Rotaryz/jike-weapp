@@ -72,19 +72,19 @@
       <view class="item-head border-top-1px">
         <view class="item-title">
           <image class="shop-img" wx:if="{{imageUri}}" src="{{imageUri + '/defaults/c-image/square/icon-time@2x.png'}}"></image>
-          营业时间 {{currentMerchant.open_time}}-{{currentMerchant.close_time}}
+          <text class="shop-txt">营业时间 {{currentMerchant.open_time}}-{{currentMerchant.close_time}}</text>
         </view>
       </view>
       <view class="item-head border-top-1px" @tap="makePhoneCallsA({{currentMerchant.mobile}})">
         <view class="item-title">
           <image class="shop-img" wx:if="{{imageUri}}" src="{{imageUri + '/defaults/c-image/square/icon-call@2x.png'}}"></image>
-          联系电话 {{currentMerchant.mobile}}
+          <text class="shop-txt">联系电话 {{currentMerchant.mobile}}</text>
         </view>
       </view>
       <view class="item-head border-top-1px" @tap="openLocationA">
         <view class="item-title">
           <image class="shop-img" wx:if="{{imageUri}}" src="{{imageUri + '/defaults/c-image/square/icon-address-s@2x.png'}}"></image>
-          {{currentMerchant.particular_address}}
+          <text class="shop-txt">{{currentMerchant.particular_address}}</text>
         </view>
         <view class="head-right">
           <image class="icon-arrow" wx:if="{{imageUri}}" src="{{imageUri + '/defaults/c-image/mine/icon-my_Rectangle.png'}}"></image>
@@ -787,7 +787,12 @@
           width: 12px
           vertical-align:middle
           margin-top:-2px
+          margin-right: 5px
         .item-title
+          flex: 1
+          overflow: hidden
+          text-overflow: ellipsis
+          white-space: nowrap
           font-family: $font-family-light
           font-size: $font-size-medium
           color: $color-error
