@@ -92,9 +92,6 @@
 //          item = item.split(':')
 //          param[item[0]] = item[1]
 //        }
-      if (options.businessCircleId) {
-        wepy.setStorageSync('businessCircleId', options.businessCircleId)
-      }
       if (options.path) {
         this.targetPage = decodeURIComponent(options.path)
       } else if (this.$parent.globalData.targetPage) {
