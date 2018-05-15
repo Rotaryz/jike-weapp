@@ -136,6 +136,7 @@
         }
         this.gender = choiceValue
         this.$parent.updateGlobalData('user', Object.assign({}, this.userInfo))
+        wepy.setStorageSync('user', Object.assign({}, this.userInfo))
         this.$apply()
       },
       async birthdayChange(e) {
@@ -151,6 +152,7 @@
         }
         this.birth = e.detail.value
         this.$parent.updateGlobalData('user', Object.assign({}, this.userInfo))
+        wepy.setStorageSync('user', Object.assign({}, this.userInfo))
         this.$apply()
       },
       async updateAvatarImg() {
@@ -164,6 +166,7 @@
         }
         this.avatar = res.data
         this.$parent.updateGlobalData('user', Object.assign({}, this.userInfo))
+        wepy.setStorageSync('user', Object.assign({}, this.userInfo))
         this.$apply()
       },
       changePhone() {

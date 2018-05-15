@@ -241,7 +241,7 @@
         const version = URIS.envVersion
         wx.navigateToMiniProgram({
           appId: this.userInfo.app_id,
-          path: `pages/loading/loading?businessCircleId=${this.userInfo.business_circle_id}`,
+          path: `pages/square/square?businessCircleId=${this.userInfo.business_circle_id}`,
           extraData: {},
           envVersion: version, // develop
           success(res) {

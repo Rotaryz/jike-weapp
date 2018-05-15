@@ -46,7 +46,7 @@
         const version = URIS.envVersion
         wepy.navigateToMiniProgram({
           appId: this.appId,
-          path: `pages/loading/loading?businessCircleId=${this.businessCircleId}`,
+          path: `pages/square/square?businessCircleId=${this.businessCircleId}`,
           extraData: {},
           envVersion: version // develop
         })

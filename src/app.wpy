@@ -6,6 +6,7 @@
   import wepy from 'wepy'
   import 'wepy-async-function'
   import wxUtils from '@/common/js/wxUtils'
+  import './utils/ald-stat.js'
 
   export default class extends wepy.app {
     constructor() {
@@ -47,6 +48,12 @@
       let scene = options.scene ? options.scene * 1 : ''
       if (scene && scene !== 1037) {
         wepy.setStorageSync('scene', scene)
+      }
+      if (options.query.businessCircleId) {
+        wepy.setStorageSync('LastBusiness', options.query.businessCircleId * 1)
+      }
+      if (options.query.scene) {
+        wepy.setStorageSync('scene', options.query.scene * 1)
       }
       //      判断是否由分享的场景值进入
       if (options.query.merchantId) {
@@ -91,6 +98,7 @@
     config = {
       current_merchant: 100002,
       pages: [
+        'pages/recommend/recommend',
         'pages/loading/loading',
         'pages/error/error',
         'pages/coupon-particulars/coupon-particulars',
@@ -98,7 +106,6 @@
         'pages/sold-out/sold-out',
         'pages/square/square',
         'pages/live/live',
-        'pages/recommend/recommend',
         'pages/pay-result/pay-result',
         'pages/coupon-detail/coupon-detail',
         'pages/content-detail/content-detail',
