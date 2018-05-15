@@ -49,6 +49,12 @@
       if (scene && scene !== 1037) {
         wepy.setStorageSync('scene', scene)
       }
+      if (options.query.businessCircleId) {
+        wepy.setStorageSync('LastBusiness', options.query.businessCircleId * 1)
+      }
+      if (options.query.scene) {
+        wepy.setStorageSync('scene', options.query.scene * 1)
+      }
       //      判断是否由分享的场景值进入
       if (options.query.merchantId) {
         const merchantId = options.query.merchantId * 1
