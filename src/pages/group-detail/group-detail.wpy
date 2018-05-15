@@ -93,6 +93,7 @@
   import GroupApi from 'api/groupon'
   import Info from 'api/info'
   import PhoneTest from '@/base/phoneTest/phoneTest'
+  import {getParams} from 'common/js/data'
 
   export default class GroupDetail extends wepy.page {
     mixins = [base, users]
@@ -147,9 +148,16 @@
     }
 
     async onLoad(option) {
+      if (option.scene) {
+        let scene = decodeURIComponent(option.scene)
+        const params = getParams(scene)
+        this.id = params.id
+      } else {
+        this.id = option.id
+      }
       await this.upLoadImage()
       await this.showIndustry()
-      this.id = option.id
+
       await this.load(this.id)
       await this._getGroupList()
       this.currentPage = '/pages/group-detail/group-detail?id=' + this.id + '&merchantId=' + this.groupDetails.merchant_id
