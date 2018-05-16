@@ -99,7 +99,7 @@
     mixins = [base]
 
     config = {
-      navigationBarTitleText: '分享赚钱'
+      navigationBarTitleText: '转1賺'
     }
     data = {
       ios: false,
