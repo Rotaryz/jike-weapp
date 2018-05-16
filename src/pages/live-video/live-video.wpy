@@ -212,6 +212,11 @@
       Toast: Toast
     }
     methods = {
+      setCurrentMerchant(id) {
+        this.merchantId = id
+        this.$apply()
+      },
+
       hideComment() {
         this.$invoke('Comment', 'hideInput')
       },
@@ -315,15 +320,10 @@
       }
     }
 
-    _setCurrentMerchant() {
-      this.merchantId = this.currentMerchant
-      this.$apply()
-    }
-
     async onLoad() {
       let res = await wepy.getSystemInfo()
       this.width = res.windowWidth - 95
-      this._setCurrentMerchant()
+      this.$invoke('Comment', 'currentMerchants', this.merchantId)
       this.$apply()
     }
   }

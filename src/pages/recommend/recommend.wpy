@@ -429,6 +429,8 @@
       },
       async goToActivity(type, url) {
         if (this.activities[type]) {
+          let currentMerchant = wepy.getStorageSync('merchantId')
+          url += `?currentMerchant=${currentMerchant}`
           this.$navigate(url)
         } else {
           this.$invoke('toast', 'show', '暂未开放')
