@@ -325,6 +325,7 @@
             wepy.setStorageSync('merchantId', id[1])
             this.$apply()
           }
+          await this.load()
           return
         }
         this.type = Math.floor(params.type)
@@ -375,9 +376,10 @@
 //      console.log(this.type)
       if (this.type === COUPON_TYPE) {
         if (this.activityStatus === 'group') {
+          this.userCoupon = ''
           await this._getCouponDetail()
           await this._getGroupDetail()
-        } else if (this.activityStatus === 'share') {
+        } else if (this.activityStatus === ' ') {
           await this._getShareMoney()
         } else {
           await this._getCouponDetail()

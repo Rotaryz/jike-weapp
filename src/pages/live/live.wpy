@@ -29,7 +29,7 @@
       if (option.scene) {
         let scene = decodeURIComponent(option.scene)
         const params = getParams(scene)
-        this.currentMerchant = params.merchantId
+        this.currentMerchant = params.currentMerchant
         wepy.setStorageSync('merchantId', this.currentMerchant)
         if (!wepy.getStorageSync('token')) {
           await this.$getUserInfo(false, true)
@@ -39,6 +39,7 @@
       } else {
         this.currentMerchant = wepy.getStorageSync('merchantId')
       }
+      this.$invoke('LiveVideo', 'setCurrentMerchant', this.currentMerchant)
       await this.load()
     }
 

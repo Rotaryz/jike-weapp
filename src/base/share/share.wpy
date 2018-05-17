@@ -13,7 +13,7 @@
         </button>
         <view class="line" @tap="generatePicture">
           <image wx:if="{{imageUrlHead}}" src="{{imageUrlHead + '/defaults/c-image/recommend/icon-pyq@2x.png'}}"></image>
-          <view class="text">微信朋友圈</view>
+          <view class="text">生成卡片</view>
         </view>
       </view>
       <view class="split border-top-1px border-bottom-1px"></view>
