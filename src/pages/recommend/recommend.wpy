@@ -40,7 +40,7 @@
                 class="content-wrapper">
           <image class="icon" wx:if="{{imageUri && industry.length}}"
                  src="{{imageUri + '/defaults/c-image/template/icon-share_'+industry+'@2x.png'}}"></image>
-          <view class="content">转1賺</view>
+          <view class="content">转1赚</view>
         </button>
       </view>
     </form>

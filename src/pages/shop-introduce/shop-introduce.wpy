@@ -229,7 +229,7 @@
         case 'sign':
           return '签到红包'
         case 'video_live':
-          return '直播优惠'
+          return '点播优惠'
         case 'share':
           return '分享有礼'
         default:

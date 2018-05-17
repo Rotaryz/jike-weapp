@@ -1,7 +1,7 @@
 import base from './base'
 export default class Live extends base {
   /**
-   * 获取直播与优惠券列表
+   * 获取点播与优惠券列表
    * @returns {Promise.<*>}
    */
   static async getLiveMsg(data) {
@@ -10,7 +10,7 @@ export default class Live extends base {
   }
 
   /**
-   * 获取直播评论列表
+   * 获取点播评论列表
    * @returns {Promise.<*>}
    */
   static async getComment(id) {

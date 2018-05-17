@@ -99,7 +99,7 @@
     mixins = [base]
 
     config = {
-      navigationBarTitleText: '转1賺'
+      navigationBarTitleText: '转1赚'
     }
     data = {
       ios: false,
@@ -184,7 +184,7 @@
         return res.data
       }
     }
-//   分享赚钱图片生成
+//   转1赚图片生成
     async _createQrcode() {
       let currentMerchant = wepy.getStorageSync('merchantId') ? wepy.getStorageSync('merchantId') : ''
       setTimeout(async () => {
