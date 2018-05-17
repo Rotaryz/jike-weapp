@@ -283,10 +283,7 @@
         page: 1,
         limit: 4
       }
-      /**
-       * 待异业联盟卡接口！！！！
-       * **/
-      let res = await Merchants.getGiftBags(this.merchantId, params)
+      let res = await Merchants.getAlliance(this.merchantId, params)
       if (res.error === ERR_OK) {
         this.activityList = res.data
         this.$apply()
