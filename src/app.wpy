@@ -25,7 +25,7 @@
       if (!merchantId) {
         wepy.setStorageSync('merchantId', extConfig.current_merchant ? extConfig.current_merchant : this.config.current_merchant)
       }
-      this.globalData.env = extConfig.env || 'prod'
+      this.globalData.env = extConfig.env || 'test'
       this.globalData.version = extConfig.version || 'v2'
       console.log('环境：' + this.globalData.env)
       console.log('版本：' + this.globalData.version)
@@ -96,7 +96,7 @@
     }
 
     config = {
-      current_merchant: 100004,
+      current_merchant: 100002,
       pages: [
         'pages/recommend/recommend',
         'pages/loading/loading',
@@ -155,8 +155,6 @@
             text: '店铺',
             iconPath: './icon/icon-shop81@2x.png',
             selectedIconPath: './icon/icon-shop81_current@2x.png'
-            // iconPath: './icon/icon-tab_square1@2x.png',
-            // selectedIconPath: './icon/icon-tab_square2@2x.png'
           },
           {
             pagePath: 'pages/recommend/recommend',
