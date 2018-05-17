@@ -379,7 +379,7 @@
           this.userCoupon = ''
           await this._getCouponDetail()
           await this._getGroupDetail()
-        } else if (this.activityStatus === ' ') {
+        } else if (this.activityStatus === 'share') {
           await this._getShareMoney()
         } else {
           await this._getCouponDetail()
