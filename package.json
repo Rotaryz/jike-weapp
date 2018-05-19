@@ -1,7 +1,7 @@
 {
   "name": "jike-app",
   "version": "1.0.5",
-  "description": "",
+  "description": "赞播",
   "main": "dist/app.js",
   "scripts": {
     "dev": "wepy build --watch",
