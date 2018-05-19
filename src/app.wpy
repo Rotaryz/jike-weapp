@@ -62,7 +62,6 @@
       //      判断是否由分享的场景值进入
       if (options.query.merchantId) {
         const merchantId = options.query.merchantId * 1
-        console.log(merchantId)
         wepy.setStorageSync('merchantId', merchantId)
       }
     }
