@@ -1,0 +1,372 @@
+<template>
+    <view class="center">
+      <view class="max-modal">
+        <view class="max-modal-title">商品</view>
+        <view class="modal-item">
+          <view class="modal-item-img">
+            <view class="item-img-txt">123</view>
+          </view>
+          <view class="modal-item-right">
+            <view class="right-top">
+              <view class="name">红枣酒</view>
+              <view class="number">X1</view>
+            </view>
+            <view class="right-bottom">¥100</view>
+          </view>
+        </view>
+        <view class="modal-item">
+          <view class="modal-item-img">
+            <view class="item-img-txt">123</view>
+          </view>
+          <view class="modal-item-right">
+            <view class="right-top">
+              <view class="name">红枣酒</view>
+              <view class="number">X1</view>
+            </view>
+            <view class="right-bottom">¥100</view>
+          </view>
+        </view>
+      </view>
+      <view class="max-modal">
+        <view class="max-modal-title">代金券</view>
+        <view class="modal-item ">
+          <view class="modal-item-img">
+            <view class="item-img-txt">123</view>
+          </view>
+          <view class="modal-item-right">
+            <view class="right-top">
+              <view class="name">红枣酒</view>
+              <view class="number">X1</view>
+            </view>
+            <view class="right-bottom">¥100</view>
+          </view>
+        </view>
+        <view class="modal-item ">
+          <view class="modal-item-img">
+            <view class="item-img-txt">123</view>
+          </view>
+          <view class="modal-item-right">
+            <view class="right-top">
+              <view class="name">红枣酒</view>
+              <view class="number">X1</view>
+            </view>
+            <view class="right-bottom">¥100</view>
+          </view>
+        </view>
+      </view>
+      <view class="max-modal">
+        <view class="max-modal-title">优惠券</view>
+        <view class="modal-item">
+          <view class="modal-item-img">
+            <view class="item-img-txt">123</view>
+          </view>
+          <view class="modal-item-right">
+            <view class="right-top">
+              <view class="name">红枣酒</view>
+              <view class="number">X1</view>
+            </view>
+            <view class="right-bottom">¥100</view>
+          </view>
+        </view>
+        <view class="modal-item">
+          <view class="modal-item-img">
+            <view class="item-img-txt">123</view>
+          </view>
+          <view class="modal-item-right">
+            <view class="right-top">
+              <view class="name">红枣酒</view>
+              <view class="number">X1</view>
+            </view>
+            <view class="right-bottom">¥100</view>
+          </view>
+        </view>
+        <view class="max-modal-hide">↑</view>
+      </view>
+      <view class="bottom-order">
+        <view class="bot-title">
+          <view class="left">{{title}}</view>
+          <view class="right">{{price}}元</view>
+        </view>
+        <view class="bot-number">
+          <view class="left">数量</view>
+          <view class="right">
+            <view class="number-control">
+              <view class="desc" @tap.stop="descCount">-</view>
+              <view class="number">{{count}}</view>
+              <view class="add" @tap.stop="addCount">+</view>
+            </view>
+          </view>
+        </view>
+        <view class="bot-total border-top-1px">
+          <view class="left">订单总价</view>
+          <view class="right">{{price * count}}元</view>
+        </view>
+        <view class="bot-order">提交订单</view>
+      </view>
+      <phone-test @isPhoneOk.user="getSymbol" :industry.sync="industry"></phone-test>
+      <toast></toast>
+    </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import users from 'common/mixins/users'
+  import base from 'common/mixins/base'
+  import {ERR_OK} from 'api/base'
+  import PhoneTest from '@/base/phoneTest/phoneTest'
+  import Toast from '@/base/toast/toast'
+  // import tips from 'common/js/tips'
+  import Merchants from 'api/merchants'
+
+  export default class Center extends wepy.page {
+    mixins = [users, base]
+    data = {
+      orderInfo: {},
+      promotioId: '', // 商品id\活动id
+      employeesId: 0,
+      activityStatus: '',
+      userCoupon: '0', // 抵用券的文案
+      title: '异业联盟卡',
+      price: '100',
+      stock: 10,
+      count: 1
+    }
+    async onShow (options) {
+      this._getActivity(options)
+    }
+    async _getActivity (options) {
+      if (options.activityId) {
+        this.promotioId = options.activityId
+      }
+      if (options.employeesId) {
+        this.employeesId = options.employeesId
+      }
+      let data = {employee_id: this.employeesId}
+      let res = await Merchants.linkDetails(this.promotioId, data)
+      this.loaded()
+      console.log(res)
+      if (res.error !== ERR_OK) {
+        this.$invoke('toast', 'show', res.message)
+        return
+      }
+      this.title = res.data.title
+      this.price = res.data.price
+      this.stock = res.data.stock
+      this.$apply()
+    }
+
+    submit () {
+      console.log(1)
+      this.orderInfo = {
+        promotion_id: this.promotioId, // 活动id
+        promotion_type: '5', // 类型为 异业联盟卡
+        from: 'c_yylm',
+        employees_id: this.employeesId,
+        title: this.title,
+        price: this.price,
+        stock: this.stock
+      }
+      this.$apply()
+      this.$invoke('post-order', 'show', status)
+      console.log(this.orderInfo)
+    }
+    methods = {
+      async postOrder () {
+        const isAuthorise = await this.isAuthorise()
+        this.loaded()
+        if (!isAuthorise) {
+          this.$invoke('phone-test', 'show', '')
+          return
+        }
+        this.submit('')
+      },
+      postOrderFail(message) {
+        this.$invoke('toast', 'show', message || '网络错误...')
+        if (message === '库存不足') {
+          this.stock = 0
+          this.$invoke('post-order', 'hide')
+        }
+      },
+      descCount() {
+        if (this.count <= 1) {
+          this.count = 1
+        } else {
+          this.count -= 1
+        }
+        this.total = (this.count * this.price).toFixed(2)
+        this.$apply()
+      },
+      addCount() {
+        console.log(1)
+        if (this.stock !== -1) {
+          if (this.count < this.stock) {
+            this.count += 1
+          }
+        } else {
+          this.count += 1
+        }
+        this.total = (this.count * this.price).toFixed(2)
+        this.$apply()
+      }
+    }
+    components = {
+      'phone-test': PhoneTest,
+      'toast': Toast
+    }
+    config = {
+      navigationBarTitleText: '123'
+    }
+  }
+</script>
+
+<style lang="stylus">
+  @import "../../common/stylus/variable.styl"
+  @import "../../common/stylus/mixin.styl"
+  .center
+    padding-bottom: 238px
+    .max-modal
+      cut-off-rule-bottom(0,0,$color-col-line)
+      background-color: $color-white
+      margin-top: 10px
+      padding-left: 10px
+      cut-off-rule-top(0,0,$color-col-line)
+      .max-modal-title
+        height: 45px
+        display: flex
+        align-items: center
+        font-family: $font-family-meddle
+        font-size: $font-size-medium
+        color: $color-text
+        padding-left: 8px
+        vertical-line()
+      .modal-item
+        height: 100px
+        display: flex
+        flex-direction: row
+        align-items: center
+        cut-off-rule-top(0,0,$color-col-line)
+        .modal-item-img
+          height: 70px
+          width: 70px
+          border-1px($color-col-line, 2px)
+          background: red
+          .item-img-txt
+            width:100%
+            height:18px
+            line-height:18px
+            text-align:center
+            font-family: $font-family-light
+            font-size: $font-size-small-s
+            color:$color-white
+            background: rgba(0,0,0,0.5)
+            position:absolute
+            left:0
+            bottom:0
+
+        .modal-item-right
+          flex: 1
+          display: flex
+          flex-direction: column
+          justify-content: space-between
+          height: 70px
+          padding: 0px 10px
+          .right-top
+            display: flex
+            flex-direction: row
+            justify-content: space-between
+            .name
+              font-family: $font-family-meddle
+              font-size: $font-size-medium
+              color: $color-text
+              line-height: 18px
+            .number
+              font-family: $font-family-meddle
+              font-size: $font-size-small
+              color: $color-text
+              line-height: 18px
+          .right-bottom
+            font-family: $font-family-light
+            font-size: $font-size-medium
+            color: $color-text
+            letter-spacing: 0
+            line-height: 18px
+      .max-modal-hide
+        height: 45px
+        line-height: 45px
+        text-align: center
+        cut-off-rule-top(0,0,$color-col-line)
+    .bottom-order
+      height: 228px
+      display: flex
+      flex-direction: column
+      position: fixed
+      bottom: 0px
+      z-index: 2
+      background-color: $color-background
+      width: 100vw
+      .bot-title,.bot-number,.bot-total
+        background-color: $color-white
+        height: 40px
+        padding: 0px 10px
+        display: flex
+        align-items: center
+        justify-content space-between
+        .left
+          font-family: $font-family-light
+          font-size: $font-size-medium
+          color: $color-text
+      .bot-title
+        cut-off-rule-top(0,0,$color-col-line)
+        .right
+          font-family: $font-family-regular
+          font-size: $font-size-medium
+          color: $color-text
+      .bot-number
+        cut-off-rule-top(0,0,$color-col-line)
+        .number-control
+          display: flex
+          height: 22px
+          .desc
+            width: 22px
+            height: 22px
+            text-align: center
+            line-height: 22px
+            border-1px($color-col-line, 2px)
+            color: $color-button
+          .number
+            width: 48px
+            height: 22px
+            margin: 0 2.5px
+            text-align: center
+            line-height: 22px
+            border-1px($color-col-line, 2px)
+            color: $color-text
+          .add
+            width: 22px
+            height: 22px
+            text-align: center
+            line-height: 22px
+            border-radius: 2px
+            border-1px($color-button, 2px)
+            color: $color-white
+            background-color: $color-button
+      .bot-total
+        cut-off-rule-top(0,0,$color-col-line)
+        .right
+          font-family: $font-family-meddle
+          font-size: $font-size-large
+          color: $color-ktv-theme
+      .bot-order
+        height: 45px
+        background: $color-main
+        line-height: 45px
+        text-align: center
+        position: absolute
+        width: 100%
+        bottom: 0px
+        color: $color-white
+        font-family: $font-family-regular
+        font-size: $font-size-medium
+        letter-spacing: 0.56px
+
+</style>
