@@ -155,7 +155,7 @@
         this.id = params.id
       } else {
         this.id = option.id
-        this.fromPage = option.from
+//        this.fromPage = option.from
       }
       await this.upLoadImage()
       await this.showIndustry()
