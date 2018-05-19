@@ -687,7 +687,7 @@
           width: 28.63%
           display: flex
           align-items: center
-          justify-content: flex-end
+          justify-content: center
           overflow: hidden
           .shop-img-box
             width: 18.66666666666vw
