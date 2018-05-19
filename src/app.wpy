@@ -125,7 +125,6 @@
         'pages/coupon-use/couponUse',
         'pages/user/redPacket/redPacket',
         'pages/user/mySelect/mySelect',
-        'pages/post-order/post-order',
         'pages/shareAndPrize/shareAndPrize',
         'pages/net-error/net-error',
         'pages/user/myIntegral/myIntegral',

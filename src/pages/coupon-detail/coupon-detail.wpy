@@ -312,7 +312,7 @@
         let scene = decodeURIComponent(option.scene)
         const params = getParams(scene)
         if (params.i) {
-//          分享赚钱识别二维码进入
+//          转1赚识别二维码进入
           this.activityStatus = params.s === 's' ? 'share' : ''
           let id = params.i || ''
           id = id ? id.split(',') : []
@@ -358,7 +358,7 @@
       await this.load()
     }
 
-//    分享赚钱的选择优惠券判断
+//    转1赚的选择优惠券判断
     onShow() {
       if (this.activityStatus === 'share') {
         this.$invoke('post-order', 'infoOnce')
@@ -694,7 +694,7 @@
         this.orderInfo = {
           shareMoney: this.deduction.price, // 抵用券金额
           promotionImage: this.promotionImages[0].image.url,
-          promotion_type: 1, // 1分享赚钱
+          promotion_type: 1, // 1转1赚
           promotion_id: this.coupon.id,
           activity_id: this.actId, // 活动ID
           title: this.coupon.title,
@@ -1404,7 +1404,7 @@
       width: 218px
       height: 192px
 
-  /*分享赚钱*/
+  /*转1赚*/
 
   .ro-share-coupon
     height: 0
