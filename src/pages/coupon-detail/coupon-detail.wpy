@@ -149,7 +149,7 @@
           客服
         </button>
       </view>
-      <view class="buy-btn {{stock === 0 || goodsStatus !== 1 ? 'disable' : ''}}" @tap="postOrder" wx:if="{{activityStatus === 'group'}}">{{ goodsStatus === 0 ? '该商品已下架' : goodsStatus === 1 ? '¥' + coupon.platform_price + '单买' : goodsStatus === 2  ? '已售罄' : '立即购买'}}</view>
+      <view class="buy-btn {{goodsStatus !== 1 ? 'disable' : ''}}" @tap="postOrder" wx:if="{{activityStatus === 'group'}}">{{ goodsStatus === 0 ? '该商品已下架' : goodsStatus === 1 ? '¥' + coupon.platform_price + '单买' : goodsStatus === 2  ? '已售罄' : '立即购买'}}</view>
       <view class="buy-btn {{goodsStatus === 1? industry + '-bg' : 'disable' }}" @tap="postOrder" wx:if="{{activityStatus === ''}}">{{ goodsStatus === 0 ? '该商品已下架' : goodsStatus === 1 ? '立即购买' : goodsStatus === 2 ? '已售罄' : '立即购买'}}</view>
       <view class="buy-btn {{(shareBuy === 1) ? industry + '-bg' : 'disable' }}" @tap="postOrder" wx:if="{{activityStatus === 'share'}}">{{shareBuy === 1 ? '立即购买' : shareBuy === 2 ? '已售罄' : '立即购买'}}</view>
       <view class="group-buy-btn {{activitiesStatus !== 1 ? 'disable' : industry + '-bg'}}" @tap="postGroupOrder" wx:if="{{activityStatus === 'group'}}">{{ activitiesStatus === 0 ? '该商品已下架' : activitiesStatus === 1 ? '¥' + groupBuyDetail.group_price + (groupType === 'join' ? '参团' : '开团') : activitiesStatus === 2 ? '已售罄' : '立即购买'}}</view>
@@ -868,15 +868,17 @@
     }
     watch = {
       userCoupon(newVal) {
-        if (newVal) {
-          this.stock = this.actStock
-          this.orderInfo.stock = this.actStock
-        } else {
-          this.stock = this.normalStock
-          this.orderInfo.stock = this.normalStock
+        if (this.activityStatus === 'share') {
+          if (newVal) {
+            this.stock = this.actStock
+            this.orderInfo.stock = this.actStock
+          } else {
+            this.stock = this.normalStock
+            this.orderInfo.stock = this.normalStock
+          }
+          this.$invoke('post-order', 'infoCount')
+          this.$apply()
         }
-        this.$invoke('post-order', 'infoCount')
-        this.$apply()
       }
     }
     components = {
