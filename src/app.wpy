@@ -20,12 +20,16 @@
       if (!tips) {
         wepy.setStorageSync('tips', {order: false})
       }
-      const merchantId = wepy.getStorageSync('merchantId')
+      let merchantId = wepy.getStorageSync('merchantId')
+      if (typeof (merchantId) === 'string') {
+        merchantId *= 1
+        wepy.setStorageSync('merchantId', merchantId)
+      }
       let extConfig = wepy.getExtConfigSync()
       if (!merchantId) {
         wepy.setStorageSync('merchantId', extConfig.current_merchant ? extConfig.current_merchant : this.config.current_merchant)
       }
-      this.globalData.env = extConfig.env || 'test'
+      this.globalData.env = extConfig.env || 'prod'
       this.globalData.version = extConfig.version || 'v2'
       console.log('环境：' + this.globalData.env)
       console.log('版本：' + this.globalData.version)
@@ -58,6 +62,7 @@
       //      判断是否由分享的场景值进入
       if (options.query.merchantId) {
         const merchantId = options.query.merchantId * 1
+        console.log(merchantId)
         wepy.setStorageSync('merchantId', merchantId)
       }
     }
