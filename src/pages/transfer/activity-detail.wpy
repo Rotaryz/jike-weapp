@@ -1,51 +1,91 @@
 <template>
     <view class="center">
-      <block wx:for="{{infoTop}}" wx:key="index">
-        <view class="max-modal">
-          <block wx:for="{{item}}" wx:key="index" wx:for-item="items">
-            <view class="max-modal-title" wx:if="{{index===0}}">{{types[items.goods_type]}}</view>
-            <view class="modal-item" >
-              <view class="modal-item-img">
-                <image src="{{items.goods_detail.url}}"></image>
-              </view>
-              <view class="modal-item-right">
-                <view class="right-top">
-                  <view class="name">{{items.goods_detail.title}}</view>
-                  <view class="number">× {{items.goods_num}}</view>
-                </view>
-                <view class="right-bottom">¥{{items.goods_detail.price}}</view>
-              </view>
-            </view>
-          </block>
-        </view>
-      </block>
-      <view class="max-modal max-modal-y {{hideFlag ? hide : '' }}" style="height:{{height}}">
-        <block wx:for="{{infoBottom}}" wx:key="index">
-          <view class="max-modal-title" wx:if="{{index===0}}">{{types[item.goods_type]}}</view>
-          <view class="modal-item" >
-            <view class="modal-item-img">
-              <image src="{{item.goods_detail.url}}"></image>
-              <view class="item-img-txt">{{item.shop_name}}</view>
-            </view>
-            <view class="modal-item-right">
-              <view class="right-top">
-                <view class="name">{{item.goods_detail.title}}</view>
-                <view class="number">× {{item.goods_num}}</view>
-              </view>
-              <view class="right-bottom">¥{{item.goods_detail.price}}</view>
-            </view>
+      <view class="max-modal">
+        <view class="max-modal-title">商品</view>
+        <view class="modal-item">
+          <view class="modal-item-img">
+            <view class="item-img-txt">123</view>
           </view>
-        </block>
-        <view class="max-modal-hide" @tap.stop="hideFun">
-          <image wx:if="{{imageUri && hideFlag}}" src="{{imageUri + '/defaults/ipc-shopping/page/icon-packup@2x.png'}}"></image>
-          <image wx:if="{{imageUri && !hideFlag}}" src="{{imageUri + '/defaults/ipc-shopping/page/icon-deploy@2x.png'}}"></image>
+          <view class="modal-item-right">
+            <view class="right-top">
+              <view class="name">红枣酒</view>
+              <view class="number">X1</view>
+            </view>
+            <view class="right-bottom">¥100</view>
+          </view>
         </view>
+        <view class="modal-item">
+          <view class="modal-item-img">
+            <view class="item-img-txt">123</view>
+          </view>
+          <view class="modal-item-right">
+            <view class="right-top">
+              <view class="name">红枣酒</view>
+              <view class="number">X1</view>
+            </view>
+            <view class="right-bottom">¥100</view>
+          </view>
+        </view>
+      </view>
+      <view class="max-modal">
+        <view class="max-modal-title">代金券</view>
+        <view class="modal-item ">
+          <view class="modal-item-img">
+            <view class="item-img-txt">123</view>
+          </view>
+          <view class="modal-item-right">
+            <view class="right-top">
+              <view class="name">红枣酒</view>
+              <view class="number">X1</view>
+            </view>
+            <view class="right-bottom">¥100</view>
+          </view>
+        </view>
+        <view class="modal-item ">
+          <view class="modal-item-img">
+            <view class="item-img-txt">123</view>
+          </view>
+          <view class="modal-item-right">
+            <view class="right-top">
+              <view class="name">红枣酒</view>
+              <view class="number">X1</view>
+            </view>
+            <view class="right-bottom">¥100</view>
+          </view>
+        </view>
+      </view>
+      <view class="max-modal {{hideFlag ? hide : '' }}" style="height:{{height}}">
+        <view class="max-modal-title">优惠券</view>
+        <view class="modal-item">
+          <view class="modal-item-img">
+            <view class="item-img-txt">123</view>
+          </view>
+          <view class="modal-item-right">
+            <view class="right-top">
+              <view class="name">红枣酒</view>
+              <view class="number">X1</view>
+            </view>
+            <view class="right-bottom">¥100</view>
+          </view>
+        </view>
+        <view class="modal-item">
+          <view class="modal-item-img">
+            <view class="item-img-txt">123</view>
+          </view>
+          <view class="modal-item-right">
+            <view class="right-top">
+              <view class="name">红枣酒</view>
+              <view class="number">X1</view>
+            </view>
+            <view class="right-bottom">¥100</view>
+          </view>
+        </view>
+        <view class="max-modal-hide" @tap.stop="hideFun">↑</view>
       </view>
       <view class="bottom-order">
         <view class="bot-title">
           <view class="left">{{title}}</view>
-          <view class="right">{{price}}
-            <view class="yuan">元</view></view>
+          <view class="right">{{price}}元</view>
         </view>
         <view class="bot-number">
           <view class="left">数量</view>
@@ -59,9 +99,9 @@
         </view>
         <view class="bot-total border-top-1px">
           <view class="left">订单总价</view>
-          <view class="right">{{price * count}}<view class="yuan">元</view></view>
+          <view class="right">{{price * count}}元</view>
         </view>
-        <view class="bot-order" @tap="postOrder">提交订单</view>
+        <view class="bot-order">提交订单</view>
       </view>
       <phone-test @isPhoneOk.user="getSymbol" :industry.sync="industry"></phone-test>
       <toast></toast>
@@ -76,42 +116,27 @@
   import PhoneTest from '@/base/phoneTest/phoneTest'
   import Toast from '@/base/toast/toast'
   // import tips from 'common/js/tips'
-  import URIS from 'common/js/config'
-  import Order from 'api/order'
   import Merchants from 'api/merchants'
 
-  export default class ActivityDetail extends wepy.page {
+  export default class Center extends wepy.page {
     mixins = [users, base]
     data = {
-      imageUri: URIS.image,
-      types: [
-        '代金券',
-        '优惠券',
-        '商品'
-      ],
       orderInfo: {},
-      infoTop: [],
-      infoBottom: [],
       promotioId: '1', // 商品id\活动id
       employeesId: 0,
       activityStatus: '',
       userCoupon: '0', // 抵用券的文案
       title: '异业联盟卡',
-      price: '0.00',
-      stock: 0,
+      price: '100',
+      stock: 10,
       count: 1,
       hideFlag: false,
-      height: 0,
-      heightItem: 100
+      height: 'auto'
     }
     async onShow (options) {
-      await this._getActivity(options)
-      await this._getActivityCoupon(options)
-      await this.heightFun()
-    }
-    async heightFun() {
-      this.height = this.infoBottom.length * 100 + 45 + 'px'
-      this.$apply()
+      console.log(options)
+      this._getActivity(options)
+      this._getActivityCoupon(options)
     }
     async _getActivity (options) {
       if (options) {
@@ -123,22 +148,12 @@
       let data = {employee_id: this.employeesId}
       let res = await Merchants.linkDetails(this.promotioId, data)
       this.loaded()
-      let shop = []
-      let dai = []
+      console.log(res)
       if (res.error !== ERR_OK) {
         this.$invoke('toast', 'show', res.message)
         return
       }
-      res.data.goods.map(item => {
-        if (item.goods_type === 0) {
-          dai.push(item)
-        } else {
-          shop.push(item)
-        }
-      })
-      this.infoTop.push(shop)
-      this.infoTop.push(dai)
-      this.title = res.data.name
+      this.title = res.data.title
       this.price = res.data.price
       this.stock = res.data.stock
       this.$apply()
@@ -149,16 +164,13 @@
       }
       let res = await Merchants.linkCouponDetails(this.promotioId)
       this.loaded()
+      console.log(res)
       if (res.error !== ERR_OK) {
         this.$invoke('toast', 'show', res.message)
         return
       }
-      this.infoBottom.push(...res.data)
-
-      this.$apply()
-      console.log(this.infos)
     }
-    async submit () {
+    submit () {
       console.log(1)
       this.orderInfo = {
         promotion_id: this.promotioId, // 活动id
@@ -167,47 +179,21 @@
         employees_id: this.employeesId,
         title: this.title,
         price: this.price,
-        count: this.count
+        stock: this.stock
       }
-      const json = await Order.operation(this.orderInfo)
-      this.loaded()
-      if (json.error !== ERR_OK) {
-        this.$invoke('toast', 'show', json.message || '网络错误...')
-        if (json.message === '库存不足') {
-          this.stock = 0
-          this.$apply()
-        }
-        return
-      }
-      const res = json.data
-      const {timestamp, nonceStr, signType, paySign} = res.pay_info
-      wx.requestPayment({
-        timeStamp: timestamp,
-        nonceStr,
-        package: res.pay_info.package,
-        signType,
-        paySign,
-        success: () => {
-          const orderId = res.order.orderId
-          const total = this.total
-          const status = 'success'
-          this.$parent.$navigate(`/pages/pay-result/pay-result?orderId=${orderId}&total=${total}&status=${status}`)
-          this._hide()
-        },
-        fail: (res) => {},
-        complete: () => {}
-      })
+      this.$apply()
+      this.$invoke('post-order', 'show', status)
+      console.log(this.orderInfo)
     }
     methods = {
       hideFun () {
-        let item = this.infoBottom.length
+        let item = 2
         this.hideFlag = !this.hideFlag
         if (this.hideFlag) {
           this.height = 145 + 'px'
         } else {
           this.height = item * 100 + 45 + 'px'
         }
-        console.log(this.hideFlag)
         this.$apply()
       },
       async postOrder () {
@@ -218,6 +204,13 @@
           return
         }
         this.submit('')
+      },
+      postOrderFail(message) {
+        this.$invoke('toast', 'show', message || '网络错误...')
+        if (message === '库存不足') {
+          this.stock = 0
+          this.$invoke('post-order', 'hide')
+        }
       },
       descCount() {
         if (this.count <= 1) {
@@ -246,7 +239,7 @@
       'toast': Toast
     }
     config = {
-      navigationBarTitleText: '提交订单'
+      navigationBarTitleText: '123'
     }
   }
 </script>
@@ -257,12 +250,13 @@
   .center
     padding-bottom: 238px
     .max-modal.hide
+      height: 145px
       transition: all .5s
-    .max-modal-y
-      padding-bottom: 45px
     .max-modal
+      height: 245px
       transition: all .5s
       overflow: hidden
+      padding-bottom: 45px
       cut-off-rule-bottom(0,0,$color-col-line)
       background-color: $color-white
       margin-top: 10px
@@ -287,9 +281,7 @@
           height: 70px
           width: 70px
           border-1px($color-col-line, 2px)
-          image
-            width: 100%
-            height: 100%
+          background: red
           .item-img-txt
             width:100%
             height:18px
@@ -334,9 +326,6 @@
         height: 45px
         line-height: 45px
         text-align: center
-        display: flex
-        align-items: center
-        justify-content: center
         position: absolute !important
         width: 100%
         bottom: 1px
@@ -344,10 +333,6 @@
         background-color: $color-white
         cut-off-rule-top(0,0,$color-col-line)
         transition: all .5s
-        image
-          width: 12px
-          height: 7px
-          border-radius: 2px
     .bottom-order
       height: 228px
       display: flex
@@ -364,15 +349,6 @@
         display: flex
         align-items: center
         justify-content space-between
-        .right
-          display: flex
-          flex-direction: row
-          align-items: flex-end
-          .yuan
-            font-family: $font-family-regular
-            font-size: $font-size-small-s
-            margin-bottom: 2px
-            color: $color-text
         .left
           font-family: $font-family-light
           font-size: $font-size-medium
@@ -418,11 +394,6 @@
           font-family: $font-family-meddle
           font-size: $font-size-large
           color: $color-ktv-theme
-          .yuan
-            font-family: $font-family-regular
-            font-size: $font-size-small-s
-            margin-bottom: 2px
-            color: $color-ktv-theme
       .bot-order
         height: 45px
         background: $color-main
