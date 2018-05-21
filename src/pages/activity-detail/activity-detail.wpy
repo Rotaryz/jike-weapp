@@ -156,7 +156,6 @@
       this.infoBottom.push(...res.data)
 
       this.$apply()
-      console.log(this.infos)
     }
     async submit () {
       console.log(1)
