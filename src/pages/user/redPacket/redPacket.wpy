@@ -109,7 +109,7 @@
 
     data = {
       checkIdx: 0,
-      checkNav: ['活动红包', '分享赚钱'],
+      checkNav: ['活动红包', '转1赚'],
       imageUrlHead: URIS.image,
       packetTotal: 0.00,
       packetList: [],
@@ -233,7 +233,7 @@
       }
     }
 
-//    分享赚钱列表
+//    转1赚列表
     async _shareMoneyProfit() {
       let data = {page: this.sharePage}
       let Json = await sharemoney.shareMoneyProfit(data)

@@ -40,7 +40,7 @@
           <navigator url="/pages/recommend/recommend" hover-class="none" open-type="switchTab" wx:if="{{groupStatus === 1 || groupStatus === 0}}">
             <view class="group-red-btn {{industry}}-bg">查看更多团购</view>
           </navigator>
-          <navigator url="{{'/pages/user/myOrder-detail/myOrderDetail?id=' + groupDetails.order_id}}" hover-class="none" wx:if="{{groupHasJoin}}">
+          <navigator url="{{'/pages/user/myOrder-detail/myOrderDetail?id=' + groupDetails.order_id}}" hover-class="none" wx:if="{{groupHasJoin && fromPage !== 'order'}}">
             <view class="group-white-btn">查看订单详情</view>
           </navigator>
         </view>
@@ -126,7 +126,8 @@
       activityStatus: 'group',
       orderInfo: {},
       timer: '',
-      timeEnd: false
+      timeEnd: false,
+      fromPage: ''
     }
 
     onShareAppMessage(res) {
@@ -154,6 +155,7 @@
         this.id = params.id
       } else {
         this.id = option.id
+//        this.fromPage = option.from
       }
       await this.upLoadImage()
       await this.showIndustry()

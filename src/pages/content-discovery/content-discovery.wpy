@@ -54,7 +54,7 @@
       await this.showIndustry()
       this.mer = 0
       if (options.merchant_id) {
-        if (options.merchant_id * 1 !== wepy.getStorageSync('merchantId')) {
+        if (options.merchant_id * 1 !== wepy.getStorageSync('merchantId') * 1) {
           this.params.merchant_id = options.merchant_id * 1
           this.merchant_id = options.merchant_id * 1
           this.shopNames = options.title
