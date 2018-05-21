@@ -136,7 +136,7 @@
         'pages/bank-card/bank-card',
         'pages/group-detail/group-detail',
         'pages/shop-introduce/shop-introduce',
-        'pages/transfer/transfer'
+        'pages/activity-detail/activity-detail'
       ],
       window: {
         backgroundColor: '#F9F9F9',

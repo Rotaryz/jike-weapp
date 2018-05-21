@@ -112,7 +112,17 @@ export default class Merchants extends base {
    * @returns {Promise.<*>}
    */
   static async linkDetails(id, data) {
-    const url = `${this.baseUrl}/api/merchants/activity-alliance/${id}`
+    const url = `${this.baseUrl}/api/merchants/alliance-send-promotion/${id}`
     return await this.get(url, data)
+  }
+
+  /**
+   * 异业活动优惠券详情
+   * @param data
+   * @returns {Promise.<*>}
+   */
+  static async linkCouponDetails(id) {
+    const url = `${this.baseUrl}/api/merchants/activity-alliance/${id}`
+    return await this.get(url)
   }
 }
