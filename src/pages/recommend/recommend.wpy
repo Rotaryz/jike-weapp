@@ -46,7 +46,7 @@
     </form>
     <recom-activity wx:if="{{activityList.length>0}}" :list.sync="activityList"></recom-activity>
     <recom-buy :list.sync="userCouponsList" :industry.sync="industry"></recom-buy>
-    <recom-giftbat wx:if="{{giftbagList.length>0}}" :list.sync="giftbagList"></recom-giftbat>
+    <!--<recom-giftbat wx:if="{{giftbagList.length>0}}" :list.sync="giftbagList"></recom-giftbat>-->
     <view class="group-buy" wx:if="{{groupBuyList.length}}">
       <navigator url="/pages/group-buy/group-buy" hover-class="none">
         <view class="group-buy-head">

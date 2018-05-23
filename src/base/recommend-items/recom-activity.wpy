@@ -44,7 +44,7 @@
     }
     events = {
       giftbagClick(id, merchantId) {
-        let url = `/pages/activity/activity?type=activity`
+        let url = `/pages/activity-detail/activity-detail?activityId=${id}`
         this.$parent.$navigate(url)
       }
     }
