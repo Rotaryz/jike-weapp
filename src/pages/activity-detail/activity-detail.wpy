@@ -6,7 +6,8 @@
             <view class="max-modal-title" wx:if="{{index===0}}">{{types[items.goods_type]}}</view>
             <view class="modal-item" >
               <view class="modal-item-img">
-                <image src="{{items.goods_detail.url}}"></image>
+                <image wx:if="{{imageUri && index === 0 }}" src="{{imageUri + '/defaults/ipc-shopping/page/shop.png'}}"></image>
+                <image wx:if="{{imageUri && index !== 0}}" src="{{imageUri + '/defaults/ipc-shopping/page/dai.png'}}"></image>
               </view>
               <view class="modal-item-right">
                 <view class="right-top">
@@ -105,6 +106,9 @@
       heightItem: 100
     }
     async onShow (options) {
+      this.infoTop = []
+      this.infoBottom = []
+      this.$apply()
       await this._getActivity(options)
       await this._getActivityCoupon(options)
       await this.heightFun()

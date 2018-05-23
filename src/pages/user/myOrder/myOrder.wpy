@@ -32,7 +32,9 @@
                 <image class="myOrder-orderList-item-logo" src="{{item.merchant_data.logo_image}}" mode="aspectFill"></image>
               </view>
               <view class="myOrder-orderList-item-msg">
-                <view class="myOrder-orderList-item-title">{{item.title}}</view>
+                <view class="myOrder-orderList-item-title">
+                  <!--<view class="link">异</view>-->
+                  {{item.title}}</view>
                 <view class="myOrder-orderList-item-count myOrder-orderList-item-detail" wx:if="{{item.status === 0 && item.promotion_type !== 3}}">数量: {{item.count}}</view>
                 <view class="myOrder-orderList-item-time myOrder-orderList-item-detail" wx:if="{{item.status !== 0 && item.promotion_type !== 3}}">下单时间: {{item.created_at}}</view>
                 <!--<view class="myOrder-orderList-item-detail" wx:if="{{item.status === 1 && item.promotion_type === 3}}">{{item.promotion.title ? item.promotion.title : '无优惠'}}</view>-->
@@ -457,7 +459,17 @@
               overflow: hidden
               text-overflow: ellipsis
               white-space: nowrap
-
+              display: flex
+              align-items: center
+              .link
+                width: 15px
+                height: 15px
+                background: $color-black
+                color: $color-white
+                text-align: center
+                line-height: 15px
+                font-size: 10px
+                margin-right: 5px
             .myOrder-orderList-item-detail
               font-size: $font-size-small
               color: #696671
