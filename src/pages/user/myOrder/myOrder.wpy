@@ -2,9 +2,7 @@
   <view class="myOrder">
     <scroll-view scroll-x class="myOrder-menuTab border-bottom-1px" scroll-with-animation="true" scrollLeft="{{leftIndex}}" bindscroll="setScroll">
       <!--'myOrder-menuTab-item ' + industry + '-border':'myOrder-menuTab-item'-->
-      <view wx:for="{{menuItems}}" wx:key="{{index}}"
-            class="{{index === menuIdx?'myOrder-menuTab-item ' + industry + '-border':'myOrder-menuTab-item'}}"
-            @tap="tabChange({{item.type}},{{index}})">
+      <view wx:for="{{menuItems}}" wx:key="{{index}}" class="{{index === menuIdx?'myOrder-menuTab-item ' + industry + '-border':'myOrder-menuTab-item'}}" @tap="tabChange({{item.type}},{{index}})">
         <text>{{item.title}}</text>
       </view>
     </scroll-view>
@@ -26,27 +24,27 @@
 
       <view class="myOrder-orderList" wx:if="{{orderList.length > 0}}">
         <view wx:for="{{orderList}}" wx:key="{{index}}">
-          <view class="myOrder-orderList-item" @tap="showDetail({{item.id}},{{item.status}})" wx:if="{{item.promotion_type !== 4}}">
-            <view class="myOrder-orderList-item-left">
-              <view class="myOrder-orderList-item-logo-box">
-                <image class="myOrder-orderList-item-logo" src="{{item.merchant_data.logo_image}}" mode="aspectFill"></image>
-              </view>
-              <view class="myOrder-orderList-item-msg">
-                <view class="myOrder-orderList-item-title">{{item.title}}</view>
-                <view class="myOrder-orderList-item-count myOrder-orderList-item-detail" wx:if="{{item.status === 0 && item.promotion_type !== 3}}">数量: {{item.count}}</view>
-                <view class="myOrder-orderList-item-time myOrder-orderList-item-detail" wx:if="{{item.status !== 0 && item.promotion_type !== 3}}">下单时间: {{item.created_at}}</view>
-                <!--<view class="myOrder-orderList-item-detail" wx:if="{{item.status === 1 && item.promotion_type === 3}}">{{item.promotion.title ? item.promotion.title : '无优惠'}}</view>-->
-                <view class="myOrder-orderList-item-total myOrder-orderList-item-detail">总价: ¥{{item.total}}</view>
-              </view>
-            </view>
-            <view class="myOrder-orderList-item-btnBox">
-              <view class="myOrder-orderList-item-status">{{item.promotion_type === 3 ? '付款成功' : orderItemStatus[item.status]}}</view>
-              <view class="myOrder-orderList-item-btn {{industry}}-bg" wx:if="{{item.promotion_type !== 3}}" catchtap="useCoupon({{item}})">{{orderItemBtnTxt[item.status]}}</view>
-              <!--<view class="myOrder-orderList-item-btn {{industry}}-bg" wx:if="{{menuIdx===0 && item.promotion_type !== 3}}" catchtap="useCoupon({{item}})">{{orderItemBtnTxt[item.status]}}</view>-->
-              <view class="myOrder-orderList-item-btn {{industry}}-bg" wx:if="{{item.promotion_type === 3}}" catchtap="orderDetail({{item.id}})">查看详情</view>
-            </view>
-          </view>
-          <repeat key="index" index="index" item="item" wx:if="{{item.promotion_type === 4}}">
+          <!--<view class="myOrder-orderList-item" @tap="showDetail({{item.id}},{{item.status}})" wx:if="{{item.promotion_type !== 4}}">-->
+            <!--<view class="myOrder-orderList-item-left">-->
+              <!--<view class="myOrder-orderList-item-logo-box">-->
+                <!--<image class="myOrder-orderList-item-logo" src="{{item.merchant_data.logo_image}}" mode="aspectFill"></image>-->
+              <!--</view>-->
+              <!--<view class="myOrder-orderList-item-msg">-->
+                <!--<view class="myOrder-orderList-item-title">{{item.title}}</view>-->
+                <!--<view class="myOrder-orderList-item-count myOrder-orderList-item-detail" wx:if="{{item.status === 0 && item.promotion_type !== 3}}">数量: {{item.count}}</view>-->
+                <!--<view class="myOrder-orderList-item-time myOrder-orderList-item-detail" wx:if="{{item.status !== 0 && item.promotion_type !== 3}}">下单时间: {{item.created_at}}</view>-->
+                <!--&lt;!&ndash;<view class="myOrder-orderList-item-detail" wx:if="{{item.status === 1 && item.promotion_type === 3}}">{{item.promotion.title ? item.promotion.title : '无优惠'}}</view>&ndash;&gt;-->
+                <!--<view class="myOrder-orderList-item-total myOrder-orderList-item-detail">总价: ¥{{item.total}}</view>-->
+              <!--</view>-->
+            <!--</view>-->
+            <!--<view class="myOrder-orderList-item-btnBox">-->
+              <!--<view class="myOrder-orderList-item-status">{{item.promotion_type === 3 ? '付款成功' : orderItemStatus[item.status]}}</view>-->
+              <!--<view class="myOrder-orderList-item-btn {{industry}}-bg" wx:if="{{item.promotion_type !== 3}}" catchtap="useCoupon({{item}})">{{orderItemBtnTxt[item.status]}}</view>-->
+              <!--&lt;!&ndash;<view class="myOrder-orderList-item-btn {{industry}}-bg" wx:if="{{menuIdx===0 && item.promotion_type !== 3}}" catchtap="useCoupon({{item}})">{{orderItemBtnTxt[item.status]}}</view>&ndash;&gt;-->
+              <!--<view class="myOrder-orderList-item-btn {{industry}}-bg" wx:if="{{item.promotion_type === 3}}" catchtap="orderDetail({{item.id}})">查看详情</view>-->
+            <!--</view>-->
+          <!--</view>-->
+          <repeat key="index" index="index" item="item">
             <order-item :order.sync="item" :industry.sync="industry"></order-item>
           </repeat>
         </view>
@@ -103,16 +101,14 @@
     data = {
       imageUrlHead: URIS.image,
       menuIdx: 0,
-      menuItems: [{title: '全部', type: 4}, {
-        title: '待付款',
-        type: 0
-      }, {
-        title: '待成团',
-        type: 5
-      }, {title: '待使用', type: 1}, {title: '待评价', type: 2}, {
-        title: '退款/售后',
-        type: 3
-      }],
+      menuItems: [
+        {title: '全部', type: 4},
+        {title: '待付款', type: 0},
+        {title: '待成团', type: 5},
+        {title: '待使用', type: 1},
+        {title: '待评价', type: 2},
+        {title: '退款/售后', type: 3}
+      ],
       noOrderIcon: [URIS.image + '/defaults/c-image/mine/pic-my_nopaid.png', URIS.image + '/defaults/c-image/mine/pic-my_noused.png', URIS.image + '/defaults/c-image/mine/pic-my_noevaluated.png', URIS.image + '/defaults/c-image/mine/pic-my_norefund.png'],
       orderItemStatus: ['待付款', '待使用', '待评价', '退款中', '退款完成', '已评价', '已关闭', '退款失败', '退款失败', '已关闭'],
       orderItemBtnTxt: ['付款', '进店使用', '评价', '再来一单', '再来一单', '再来一单', '再来一单', '再来一单', '再来一单', '再来一单'],
@@ -324,11 +320,10 @@
         this.$apply()
       },
       'appraiseSuccess': async () => {
-        let type = 2
-        this.menuIdx = this.menuItems.findIndex(item => item.type === type)
+        let type = this.menuItems[this.menuIdx].type
         this.page = 1
         this.nothingAdd = false
-        let resList = await this._getOrderList(2, 1)
+        let resList = await this._getOrderList(type, 1)
         this.loaded()
         if (resList.error !== ERR_OK) {
           this.$invoke('Toast', 'show', resList.message)
@@ -337,6 +332,78 @@
         this.orderList = resList.data
         this.noOrder = this.orderList.length === 0 ? 1 : false
         this.$apply()
+      },
+      orderDetail(order) {
+        this.$navigate(`/pages/user/myOrder-detail/myOrderDetail?id=${order.id}`)
+      },
+      async followWork(item) {
+        let status = item.status * 1
+        switch (status) {
+          case 0:
+            let data = {
+              order_id: item.id
+            }
+            let res = await getMyOrder.paymentOrder(data)
+            this.loaded()
+            if (res.error !== ERR_OK) {
+              this.$invoke('Toast', 'show', res.message)
+              return
+            }
+            const {timestamp, nonceStr, signType, paySign} = res.data.pay_info
+            const pay = await wepy.requestPayment({
+              timeStamp: timestamp,
+              nonceStr,
+              package: res.data.pay_info.package,
+              signType,
+              paySign
+            })
+            if (pay.errMsg === 'requestPayment:ok') {
+              this.load({idx: '0'})
+              this._getShareSoya(item.id)
+            }
+            break
+          case 1:
+            if (item.promotion_type * 1 === 5) {
+              this.$navigate('/pages/user/myOrder-detail/myOrderDetail?id=' + item.id)
+            } else {
+              this.$navigate('/pages/coupon-use/couponUse?id=' + item.id + '&type=order')
+            }
+            break
+          case 2:
+            this.$invoke('Appraise', 'showCover')
+            this.$broadcast('sendCouponMsg', item.id, item.promotion.id)
+            break
+          case 3:
+          case 4:
+          case 7:
+          case 8:
+            if (item.promotion_type * 1 === 4) {
+              this.$navigate('/pages/group-detail/group-detail?from=order&id=' + item.group_id)
+            } else {
+              this.$navigate('../refund/refund?id=' + item.id)
+            }
+            break
+          case 10:
+            this.$navigate('/pages/group-detail/group-detail?from=order&id=' + item.group_id)
+            break
+          default:
+            if (item.promotion_type * 1 === 5) {
+              return
+            }
+            let couponType
+            if (item.promotion_type * 1 === 2) {
+              couponType = 2
+            } else {
+              couponType = 1
+            }
+            if (item.promotion_type * 1 === 4) {
+              let groupId = item.group_activity_id
+              this.$navigate('/pages/coupon-detail/coupon-detail?s=group&id=' + item.promotion.id + '&type=' + couponType + '&currentMerchant=' + item.merchant_id + '&groupId=' + groupId)
+            } else {
+              this.$navigate('/pages/coupon-detail/coupon-detail?id=' + item.promotion.id + '&type=' + couponType + '&currentMerchant=' + item.merchant_id)
+            }
+            break
+        }
       }
     }
   }
