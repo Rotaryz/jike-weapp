@@ -65,7 +65,7 @@
           <view class="yuan">元</view>
         </view>
       </view>
-      <view class="bot-order" @tap="postOrder">提交订单</view>
+      <view class="bot-order {{btnDisable ? 'btn-disable': ''}}" @tap="postOrder">提交订单</view>
     </view>
     <phone-test @isPhoneOk.user="getSymbol" :industry.sync="industry"></phone-test>
     <toast></toast>
@@ -83,7 +83,7 @@
   import URIS from 'common/js/config'
   import Order from 'api/order'
   import Merchants from 'api/merchants'
-
+  /* eslint-disable */
   export default class ActivityDetail extends wepy.page {
     mixins = [users, base]
     data = {
@@ -238,7 +238,7 @@
         this.$apply()
       },
       async postOrder () {
-        if (this.stock <= 0) {
+        if (this.stock <= 0 && this.stock !== -1) {
           this.$invoke('toast', 'show', '库存不足')
           return
         }
@@ -272,6 +272,13 @@
         this.$apply()
       }
     }
+
+    computed = {
+      btnDisable () {
+        return this.stock === 0
+      }
+    }
+
     components = {
       'phone-test': PhoneTest,
       'toast': Toast
@@ -459,12 +466,14 @@
         background: $color-main
         line-height: 45px
         text-align: center
-        position: absolute
+        position: fixed
         width: 100%
         bottom: 0px
         color: $color-white
         font-family: $font-family-regular
         font-size: $font-size-medium
         letter-spacing: 0.56px
+        &.btn-disable
+          background: #b6b5bf
 
 </style>
