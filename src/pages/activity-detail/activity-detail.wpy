@@ -108,9 +108,17 @@
       total: 0
     }
     onLoad(options) {
-      this.optionInfo = options
-      if (options.m) {
-        wepy.setStorageSync('merchantId', options.m * 1)
+      console.log(options)
+      if (options.a) {
+        this.optionInfo = options
+        if (options.m) {
+          wepy.setStorageSync('merchantId', options.m * 1)
+        }
+      } else {
+        this.optionInfo = {
+          a: wepy.getStorageSync('a'),
+          e: wepy.getStorageSync('e')
+        }
       }
     }
     async onShow () {
