@@ -54,7 +54,7 @@
       } else if (this.type === 'y') {
         wepy.setStorageSync('a', option.a)
         wepy.setStorageSync('e', option.e)
-        this.webviewUrl = `${URIS.webview}/index.html#/activity?a=${option.a}&e=${option.e}&merchantId=${this.merchantId}`
+        this.webviewUrl = `${URIS.webview}/index.html#/activity?a=${option.a}&e=${option.e}&m=${this.merchantId}`
       }
       this.$apply()
     }
