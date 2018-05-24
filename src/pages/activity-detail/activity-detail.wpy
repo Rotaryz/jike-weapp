@@ -109,6 +109,9 @@
     }
     onLoad(options) {
       this.optionInfo = options
+      if (options.m) {
+        wepy.setStorageSync('merchantId', options.m * 1)
+      }
     }
     async onShow () {
       this.infoTop = []
@@ -124,8 +127,8 @@
     }
     async _getActivity (options) {
       if (options) {
-        this.promotioId = options.activityId || ''
-        this.employeesId = options.employeesId || 0
+        this.promotioId = options.a || ''
+        this.employeesId = options.e || 0
       }
       let data = {employee_id: this.employeesId}
       let res = await Merchants.linkDetails(this.promotioId, data)
@@ -153,7 +156,7 @@
     }
     async _getActivityCoupon (options) {
       if (options) {
-        this.promotioId = options.activityId || ''
+        this.promotioId = options.a || ''
       }
       let res = await Merchants.linkCouponDetails(this.promotioId)
       this.loaded()
