@@ -1,79 +1,82 @@
 <template>
-    <view class="center">
-      <block wx:for="{{infoTop}}" wx:key="index" wx:for-index="i">
-        <view class="max-modal">
-          <block wx:for="{{item}}" wx:key="index" wx:for-item="items">
-            <view class="max-modal-title" wx:if="{{index===0}}">{{types[items.goods_type]}}</view>
-            <view class="modal-item" >
-              <view class="modal-item-img">
-                <image wx:if="{{imageUri && i === 0 }}" src="{{imageUri + '/defaults/ipc-shopping/page/shop.png'}}"></image>
-                <image wx:if="{{imageUri && i !== 0}}" src="{{imageUri + '/defaults/ipc-shopping/page/dai.png'}}"></image>
-              </view>
-              <view class="modal-item-right">
-                <view class="right-top">
-                  <view class="name">{{items.goods_detail.title}}</view>
-                  <view class="number">× {{items.goods_num}}</view>
-                </view>
-                <view class="right-bottom">¥{{items.goods_detail.price}}</view>
-              </view>
-            </view>
-          </block>
-        </view>
-      </block>
-      <view wx:if="{{infoBottom.length > 0}}" class="max-modal max-modal-y {{hideFlag ? hide : '' }}" style="height:{{height}}">
-        <block wx:for="{{infoBottom}}" wx:key="index">
-          <view class="max-modal-title" wx:if="{{index===0}}">{{types[item.goods_type]}}</view>
-          <view class="modal-item" >
+  <view class="center">
+    <block wx:for="{{infoTop}}" wx:key="index" wx:for-index="i">
+      <view class="max-modal">
+        <block wx:for="{{item}}" wx:key="index" wx:for-item="items">
+          <view class="max-modal-title" wx:if="{{index===0}}">{{types[items.goods_type]}}</view>
+          <view class="modal-item">
             <view class="modal-item-img">
-              <image src="{{item.goods_detail.url}}"></image>
-              <view class="item-img-txt">{{item.shop_name}}</view>
+              <image wx:if="{{imageUri && i === 0 }}" src="{{imageUri + '/defaults/ipc-shopping/page/shop.png'}}"></image>
+              <image wx:if="{{imageUri && i !== 0}}" src="{{imageUri + '/defaults/ipc-shopping/page/dai.png'}}"></image>
             </view>
             <view class="modal-item-right">
               <view class="right-top">
-                <view class="name">{{item.goods_detail.title}}</view>
-                <view class="number">× {{item.goods_num}}</view>
+                <view class="name">{{items.goods_detail.title}}</view>
+                <view class="number">× {{items.goods_num}}</view>
               </view>
-              <view class="right-bottom">¥{{item.goods_detail.price}}</view>
+              <view class="right-bottom">¥{{items.goods_detail.price}}</view>
             </view>
           </view>
         </block>
-        <view class="max-modal-hide" @tap.stop="hideFun">
-          <image wx:if="{{imageUri && hideFlag}}" src="{{imageUri + '/defaults/ipc-shopping/page/icon-packup@2x.png'}}"></image>
-          <image wx:if="{{imageUri && !hideFlag}}" src="{{imageUri + '/defaults/ipc-shopping/page/icon-deploy@2x.png'}}"></image>
-        </view>
       </view>
-      <view class="bottom-order">
-        <view class="bot-title">
-          <view class="left">{{title}}</view>
-          <view class="right">{{price}}
-            <view class="yuan">元</view></view>
-        </view>
-        <view class="bot-number">
-          <view class="left">数量</view>
-          <view class="right">
-            <view class="number-control">
-              <view class="desc" @tap.stop="descCount">-</view>
-              <view class="number">{{count}}</view>
-              <view class="add" @tap.stop="addCount">+</view>
+    </block>
+    <view wx:if="{{infoBottom.length > 0}}" class="max-modal max-modal-y {{hideFlag ? hide : '' }}" style="height:{{height}}">
+      <block wx:for="{{infoBottom}}" wx:key="index">
+        <view class="max-modal-title" wx:if="{{index===0}}">{{types[item.goods_type]}}</view>
+        <view class="modal-item">
+          <view class="modal-item-img">
+            <image src="{{item.goods_detail.url}}"></image>
+            <view class="item-img-txt">{{item.shop_name}}</view>
+          </view>
+          <view class="modal-item-right">
+            <view class="right-top">
+              <view class="name">{{item.goods_detail.title}}</view>
+              <view class="number">× {{item.goods_num}}</view>
             </view>
+            <view class="right-bottom">¥{{item.goods_detail.price}}</view>
           </view>
         </view>
-        <view class="bot-total border-top-1px">
-          <view class="left">订单总价</view>
-          <view class="right">{{total}}<view class="yuan">元</view></view>
-        </view>
-        <view class="bot-order" @tap="postOrder">提交订单</view>
+      </block>
+      <view class="max-modal-hide" @tap.stop="hideFun">
+        <image class="m-m-h-pic" wx:if="{{imageUri && hideFlag}}" src="{{imageUri + '/defaults/ipc-shopping/page/icon-packup@2x.png'}}"></image>
+        <image class="m-m-h-pic" wx:if="{{imageUri && !hideFlag}}" src="{{imageUri + '/defaults/ipc-shopping/page/icon-deploy@2x.png'}}"></image>
       </view>
-      <phone-test @isPhoneOk.user="getSymbol" :industry.sync="industry"></phone-test>
-      <toast></toast>
     </view>
+    <view class="bottom-order">
+      <view class="bot-title">
+        <view class="left">{{title}}</view>
+        <view class="right">{{price}}
+          <view class="yuan">元</view>
+        </view>
+      </view>
+      <view class="bot-number">
+        <view class="left">数量</view>
+        <view class="right">
+          <view class="number-control">
+            <view class="desc" @tap.stop="descCount">-</view>
+            <view class="number">{{count}}</view>
+            <view class="add" @tap.stop="addCount">+</view>
+          </view>
+        </view>
+      </view>
+      <view class="bot-total border-top-1px">
+        <view class="left">订单总价</view>
+        <view class="right">{{total}}
+          <view class="yuan">元</view>
+        </view>
+      </view>
+      <view class="bot-order" @tap="postOrder">提交订单</view>
+    </view>
+    <phone-test @isPhoneOk.user="getSymbol" :industry.sync="industry"></phone-test>
+    <toast></toast>
+  </view>
 </template>
 
 <script>
   import wepy from 'wepy'
   import users from 'common/mixins/users'
   import base from 'common/mixins/base'
-  import {ERR_OK} from 'api/base'
+  import { ERR_OK } from 'api/base'
   import PhoneTest from '@/base/phoneTest/phoneTest'
   import Toast from '@/base/toast/toast'
   // import tips from 'common/js/tips'
@@ -107,7 +110,8 @@
       optionInfo: '',
       total: 0
     }
-    onLoad(options) {
+
+    onLoad (options) {
       console.log(options)
       if (options.a) {
         this.optionInfo = options
@@ -121,6 +125,7 @@
         }
       }
     }
+
     async onShow () {
       this.infoTop = []
       this.infoBottom = []
@@ -129,10 +134,12 @@
       await this._getActivityCoupon(this.optionInfo)
       await this.heightFun()
     }
-    async heightFun() {
+
+    async heightFun () {
       this.height = this.infoBottom.length * 100 + 45 + 'px'
       this.$apply()
     }
+
     async _getActivity (options) {
       if (options) {
         this.promotioId = options.a || ''
@@ -162,6 +169,7 @@
       this.total = this.count * this.price
       this.$apply()
     }
+
     async _getActivityCoupon (options) {
       if (options) {
         this.promotioId = options.a || ''
@@ -176,6 +184,7 @@
 
       this.$apply()
     }
+
     async submit () {
       this.orderInfo = {
         promotion_id: this.promotioId, // 活动id
@@ -215,6 +224,7 @@
         complete: () => {}
       })
     }
+
     methods = {
       hideFun () {
         let item = this.infoBottom.length
@@ -240,7 +250,7 @@
         }
         this.submit('')
       },
-      descCount() {
+      descCount () {
         if (this.count <= 1) {
           this.count = 1
         } else {
@@ -249,7 +259,7 @@
         this.total = (this.count * this.price).toFixed(2)
         this.$apply()
       },
-      addCount() {
+      addCount () {
         console.log(1)
         if (this.stock !== -1) {
           if (this.count < this.stock) {
@@ -276,7 +286,7 @@
   @import "../../common/stylus/variable.styl"
   @import "../../common/stylus/mixin.styl"
   .center
-    padding-bottom: 238px
+    position: relative
     .max-modal.hide
       transition: all .5s
     .max-modal-y
@@ -284,11 +294,11 @@
     .max-modal
       transition: all .5s
       overflow: hidden
-      cut-off-rule-bottom(0,0,$color-col-line)
+      cut-off-rule-bottom(0, 0, $color-col-line)
       background-color: $color-white
       margin-top: 10px
       padding-left: 10px
-      cut-off-rule-top(0,0,$color-col-line)
+      cut-off-rule-top(0, 0, $color-col-line)
       .max-modal-title
         height: 45px
         display: flex
@@ -303,7 +313,7 @@
         display: flex
         flex-direction: row
         align-items: center
-        cut-off-rule-top(0,0,$color-col-line)
+        cut-off-rule-top(0, 0, $color-col-line)
         .modal-item-img
           height: 70px
           width: 70px
@@ -313,17 +323,17 @@
             height: 100%
             border-radius: 2px
           .item-img-txt
-            width:100%
-            height:18px
-            line-height:18px
-            text-align:center
+            width: 100%
+            height: 18px
+            line-height: 18px
+            text-align: center
             font-family: $font-family-light
             font-size: $font-size-small-s
-            color:$color-white
-            background: rgba(0,0,0,0.5)
-            position:absolute
-            left:0
-            bottom:0
+            color: $color-white
+            background: rgba(0, 0, 0, 0.5)
+            position: absolute
+            left: 0
+            bottom: 0
 
         .modal-item-right
           flex: 1
@@ -364,21 +374,21 @@
         bottom: 1px
         z-index: 2
         background-color: $color-white
-        cut-off-rule-top(0,0,$color-col-line)
+        cut-off-rule-top(0, 0, $color-col-line)
         transition: all .5s
-        image
+        .m-m-h-pic
+          margin-right: 10px
           width: 12px
           height: 7px
     .bottom-order
       height: 228px
       display: flex
       flex-direction: column
-      position: fixed
-      bottom: 0px
+      position: relative
+      margin-top: 10px
       z-index: 2
       background-color: $color-background
-      width: 100vw
-      .bot-title,.bot-number,.bot-total
+      .bot-title, .bot-number, .bot-total
         background-color: $color-white
         height: 40px
         padding: 0px 10px
@@ -399,13 +409,13 @@
           font-size: $font-size-medium
           color: $color-text
       .bot-title
-        cut-off-rule-top(0,0,$color-col-line)
+        cut-off-rule-top(0, 0, $color-col-line)
         .right
           font-family: $font-family-regular
           font-size: $font-size-medium
           color: $color-text
       .bot-number
-        cut-off-rule-top(0,0,$color-col-line)
+        cut-off-rule-top(0, 0, $color-col-line)
         .number-control
           display: flex
           height: 22px
@@ -434,7 +444,7 @@
             color: $color-white
             background-color: $color-button
       .bot-total
-        cut-off-rule-top(0,0,$color-col-line)
+        cut-off-rule-top(0, 0, $color-col-line)
         .right
           font-family: $font-family-meddle
           font-size: $font-size-large
