@@ -1,13 +1,13 @@
 <template>
     <view class="center">
-      <block wx:for="{{infoTop}}" wx:key="index">
+      <block wx:for="{{infoTop}}" wx:key="index" wx:for-index="i">
         <view class="max-modal">
           <block wx:for="{{item}}" wx:key="index" wx:for-item="items">
             <view class="max-modal-title" wx:if="{{index===0}}">{{types[items.goods_type]}}</view>
             <view class="modal-item" >
               <view class="modal-item-img">
-                <image wx:if="{{imageUri && index === 0 }}" src="{{imageUri + '/defaults/ipc-shopping/page/shop.png'}}"></image>
-                <image wx:if="{{imageUri && index !== 0}}" src="{{imageUri + '/defaults/ipc-shopping/page/dai.png'}}"></image>
+                <image wx:if="{{imageUri && i === 0 }}" src="{{imageUri + '/defaults/ipc-shopping/page/shop.png'}}"></image>
+                <image wx:if="{{imageUri && i !== 0}}" src="{{imageUri + '/defaults/ipc-shopping/page/dai.png'}}"></image>
               </view>
               <view class="modal-item-right">
                 <view class="right-top">
@@ -42,7 +42,7 @@
           <image wx:if="{{imageUri && !hideFlag}}" src="{{imageUri + '/defaults/ipc-shopping/page/icon-deploy@2x.png'}}"></image>
         </view>
       </view>
-      <view class="bottom-order" wx:if="{{infoBottom.length > 0}}">
+      <view class="bottom-order">
         <view class="bot-title">
           <view class="left">{{title}}</view>
           <view class="right">{{price}}
@@ -60,7 +60,7 @@
         </view>
         <view class="bot-total border-top-1px">
           <view class="left">订单总价</view>
-          <view class="right">{{price * count}}<view class="yuan">元</view></view>
+          <view class="right">{{total}}<view class="yuan">元</view></view>
         </view>
         <view class="bot-order" @tap="postOrder">提交订单</view>
       </view>
@@ -103,14 +103,19 @@
       count: 1,
       hideFlag: false,
       height: 0,
-      heightItem: 100
+      heightItem: 100,
+      optionInfo: '',
+      total: 0
     }
-    async onShow (options) {
+    onLoad(options) {
+      this.optionInfo = options
+    }
+    async onShow () {
       this.infoTop = []
       this.infoBottom = []
       this.$apply()
-      await this._getActivity(options)
-      await this._getActivityCoupon(options)
+      await this._getActivity(this.optionInfo)
+      await this._getActivityCoupon(this.optionInfo)
       await this.heightFun()
     }
     async heightFun() {
@@ -138,6 +143,7 @@
           dai.push(item)
         } else {
           shop.push(item)
+          shop.push(item)
         }
       })
       this.infoTop.push(shop)
@@ -145,6 +151,7 @@
       this.title = res.data.name
       this.price = res.data.price
       this.stock = res.data.stock
+      this.total = this.count * this.price
       this.$apply()
     }
     async _getActivityCoupon (options) {
@@ -190,10 +197,10 @@
         signType,
         paySign,
         success: () => {
-          const orderId = res.order.orderId
+          const orderId = res.order_id
           const total = this.total
           const status = 'success'
-          this.$parent.$navigate(`/pages/pay-result/pay-result?orderId=${orderId}&total=${total}&status=${status}`)
+          this.$navigate(`/pages/pay-result/pay-result?orderId=${orderId}&total=${total}&status=${status}`)
           this._hide()
         },
         fail: (res) => {},
@@ -214,6 +221,7 @@
       },
       async postOrder () {
         if (this.stock <= 0) {
+          this.$invoke('toast', 'show', '库存不足')
           return
         }
         const isAuthorise = await this.isAuthorise()
@@ -291,10 +299,11 @@
         .modal-item-img
           height: 70px
           width: 70px
-          border-1px($color-col-line, 2px)
+          position: relative
           image
             width: 100%
             height: 100%
+            border-radius: 2px
           .item-img-txt
             width:100%
             height:18px
@@ -352,7 +361,6 @@
         image
           width: 12px
           height: 7px
-          border-radius: 2px
     .bottom-order
       height: 228px
       display: flex
