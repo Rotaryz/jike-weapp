@@ -13,7 +13,7 @@
         </button>
         <view class="line" @tap="generatePicture">
           <image wx:if="{{imageUrlHead}}" src="{{imageUrlHead + '/defaults/c-image/recommend/icon-pyq@2x.png'}}"></image>
-          <view class="text">微信朋友圈</view>
+          <view class="text">生成卡片</view>
         </view>
       </view>
       <view class="split border-top-1px border-bottom-1px"></view>
@@ -84,7 +84,7 @@
           content: '迫不及待的下了单'
         }, {
           name: '李芳',
-          content: '对本次直播拍照留念！'
+          content: '对本次点播拍照留念！'
         }, {
           name: '璐璐',
           content: '商品非常棒，很划算'
@@ -135,7 +135,7 @@
         ctx.fillText(user.nickName, 310, 1400)
         ctx.fillText('邀请你参加活动', 200, 1530)
       } else if (type === 'shareMoney') {
-//        分享赚钱活动图片
+//        转1赚活动图片
         await this.drawActivity(ctx, user, shopName, '先领券 再购买', '券后价')
       } else if (type === 'groupBuy') {
 //        团购的活动分享图片

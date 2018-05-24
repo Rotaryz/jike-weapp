@@ -14,7 +14,7 @@
   export default class Live extends wepy.page {
     mixins = [users, base]
     config = {
-      navigationBarTitleText: '直播优惠'
+      navigationBarTitleText: '点播优惠'
     }
     components = {
       LiveVideo: LiveVideo
@@ -29,7 +29,7 @@
       if (option.scene) {
         let scene = decodeURIComponent(option.scene)
         const params = getParams(scene)
-        this.currentMerchant = params.merchantId
+        this.currentMerchant = params.currentMerchant
         wepy.setStorageSync('merchantId', this.currentMerchant)
         if (!wepy.getStorageSync('token')) {
           await this.$getUserInfo(false, true)
@@ -39,6 +39,7 @@
       } else {
         this.currentMerchant = wepy.getStorageSync('merchantId')
       }
+      this.$invoke('LiveVideo', 'setCurrentMerchant', this.currentMerchant)
       await this.load()
     }
 
@@ -49,7 +50,7 @@
 //        console.log(res.target)
       }
       return {
-        title: user.nickName + '邀请你参与直播优惠',
+        title: user.nickName + '邀请你参与点播优惠',
         path: `/pages/live/live?merchantId=${this.currentMerchant}`,
         success: async () => {
           // 转发成功

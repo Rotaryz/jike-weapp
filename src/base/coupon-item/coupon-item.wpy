@@ -4,12 +4,12 @@
       <image class="coupon-bc" wx:if="{{imageUrlHead && type === 'buy'}}" src="{{imageUrlHead + '/defaults/c-image/mine/bg-coupon_yhq@2x.png'}}"></image>
       <image class="coupon-bc" wx:if="{{imageUrlHead && type === 'pay'  && coupon.canUsePay}}" src="{{imageUrlHead + '/defaults/c-image/template/bg-kycoupon1_'+industry+'@2x.png'}}"></image>
       <image class="coupon-bc" wx:if="{{imageUrlHead && type === 'pay'  && !coupon.canUsePay}}" src="{{imageUrlHead + '/defaults/c-image/mine/bg-coupon_sxsyyh@2x.png'}}"></image>
-      <!--分享赚钱使用优惠券-->
+      <!--转1赚使用优惠券-->
       <image class="coupon-bc" wx:if="{{imageUrlHead && type ==='share' && coupon.status === 0}}" src="{{imageUrlHead + '/defaults/c-image/template/bg-kycoupon1_'+industry+'@2x.png'}}"></image>
       <image class="coupon-bc" wx:if="{{imageUrlHead && type === 'share' && coupon.status !== 0}}" src="{{imageUrlHead + '/defaults/c-image/mine/bg-coupon_sxsyyh@2x.png'}}"></image>
 
       <image class="coupon-bc" wx:if="{{imageUrlHead && type === 'mine' && (coupon.promotion.promotion_type !== 'exchange' || coupon.promotion_type !== 'deduction') && coupon.promotion.status * 1 === 0}}" src="{{imageUrlHead + '/defaults/c-image/template/bg-kycoupon_'+industry+'@2x.png'}}"></image>
-      <!--分享赚钱-->
+      <!--转1赚-->
       <image class="coupon-bc" wx:if="{{imageUrlHead &&  type === 'shareBuy' && coupon.deduction_status * 1 === 0}}" src="{{imageUrlHead + '/defaults/c-image/template/bg-kycoupon_'+industry+'@2x.png'}}"></image>
       <image class="coupon-bc" wx:if="{{imageUrlHead &&  type === 'shareBuy' && coupon.deduction_status * 1 !== 0}}" src="{{imageUrlHead + '/defaults/c-image/template/bg-coupon_disable@2x.png'}}"></image>
       <image class="coupon-bc" wx:if="{{imageUrlHead && type === 'mine' && coupon.promotion.promotion_type !== 'exchange' && coupon.promotion.status * 1 !== 0}}" src="{{imageUrlHead + '/defaults/c-image/mine/bg-coupon_disable@2x.png'}}"></image>
@@ -59,8 +59,8 @@
             <view class="small-money" style="font-size:18px" wx:if="{{coupon.promotion.promotion_type === 'discount'}}">折</view>
           </view>
           <view class="left-sub" wx:if="{{coupon.promotion.promotion_type === 'reduction' || coupon.promotion.promotion_type === 'discount'}}">{{coupon.promotion.config.meet_money === -1 ? '无限制使用' : '满' + coupon.promotion.config.meet_money + '可用'}}</view>
-          <!--分享赚钱的标签-->
-          <!--<view class="left-sub" wx:if="{{coupon.promotion.promotion_type === 'reduction'}}">仅分享赚钱</view>-->
+          <!--转1赚的标签-->
+          <!--<view class="left-sub" wx:if="{{coupon.promotion.promotion_type === 'reduction'}}">仅转1赚</view>-->
         </view>
         <view class="coupon-middle">
           <view class="coupon-middle-top">
@@ -79,14 +79,14 @@
           <image class="right-img" wx:if="{{imageUrlHead && !coupon.canUsePay}}" src="{{imageUrlHead + '/defaults/c-image/pay/icon-notselect@2x.png'}}"></image>
         </view>
       </view>
-      <!--分享赚钱列表-->
+      <!--转1赚列表-->
       <view class="pay-coupon-content share-coupon-content {{coupon.canUsePay ? '' : 'dis'}}" wx:if="{{type === 'share'}}" @tap="buyCouponClick('share', {{coupon}})">
         <view class="coupon-left">
           <view class="left-money">
             <view class="small-money" style="font-size:{{coupon.promotion.flag.length > 4 ?'10px' : '18px'}}">¥</view>
             <view class="big-money" style="font-size:{{coupon.promotion.flag.length > 4 ?'18px' : '30px'}}">{{coupon.money}}</view>
           </view>
-          <view class="left-sub">仅分享赚钱</view>
+          <view class="left-sub">仅转1赚</view>
         </view>
         <view class="coupon-middle">
           <view class="coupon-middle-top">
@@ -245,7 +245,7 @@
             }
             break
           case 'shareBuy':
-//           分享赚钱
+//           转1赚
             if (coupon.deduction_status * 1 === 0) {
               this.$emit('shareBuy', coupon)
             }
@@ -687,7 +687,7 @@
           width: 28.63%
           display: flex
           align-items: center
-          justify-content: flex-end
+          justify-content: center
           overflow: hidden
           .shop-img-box
             width: 18.66666666666vw

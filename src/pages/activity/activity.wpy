@@ -15,6 +15,7 @@
       token: '',
       merchantId: ''
     }
+
     onShareAppMessage(res) {
       const user = this.$parent.globalData.user
       let title = ''
@@ -22,8 +23,6 @@
         title = `大转盘`
       } else if (this.type === 'sign') {
         title = '签到红包'
-      } else if (this.type === 'activity') {
-        title = '异业联盟卡活动'
       }
       return {
         title: user.nickName + title,
@@ -47,8 +46,6 @@
         this.webviewUrl = `${URIS.webview}/index.html?token=${token}&merchantId=${this.merchantId}#/wheel`
       } else if (this.type === 'sign') {
         this.webviewUrl = `${URIS.webview}/index.html?token=${token}&merchantId=${this.merchantId}#/registration`
-      } else if (this.type === 'activity') {
-        this.webviewUrl = `${URIS.webview}/index.html?token=${token}&merchantId=${this.merchantId}#/activity`
       }
       this.$apply()
     }

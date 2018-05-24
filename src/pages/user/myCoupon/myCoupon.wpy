@@ -2,7 +2,7 @@
   <view class="myCoupon">
     <view class="myCoupon-tab">
       <view class="myCoupon-tab-item border-bottom-1px" wx:for="{{tabList}}" wx:key="{{item}}">
-        <view class="{{index===menuIdx?'myCoupon-tab-itemTxt '+industry+'-border':'myCoupon-tab-itemTxt'}}" @tap="changeTab({{index}})">{{item}}</view>
+        <view class="{{index===menuIdx ? 'myCoupon-tab-itemTxt '+ industry +'-border':'myCoupon-tab-itemTxt'}}" @tap="changeTab({{index}})">{{item}}</view>
       </view>
     </view>
 

@@ -24,7 +24,7 @@
     mixins = [base]
 
     config = {
-      navigationBarTitleText: '分享赚钱',
+      navigationBarTitleText: '转1赚',
       enablePullDownRefresh: true,
       backgroundTextStyle: 'dark'
     }

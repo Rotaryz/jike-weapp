@@ -24,8 +24,8 @@
   import URIS from 'common/js/config'
   import User from 'api/user'
   import {ERR_OK} from 'api/base'
-
-  const INFOURL = '/pages/square/square'
+  import Tips from 'common/js/tips'
+  const INFOURL = '/pages/recommend/recommend'
   import users from 'common/mixins/users'
   import base from 'common/mixins/base'
 
@@ -41,7 +41,8 @@
       imageUri: URIS.image,
       showLoad: 1,
       timer: null,
-      targetPage: INFOURL
+      targetPage: INFOURL,
+      authorizationCount: 1
     }
 
     async show() {
@@ -70,6 +71,7 @@
     }
 
     navTo(type) {
+      this.$parent.updateGlobalData('targetPage', '')
       if (type.indexOf('square') !== -1 || type.indexOf('recommend') !== -1 || type.indexOf('mine') !== -1) {
         this.$switch({
           url: `${type}`
@@ -91,9 +93,6 @@
 //          item = item.split(':')
 //          param[item[0]] = item[1]
 //        }
-      if (options.businessCircleId) {
-        wepy.setStorageSync('businessCircleId', options.businessCircleId)
-      }
       if (options.path) {
         this.targetPage = decodeURIComponent(options.path)
       } else if (this.$parent.globalData.targetPage) {
@@ -103,6 +102,30 @@
       if (token && options.type !== 'tokenOut') {
         this.navTo(this.targetPage)
       }
+    }
+
+    async _authorization() {
+      const wxUser = await wepy.getUserInfo()
+      const code = await this.$getCode()
+      const data = {
+        code,
+        iv: wxUser.iv,
+        encryptedData: wxUser.encryptedData
+      }
+      const Json = await User.authorise(data, false)
+      if (Json.error !== ERR_OK && this.authorizationCount <= 5) {
+        this.authorizationCount++
+        await this._authorization()
+        return
+      } else if (Json.error !== ERR_OK && this.authorizationCount > 5) {
+        Tips.error('登录失败，请重新登录')
+        return false
+      }
+      this.authorizationCount = 1
+      const res = Json.data
+      let token = res.jk_token
+      this.$apply()
+      return token
     }
 
     methods = {
@@ -122,7 +145,12 @@
           return ''
         }
         const res = Json.data
-        let token = res.jk_token
+        let token
+        if (res.unauthorized) {
+          token = await this._authorization()
+        } else {
+          token = res.jk_token
+        }
         if (token) {
           wepy.setStorageSync('token', token)
           await this.$getUserInfo(true)

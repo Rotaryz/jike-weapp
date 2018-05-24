@@ -144,10 +144,10 @@
           this.count -= 1
         }
         if (this.orderInfo.from === 'c_sharemoney') {
-          this.total = (this.count * this.orderInfo.price).toFixed(1)
+          this.total = (this.count * this.orderInfo.price).toFixed(2)
           return
         }
-        this.total = (this.count * this.orderInfo.price).toFixed(1)
+        this.total = (this.count * this.orderInfo.price).toFixed(2)
       },
       addCount() {
         if (this.orderInfo.stock !== -1) {
@@ -158,14 +158,27 @@
           this.count += 1
         }
         if (this.orderInfo.from === 'c_sharemoney') {
-          this.total = (this.count * this.orderInfo.price).toFixed(1)
+          this.total = (this.count * this.orderInfo.price).toFixed(2)
           return
         }
-        this.total = (this.count * this.orderInfo.price).toFixed(1)
+        this.total = (this.count * this.orderInfo.price).toFixed(2)
       },
       async postOrder() {
         /* eslint-disable no-undef */
-        const {current_merchant, promotion_type, promotion_id, price, from, group_type, group_id, activity_id, deduction_id, is_share_money, share_customer_id} = this.orderInfo
+        const {
+          current_merchant,
+          promotion_type,
+          promotion_id,
+          price,
+          from,
+          group_type,
+          group_id,
+          activity_id,
+          deduction_id,
+          is_share_money,
+          share_customer_id,
+          employees_id} = this.orderInfo
+
         let data
         if (from === 'c_groupon') {
           data = {
@@ -191,6 +204,14 @@
             deduction_id,
             is_share_money,
             share_customer_id
+          }
+        } else if (from === 'c_yylm') { // 异业卡
+          data = {
+            promotion_type,
+            promotion_id,
+            from,
+            count: this.count,
+            employees_id
           }
         } else {
           data = {
@@ -254,7 +275,7 @@
         if (status !== this.status) {
           this.count = 1
         }
-        this.total = this.count * this.orderInfo.price
+        this.total = (this.count * this.orderInfo.price).toFixed(2)
         this.stock = this.orderInfo.stock
         this.status = status
         this.peopleStock = this.orderInfo.peopleStock

@@ -53,7 +53,7 @@ export default class base extends wepy.mixin {
     if (!this.$parent.globalData.shareActivityIcon) {
       this.$parent.updateGlobalData('shareActivityIcon', '../../common/image/pic-price@2x.png')
     }
-    // 分享赚钱的礼物icon
+    // 转1赚的礼物icon
     if (!this.$parent.globalData.shareGife) {
       this.$parent.updateGlobalData('shareGife', '../../common/image/icon-share_prize.png')
     }

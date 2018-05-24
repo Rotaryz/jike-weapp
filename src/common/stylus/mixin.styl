@@ -121,3 +121,46 @@ layout($direction = column, $inline = block, $wrap = wrap)
   flex-direction: $direction
   flex-wrap: $wrap
 
+// 竖线
+vertical-line()
+  position: relative
+  &:before
+    content: ''
+    position: absolute
+    left: 0
+    height: 14px
+    width: 2px
+    box-sizing: border-box
+    background-color: $color-ktv-theme
+    top: 50%
+    transform: translateY(-50%)
+
+// 分割线-top
+// $line-color 线的颜色, $line-left 距离父级元素左边的距离, $line-right 距离父级元素右边的距离
+cut-off-rule-top($line-left = 0, $line-right = 0, $line-color = $color-cut-line-ed, $line-height = 0.5px)
+  position: relative
+  &:before
+    content: ''
+    display: block
+    position: absolute
+    height: 1px
+    border-top: $line-height solid $line-color
+    background-color: transparent
+    top: 0
+    left: $line-left
+    right: $line-right
+
+// 分割线-bottom
+// $line-color 线的颜色, $line-left 距离父级元素左边的距离, $line-right 距离父级元素右边的距离
+cut-off-rule-bottom($line-left = 0, $line-right = 0, $line-color = $color-cut-line-ed, $line-height = 0.5px)
+  position: relative
+  &:after
+    content: ''
+    display: block
+    position: absolute
+    height: 1px
+    border-bottom: $line-height solid $line-color
+    background-color: transparent
+    bottom: 0px
+    left: $line-left
+    right: $line-right

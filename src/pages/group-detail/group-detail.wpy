@@ -40,7 +40,7 @@
           <navigator url="/pages/recommend/recommend" hover-class="none" open-type="switchTab" wx:if="{{groupStatus === 1 || groupStatus === 0}}">
             <view class="group-red-btn {{industry}}-bg">查看更多团购</view>
           </navigator>
-          <navigator url="{{'/pages/user/myOrder-detail/myOrderDetail?id=' + groupDetails.order_id}}" hover-class="none" wx:if="{{groupHasJoin}}">
+          <navigator url="{{'/pages/user/myOrder-detail/myOrderDetail?id=' + groupDetails.order_id}}" hover-class="none" wx:if="{{groupHasJoin && fromPage !== 'order'}}">
             <view class="group-white-btn">查看订单详情</view>
           </navigator>
         </view>
@@ -93,6 +93,7 @@
   import GroupApi from 'api/groupon'
   import Info from 'api/info'
   import PhoneTest from '@/base/phoneTest/phoneTest'
+  import {getParams} from 'common/js/data'
 
   export default class GroupDetail extends wepy.page {
     mixins = [base, users]
@@ -125,7 +126,8 @@
       activityStatus: 'group',
       orderInfo: {},
       timer: '',
-      timeEnd: false
+      timeEnd: false,
+      fromPage: ''
     }
 
     onShareAppMessage(res) {
@@ -147,9 +149,16 @@
     }
 
     async onLoad(option) {
+      if (option.scene) {
+        let scene = decodeURIComponent(option.scene)
+        const params = getParams(scene)
+        this.id = params.id
+      } else {
+        this.id = option.id
+//        this.fromPage = option.from
+      }
       await this.upLoadImage()
       await this.showIndustry()
-      this.id = option.id
       await this.load(this.id)
       await this._getGroupList()
       this.currentPage = '/pages/group-detail/group-detail?id=' + this.id + '&merchantId=' + this.groupDetails.merchant_id
