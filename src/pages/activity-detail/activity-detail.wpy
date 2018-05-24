@@ -93,7 +93,7 @@
       orderInfo: {},
       infoTop: [],
       infoBottom: [],
-      promotioId: '1', // 商品id\活动id
+      promotioId: '', // 商品id\活动id
       employeesId: 0,
       activityStatus: '',
       userCoupon: '0', // 抵用券的文案
@@ -124,10 +124,8 @@
     }
     async _getActivity (options) {
       if (options) {
-        this.promotioId = options.activityId
-      }
-      if (options) {
-        this.employeesId = options.employeesId
+        this.promotioId = options.activityId || ''
+        this.employeesId = options.employeesId || 0
       }
       let data = {employee_id: this.employeesId}
       let res = await Merchants.linkDetails(this.promotioId, data)
@@ -156,7 +154,7 @@
     }
     async _getActivityCoupon (options) {
       if (options) {
-        this.promotioId = options.activityId
+        this.promotioId = options.activityId || ''
       }
       let res = await Merchants.linkCouponDetails(this.promotioId)
       this.loaded()
