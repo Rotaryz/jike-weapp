@@ -141,7 +141,6 @@
           dai.push(item)
         } else {
           shop.push(item)
-          shop.push(item)
         }
       })
       this.infoTop.push(shop)
