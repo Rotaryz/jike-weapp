@@ -8,7 +8,7 @@
       <image class="ro-order-shop-logo" src="{{order.merchant_data.logo_image}}" mode="aspectFill"></image>
       <view class="ro-order-content">
         <view class="ro-order-content-tip-box">
-          <view class="ro-order-tip" wx:if="{{order.promotion_type * 1 === 3 || order.promotion_type * 1 === 4 || order.promotion_type * 1 === 5 || order.promotion_type * 1 === 7}}">{{flagTxt[order.promotion_type]}}</view>
+          <view class="ro-order-tip {{industry}}-opacity-20" wx:if="{{order.promotion_type * 1 === 3 || order.promotion_type * 1 === 4 || order.promotion_type * 1 === 5 || order.promotion_type * 1 === 7}}">{{flagTxt[order.promotion_type]}}</view>
           <view class="ro-order-coupon-name">{{order.title}}</view>
         </view>
         <view class="ro-order-content-bottom">
@@ -19,7 +19,7 @@
         </view>
       </view>
     </view>
-    <view class="ro-order-btn {{industry}}-bg" @tap.stop="followWork({{order}})" wx:if="{{order.promotion_type * 1 !== 3 && order.status * 1 !== 6 && order.status * 1 !== 9}}">{{order.promotion_type * 1 === 4 ? groupTxt[order.status] : orderBtnTxt[order.status]}}</view>
+    <view class="ro-order-btn {{industry}}-bg" @tap.stop="followWork({{order}})" wx:if="{{order.promotion_type * 1 !== 3 && order.status * 1 !== 6 && order.status * 1 !== 9 && !(order.promotion_type * 1 === 5 && order.status === 5)}}">{{order.promotion_type * 1 === 4 ? groupTxt[order.status] : orderBtnTxt[order.status]}}</view>
   </view>
 </template>
 
@@ -43,7 +43,7 @@
     }
     data = {
       imageUrl: URIS.image,
-      orderItemStatus: ['待付款', '待使用', '待评价', '退款中', '已退款', '已完成', '已关闭', '退款失败', '退款失败', '已关闭', '待成团'],
+      orderItemStatus: ['待付款', '待使用', '待评价', '退款中', '已退款', '已完成', '已关闭', '退款中', '退款中', '已关闭', '待成团'],
       flagTxt: {
         3: '买',
         4: '团',

@@ -1,10 +1,10 @@
 <template>
   <view class="orderDetail">
-    <view class="orderDetail-head border-bottom-1px border-top-1px" wx:if="{{orderMsg.promotion_type * 1 === 1 || orderMsg.promotion_type * 1 === 2 || (orderMsg.promotion_type * 1 === 4 && (orderMsg.status * 1 === 0 || orderMsg.status * 1 === 6))}}">
+    <view class="orderDetail-head border-bottom-1px border-top-1px" wx:if="{{orderMsg.promotion_type * 1 === 1 || orderMsg.promotion_type * 1 === 2 || orderMsg.promotion_type * 1 === 5 || (orderMsg.promotion_type * 1 === 4 && (orderMsg.status * 1 === 0 || orderMsg.status * 1 === 6))}}">
       <view class="orderDetail-head-detailBox border-bottom-1px" @tap="couponDetail">
         <view class="orderDetail-head-left">
           <view class="orderDetail-head-img-box">
-            <image src="{{orderMsg.promotion_type == 1 || 4? orderMsg.promotion.promotion_images[0].image.url : orderMsg.promotion.gift_bag_images[0].image.url}}" mode="widthFix" class="orderDetail-head-img"></image>
+            <image wx:if="{{imageUrlHead}}" src="{{orderMsg.promotion_type == 5 ? (imageUrlHead + '/defaults/c-image/mine/pic-moren2@2x.png') : (orderMsg.promotion_type == 1 || 4 ? orderMsg.promotion.promotion_images[0].image.url : orderMsg.promotion.gift_bag_images[0].image.url)}}" mode="widthFix" class="orderDetail-head-img"></image>
           </view>
           <view class="orderDetail-head-msg">
             <view class="orderDetail-head-msg-title">{{orderMsg.title}}</view>
@@ -13,13 +13,13 @@
           </view>
         </view>
 
-        <view class="orderDetail-head-detailBtn">
+        <view class="orderDetail-head-detailBtn" wx:if="{{orderMsg.promotion_type * 1 !== 5}}">
           <image wx:if="{{imageUrlHead}}" src="{{imageUrlHead + '/defaults/c-image/mine/icon-my_Rectangle.png'}}" class="orderDetail-head-detailBtnImg"></image>
         </view>
       </view>
       <view class="orderDetail-head-status">
         <view class="orderDetail-head-statusTxt">{{statusTxt[orderMsg.status]}}</view>
-        <view class="orderDetail-head-statusBtn {{industry}}-bg" @tap="followWork({{orderMsg.status}}, {{orderMsg.id}}, {{orderMsg.merchant_id}})" wx:if="{{!orderMsg.is_share_money && (orderMsg.promotion_type * 1 !== 2 || orderMsg.status != 1)}}">{{btnTxt[orderMsg.status]}}</view>
+        <view class="orderDetail-head-statusBtn {{industry}}-bg" @tap="followWork({{orderMsg.status}}, {{orderMsg.id}}, {{orderMsg.merchant_id}})" wx:if="{{!orderMsg.is_share_money && !(orderMsg.promotion_type * 1 === 2 && orderMsg.status * 1 === 1) && !(orderMsg.promotion_type * 1 === 5 && (orderMsg.status * 1 === 0 || orderMsg.status * 1 === 1))}}">{{btnTxt[orderMsg.status]}}</view>
       </view>
     </view>
 
@@ -52,9 +52,110 @@
       <navigator url="{{'/pages/coupon-use/couponUse?id=' + orderMsg.id + '&type=order'}}" hover-class="none" wx:if="{{orderMsg.group_status * 1 === 3 || orderMsg.group_status * 1 === 4}}">
         <view class="group-btn {{industry}}-bg">立即使用</view>
       </navigator>
-      <!--<navigator url="{{'/pages/user/refund/refund?id=' + orderMsg.id}}" hover-class="none" wx:if="{{orderMsg.group_status * 1 === 5 || orderMsg.group_status * 1 === 6}}">-->
-        <!--<view class="group-btn {{industry}}-bg">查看退款详情</view>-->
-      <!--</navigator>-->
+    </view>
+
+    <view class="qrcode-container border-top-1px" wx:if="{{orderMsg.promotion_type * 1 === 5}}">
+      <!--<view class="qrcode-txt-li">有效期请在我的优惠券中查看</view>-->
+      <view class="qrcode-list-box border-top-1px">
+        <view class="qrcode-title-li border-bottom-1px">
+          <view class="qrcode-title">商品兑换券</view>
+          <view class="qrcode-use-btn {{industry}}-bg" wx:if="{{exChangeCanUse}}" @tap="toUse('alliance_goods')">进店使用</view>
+        </view>
+        <view class="qrcode-li border-bottom-1px" wx:for="{{exChangeArrShow}}" wx:key="{{index}}">
+          <view class="qrcode-left">
+            <image class="qrcode-icon" wx:if="{{imageUrlHead}}" src="{{imageUrlHead + '/defaults/c-image/mine/' + (item.is_used ? 'icon-coupon_use@2x.png' : 'icon-coupon_unuse@2x.png')}}"></image>
+            <view class="qrcode-num {{item.is_used ? 'dis' : ''}}"><text class="num-title">券{{index + 1}}:</text>{{item.beautyCode}}</view>
+          </view>
+          <view class="qrcode-right {{item.is_used ? 'dis' : ''}}">{{item.is_used ? '已使用' : '未使用'}}</view>
+        </view>
+      </view>
+      <view class="qrcode-arrow border-bottom-1px" @tap="checkQrcodeShow('exChangeShow')" wx:if="{{exChangeArr.length > 3}}">
+        <image class="qrcode-arrow-icon" wx:if="{{imageUrlHead}}" src="{{imageUrlHead + '/defaults/c-image/mine/' + (exChangeShow ? 'icon-deploy@2x.png' : 'icon-packup@2x.png')}}"></image>
+      </view>
+      <view class="qrcode-list-box">
+        <view class="qrcode-title-li border-bottom-1px">
+          <view class="qrcode-title">代金券</view>
+          <view class="qrcode-use-btn {{industry}}-bg" wx:if="{{cashCanUse}}" @tap="toUse('alliance_cash_10')">进店使用</view>
+        </view>
+        <view class="qrcode-li border-bottom-1px" wx:for="{{cashArrShow}}" wx:key="{{index}}">
+          <view class="qrcode-left">
+            <image class="qrcode-icon" wx:if="{{imageUrlHead}}" src="{{imageUrlHead + '/defaults/c-image/mine/' + (item.is_used ? 'icon-coupon_use@2x.png' : 'icon-coupon_unuse@2x.png')}}"></image>
+            <view class="qrcode-num {{item.is_used ? 'dis' : ''}}"><text class="num-title">券{{index + 1}}:</text>{{item.beautyCode}}</view>
+          </view>
+          <view class="qrcode-right {{item.is_used ? 'dis' : ''}}">{{item.is_used ? '已使用' : '未使用'}}</view>
+        </view>
+      </view>
+      <view class="qrcode-arrow border-bottom-1px" @tap="checkQrcodeShow('cashShow')" wx:if="{{cashArr.length > 3}}">
+        <image class="qrcode-arrow-icon" wx:if="{{imageUrlHead}}" src="{{imageUrlHead + '/defaults/c-image/mine/' + (cashShow ? 'icon-deploy@2x.png' : 'icon-packup@2x.png')}}"></image>
+      </view>
+      <view class="qrcode-list-box">
+        <view class="qrcode-title-li border-bottom-1px">
+          <view class="qrcode-title">优惠券</view>
+          <view class="qrcode-use-btn {{industry}}-bg" wx:if="{{couponCanUse}}" @tap="toUse('alliance_merchant_coupon')">进店使用</view>
+        </view>
+        <view class="qrcode-li border-bottom-1px" wx:for="{{couponArrShow}}" wx:key="{{index}}">
+          <view class="qrcode-left">
+            <image class="qrcode-icon" wx:if="{{imageUrlHead}}" src="{{imageUrlHead + '/defaults/c-image/mine/' + (item.is_used ? 'icon-coupon_use@2x.png' : 'icon-coupon_unuse@2x.png')}}"></image>
+            <view class="qrcode-num {{item.is_used ? 'dis' : ''}}"><text class="num-title">券{{index + 1}}:</text>{{item.beautyCode}}</view>
+          </view>
+          <view class="qrcode-right {{item.is_used ? 'dis' : ''}}">{{item.is_used ? '已使用' : '未使用'}}</view>
+        </view>
+      </view>
+      <view class="qrcode-arrow border-bottom-1px" @tap="checkQrcodeShow('couponShow')" wx:if="{{couponArr.length > 3}}">
+        <image class="qrcode-arrow-icon" wx:if="{{imageUrlHead}}" src="{{imageUrlHead + '/defaults/c-image/mine/' + (couponShow ? 'icon-deploy@2x.png' : 'icon-packup@2x.png')}}"></image>
+      </view>
+    </view>
+
+    <view class="qrcode-container border-top-1px" wx:if="{{orderMsg.promotion_type * 1 !== 5}}">
+      <!--<view class="qrcode-txt-li">有效期请在我的优惠券中查看</view>-->
+      <view class="qrcode-list-box border-top-1px">
+        <view class="qrcode-title-li border-bottom-1px">
+          <view class="qrcode-title">商品兑换券</view>
+          <view class="qrcode-use-btn {{industry}}-bg" wx:if="{{exChangeCanUse}}" @tap="toUse('alliance_goods')">进店使用</view>
+        </view>
+        <view class="qrcode-li border-bottom-1px" wx:for="{{exChangeArrShow}}" wx:key="{{index}}">
+          <view class="qrcode-left">
+            <image class="qrcode-icon" wx:if="{{imageUrlHead}}" src="{{imageUrlHead + '/defaults/c-image/mine/' + (item.is_used ? 'icon-coupon_use@2x.png' : 'icon-coupon_unuse@2x.png')}}"></image>
+            <view class="qrcode-num {{item.is_used ? 'dis' : ''}}"><text class="num-title">券{{index + 1}}:</text>{{item.beautyCode}}</view>
+          </view>
+          <view class="qrcode-right {{item.is_used ? 'dis' : ''}}">{{item.is_used ? '已使用' : '未使用'}}</view>
+        </view>
+      </view>
+      <view class="qrcode-arrow border-bottom-1px" @tap="checkQrcodeShow('exChangeShow')" wx:if="{{exChangeArr.length > 3}}">
+        <image class="qrcode-arrow-icon" wx:if="{{imageUrlHead}}" src="{{imageUrlHead + '/defaults/c-image/mine/' + (exChangeShow ? 'icon-deploy@2x.png' : 'icon-packup@2x.png')}}"></image>
+      </view>
+      <view class="qrcode-list-box">
+        <view class="qrcode-title-li border-bottom-1px">
+          <view class="qrcode-title">代金券</view>
+          <view class="qrcode-use-btn {{industry}}-bg" wx:if="{{cashCanUse}}" @tap="toUse('alliance_cash_10')">进店使用</view>
+        </view>
+        <view class="qrcode-li border-bottom-1px" wx:for="{{cashArrShow}}" wx:key="{{index}}">
+          <view class="qrcode-left">
+            <image class="qrcode-icon" wx:if="{{imageUrlHead}}" src="{{imageUrlHead + '/defaults/c-image/mine/' + (item.is_used ? 'icon-coupon_use@2x.png' : 'icon-coupon_unuse@2x.png')}}"></image>
+            <view class="qrcode-num {{item.is_used ? 'dis' : ''}}"><text class="num-title">券{{index + 1}}:</text>{{item.beautyCode}}</view>
+          </view>
+          <view class="qrcode-right {{item.is_used ? 'dis' : ''}}">{{item.is_used ? '已使用' : '未使用'}}</view>
+        </view>
+      </view>
+      <view class="qrcode-arrow border-bottom-1px" @tap="checkQrcodeShow('cashShow')" wx:if="{{cashArr.length > 3}}">
+        <image class="qrcode-arrow-icon" wx:if="{{imageUrlHead}}" src="{{imageUrlHead + '/defaults/c-image/mine/' + (cashShow ? 'icon-deploy@2x.png' : 'icon-packup@2x.png')}}"></image>
+      </view>
+      <view class="qrcode-list-box">
+        <view class="qrcode-title-li border-bottom-1px">
+          <view class="qrcode-title">优惠券</view>
+          <view class="qrcode-use-btn {{industry}}-bg" wx:if="{{couponCanUse}}" @tap="toUse('alliance_merchant_coupon')">进店使用</view>
+        </view>
+        <view class="qrcode-li border-bottom-1px" wx:for="{{couponArrShow}}" wx:key="{{index}}">
+          <view class="qrcode-left">
+            <image class="qrcode-icon" wx:if="{{imageUrlHead}}" src="{{imageUrlHead + '/defaults/c-image/mine/' + (item.is_used ? 'icon-coupon_use@2x.png' : 'icon-coupon_unuse@2x.png')}}"></image>
+            <view class="qrcode-num {{item.is_used ? 'dis' : ''}}"><text class="num-title">券{{index + 1}}:</text>{{item.beautyCode}}</view>
+          </view>
+          <view class="qrcode-right {{item.is_used ? 'dis' : ''}}">{{item.is_used ? '已使用' : '未使用'}}</view>
+        </view>
+      </view>
+      <view class="qrcode-arrow border-bottom-1px" @tap="checkQrcodeShow('couponShow')" wx:if="{{couponArr.length > 3}}">
+        <image class="qrcode-arrow-icon" wx:if="{{imageUrlHead}}" src="{{imageUrlHead + '/defaults/c-image/mine/' + (couponShow ? 'icon-deploy@2x.png' : 'icon-packup@2x.png')}}"></image>
+      </view>
     </view>
 
     <view class="orderDetail-merchant border-top-1px border-bottom-1px">
@@ -221,7 +322,15 @@
       groupEndTime: '',
       endTime: '',
       timer: '',
-      timeEnd: false
+      timeEnd: false,
+      exChangeArr: [], // 兑换券核销码
+      exChangeShow: false, // 是否展开
+      cashArr: [], // 代金券核销码
+      cashShow: false, // 是否展开
+      couponArr: [], // 优惠券核销码
+      couponShow: false, // 是否展开
+      qrcodes: [], // 普通券码
+      qrcodeShow: false // 是否展开
     }
 
     async onLoad(option) {
@@ -257,11 +366,24 @@
 
     async load(id) {
       let res = await getMyOrder.getOrderDetail(id)
-      this.loaded()
       if (res.error !== ERR_OK) {
+        this.loaded()
         return
       }
       this.orderMsg = res.data
+      let resData = await getMyOrder.getOrderCouponList(id)
+      if (resData.error !== ERR_OK) {
+        this.loaded()
+        return
+      }
+      let qrcode = this._computed(resData.data)
+      if (res.data.promotion_type * 1 === 5) {
+        this.exChangeArr = this._filterType(qrcode, 'alliance_goods')
+        this.cashArr = this._filterType(qrcode, 'alliance_cash_10')
+        this.couponArr = this._filterType(qrcode, 'alliance_merchant_coupon')
+      } else {
+        this.qrcodes = qrcode
+      }
       if (res.data.promotion_type * 1 === 3) {
         await wepy.setNavigationBarTitle({title: '买单详情'})
       } else if (res.data.promotion_type * 1 === 4) {
@@ -277,6 +399,7 @@
         this.groupTotal = (this.orderMsg.count * this.orderMsg.group_single_price).toFixed(2)
         this.endTime = this.orderMsg.group_end_timestamp
       }
+      this.loaded()
       this.$apply()
     }
 
@@ -325,6 +448,19 @@
         this.$apply()
       }
       return times
+    }
+
+    _filterType(arr, type) {
+      return arr.filter((item) => {
+        return item.type === type
+      })
+    }
+
+    _computed(arr) {
+      return arr.map((item) => {
+        item.beautyCode = item.code.replace(/(\d{4})/g, '$1 ')
+        return item
+      })
     }
 
     methods = {
@@ -393,6 +529,9 @@
         })
       },
       couponDetail() {
+        if (this.orderMsg.promotion_type * 1 === 5) {
+          return
+        }
         let id = this.orderMsg.promotion_id
         let merchantId = this.orderMsg.merchant_id
         let couponType
@@ -445,12 +584,61 @@
           name: this.orderMsg.merchant_data.name
         }
         wepy.openLocation(data)
+      },
+      checkQrcodeShow(type) {
+        this[type] = !this[type]
+        this.$apply()
+      },
+      toUse(status) {
+        this.$navigate('/pages/coupon-use/couponUse?id=' + this.orderMsg.id + '&type=alliance&status=' + status)
       }
     }
 
     events = {
       'appraiseSuccess': () => {
         this.load(this.orderMsg.id)
+      }
+    }
+
+    computed = {
+      exChangeCanUse() {
+        let arr = this.exChangeArr.filter((item) => {
+          return !item.is_used
+        })
+        return arr.length
+      },
+      cashCanUse() {
+        let arr = this.cashArr.filter((item) => {
+          return !item.is_used
+        })
+        return arr.length
+      },
+      couponCanUse() {
+        let arr = this.couponArr.filter((item) => {
+          return !item.is_used
+        })
+        return arr.length
+      },
+      exChangeArrShow() {
+        if (this.exChangeShow) {
+          return [...this.exChangeArr]
+        } else {
+          return [...this.exChangeArr.slice(0, 3)]
+        }
+      },
+      cashArrShow() {
+        if (this.cashShow) {
+          return [...this.cashArr]
+        } else {
+          return [...this.cashArr.slice(0, 3)]
+        }
+      },
+      couponArrShow() {
+        if (this.couponShow) {
+          return [...this.couponArr]
+        } else {
+          return [...this.couponArr.slice(0, 3)]
+        }
       }
     }
   }
@@ -657,6 +845,74 @@
         border-radius: 2px
         font-family: PingFangSC-Regular
         font-size: $font-size-medium
+    .qrcode-container
+      margin-top: 10px
+      background: $color-white
+      .qrcode-txt-li
+        height: 44px
+        line-height: 44px
+        font-family: PingFang-SC-Regular
+        font-size: $font-size-medium
+        padding-left: 12px
+      .qrcode-list-box
+        padding-left: 12px
+        .qrcode-title-li
+          padding-right: 12px
+          height: 44px
+          display: flex
+          justify-content: space-between
+          align-items: center
+          .qrcode-title
+            font-family: PingFang-SC-Regular
+            font-size: $font-size-medium
+          .qrcode-use-btn
+            width: 58px
+            height: 24px
+            border-radius: 2px
+            background: $color-main
+            color: $color-white
+            font-family: PingFangSC-Light
+            font-size: $font-size-small
+            line-height: 24px
+            text-align: center
+        .qrcode-li
+          padding-right: 12px
+          display: flex
+          height: 44px
+          align-items: center
+          justify-content: space-between
+          .qrcode-left
+            display: flex
+            height: 44px
+            align-items: center
+            .qrcode-icon
+              width: 14px
+              height: 11.5px
+              margin-right: 5px
+            .qrcode-num
+              height: 44px
+              line-height: 44px
+              font-family: PingFang-SC-Medium
+              font-size: $font-size-medium
+              .num-title
+                font-family: PingFang-SC-Regular
+                margin-right: 10px
+                line-height: 44px
+            .dis.qrcode-num
+              color: $color-text-ddd
+          .qrcode-right
+            font-family: PingFangSC-Light
+            font-size: $font-size-small
+          .dis.qrcode-right
+            color: $color-text-ddd
+      .qrcode-arrow
+        height: 40px
+        display: flex
+        align-items: center
+        justify-content: center
+        .qrcode-arrow-icon
+          width: 12px
+          height: 7px
     .orderDetail-merchant
       background: $color-highlight-background
       margin-top: 10px

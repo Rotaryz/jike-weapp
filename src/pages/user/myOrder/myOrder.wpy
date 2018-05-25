@@ -110,7 +110,7 @@
         {title: '退款/售后', type: 3}
       ],
       noOrderIcon: [URIS.image + '/defaults/c-image/mine/pic-my_nopaid.png', URIS.image + '/defaults/c-image/mine/pic-my_noused.png', URIS.image + '/defaults/c-image/mine/pic-my_noevaluated.png', URIS.image + '/defaults/c-image/mine/pic-my_norefund.png'],
-      orderItemStatus: ['待付款', '待使用', '待评价', '退款中', '退款完成', '已评价', '已关闭', '退款失败', '退款失败', '已关闭'],
+      orderItemStatus: ['待付款', '待使用', '待评价', '退款中', '退款完成', '已评价', '已关闭', '退款中', '退款中', '已关闭'],
       orderItemBtnTxt: ['付款', '进店使用', '评价', '再来一单', '再来一单', '再来一单', '再来一单', '再来一单', '再来一单', '再来一单'],
       isPhone: 1,
       LowerLoading: false,
@@ -380,7 +380,7 @@
             if (item.promotion_type * 1 === 4) {
               this.$navigate('/pages/group-detail/group-detail?from=order&id=' + item.group_id)
             } else {
-              this.$navigate('../refund/refund?id=' + item.id)
+              this.$navigate('/pages/user/refund/refund?id=' + item.id)
             }
             break
           case 10:

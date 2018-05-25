@@ -18,8 +18,8 @@
           </view>
           <view class="couponUse-item-head-right">
             <view class="shopMsg">
-              <image src="{{item.shopLogo}}" class="shopLogo"></image>
-              <view class="shopName">{{item.shopName}}</view>
+              <image wx:if="{{imageUrlHead}}" src="{{item.orderType === 'alliance_cash_10' ? imageUrlHead + '/defaults/c-image/mine/pic-moren@2x.png' : item.shopLogo}}" class="shopLogo"></image>
+              <view class="shopName">{{item.orderType === 'alliance_cash_10' ? item.activity_name : item.shopName}}</view>
             </view>
           </view>
           <image class="exChange-img" src="{{imageUrlHead + '/defaults/c-image/mine/pic-m_certificate@2x.png'}}" wx:if="{{item.type==='exchange' && imageUrlHead}}"></image>
@@ -28,7 +28,7 @@
       <view class="couponEwm-Msg-body">
         <image src="{{item.qrcodeUrl}}" class="couponEwm-Msg-body-EWM"></image>
         <view style="background-image: url({{imageUrlHead ? imageUrlHead + '/defaults/c-image/mine/pic-mabg.png':''}}); background-size: 356rpx 80rpx" class="couponEwm-Msg-body-couponNum">{{item.beautyCode}}</view>
-        <view class="couponEwm-Msg-body-txt">该券码用于线下门店核销</view>
+        <view class="couponEwm-Msg-body-txt">{{item.orderType === 'alliance_cash_10' ? '该券仅限于在参与该异业联盟活动的商家使用' : '该券码用于线下门店核销'}}</view>
       </view>
     </view>
   </view>
@@ -63,11 +63,11 @@
     }
 
     async onLoad(option) {
-      this.load(option.id, option.type)
+      this.load(option.id, option.type, option.status)
     }
 
-    async load(id, type) {
-      let resList
+    async load(id, type, status) {
+      let resList, filterArr
       switch (type) {
         case 'voucher':
         case 'cash':
@@ -75,17 +75,40 @@
           resList = await Coupon.getUserCouponDetail(id)
           break
         case 'order':
+        case 'alliance':
           resList = await getMyOrder.getOrderCouponList(id)
           break
+        default:
+          resList = await Coupon.getUserCouponDetail(id)
       }
       if (resList.error !== ERR_OK) {
         this.loaded()
         return
       }
-      this.couponList = this._computed(resList.data)
+      if (type === 'alliance') {
+        let res = this._filter(resList.data)
+        filterArr = this._filterType(res, status)
+      } else {
+        filterArr = this._filter(resList.data)
+      }
+      this.couponList = this._computed(filterArr)
       this.loaded()
     }
 
+    // 筛选出未使用的
+    _filter(arr) {
+      return arr.filter((item) => {
+        return !item.is_used
+      })
+    }
+    // 筛选指定类型
+    _filterType(arr, type) {
+      return arr.filter((item) => {
+        return item.type === type
+      })
+    }
+
+    // 收到的数据处理后渲染
     _computed(arr) {
       return arr.map((item) => {
         let beautyCode = item.code.replace(/(\d{4})/g, '$1 ')
@@ -102,7 +125,10 @@
           id: item.promotion_id,
           image_url: item.promotion.promotion_img || '',
           shopLogo: item.merchant_data.logo_image,
-          shopName: item.merchant_data.shop_name
+          shopName: item.merchant_data.shop_name,
+          is_used: item.is_used,
+          activity_name: item.activity_name,
+          orderType: item.type
         }
       })
     }
@@ -200,10 +226,10 @@
               width: 100%
 
               .shopLogo
-               width: 32px
-               height: 32px
-               border-radius: 50%
-               margin-bottom: 5px
+                width: 32px
+                height: 32px
+                border-radius: 50%
+                margin-bottom: 5px
 
               .shopName
                 font-size: $font-size-small
