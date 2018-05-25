@@ -208,7 +208,8 @@
       let logStatus = timestamp - last > 60000
       this.logTimes = this.$parent.globalData.logTimes && !logStatus ? this.$parent.globalData.logTimes : 0
       this.getLogs = logStatus || this.logTimes < 3
-      if (this.getLogs) {
+      let token = wepy.getStorageSync('token')
+      if (this.getLogs && token) {
         await this._saveLog()
         this.$parent.updateGlobalData('nowTimes', timestamp)
         this.$parent.updateGlobalData('logTimes', ++this.logTimes)
