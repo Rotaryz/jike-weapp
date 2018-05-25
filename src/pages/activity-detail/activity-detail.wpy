@@ -190,7 +190,7 @@
         promotion_id: this.promotioId, // 活动id
         promotion_type: '5', // 类型为 异业联盟卡
         from: 'c_yylm',
-        employees_id: this.employeesId,
+        employee_id: this.employeesId,
         title: this.title,
         price: this.price,
         count: this.count
