@@ -57,7 +57,7 @@
       <!--</navigator>-->
     </view>
 
-    <view class="qrcode-container border-top-1px" wx:if="{{orderMsg.promotion_type * 1 === 5}}">
+    <view class="qrcode-container border-top-1px" wx:if="{{orderMsg.promotion_type * 1 === 5 && orderMsg.status * 1 !== 0 && orderMsg.status * 1 !== 6}}">
       <!--<view class="qrcode-txt-li">有效期请在我的优惠券中查看</view>-->
       <view class="qrcode-list-box border-top-1px">
         <view class="qrcode-title-li border-bottom-1px">
