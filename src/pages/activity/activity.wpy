@@ -42,18 +42,15 @@
     async onLoad(option) {
       this.type = option.type
       if (option.m) {
-        wepy.setStorageSync('merchantId', option.m)
+        wepy.setStorageSync('merchantId', option.m * 1)
       }
       this.loaded()
       const token = wepy.getStorageSync('token')
-      this.merchantId = wepy.getStorageSync('merchantId')
       if (this.type === 'wheel') {
         this.webviewUrl = `${URIS.webview}/index.html?token=${token}&merchantId=${this.merchantId}#/wheel`
       } else if (this.type === 'sign') {
         this.webviewUrl = `${URIS.webview}/index.html?token=${token}&merchantId=${this.merchantId}#/registration`
       } else if (this.type === 'y') {
-        wepy.setStorageSync('a', option.a)
-        wepy.setStorageSync('e', option.e)
         this.webviewUrl = `${URIS.webview}/index.html#/activity?a=${option.a}&e=${option.e}&m=${this.merchantId}`
       }
       this.$apply()
