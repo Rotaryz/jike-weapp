@@ -368,7 +368,7 @@
         justify-content: center
         position: absolute !important
         width: 100%
-        bottom: 1px
+        bottom: 0px
         z-index: 2
         background-color: $color-white
         cut-off-rule-top(0, 0, $color-col-line)
