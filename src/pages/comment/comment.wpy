@@ -74,7 +74,7 @@
 
     async _createQrcode() {
       setTimeout(async () => {
-        this.currentMerchant = wepy.getStorageSync('merchantId') *1
+        this.currentMerchant = wepy.getStorageSync('merchantId') * 1
         let currentPage = `/pages/live/live?currentMerchant=${this.currentMerchant}`
         const res = await Info.createQrode({path: currentPage})
         this.qrcode = res.data.image_url
