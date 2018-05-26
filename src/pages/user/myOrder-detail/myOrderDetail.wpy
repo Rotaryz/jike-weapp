@@ -125,7 +125,7 @@
       </view>
     </view>
 
-    <view class="qrcode-container border-top-1px" wx:if="{{(orderMsg.promotion_type * 1 !== 4 && orderMsg.promotion_type * 1 !== 5 && orderMsg.status * 1 !== 0 && orderMsg.status * 1 !== 6 && orderMsg.status * 1 !== 4) || (orderMsg.promotion_type * 1 === 4 && (orderMsg.status * 1 === 1 || orderMsg.status * 1 === 2 || orderMsg.status * 1 === 5))}}">
+    <view class="qrcode-container border-top-1px" wx:if="{{(orderMsg.promotion_type * 1 !== 3 && orderMsg.promotion_type * 1 !== 4 && orderMsg.promotion_type * 1 !== 5 && orderMsg.status * 1 !== 0 && orderMsg.status * 1 !== 6 && orderMsg.status * 1 !== 4) || (orderMsg.promotion_type * 1 === 4 && (orderMsg.status * 1 === 1 || orderMsg.status * 1 === 2 || orderMsg.status * 1 === 5))}}">
       <view class="qrcode-list-box border-top-1px">
         <view class="qrcode-title-li border-bottom-1px">
           <view class="qrcode-title">有效期至：{{orderMsg.promotion_valid_time}}</view>
@@ -386,11 +386,6 @@
         this.couponArr = this._filterType(qrcode, 'alliance_merchant_coupon')
       } else {
         this.qrcodesArr = qrcode
-      }
-      if (res.data.promotion_type * 1 === 3) {
-        await wepy.setNavigationBarTitle({title: '买单详情'})
-      } else if (res.data.promotion_type * 1 === 4) {
-        await wepy.setNavigationBarTitle({title: '拼团详情'})
       }
       if (res.data.promotion_type * 1 === 4 && res.data.group_status * 1 >= 5) {
         this.groupStatus = GROUPERRORARR
