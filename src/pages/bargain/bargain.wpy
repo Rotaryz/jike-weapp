@@ -1,0 +1,386 @@
+<template>
+  <view class="bargain">
+    <!--普通列表-->
+    <view wx:if="{{navIdx === 0}}">
+      <view class="ro-share-none" wx:if="{{!bargainList.length}}">
+        <image class="ro-share-none-img" wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/b-image/common/pic-empty_city@2x.png'}}"></image>
+        <view class="ro-share-none-text">暂无数据</view>
+      </view>
+      <view class="bargain-normal" wx:for="{{bargainList}}" wx:key="{{index}}" @tap="goDetail({{item}})">
+        <view class="bargain-normal-item">
+          <image class="bargain-normal-img" mode="aspectFill" wx:if="{{item.promotion_image}}" src="{{item.promotion_image}}">
+            <view class="bargain-normal-num">仅剩{{item.activity_stock}}件</view>
+          </image>
+          <view class="bargain-normal-content">
+            <view class="bargain-normal-title">{{item.activity_name}}</view>
+            <view class="bargain-normal-money">
+              <view class="bargain-normal-big-money">80.00</view>
+              <view class="bargain-normal-small-money">{{item.promotion_price}}元</view>
+            </view>
+            <view class="bargain-normal-peo">
+              <view class="mine-serve-avatar-box">
+                <view class="mine-serve-avatarBox-item" wx:for="{{item.join_list}}" wx:key="{{index}}">
+                  <image class="mine-serve-avatarBox-img" src="{{item}}"></image>
+                </view>
+                <view class="mine-serve-avatarBox-item" wx:if="{{item.join_list.length >= 3}}">
+                  <image class="mine-serve-avatarBox-img">
+                    <view class="bargain-circle-box">
+                      <view class="bargain-circle"></view>
+                      <view class="bargain-circle"></view>
+                      <view class="bargain-circle"></view>
+                    </view>
+                  </image>
+                </view>
+                <view class="bargain-normal-peo-num">
+                  {{item.join_count}}人正在参与
+                </view>
+              </view>
+            </view>
+          </view>
+          <view class="bargain-normal-btn {{item.activity_stock === 0 ? 'bargain-normal-btn-disable' : industry + '-bg'}} ">{{item.activity_stock === 0 ? '已抢光' : '去砍价'}}</view>
+        </view>
+        <view class="margin-box-10px"></view>
+      </view>
+      <Underline></Underline>
+    </view>
+
+    <view class="bargain-mine-list" wx:if="{{navIdx === 1}}">
+      <view class="ro-share-none" wx:if="{{!myList.length}}">
+        <image class="ro-share-none-img" wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/b-image/common/pic-empty_city@2x.png'}}"></image>
+        <view class="ro-share-none-text">暂无数据</view>
+      </view>
+      <repeat for="{{myList}}" key="index" item="item" index="index">
+        <bargain-mine :industry.sync="industry" :bargainCoupon.sync="item"></bargain-mine>
+      </repeat>
+      <shareUnderline></shareUnderline>
+    </view>
+    <!--我的列表-->
+    <view class="bargain-btn">
+      <view class="bargain-btn-item" wx:for="{{navBtn}}" wx:key="{{index}}" @tap="checkNav({{index}})">
+        <image class="bargain-btn-item-icon" wx:if="{{imageUrl}}" src="{{navIdx === index ? imageUrl+ item.iconAct : imageUrl+ item.icon}}"></image>
+        <view class="bargain-btn-item-title {{navIdx === index ? 'bargain-btn-item-title-active' : ''}}">{{item.title}}</view>
+      </view>
+    </view>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import base from 'common/mixins/base'
+  import URIS from 'common/js/config'
+  import {ERR_OK} from 'api/base'
+  import BargainMine from '@/base/bargain-mine/bargain-mine'
+  import Bargain from 'api/bargain'
+  import Underline from '@/base/underline-block/underline-block'
+  const NAVBTN = [{title: '砍价商品', icon: '/defaults/c-image/bargain/icon-goods_default@2x.png', iconAct: '/defaults/c-image/bargain/icon-goods_selected@2x.png'}, {title: '我的砍价', icon: '/defaults/c-image/bargain/icon-bargain_default@2x.png', iconAct: '/defaults/c-image/bargain/icon-bargain_selected@2x.png'}]
+  export default class bargain extends wepy.page {
+    mixins = [base]
+
+    config = {
+      navigationBarTitleText: '疯狂砍价'
+    }
+    data = {
+      navIdx: 0,
+      navBtn: NAVBTN,
+      imageUrl: URIS.image,
+      page: 1,
+      myPage: 1,
+      bargainList: [],
+      myList: [],
+      timer: null
+    }
+
+    infoRes(res) {
+      if (res.error === ERR_OK) {
+        return res.data
+      }
+      return false
+    }
+    async onLoad() {
+      await this.showIndustry()
+      this.bargainList = await this.getList() || []
+      this.myList = await this.myBargainList() || []
+      this._groupTimePlay()
+      this.$apply()
+    }
+
+    //      下拉刷新
+    async redPacketLower() {
+      switch (this.checkIdx) {
+        case 0:
+          this.page++
+          let res = await this.getList(this.page)
+          this.packetList.push(...res)
+          if (!res.length) {
+            this.$invoke('Underline', 'show')
+            this.redNothing = true
+          }
+          break
+        case 1:
+          this.myPage++
+          let res2 = await this.myBargainList()
+          this.shareList.push(...res2)
+          if (!res2.length) {
+            this.$invoke('shareUnderline', 'show')
+            this.shareNothing = true
+          }
+          break
+      }
+      this.$apply()
+    }
+    methods = {
+      goDetail(item) {
+        this.$navigate(`/pages/coupon-detail/coupon-detail?s=bargain&id=${item.promotion_id}&a=${item.id}&m=${item.merchant_id}`)
+      },
+      checkNav(index) {
+        this.navIdx = index * 1
+        let title = this.navIdx ? '我的砍价' : '疯狂砍价'
+        wepy.setNavigationBarTitle({title})
+      }
+    }
+
+    async getList() {
+      let data = {page: this.page}
+      let res = await Bargain.bargainList(data)
+      this.loaded()
+      res = this.infoRes(res)
+      return res
+    }
+
+    async myBargainList() {
+      let data = {page: this.myPage}
+      let res = await Bargain.myBargain(data)
+      this.loaded()
+      res = this.infoRes(res)
+      return res
+    }
+
+    _groupTimePlay() {
+      clearInterval(this.timer)
+      this.groupEndTime = this._groupTimeCheckout(this.endTime)
+      this.myList = this.myList.map((item) => {
+        let endTime = this._groupTimeCheckout(item.end_at_timestamp)
+        item.end_at = `${endTime.hour}:${endTime.minute}:${endTime.second}`
+        return item
+      })
+      this.$apply()
+      this.timer = setInterval(() => {
+        this.groupEndTime = this._groupTimeCheckout(this.endTime)
+        this.myList = this.myList.map((item) => {
+          let endTime = this._groupTimeCheckout(item.end_at_timestamp)
+          item.end_at = `${endTime.hour}:${endTime.minute}:${endTime.second}`
+          return item
+        })
+        this.$apply()
+      }, 1000)
+    }
+    // 定时器
+    _groupTimeCheckout(time) {
+      let nowSecond = parseInt(Date.now() / 1000)
+      let differ = time * 1 - nowSecond
+      let day = Math.floor(differ / (60 * 60 * 24))
+      day = day >= 10 ? day : '0' + day
+      let hour = Math.floor(differ / (60 * 60)) - (day * 24)
+      hour = hour >= 10 ? hour : '0' + hour
+      let minute = Math.floor(differ / 60) - (day * 24 * 60) - (hour * 60)
+      minute = minute >= 10 ? minute : '0' + minute
+      let second = Math.floor(differ) - (day * 24 * 60 * 60) - (hour * 60 * 60) - (minute * 60)
+      second = second >= 10 ? second : '0' + second
+      let times
+      if (differ > 0) {
+        times = {
+          day,
+          hour,
+          minute,
+          second
+        }
+      } else {
+        times = {
+          day: '00',
+          hour: '00',
+          minute: '00',
+          second: '00'
+        }
+      }
+      return times
+    }
+    components = {
+      'bargain-mine': BargainMine,
+      Underline,
+      'shareUnderline': Underline
+    }
+  }
+</script>
+
+<style lang="stylus">
+  @import '../../common/stylus/variable'
+  @import '../../common/stylus/mixin'
+  .bargain
+    padding-bottom :44px
+  .bargain-btn
+    position: fixed
+    width: 100vw
+    bottom: 0
+    left: 0
+    height: 44.5px
+    background: $color-white
+    display :flex
+    border-top : 0.5px solid rgba(0,0,0,.1)
+    &:after
+      content :''
+      position: absolute
+      row-center()
+      top: 14.5px
+      width: 1px
+      height: 16px
+      background :#DBDBDB
+      transform: scaleX(.5)
+    .bargain-btn-item
+      flex :1
+      display :flex
+      justify-content :center
+      align-items :center
+      .bargain-btn-item-icon
+        height: 16px
+        width: 16px
+      .bargain-btn-item-title
+        margin-left: 4.5px
+        font-size :$font-size-medium
+        font-family :$font-family-light
+        color :#BEBEBE
+      .bargain-btn-item-title-active
+        color :$color-pay
+
+  .bargain-normal
+    .bargain-normal-item
+      background :$color-white
+      position: relative
+      box-sizing: border-box
+      padding : $padding-all
+      display :flex
+      &:first-child
+        border-top :0.5px solid $color-col-line
+      .bargain-normal-img
+        height: 84px
+        width: 84px
+        border-radius :2px
+        position: relative
+        overflow : hidden
+        border: 0.5px solid $color-col-line
+        .bargain-normal-num
+          background :rgba(0,0,0,0.5)
+          height: 18px
+          color :$color-white
+          line-height: 18px
+          text-align :center
+          font-size :$font-size-small-s
+          bottom: 0
+          left: 0
+          width: 100%
+          position :absolute
+      .bargain-normal-content
+        margin-left: 10px
+        flex :1
+        .bargain-normal-title
+          margin-top: 2.75px
+          color :$color-text
+          font-family :$font-family-regular
+          font-size :$font-size-medium
+        .bargain-normal-money
+          margin-top: 10px
+          display :flex
+          align-items :flex-end
+          .bargain-normal-big-money
+            font-size :$font-size-large-xx
+            color :$color-pay
+            font-family :$font-family-meddle
+            position: relative
+            max-height: $font-size-large-xx
+            text-indent : 11px
+            &:before
+              font-family :$font-family-regular
+              content :'¥'
+              position: absolute
+              left: -9px
+              font-size :$font-size-small
+              bottom: 2.5px
+              color :$color-pay
+          .bargain-normal-small-money
+            margin-left: 6px
+            margin-bottom: 2.5px
+            color :$color-text-d
+            text-decoration :line-through
+            font-family :$font-family-light
+            font-size :$font-size-small
+
+
+        .bargain-normal-peo
+          margin-top :16.5px
+          display :flex
+          align-items :center
+          height: 17px
+          .bargain-normal-peo-num
+            height: 17px
+            line-height: 20px
+            margin-left: 8.15px
+            color :$color-text-gray
+            font-family :PingFangSC-Light
+            font-size :$font-size-small
+      .bargain-normal-btn
+        bottom: 15px
+        right: 12px
+        height: 24px
+        width: 65px
+        line-height: 24px
+        text-align :center
+        color :$color-white
+        font-size :$font-size-small
+        border-radius :50px
+        background :$color-theme
+        position: absolute
+      .bargain-normal-btn-disable
+        background : #DBDBDB
+  .mine-serve-avatar-box
+    display: flex
+    .mine-serve-avatarBox-item
+      width: 20px
+      height: 20px
+      border-radius: 50%
+      margin-right: -8px
+      .mine-serve-avatarBox-img
+        width: 17px
+        height: 17px
+        border: 1px solid $color-white
+        background: $color-row-line
+        border-radius: 50%
+        position: relative
+        .bargain-circle-box
+          position: absolute
+          all-center()
+          display :flex
+          align-items :center
+          justify-content :center
+          width: 100%
+          .bargain-circle
+            display :inline-block
+            background :#B6B6B6
+            border-radius :100%
+            height: 2px
+            width: 2px
+            margin: 0 0.7px
+
+
+  .ro-share-none
+    position: fixed
+    top: 45.3vw
+    row-center()
+    .ro-share-none-img
+      width: 86px
+      height: 71px
+    .ro-share-none-text
+      font-size: $font-size-small
+      margin-top: 10px
+      text-align: center
+      color: $color-text
+      font-family: $font-family-light
+</style>
