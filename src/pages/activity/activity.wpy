@@ -51,7 +51,7 @@
       } else if (this.type === 'sign') {
         this.webviewUrl = `${URIS.webview}/index.html?token=${token}&merchantId=${this.merchantId}#/registration`
       } else if (this.type === 'y') {
-        this.webviewUrl = `${URIS.webview}/index.html#/activity?a=${option.a}&e=${option.e}&m=${this.merchantId}`
+        this.webviewUrl = `${URIS.webview}/index.html#/activity?a=${option.a}&e=${option.e}&m=${this.merchantId}&type=${this.type}`
       }
       this.$apply()
     }
