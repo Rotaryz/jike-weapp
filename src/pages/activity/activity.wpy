@@ -37,7 +37,7 @@
         },
         fail: (res) => {
           // 转发失败
-          console.log(res)
+          console.info(res)
         }
       }
     }
