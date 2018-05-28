@@ -13,7 +13,10 @@
     data = {
       webviewUrl: '',
       token: '',
-      merchantId: ''
+      merchantId: '',
+      a: '',
+      e: '',
+      type: ''
     }
 
     onShareAppMessage(res) {
@@ -28,7 +31,7 @@
       }
       return {
         title: user.nickName + title,
-        path: `/pages/activity/activity?type=${this.type}&merchantId=${this.merchantId}`,
+        path: `/pages/activity/activity?a=${this.a}&e=${this.e}&type=${this.type}&merchantId=${this.merchantId}`,
         success: async () => {
           // 转发成功
         },
@@ -41,18 +44,20 @@
 
     async onLoad(option) {
       this.type = option.type
+      this.a = option.a || ''
+      this.e = option.e || '0'
       if (option.m) {
         wepy.setStorageSync('merchantId', option.m * 1)
       }
       this.merchantId = wepy.getStorageSync('merchantId')
-      this.loaded()
       const token = wepy.getStorageSync('token')
+      this.loaded()
       if (this.type === 'wheel') {
         this.webviewUrl = `${URIS.webview}/index.html?token=${token}&merchantId=${this.merchantId}#/wheel`
       } else if (this.type === 'sign') {
         this.webviewUrl = `${URIS.webview}/index.html?token=${token}&merchantId=${this.merchantId}#/registration`
       } else if (this.type === 'y') {
-        this.webviewUrl = `${URIS.webview}/index.html#/activity?a=${option.a}&e=${option.e}&m=${this.merchantId}&type=${this.type}`
+        this.webviewUrl = `${URIS.webview}/index.html#/activity?a=${this.a}&e=${this.e}&m=${this.merchantId}&type=${this.type}`
       }
       this.$apply()
     }
