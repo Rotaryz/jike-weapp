@@ -100,7 +100,7 @@
     }
 
     config = {
-      current_merchant: 100002,
+      current_merchant: 100004,
       pages: [
         'pages/recommend/recommend',
         'pages/loading/loading',
@@ -139,7 +139,8 @@
         'pages/bank-card/bank-card',
         'pages/group-detail/group-detail',
         'pages/shop-introduce/shop-introduce',
-        'pages/bargain/bargain'
+        'pages/bargain/bargain',
+        'pages/my-bargain/my-bargain'
       ],
       window: {
         backgroundColor: '#F9F9F9',

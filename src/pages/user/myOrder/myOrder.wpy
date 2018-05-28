@@ -401,7 +401,7 @@
               this.$navigate('/pages/coupon-detail/coupon-detail?s=group&id=' + item.promotion.id + '&type=' + couponType + '&currentMerchant=' + item.merchant_id + '&groupId=' + groupId)
             } else if (item.promotion_type * 1 === 7) {
               // 砍价跳转
-
+              this.$navigate(`/pages/coupon-detail/coupon-detail?s=bargain&id=${item.promotion.id}&a=${item.activity_id}&m=${item.merchant_id}`)
             } else {
               this.$navigate('/pages/coupon-detail/coupon-detail?id=' + item.promotion.id + '&type=' + couponType + '&currentMerchant=' + item.merchant_id)
             }

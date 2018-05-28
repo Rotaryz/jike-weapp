@@ -18,11 +18,11 @@
               <view class="bargain-normal-small-money">{{item.promotion_price}}元</view>
             </view>
             <view class="bargain-normal-peo">
-              <view class="mine-serve-avatar-box">
+              <view class="mine-serve-avatar-box" wx:if="{{item.join_list.length}}">
                 <view class="mine-serve-avatarBox-item" wx:for="{{item.join_list}}" wx:key="{{index}}">
                   <image class="mine-serve-avatarBox-img" src="{{item}}"></image>
                 </view>
-                <view class="mine-serve-avatarBox-item" wx:if="{{item.join_list.length >= 3}}">
+                <view class="mine-serve-avatarBox-item" wx:if="{{bargainCoupon.join_count > 3}}">
                   <image class="mine-serve-avatarBox-img">
                     <view class="bargain-circle-box">
                       <view class="bargain-circle"></view>
@@ -31,9 +31,9 @@
                     </view>
                   </image>
                 </view>
-                <view class="bargain-normal-peo-num">
-                  {{item.join_count}}人正在参与
-                </view>
+              </view>
+              <view class="bargain-normal-peo-num">
+                {{item.join_count}}人正在参与
               </view>
             </view>
           </view>
@@ -160,7 +160,7 @@
       this.groupEndTime = this._groupTimeCheckout(this.endTime)
       this.myList = this.myList.map((item) => {
         let endTime = this._groupTimeCheckout(item.end_at_timestamp)
-        item.end_at = `${endTime.hour}:${endTime.minute}:${endTime.second}`
+        item.end_at = `${endTime.day}天${endTime.hour}时${endTime.minute}分${endTime.second}秒`
         return item
       })
       this.$apply()
@@ -168,7 +168,7 @@
         this.groupEndTime = this._groupTimeCheckout(this.endTime)
         this.myList = this.myList.map((item) => {
           let endTime = this._groupTimeCheckout(item.end_at_timestamp)
-          item.end_at = `${endTime.hour}:${endTime.minute}:${endTime.second}`
+          item.end_at = `${endTime.day}天${endTime.hour}时${endTime.minute}分${endTime.second}秒`
           return item
         })
         this.$apply()
@@ -322,7 +322,6 @@
           .bargain-normal-peo-num
             height: 17px
             line-height: 20px
-            margin-left: 8.15px
             color :$color-text-gray
             font-family :PingFangSC-Light
             font-size :$font-size-small
@@ -342,6 +341,7 @@
         background : #DBDBDB
   .mine-serve-avatar-box
     display: flex
+    margin-right: 11.5px
     .mine-serve-avatarBox-item
       width: 20px
       height: 20px

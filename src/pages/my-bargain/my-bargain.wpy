@@ -1,0 +1,110 @@
+<template>
+  <view class="my-bargain">
+    <repeat for="{{myList}}" key="index" item="item" index="index">
+      <bargain-mine :industry.sync="industry" :bargainCoupon.sync="item"></bargain-mine>
+    </repeat>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import base from 'common/mixins/base'
+  import URIS from 'common/js/config'
+  import {ERR_OK} from 'api/base'
+  import BargainMine from '@/base/bargain-mine/bargain-mine'
+  import Bargain from 'api/bargain'
+
+  export default class myBargain extends wepy.page {
+    mixins = [base]
+
+    config = {
+      navigationBarTitleText: '我的砍价'
+    }
+
+    data = {
+      imageUrl: URIS.image,
+      myList: []
+    }
+
+    async onLoad() {
+      await this.showIndustry()
+      this.myList = await this.myBargainList() || []
+      this._groupTimePlay()
+      this.$apply()
+    }
+
+    async myBargainList() {
+      let data = {page: this.myPage}
+      let res = await Bargain.myBargain(data)
+      this.loaded()
+      res = this.infoRes(res)
+      return res
+    }
+
+    _groupTimePlay() {
+      clearInterval(this.timer)
+      this.groupEndTime = this._groupTimeCheckout(this.endTime)
+      this.myList = this.myList.map((item) => {
+        let endTime = this._groupTimeCheckout(item.end_at_timestamp)
+        item.end_at = `${endTime.day}天${endTime.hour}时${endTime.minute}分${endTime.second}秒`
+        return item
+      })
+      this.$apply()
+      this.timer = setInterval(() => {
+        this.groupEndTime = this._groupTimeCheckout(this.endTime)
+        this.myList = this.myList.map((item) => {
+          let endTime = this._groupTimeCheckout(item.end_at_timestamp)
+          item.end_at = `${endTime.day}天${endTime.hour}时${endTime.minute}分${endTime.second}秒`
+          return item
+        })
+        this.$apply()
+      }, 1000)
+    }
+
+    // 定时器
+    _groupTimeCheckout(time) {
+      let nowSecond = parseInt(Date.now() / 1000)
+      let differ = time * 1 - nowSecond
+      let day = Math.floor(differ / (60 * 60 * 24))
+      day = day >= 10 ? day : '0' + day
+      let hour = Math.floor(differ / (60 * 60)) - (day * 24)
+      hour = hour >= 10 ? hour : '0' + hour
+      let minute = Math.floor(differ / 60) - (day * 24 * 60) - (hour * 60)
+      minute = minute >= 10 ? minute : '0' + minute
+      let second = Math.floor(differ) - (day * 24 * 60 * 60) - (hour * 60 * 60) - (minute * 60)
+      second = second >= 10 ? second : '0' + second
+      let times
+      if (differ > 0) {
+        times = {
+          day,
+          hour,
+          minute,
+          second
+        }
+      } else {
+        times = {
+          day: '00',
+          hour: '00',
+          minute: '00',
+          second: '00'
+        }
+      }
+      return times
+    }
+
+    infoRes(res) {
+      if (res.error === ERR_OK) {
+        return res.data
+      }
+    }
+
+    components = {
+      'bargain-mine': BargainMine
+    }
+  }
+</script>
+
+<style lang="stylus">
+  @import '../../common/stylus/variable'
+  @import '../../common/stylus/mixin'
+</style>

@@ -53,7 +53,7 @@
         <view class="ro-bargain-herder-title border-bottom-1px line-{{industry}}">参与砍价({{bargainDetail.join_list.length}}人)</view>
         <view class="ro-bargain-herder-box {{!bargainDetail.join_list.length ? 'ro-bargain-herder-box-none' : ''}}">
           <view class="ro-bargain-herder-box-title" wx:if="{{!bargainDetail.join_list.length}}">暂无砍价信息～</view>
-          <image class="ro-bargain-herder-icon" mode="widthFix" wx:for="{{bargainDetail.join_list}}" wx:key="{{index}}" src="{{item}}"></image>
+          <image class="ro-bargain-herder-icon" mode="aspectFill" wx:for="{{bargainDetail.join_list}}" wx:key="{{index}}" src="{{item}}"></image>
         </view>
         <view class="ro-bargain-herder-rule border-top-1px" @tap="showGroupRule">
           <view class="ro-bargain-herder-rule-text">玩法详情</view>
@@ -201,7 +201,7 @@
       </view>
       <view class="button-group button-group-index" wx:if="{{activityStatus === 'bargain'}}">
         <navigator url="/pages/recommend/recommend" open-type="switchTab" class="collect border-right-1px " wx:if="{{activityStatus !== 'group' && activityStatus !== 'share'}}">
-          <image wx:if="{{imageUri && isFavorite}}" class="icon" src="{{imageUri + '/defaults/c-image/bargain/icon-home@2x.png'}}"></image>
+          <image wx:if="{{imageUri}}" class="icon" src="{{imageUri + '/defaults/c-image/bargain/icon-home@2x.png'}}"></image>
           首页
         </navigator>
       </view>
@@ -257,7 +257,7 @@
     <view class="ro-bargain-cut-box">
       <view class="ro-bargain-cut-top">
         <view class="ro-bargain-cut-name">砍价成功</view>
-        <image class="ro-bargain-cut-price" wx:if="{{imageUri}}" src="{{imageUri + '/defaults/c-image/bargain/pic-bargainok@2x.png'}}"></image>
+        <image class="ro-bargain-cut-price" wx:if="{{imageUri}}" src="{{imageUri + '/defaults/c-image/bargain/pic-bargainok@3x.png'}}"></image>
       </view>
       <view class="ro-bargain-cut-bottom">
         <view class="ro-bargain-cut-title-num">仅剩{{cutDetail.stock}}件</view>
@@ -271,6 +271,7 @@
 </template>
 
 <script>
+  /* eslint-disable no-undef */
   import wepy from 'wepy'
   import users from 'common/mixins/users'
   import base from 'common/mixins/base'
@@ -361,20 +362,21 @@
       actStock: 0,
       normalStock: 0,
       bargainDetail: {},
-      longitude: 0,
-      latitude: 0,
+      longitude: '',
+      latitude: '',
       cutDetail: 0,
       showMoney: false
     }
 
     onShareAppMessage(res) {
       const user = wepy.getStorageSync('user') ? wepy.getStorageSync('user') : {}
+      console.log(this.activityStatus)
+      let title = `原价${this.bargainDetail.promotion_price}元的超值优惠双人套餐，底价只要${this.bargainDetail.bottom_price}元，一起砍完一起拿！`
       if (res.from === 'button') {
         // 来自页面内转发按钮
-//        console.log(res.target)
       }
       return {
-        title: user.nickName + '邀请你购买优惠券',
+        title: this.activityStatus === 'bargain' ? title : user.nickName + '邀请你购买优惠券',
         path: this.currentPage,
         success: async () => {
           // 转发成功
@@ -390,9 +392,18 @@
     }
 
     async onLoad(option) {
-      const res = await wepy.getLocation({type: 'gcj02'})
-      this.longitude = res.longitude
-      this.latitude = res.latitude
+      wx.getLocation({
+        type: 'gcj02',
+        success: (res) => {
+          this.longitude = res.longitude || ''
+          this.latitude = res.latitude || ''
+        },
+        fail: (res) => {
+          this.longitude = ''
+          this.latitude = ''
+        }
+      })
+      // const res = await wepy.getLocation({type: 'gcj02'})
       await this.upLoadImage()
       this.isShowCoupon = option.isShowCoupon || this.isShowCoupon
       this.getShareCoupon = true
@@ -587,8 +598,8 @@
         this.loaded()
         return
       }
+      this.currentPage = `/pages/coupon-detail/coupon-detail?s=bargain&id=${this.id}&m=${this.currentMerchant}&a=${this.actId}`
       // activitiesStatus
-      console.log(res)
       this.bargainDetail = res.data
       this.stock = this.bargainDetail.stock ? 1 : 0
       // this.bargainDetail.is_cuted
@@ -613,7 +624,6 @@
         this.activitiesStatus = 1
       }
       this.$apply()
-      console.log(this.bargainDetail)
     }
 
     async _getSharePrize() {
@@ -673,7 +683,8 @@
     }
 
     async _getCouponDetail() {
-      let data = {longitude: this.longitude, latitude: this.latitude}
+      console.log(this.longitude, this.latitude)
+      let data = this.longitude !== '' && this.latitude !== '' ? {longitude: this.longitude, latitude: this.latitude} : {}
       const res = await CouponApi.getShopCouponDetail(this.id, data)
       if (res.error === ERR_OK) {
         const data = res.data
@@ -1756,17 +1767,17 @@
       display :flex
       justify-content :space-between
       background :$color-white
-      padding: 15px 12px 21px 15px
+      padding: 15px 15px 21px 0
       .ro-bargain-address-mag
         width: 70%
         .ro-bargain-address-name
           font-size :$font-size-medium
           color :$color-text
-          font-family :$font-family-regular
+          font-family :$font-family-light
         .ro-bargain-address-way
           no-wrap()
           margin-top: 5px
-          font-family :$font-family-regular
+          font-family :$font-family-light
           color :$color-text-gray
           font-size :$font-size-small
       .ro-bargain-address-mav
@@ -1838,7 +1849,7 @@
           font-size :$font-size-medium
           color :$color-theme
         .ro-bargain-cut-title
-          width: 161px
+          width: 186px
           margin-top: 12.5px
           color :#9B9B9B
           font-size : $font-size-small
