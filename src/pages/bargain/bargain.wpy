@@ -14,7 +14,7 @@
           <view class="bargain-normal-content">
             <view class="bargain-normal-title">{{item.activity_name}}</view>
             <view class="bargain-normal-money">
-              <view class="bargain-normal-big-money">80.00</view>
+              <view class="bargain-normal-big-money">{{item.current_price}}</view>
               <view class="bargain-normal-small-money">{{item.promotion_price}}元</view>
             </view>
             <view class="bargain-normal-peo">
