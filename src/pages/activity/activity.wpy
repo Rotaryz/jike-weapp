@@ -44,6 +44,7 @@
       if (option.m) {
         wepy.setStorageSync('merchantId', option.m * 1)
       }
+      this.merchantId = wepy.getStorageSync('merchantId')
       this.loaded()
       const token = wepy.getStorageSync('token')
       if (this.type === 'wheel') {
