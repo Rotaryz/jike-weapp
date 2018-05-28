@@ -399,6 +399,8 @@
             if (item.promotion_type * 1 === 4) {
               let groupId = item.group_activity_id
               this.$navigate('/pages/coupon-detail/coupon-detail?s=group&id=' + item.promotion.id + '&type=' + couponType + '&currentMerchant=' + item.merchant_id + '&groupId=' + groupId)
+            } else if (item.promotion_type * 1 === 7) {
+              // 砍价跳转
             } else {
               this.$navigate('/pages/coupon-detail/coupon-detail?id=' + item.promotion.id + '&type=' + couponType + '&currentMerchant=' + item.merchant_id)
             }
