@@ -44,7 +44,8 @@
     }
     events = {
       giftbagClick(id, merchantId) {
-        let url = `/pages/activity-detail/activity-detail?a=${id}`
+        // let url = `/pages/activity-detail/activity-detail?a=${id}` // 看列表
+        let url = `/pages/activity/activity?a=${id}&type=y` // 看海报
         this.$parent.$navigate(url)
       }
     }
