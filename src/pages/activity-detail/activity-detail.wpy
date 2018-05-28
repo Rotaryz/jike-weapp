@@ -65,7 +65,7 @@
           <view class="yuan">元</view>
         </view>
       </view>
-      <view class="bot-order {{btnDisable ? 'btn-disable': ''}}" @tap="postOrder">提交订单</view>
+      <view class="bot-order {{btnDisable ? 'btn-disable': ''}}" @tap="postOrder">{{btnDisable ? '已售罄':'提交订单'}}</view>
     </view>
     <phone-test @isPhoneOk.user="getSymbol" :industry.sync="industry"></phone-test>
     <toast></toast>
