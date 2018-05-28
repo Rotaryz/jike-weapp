@@ -172,7 +172,6 @@
         return
       }
       this.infoBottom.push(...res.data)
-
       this.$apply()
     }
 
