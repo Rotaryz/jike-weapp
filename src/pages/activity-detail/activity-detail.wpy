@@ -76,7 +76,7 @@
   import wepy from 'wepy'
   import users from 'common/mixins/users'
   import base from 'common/mixins/base'
-  import {ERR_OK} from 'api/base'
+  import { ERR_OK } from 'api/base'
   import PhoneTest from '@/base/phoneTest/phoneTest'
   import Toast from '@/base/toast/toast'
   import URIS from 'common/js/config'
@@ -112,12 +112,12 @@
       total: 0
     }
 
-    onLoad(options) {
+    onLoad (options) {
       this.optionInfo = options
       this.$apply()
     }
 
-    async onShow() {
+    async onShow () {
       this.infoTop = []
       this.infoBottom = []
       this.$apply()
@@ -126,12 +126,12 @@
       await this.heightFun()
     }
 
-    async heightFun() {
+    async heightFun () {
       this.height = this.infoBottom.length * 100 + 45 + 'px'
       this.$apply()
     }
 
-    async _getActivity(options) {
+    async _getActivity (options) {
       if (options) {
         this.promotioId = options.a || ''
         this.employeesId = options.e || 0
@@ -161,7 +161,7 @@
       this.$apply()
     }
 
-    async _getActivityCoupon(options) {
+    async _getActivityCoupon (options) {
       if (options) {
         this.promotioId = options.a || ''
       }
@@ -169,14 +169,13 @@
       this.loaded()
       if (res.error !== ERR_OK) {
         this.$invoke('toast', 'show', res.message)
-        return
+        return false
       }
       this.infoBottom.push(...res.data)
-
       this.$apply()
     }
 
-    async submit() {
+    async submit () {
       this.orderInfo = {
         promotion_id: this.promotioId, // 活动id
         promotion_type: '5', // 类型为 异业联盟卡
@@ -219,7 +218,7 @@
     }
 
     methods = {
-      hideFun() {
+      hideFun () {
         let item = this.infoBottom.length
         this.hideFlag = !this.hideFlag
         if (this.hideFlag) {
@@ -229,7 +228,7 @@
         }
         this.$apply()
       },
-      async postOrder() {
+      async postOrder () {
         if (this.stock <= 0 && this.stock !== -1) {
           this.$invoke('toast', 'show', '库存不足')
           return
@@ -242,7 +241,7 @@
         }
         this.submit('')
       },
-      descCount() {
+      descCount () {
         if (this.count <= 1) {
           this.count = 1
         } else {
@@ -251,7 +250,7 @@
         this.total = (this.count * this.price).toFixed(2)
         this.$apply()
       },
-      addCount() {
+      addCount () {
         if (this.stock !== -1) {
           if (this.count < this.stock) {
             this.count += 1
@@ -265,7 +264,7 @@
     }
 
     computed = {
-      btnDisable() {
+      btnDisable () {
         return this.stock === 0
       }
     }
