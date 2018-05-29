@@ -163,6 +163,8 @@
       getLogs: true,
       groupBuyIdx: 0,
       groupBuyList: []
+//      oldScrollTop: 0, // 距离顶部的距离
+//      tabBarShow: true // 是否显示底下tab
     }
 
     onShareAppMessage(res) {
@@ -202,6 +204,18 @@
     onHide() {
       this.$invoke('Slider', 'stop')
     }
+
+    // 测试页面滑动隐藏tab
+//    onPageScroll(e) {
+//      let scrollTop = e.scrollTop
+//      if (scrollTop > this.oldScrollTop) {
+//        this.tabBarShow = false
+//      } else {
+//        this.tabBarShow = true
+//      }
+//      this.oldScrollTop = scrollTop > 0 ? scrollTop : 0
+//      this.$apply()
+//    }
 
     async load() {
       let oldId = this.merchantId
@@ -448,6 +462,17 @@
         this.$navigate('/pages/coupon-detail/coupon-detail?type=1&s=group&id=' + promotionId + '&currentMerchant=' + merchantId + '&groupId=' + groupId)
       }
     }
+
+    // 测试页面滑动隐藏tab
+//    watch = {
+//      tabBarShow() {
+//        if (this.tabBarShow) {
+//          wx.showTabBar({animation: true})
+//        } else {
+//          wx.hideTabBar({animation: true})
+//        }
+//      }
+//    }
 
     // 检查活动内容是否为空
     computed = {

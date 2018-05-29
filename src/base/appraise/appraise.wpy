@@ -153,7 +153,6 @@
           star_level: this.starCount * 1 + 1,
           detail: this.appraise,
           impression: this.appraiseChecked,
-          promotion_id: this.couponMsg.couponId,
           customer_orders_id: this.couponMsg.orderId
         }
         let res = await getMyOrder.setAppraise(data)
@@ -169,10 +168,9 @@
     }
 
     events = {
-      sendCouponMsg(orderId, couponId) {
+      sendCouponMsg(orderId) {
         this.couponMsg = {
-          orderId,
-          couponId
+          orderId
         }
         this.$apply()
       }

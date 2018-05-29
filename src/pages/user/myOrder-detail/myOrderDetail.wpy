@@ -129,7 +129,7 @@
       <view class="qrcode-list-box border-top-1px">
         <view class="qrcode-title-li border-bottom-1px">
           <view class="qrcode-title">有效期至：{{orderMsg.promotion_valid_time}}</view>
-          <view class="qrcode-use-btn {{industry}}-bg" wx:if="{{qrcodeCanUse}}" @tap="toUse('default')">进店使用</view>
+          <view class="qrcode-use-btn {{industry}}-bg" wx:if="{{qrcodeCanUse && orderMsg.status * 1 === 1}}" @tap="toUse('default')">进店使用</view>
         </view>
         <view class="qrcode-li border-bottom-1px" wx:for="{{qrcodesArr}}" wx:key="{{index}}">
           <view class="qrcode-left">
@@ -499,7 +499,7 @@
             break
           case 2:
             this.$invoke('Appraise', 'showCover')
-            this.$broadcast('sendCouponMsg', this.orderMsg.id, this.orderMsg.promotion_id)
+            this.$broadcast('sendCouponMsg', this.orderMsg.id)
             break
           case 3:
           case 4:
