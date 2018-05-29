@@ -12,7 +12,9 @@
               <view class="orderDetail-head-msg-content" wx:if="{{orderMsg.promotion_type !== 5}}">{{orderMsg.promotion.subhead}}</view>
               <view class="orderDetail-head-msg-content" wx:if="{{orderMsg.promotion_type === 5}}">{{orderMsg.alliance_merchant_count}}店通用</view>
             </view>
-            <view class="orderDetail-head-msg-pay">¥<text class="orderDetail-head-msg-payMoney">{{orderMsg.promotion_type * 1 === 4 ? orderMsg.group_single_price : orderMsg.price}}</text></view>
+            <view class="orderDetail-head-msg-pay">¥
+              <text class="orderDetail-head-msg-payMoney">{{orderMsg.promotion_type * 1 === 4 ? orderMsg.group_single_price : orderMsg.price}}</text>
+            </view>
           </view>
         </view>
 
@@ -22,7 +24,7 @@
       </view>
       <view class="orderDetail-head-status">
         <view class="orderDetail-head-statusTxt">{{statusTxt[orderMsg.status]}}</view>
-        <view class="orderDetail-head-statusBtn {{industry}}-bg" @tap="followWork({{orderMsg.status}}, {{orderMsg.id}}, {{orderMsg.merchant_id}})" wx:if="{{orderMsg.status * 1 !== 1 && orderMsg.status * 1 !== 6 && orderMsg.status * 1 !== 9}}">{{orderMsg.promotion_type * 1 === 4 ? groupBtnTxt[orderMsg.status] : btnTxt[orderMsg.status]}}</view>
+        <view class="orderDetail-head-statusBtn {{industry}}-bg" @tap="followWork({{orderMsg.status}}, {{orderMsg.id}}, {{orderMsg.merchant_id}})" wx:if="{{orderMsg.status * 1 !== 1 && orderMsg.status * 1 !== 6 && orderMsg.status * 1 !== 9 && !(orderMsg.status * 1 === 5 && orderMsg.promotion_type * 1 === 5)}}">{{orderMsg.promotion_type * 1 === 4 ? groupBtnTxt[orderMsg.status] : btnTxt[orderMsg.status]}}</view>
         <view class="orderDetail-head-statusBtn {{industry}}-bg" @tap="followWork({{orderMsg.status}}, {{orderMsg.id}}, {{orderMsg.merchant_id}})" wx:if="{{orderMsg.status * 1 === 1 && orderMsg.promotion_type * 1 !== 5 && orderMsg.promotion_type * 1 !== 6 && orderMsg.promotion_type * 1 !== 7}}">{{orderMsg.promotion_type * 1 === 4 ? '拼团详情' : '申请退款'}}</view>
       </view>
     </view>
@@ -39,7 +41,10 @@
         </view>
         <view class="group-msg">
           <view class="group-title">{{groupStatusTxt[orderMsg.group_status]}}</view>
-          <view class="group-msg-time"><text class="group-msg-first">剩余时间：</text><text class="group-red-time {{orderMsg.group_status > 2 || timeEnd ? 'time-down' : ''}}">{{orderMsg.group_status > 2 ? '00:00:00' : groupEndTime}}</text></view>
+          <view class="group-msg-time">
+            <text class="group-msg-first">剩余时间：</text>
+            <text class="group-red-time {{orderMsg.group_status > 2 || timeEnd ? 'time-down' : ''}}">{{orderMsg.group_status > 2 ? '00:00:00' : groupEndTime}}</text>
+          </view>
         </view>
       </view>
       <view class="group-detail-progress">
@@ -68,7 +73,10 @@
         <view class="qrcode-li border-bottom-1px" wx:for="{{exChangeArrShow}}" wx:key="{{index}}">
           <view class="qrcode-left">
             <image class="qrcode-icon" wx:if="{{imageUrlHead}}" src="{{imageUrlHead + '/defaults/c-image/mine/' + (item.is_used ? 'icon-coupon_use@2x.png' : 'icon-coupon_unuse@2x.png')}}"></image>
-            <view class="qrcode-num {{item.is_used ? 'dis' : ''}}"><text class="num-title">券{{index + 1}}:</text>{{item.beautyCode}}</view>
+            <view class="qrcode-num {{item.is_used ? 'dis' : ''}}">
+              <text class="num-title">券{{index + 1}}:</text>
+              {{item.beautyCode}}
+            </view>
           </view>
           <view class="qrcode-right {{item.is_used ? 'dis' : ''}}">{{item.is_used ? '已使用' : '未使用'}}</view>
         </view>
@@ -84,7 +92,10 @@
         <view class="qrcode-li border-bottom-1px" wx:for="{{cashArrShow}}" wx:key="{{index}}">
           <view class="qrcode-left">
             <image class="qrcode-icon" wx:if="{{imageUrlHead}}" src="{{imageUrlHead + '/defaults/c-image/mine/' + (item.is_used ? 'icon-coupon_use@2x.png' : 'icon-coupon_unuse@2x.png')}}"></image>
-            <view class="qrcode-num {{item.is_used ? 'dis' : ''}}"><text class="num-title">券{{index + 1}}:</text>{{item.beautyCode}}</view>
+            <view class="qrcode-num {{item.is_used ? 'dis' : ''}}">
+              <text class="num-title">券{{index + 1}}:</text>
+              {{item.beautyCode}}
+            </view>
           </view>
           <view class="qrcode-right {{item.is_used ? 'dis' : ''}}">{{item.is_used ? '已使用' : '未使用'}}</view>
         </view>
@@ -100,7 +111,10 @@
         <view class="qrcode-li border-bottom-1px" wx:for="{{couponArrShow}}" wx:key="{{index}}">
           <view class="qrcode-left">
             <image class="qrcode-icon" wx:if="{{imageUrlHead}}" src="{{imageUrlHead + '/defaults/c-image/mine/' + (item.is_used ? 'icon-coupon_use@2x.png' : 'icon-coupon_unuse@2x.png')}}"></image>
-            <view class="qrcode-num {{item.is_used ? 'dis' : ''}}"><text class="num-title">券{{index + 1}}:</text>{{item.beautyCode}}</view>
+            <view class="qrcode-num {{item.is_used ? 'dis' : ''}}">
+              <text class="num-title">券{{index + 1}}:</text>
+              {{item.beautyCode}}
+            </view>
           </view>
           <view class="qrcode-right {{item.is_used ? 'dis' : ''}}">{{item.is_used ? '已使用' : '未使用'}}</view>
         </view>
@@ -119,7 +133,10 @@
         <view class="qrcode-li border-bottom-1px" wx:for="{{qrcodesArr}}" wx:key="{{index}}">
           <view class="qrcode-left">
             <image class="qrcode-icon" wx:if="{{imageUrlHead}}" src="{{imageUrlHead + '/defaults/c-image/mine/' + (item.is_used ? 'icon-coupon_use@2x.png' : 'icon-coupon_unuse@2x.png')}}"></image>
-            <view class="qrcode-num {{item.is_used ? 'dis' : ''}}"><text class="num-title">券{{index + 1}}:</text>{{item.beautyCode}}</view>
+            <view class="qrcode-num {{item.is_used ? 'dis' : ''}}">
+              <text class="num-title">券{{index + 1}}:</text>
+              {{item.beautyCode}}
+            </view>
           </view>
           <view class="qrcode-right {{item.is_used ? 'dis' : ''}}">{{item.is_used ? '已使用' : '未使用'}}</view>
         </view>
@@ -206,7 +223,8 @@
           <radio-group bindchange="serviceValChange">
             <view class="orderDetail-refundCover-MsgList-item border-bottom-1px" wx:for="{{refundCause}}" wx:key="{{index}}">
               <label class="checkbox">
-                <radio value="{{item.value}}" checked="{{item.checked}}" hidden="{{true}}"/>{{item.txt}}
+                <radio value="{{item.value}}" checked="{{item.checked}}" hidden="{{true}}"/>
+                {{item.txt}}
                 <image class="checkbox-Icon" wx:if="{{imageUrlHead}}" src="{{imageUrlHead + (item.value===refundChecked?'/defaults/c-image/mine/icon-selected_green.png':'/defaults/c-image/mine/icon-selected_gray.png')}}"></image>
               </label>
             </view>
@@ -232,7 +250,7 @@
   import Appraise from '@/base/appraise/appraise'
   import Toast from '@/base/toast/toast'
   import URIS from 'common/js/config'
-  import {ERR_OK} from '@/api/base'
+  import { ERR_OK } from '@/api/base'
   import Popout from '@/base/integral-popout/integral-popout'
   import Shares from 'api/share'
 
@@ -305,7 +323,7 @@
       qrcodeArrShow: false // 是否展开
     }
 
-    async onLoad(option) {
+    async onLoad (option) {
       await this.showIndustry()
       await this.load(option.id)
       if (this.orderMsg.group_status > 2) {
@@ -316,7 +334,7 @@
       }
     }
 
-    async _getShareSoya(id) {
+    async _getShareSoya (id) {
       const resData = await Shares.getShareSoya('pay', id)
       if (resData.error !== ERR_OK) {
         this.loaded()
@@ -336,7 +354,7 @@
       this.loaded()
     }
 
-    async load(id) {
+    async load (id) {
       let res = await getMyOrder.getOrderDetail(id)
       if (res.error !== ERR_OK) {
         this.loaded()
@@ -375,7 +393,7 @@
       this.$apply()
     }
 
-    _groupTimePlay() {
+    _groupTimePlay () {
       clearInterval(this.timer)
       let res = this._groupTimeCheckout(this.endTime)
       this.groupEndTime = `${res.hour}:${res.minute}:${res.second}`
@@ -390,7 +408,7 @@
       }, 1000)
     }
 
-    _groupTimeCheckout(time) {
+    _groupTimeCheckout (time) {
       let nowSecond = parseInt(Date.now() / 1000)
       let differ = time * 1 - nowSecond
       let day = Math.floor(differ / (60 * 60 * 24))
@@ -422,13 +440,13 @@
       return times
     }
 
-    _filterType(arr, type) {
+    _filterType (arr, type) {
       return arr.filter((item) => {
         return item.type === type
       })
     }
 
-    _computed(arr) {
+    _computed (arr) {
       return arr.map((item) => {
         item.beautyCode = item.code.replace(/(\d{4})/g, '$1 ')
         return item
@@ -436,7 +454,7 @@
     }
 
     methods = {
-      async followWork(status, id, merchantId) {
+      async followWork (status, id, merchantId) {
         let num = Number(status)
         switch (num) {
           case 0:
@@ -495,12 +513,12 @@
             break
         }
       },
-      call(tel) {
+      call (tel) {
         wx.makePhoneCall({
           phoneNumber: tel
         })
       },
-      couponDetail() {
+      couponDetail () {
         if (this.orderMsg.promotion_type * 1 === 5) {
           return
         }
@@ -519,11 +537,11 @@
           this.$navigate('/pages/coupon-detail/coupon-detail?id=' + id + '&type=' + couponType + '&currentMerchant=' + merchantId)
         }
       },
-      serviceValChange(e) {
+      serviceValChange (e) {
         this.refundChecked = e.detail.value
         this.$apply()
       },
-      async refundSubmit() {
+      async refundSubmit () {
         if (!this.refundChecked) {
           this.$invoke('Toast', 'show', '请选择退款原因')
           return
@@ -543,12 +561,12 @@
           this.$invoke('Toast', 'show', res.message)
         }
       },
-      closeRefund() {
+      closeRefund () {
         this.refundIng = false
         this.refundChecked = ''
         this.$apply()
       },
-      GPSbegin() {
+      GPSbegin () {
         let data = {
           longitude: this.orderMsg.merchant_data.longitude,
           latitude: this.orderMsg.merchant_data.latitude,
@@ -557,11 +575,11 @@
         }
         wepy.openLocation(data)
       },
-      checkQrcodeShow(type) {
+      checkQrcodeShow (type) {
         this[type] = !this[type]
         this.$apply()
       },
-      toUse(status) {
+      toUse (status) {
         if (status === 'default') {
           this.$navigate('/pages/coupon-use/couponUse?id=' + this.orderMsg.id + '&type=order')
         } else {
@@ -577,52 +595,52 @@
     }
 
     computed = {
-      exChangeCanUse() {
+      exChangeCanUse () {
         let arr = this.exChangeArr.filter((item) => {
           return !item.is_used
         })
         return arr.length
       },
-      cashCanUse() {
+      cashCanUse () {
         let arr = this.cashArr.filter((item) => {
           return !item.is_used
         })
         return arr.length
       },
-      couponCanUse() {
+      couponCanUse () {
         let arr = this.couponArr.filter((item) => {
           return !item.is_used
         })
         return arr.length
       },
-      qrcodeCanUse() {
+      qrcodeCanUse () {
         let arr = this.qrcodesArr.filter((item) => {
           return !item.is_used
         })
         return arr.length
       },
-      exChangeArrShow() {
+      exChangeArrShow () {
         if (this.exChangeShow) {
           return [...this.exChangeArr]
         } else {
           return [...this.exChangeArr.slice(0, 3)]
         }
       },
-      cashArrShow() {
+      cashArrShow () {
         if (this.cashShow) {
           return [...this.cashArr]
         } else {
           return [...this.cashArr.slice(0, 3)]
         }
       },
-      couponArrShow() {
+      couponArrShow () {
         if (this.couponShow) {
           return [...this.couponArr]
         } else {
           return [...this.couponArr.slice(0, 3)]
         }
       },
-      qrcodesArrShow() {
+      qrcodesArrShow () {
         if (this.qrcodeShow) {
           return [...this.qrcodesArr]
         } else {
