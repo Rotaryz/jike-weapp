@@ -28,6 +28,17 @@
         title = '签到红包'
       } else if (this.type === 'y') {
         title = '异业联盟活动'
+        return {
+          title: user.nickName + '邀请你参与' + title,
+          path: `/pages/activity/activity?a=${this.a}&e=${this.e}&type=${this.type}&merchantId=${this.merchantId}`,
+          success: async () => {
+            // 转发成功
+          },
+          fail: (res) => {
+            // 转发失败
+            console.info(res)
+          }
+        }
       }
       return {
         title: user.nickName + title,
