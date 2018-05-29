@@ -124,28 +124,6 @@
       </view>
     </view>
 
-    <view class="qrcode-container border-top-1px" wx:if="{{(orderMsg.promotion_type * 1 !== 4 && orderMsg.promotion_type * 1 !== 5 && orderMsg.status * 1 !== 0 && orderMsg.status * 1 !== 6) || (orderMsg.promotion_type * 1 === 4 && orderMsg.status * 1 === 1 || orderMsg.status * 1 === 2 || orderMsg.status * 1 === 5)}}">
-      <view class="qrcode-list-box border-top-1px">
-        <view class="qrcode-title-li border-bottom-1px">
-          <view class="qrcode-title">有效期至：{{orderMsg.promotion_valid_time}}</view>
-          <view class="qrcode-use-btn {{industry}}-bg" wx:if="{{qrcodeCanUse}}" @tap="toUse('default')">进店使用</view>
-        </view>
-        <view class="qrcode-li border-bottom-1px" wx:for="{{qrcodesArr}}" wx:key="{{index}}">
-          <view class="qrcode-left">
-            <image class="qrcode-icon" wx:if="{{imageUrlHead}}" src="{{imageUrlHead + '/defaults/c-image/mine/' + (item.is_used ? 'icon-coupon_use@2x.png' : 'icon-coupon_unuse@2x.png')}}"></image>
-            <view class="qrcode-num {{item.is_used ? 'dis' : ''}}">
-              <text class="num-title">券{{index + 1}}:</text>
-              {{item.beautyCode}}
-            </view>
-          </view>
-          <view class="qrcode-right {{item.is_used ? 'dis' : ''}}">{{item.is_used ? '已使用' : '未使用'}}</view>
-        </view>
-      </view>
-      <view class="qrcode-arrow border-bottom-1px" @tap="checkQrcodeShow('qrcodesArrShow')" wx:if="{{qrcodesArr.length > 3}}">
-        <image class="qrcode-arrow-icon" wx:if="{{imageUrlHead}}" src="{{imageUrlHead + '/defaults/c-image/mine/' + (qrcodesArrShow ? 'icon-deploy@2x.png' : 'icon-packup@2x.png')}}"></image>
-      </view>
-    </view>
-
     <view class="orderDetail-merchant border-top-1px border-bottom-1px">
       <view class="orderDetail-merchant-title border-bottom-1px">商家信息</view>
       <view class="orderDetail-merchant-msgBox">
