@@ -83,9 +83,9 @@
         <view class="qrcode-li border-bottom-1px" wx:for="{{exChangeArrShow}}" wx:key="{{index}}">
           <view class="qrcode-left">
             <image class="qrcode-icon" wx:if="{{imageUrlHead}}" src="{{imageUrlHead + '/defaults/c-image/mine/' + (item.is_used ? 'icon-coupon_use@2x.png' : 'icon-coupon_unuse@2x.png')}}"></image>
-            <view class="qrcode-num {{item.is_used ? 'dis' : ''}}"><text class="num-title">券{{index + 1}}:</text>{{item.beautyCode}}</view>
+            <view class="qrcode-num {{item.is_used || item.is_expires ? 'dis' : ''}}"><text class="num-title">券{{index + 1}}:</text>{{item.beautyCode}}</view>
           </view>
-          <view class="qrcode-right {{item.is_used ? 'dis' : ''}}">{{item.is_used ? '已使用' : '未使用'}}</view>
+          <view class="qrcode-right {{item.is_used || item.is_expires ? 'dis' : ''}}">{{item.is_used ? '已使用' : item.is_expires ? '已过期' : '未使用'}}</view>
         </view>
       </view>
       <view class="qrcode-arrow border-bottom-1px" @tap="checkQrcodeShow('exChangeShow')" wx:if="{{exChangeArr.length > 3}}">
@@ -99,9 +99,9 @@
         <view class="qrcode-li border-bottom-1px" wx:for="{{cashArrShow}}" wx:key="{{index}}">
           <view class="qrcode-left">
             <image class="qrcode-icon" wx:if="{{imageUrlHead}}" src="{{imageUrlHead + '/defaults/c-image/mine/' + (item.is_used ? 'icon-coupon_use@2x.png' : 'icon-coupon_unuse@2x.png')}}"></image>
-            <view class="qrcode-num {{item.is_used ? 'dis' : ''}}"><text class="num-title">券{{index + 1}}:</text>{{item.beautyCode}}</view>
+            <view class="qrcode-num {{item.is_used || item.is_expires ? 'dis' : ''}}"><text class="num-title">券{{index + 1}}:</text>{{item.beautyCode}}</view>
           </view>
-          <view class="qrcode-right {{item.is_used ? 'dis' : ''}}">{{item.is_used ? '已使用' : '未使用'}}</view>
+          <view class="qrcode-right {{item.is_used || item.is_expires ? 'dis' : ''}}">{{item.is_used ? '已使用' : item.is_expires ? '已过期' : '未使用'}}</view>
         </view>
       </view>
       <view class="qrcode-arrow border-bottom-1px" @tap="checkQrcodeShow('cashShow')" wx:if="{{cashArr.length > 3}}">
@@ -115,9 +115,9 @@
         <view class="qrcode-li border-bottom-1px" wx:for="{{couponArrShow}}" wx:key="{{index}}">
           <view class="qrcode-left">
             <image class="qrcode-icon" wx:if="{{imageUrlHead}}" src="{{imageUrlHead + '/defaults/c-image/mine/' + (item.is_used ? 'icon-coupon_use@2x.png' : 'icon-coupon_unuse@2x.png')}}"></image>
-            <view class="qrcode-num {{item.is_used ? 'dis' : ''}}"><text class="num-title">券{{index + 1}}:</text>{{item.beautyCode}}</view>
+            <view class="qrcode-num {{item.is_used || item.is_expires ? 'dis' : ''}}"><text class="num-title">券{{index + 1}}:</text>{{item.beautyCode}}</view>
           </view>
-          <view class="qrcode-right {{item.is_used ? 'dis' : ''}}">{{item.is_used ? '已使用' : '未使用'}}</view>
+          <view class="qrcode-right {{item.is_used || item.is_expires ? 'dis' : ''}}">{{item.is_used ? '已使用' : item.is_expires ? '已过期' : '未使用'}}</view>
         </view>
       </view>
       <view class="qrcode-arrow border-bottom-1px" @tap="checkQrcodeShow('couponShow')" wx:if="{{couponArr.length > 3}}">
@@ -134,9 +134,9 @@
         <view class="qrcode-li border-bottom-1px" wx:for="{{qrcodesArr}}" wx:key="{{index}}">
           <view class="qrcode-left">
             <image class="qrcode-icon" wx:if="{{imageUrlHead}}" src="{{imageUrlHead + '/defaults/c-image/mine/' + (item.is_used ? 'icon-coupon_use@2x.png' : 'icon-coupon_unuse@2x.png')}}"></image>
-            <view class="qrcode-num {{item.is_used ? 'dis' : ''}}"><text class="num-title">券{{index + 1}}:</text>{{item.beautyCode}}</view>
+            <view class="qrcode-num {{item.is_used || item.is_expires ? 'dis' : ''}}"><text class="num-title">券{{index + 1}}:</text>{{item.beautyCode}}</view>
           </view>
-          <view class="qrcode-right {{item.is_used ? 'dis' : ''}}">{{item.is_used ? '已使用' : '未使用'}}</view>
+          <view class="qrcode-right {{item.is_used || item.is_expires ? 'dis' : ''}}">{{item.is_used ? '已使用' : item.is_expires ? '已过期' : '未使用'}}</view>
         </view>
       </view>
       <view class="qrcode-arrow border-bottom-1px" @tap="checkQrcodeShow('qrcodesArrShow')" wx:if="{{qrcodesArr.length > 3}}">
