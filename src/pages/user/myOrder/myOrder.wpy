@@ -211,7 +211,7 @@
             break
           case 2:
             this.$invoke('Appraise', 'showCover')
-            this.$broadcast('sendCouponMsg', item.id, item.promotion.id)
+            this.$broadcast('sendCouponMsg', item.id)
             break
           default:
             let couponType
