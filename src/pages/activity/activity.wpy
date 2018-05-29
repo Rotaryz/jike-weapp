@@ -30,7 +30,7 @@
         title = '异业联盟活动'
         return {
           title: user.nickName + '邀请你参与' + title,
-          path: `/pages/activity/activity?a=${this.a}&e=${this.e}&type=${this.type}&merchantId=${this.merchantId}`,
+          path: `/pages/activity/activity?a=${this.a}&e=${this.e}&type=${this.type}&merchantId=${this.merchantId}&type=${this.type}`,
           success: async () => {
             // 转发成功
           },
@@ -42,7 +42,7 @@
       }
       return {
         title: user.nickName + title,
-        path: `/pages/activity/activity?a=${this.a}&e=${this.e}&type=${this.type}&merchantId=${this.merchantId}`,
+        path: `/pages/activity/activity?type=${this.type}&merchantId=${this.merchantId}`,
         success: async () => {
           // 转发成功
         },
