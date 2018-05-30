@@ -301,7 +301,6 @@
     }
 
     async onLoad(option) {
-      console.log(option)
       await this.upLoadImage()
       this.isShowCoupon = option.isShowCoupon || this.isShowCoupon
       this.getShareCoupon = true
@@ -779,19 +778,23 @@
         this.submit('')
       },
       async postGroupOrder() {
+        // 查活动是否正常
         if (this.activitiesStatus !== 1) {
           return
         }
+        // 是否可以开团数据判断
         if (!this.groupBuyDetail.can_open_group && this.groupType === 'open') {
           this.$invoke('toast', 'show', '开团数已达上限')
           return
         }
+        // 是否绑定手机号
         const isAuthorise = await this.isAuthorise()
         if (!isAuthorise) {
           this.loaded()
           this.$invoke('phone-test', 'show', 'group')
           return
         }
+        // 请求是否可以执行下一部操作
         const res = await GroupApi.checkGroup(this.groupType, this.groupId, this.joinGroupId)
         this.loaded()
         if (res.error !== ERR_OK) {
