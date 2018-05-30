@@ -77,7 +77,9 @@
     mixins = [base]
 
     config = {
-      navigationBarTitleText: '疯狂砍价'
+      navigationBarTitleText: '疯狂砍价',
+      backgroundTextStyle: 'dark',
+      enablePullDownRefresh: true
     }
     data = {
       navIdx: 0,
@@ -100,11 +102,29 @@
       await this.showIndustry()
       this.bargainList = await this.getList() || []
       this.myList = await this.myBargainList() || []
+      if (this.bargainList.length && this.bargainList.length < 10) {
+        this.$invoke('Underline', 'show')
+      }
+      if (this.bargainList.length && this.myList.length < 10) {
+        this.$invoke('shareUnderline', 'show')
+      }
       this._groupTimePlay()
       this.$apply()
     }
+    // 下拉刷新
+    async onPullDownRefresh() {
+      if (this.navIdx === 1) {
+        this.myList = await this.myBargainList() || []
+        this.$apply()
+        wepy.stopPullDownRefresh()
+        return
+      }
+      this.bargainList = await this.getList() || []
+      this.$apply()
+      wepy.stopPullDownRefresh()
+    }
 
-    //      下拉刷新
+    //  底部加载更多
     async redPacketLower() {
       switch (this.checkIdx) {
         case 0:

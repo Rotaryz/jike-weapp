@@ -107,28 +107,6 @@
       </view>
     </view>
 
-    <!--地址-->
-    <view class="ro-bargain-herder ro-bargain-address">
-      <view class="ro-bargain-herder-title border-bottom-1px line-{{industry}}">门店信息</view>
-      <view class="ro-bargain-address-box">
-        <view class="ro-bargain-address-mag" wx:if="{{coupon.merchant_data}}">
-          <view class="ro-bargain-address-name">{{coupon.merchant_data.shop_name}}</view>
-          <view class="ro-bargain-address-way">{{coupon.distance ? coupon.distance : 0}} | {{coupon.merchant_data.particular_address}}</view>
-        </view>
-        <view class="ro-bargain-address-mav">
-          <view class="ro-bargain-address-mav-item" @tap="GPSbegin">
-            <image class="ro-bargain-address-mav-icon" wx:if="{{imageUri}}" src="{{imageUri + '/defaults/c-image/mine/icon-navigation_1.png'}}"></image>
-            <view class="ro-bargain-address-mav-text">导航</view>
-          </view>
-          <view class="ro-bargain-address-mav-item" @tap="call({{orderMsg.merchant_data.mobile}})">
-            <image class="ro-bargain-address-mav-icon" wx:if="{{imageUri}}" src="{{imageUri + '/defaults/c-image/mine/icon-call_1.png'}}"></image>
-            <view class="ro-bargain-address-mav-text">电话</view>
-          </view>
-        </view>
-      </view>
-    </view>
-    <view class="margin-box-10px" ></view>
-
     <view class="group-list-box border-bottom-1px" wx:if="{{activityStatus === 'group' && groupType !== 'join'}}">
       <view class="group-list-head line-{{industry}}">小伙伴在开团，可直接参加</view>
       <swiper class="group-list-container" autoplay circular vertical="{{true}}" interval="4000" wx:if="{{groupBuyList.length}}">
@@ -162,6 +140,28 @@
       </view>
     </view>
 
+    <!--地址-->
+    <view class="ro-bargain-herder ro-bargain-address">
+      <view class="ro-bargain-herder-title border-bottom-1px line-{{industry}}">门店信息</view>
+      <view class="ro-bargain-address-box">
+        <view class="ro-bargain-address-mag" wx:if="{{coupon.merchant_data}}">
+          <view class="ro-bargain-address-name">{{coupon.merchant_data.shop_name}}</view>
+          <view class="ro-bargain-address-way">{{coupon.distance ? coupon.distance : 0}} | {{coupon.merchant_data.particular_address}}</view>
+        </view>
+        <view class="ro-bargain-address-mav">
+          <view class="ro-bargain-address-mav-item" @tap="GPSbegin">
+            <image class="ro-bargain-address-mav-icon" wx:if="{{imageUri}}" src="{{imageUri + '/defaults/c-image/mine/icon-navigation_1.png'}}"></image>
+            <view class="ro-bargain-address-mav-text">导航</view>
+          </view>
+          <view class="ro-bargain-address-mav-item" @tap="call({{orderMsg.merchant_data.mobile}})">
+            <image class="ro-bargain-address-mav-icon" wx:if="{{imageUri}}" src="{{imageUri + '/defaults/c-image/mine/icon-call_1.png'}}"></image>
+            <view class="ro-bargain-address-mav-text">电话</view>
+          </view>
+        </view>
+      </view>
+    </view>
+    <view class="margin-box-10px" ></view>
+
     <view class="promotion-detail border-top-1px border-bottom-1px" wx:if="{{promotions.length > 0}}">
       <view class="header">
         <view class="red-title line-{{industry}}">礼包详情</view>
@@ -184,6 +184,12 @@
       <know-detail :note.sync="note" :notAllowTime.sync="notAllowTime" :industry.sync="industry"></know-detail>
     </view>
     <view class="buy-button-wrapper border-top-1px {{activityStatus === 'group' ? 'group-buy' : ''}}">
+      <view class="button-group button-group-index border-right-1px">
+        <navigator url="/pages/recommend/recommend" open-type="switchTab" hover-class="none" class="collect border-right-1px ">
+          <image wx:if="{{imageUri}}" class="icon" src="{{imageUri + '/defaults/c-image/bargain/icon-home@2x.png'}}"></image>
+          首页
+        </navigator>
+      </view>
       <view class="button-group" wx:if="{{activityStatus !== 'bargain'}}">
         <view class="collect border-right-1px" @tap="collectToggle" wx:if="{{activityStatus !== 'group' && activityStatus !== 'share'}}">
           <image wx:if="{{imageUri && !isFavorite}}" class="icon" src="{{imageUri + '/defaults/c-image/recommend/icon-r_collect32@2x.png'}}"></image>
@@ -199,18 +205,12 @@
           客服
         </button>
       </view>
-      <view class="button-group button-group-index" wx:if="{{activityStatus === 'bargain'}}">
-        <navigator url="/pages/recommend/recommend" open-type="switchTab" class="collect border-right-1px " wx:if="{{activityStatus !== 'group' && activityStatus !== 'share'}}">
-          <image wx:if="{{imageUri}}" class="icon" src="{{imageUri + '/defaults/c-image/bargain/icon-home@2x.png'}}"></image>
-          首页
-        </navigator>
-      </view>
-      <button class="buy-btn"  wx:if="{{activityStatus === 'bargain' && activitiesStatus === 4}}" @tap="postBargainOrder(1)">{{'¥' + bargainDetail.current_price + ' 立即购买'}}</button>
+      <button class="buy-btn" wx:if="{{activityStatus === 'bargain' && activitiesStatus === 4}}" @tap="postBargainOrder(1)">{{'¥' + bargainDetail.current_price + ' 立即购买'}}</button>
       <button class="buy-btn {{industry + '-bg'}} {{activitiesStatus !== 2 ? '' : 'disable'}}" open-type="{{activitiesStatus === 4 ? 'share' : ''}}" @tap="postBargainOrder(2)" wx:if="{{activityStatus === 'bargain'}}">{{ activitiesStatus === 2 ? '已抢光' : activitiesStatus === 3 ? '底价¥'+bargainDetail.bottom_price+' 立即购买' : activitiesStatus === 4 ? '拉朋友一起砍' : '去砍价'}}</button>
       <button class="buy-btn {{goodsStatus !== 1 ? 'disable' : ''}}" @tap="postOrder" wx:if="{{activityStatus === 'group'}}">{{ goodsStatus === 0 ? '该商品已下架' : goodsStatus === 1 ? '¥' + coupon.platform_price + '单买' : goodsStatus === 2  ? '已售罄' : '立即购买'}}</button>
       <button class="buy-btn {{industry + '-bg'}} {{goodsStatus === 1? '' : 'disable' }}" @tap="postOrder" wx:if="{{activityStatus === ''}}">{{ goodsStatus === 0 ? '该商品已下架' : goodsStatus === 1 ? '立即购买' : goodsStatus === 2 ? '已售罄' : '立即购买'}}</button>
       <button class="buy-btn {{industry + '-bg'}} {{(shareBuy === 1) ? '' : 'disable' }}" @tap="postOrder" wx:if="{{activityStatus === 'share'}}">{{shareBuy === 1 ? '立即购买' : shareBuy === 2 ? '已售罄' : '立即购买'}}</button>
-      <button class="group-buy-btn {{activitiesStatus !== 1 ? 'disable' : industry + '-bg'}}" @tap="postGroupOrder" wx:if="{{activityStatus === 'group'}}">{{ activitiesStatus === 0 ? '该商品已下架' : activitiesStatus === 1 ? '¥' + groupBuyDetail.group_price + (groupType === 'join' ? '参团' : '开团') : activitiesStatus === 2 ? '已售罄' : '立即购买'}}</button>
+      <button class="group-buy-btn {{industry + '-bg'}} {{activitiesStatus !== 1 ? 'disable' : ''}}" @tap="postGroupOrder" wx:if="{{activityStatus === 'group'}}">{{ activitiesStatus === 0 ? '该商品已下架' : activitiesStatus === 1 ? '¥' + groupBuyDetail.group_price + (groupType === 'join' ? '参团' : '开团') : activitiesStatus === 2 ? '已售罄' : '立即购买'}}</button>
     </view>
     <phone-test @isPhoneOk.user="getSymbol" :industry.sync="industry"></phone-test>
     <share :qrcode.sync="qrcode" :detail.sync="coupon" :promotionImages.sync="promotionImages" @sharePunchLine.user="sharePunchLine"></share>
@@ -370,7 +370,6 @@
 
     onShareAppMessage(res) {
       const user = wepy.getStorageSync('user') ? wepy.getStorageSync('user') : {}
-      console.log(this.activityStatus)
       let title = `原价${this.bargainDetail.promotion_price}元的超值优惠双人套餐，底价只要${this.bargainDetail.bottom_price}元，一起砍完一起拿！`
       if (res.from === 'button') {
         // 来自页面内转发按钮
@@ -404,31 +403,42 @@
         }
       })
       // const res = await wepy.getLocation({type: 'gcj02'})
-      await this.upLoadImage()
       this.isShowCoupon = option.isShowCoupon || this.isShowCoupon
       this.getShareCoupon = true
       this.activityStatus = option.s ? option.s === 's' ? 'share' : option.s : ''
       this.groupType = option.groupType ? option.groupType : 'open'
       this.joinGroupId = option.joinGroupId ? option.joinGroupId : ''
-      await this.showIndustry()
+
       if (option.scene) {
         let scene = decodeURIComponent(option.scene)
         const params = getParams(scene)
         if (params.i) {
 //          转1赚识别二维码进入
-          this.activityStatus = params.s === 's' ? 'share' : ''
-          let id = params.i || ''
-          id = id ? id.split(',') : []
-          if (id) {
-            this.actId = id[0] * 1 // 抵用券
-            this.currentMerchant = id[1] * 1// 商家id
-            this.fromCustomerId = id[2] * 1 // 分享者
-            this.id = id[3] * 1 // 券id
-            this.type = 1
-            wepy.setStorageSync('merchantId', id[1])
-            this.$apply()
+          this.activityStatus = params.s ? params.s === 's' ? 'share' : params.s : ''
+          switch (this.this.activityStatus) {
+            case 'share':
+              let id = params.i || ''
+              id = id ? id.split(',') : []
+              if (id) {
+                this.actId = id[0] * 1 // 抵用券
+                this.currentMerchant = id[1] * 1// 商家id
+                this.fromCustomerId = id[2] * 1 // 分享者
+                this.id = id[3] * 1 // 券id
+                this.type = 1
+                this.$apply()
+              }
+              break
+            case 'bargain':
+              this.type = 1
+              this.actId = params.a ? params.a * 1 : ''
+              this.currentMerchant = params.m ? params.m * 1 : ''
+              this.id = params.id ? params.id * 1 : ''
+              break
           }
+          wepy.setStorageSync('merchantId', this.currentMerchant)
           await this.load()
+          await this.showIndustry()
+          await this.upLoadImage()
           return
         }
         this.type = Math.floor(params.type)
@@ -448,6 +458,7 @@
           case 'share': // 分享赚钱
             let id = option.i || ''
             id = id ? id.split(',') : []
+            console.log(id)
             if (id) {
               this.actId = id[0] * 1 // 抵用券
               this.currentMerchant = id[1] * 1// 商家id
@@ -467,6 +478,8 @@
         }
       }
       await this.load()
+      await this.showIndustry()
+      await this.upLoadImage()
     }
 
 //    转1赚的选择优惠券判断
@@ -614,7 +627,7 @@
       if (res.activitiesStatus === 2) {
         this.activitiesStatus = 2
         return
-      } else if (this.bargainDetail.current_price === this.bargainDetail.bottom_price) {
+      } else if (this.bargainDetail.current_price === this.bargainDetail.bottom_price && this.bargainDetail.left_cut_num === 0) {
         this.activitiesStatus = 3
         return
       } else if (this.bargainDetail.current_price !== this.bargainDetail.bottom_price && this.bargainDetail.is_cuted) {
@@ -683,7 +696,6 @@
     }
 
     async _getCouponDetail() {
-      console.log(this.longitude, this.latitude)
       let data = this.longitude !== '' && this.latitude !== '' ? {longitude: this.longitude, latitude: this.latitude} : {}
       const res = await CouponApi.getShopCouponDetail(this.id, data)
       if (res.error === ERR_OK) {
@@ -692,7 +704,7 @@
         this.activitiesStatus = null
         if (this.activityStatus !== 'group') {
           wepy.setNavigationBarTitle({title: data.title})
-        } else if(this.activityStatus !== 'bargain') {
+        } else if (this.activityStatus !== 'bargain') {
           wepy.setNavigationBarTitle({title: '砍价详情'})
         }
         this.promotionImages = data.promotion_images
@@ -903,8 +915,8 @@
         this.$apply()
         return
       }
+      this.$invoke('toast', 'show', res.message)
       this.loaded()
-      tips.fail('toast', 'show', res.message)
     }
     methods = {
       hideMoney() {
@@ -1020,8 +1032,8 @@
             break
           case 4: // 两个按钮
             if (type === 1) {
-              const isAuthorise = await this.isAuthorise()
-              if (!isAuthorise) {
+              const isAuthorise2 = await this.isAuthorise()
+              if (!isAuthorise2) {
                 this.loaded()
                 this.$invoke('phone-test', 'show', 'group')
                 return
@@ -1518,7 +1530,7 @@
       height: 44px
       background-color: $color-white
       .button-group
-        width: 50vw
+        width: 100px
         display: flex
         font-size: $font-size-small-s
         border-top: 0.5px solid $color-col-line
@@ -1552,7 +1564,9 @@
             height: 16px
             margin-bottom: 3px
       .button-group-index
-        width: 60.5px
+        width: 50px
+        .collect
+          font-size: $font-size-small-s
       .buy-btn
         flex :1
         line-height: 44px
@@ -1563,13 +1577,11 @@
         &.disable
           opacity : 0.5
     .buy-button-wrapper.group-buy
-      .button-group
-        width: 32vw
       .buy-btn
-        width: 32vw
+        flex: 1
         background-color: $color-button
       .group-buy-btn
-        width: 36vw
+        flex: 1
         background-color: $color-orange
         line-height: 44px
         text-align: center
