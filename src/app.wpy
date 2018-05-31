@@ -9,13 +9,13 @@
   import './utils/ald-stat.js'
 
   export default class extends wepy.app {
-    constructor() {
+    constructor () {
       super()
       this.use('requestfix')
       this.use('promisify')
     }
 
-    onLaunch() {
+    onLaunch () {
       const tips = wepy.getStorageSync('tips')
       if (!tips) {
         wepy.setStorageSync('tips', {order: false})
@@ -29,7 +29,7 @@
       if (!merchantId) {
         wepy.setStorageSync('merchantId', extConfig.current_merchant ? extConfig.current_merchant : this.config.current_merchant)
       }
-      this.globalData.env = extConfig.env || 'test'
+      this.globalData.env = extConfig.env || 'prod'
       this.globalData.version = extConfig.version || 'v1'
       console.log('环境：' + this.globalData.env)
       console.log('版本：' + this.globalData.version)
@@ -42,7 +42,7 @@
       }
     }
 
-    onShow(options) {
+    onShow (options) {
       const targetPage = wxUtils.setPagePath(options.path, options.query) // 获取此次的目标页面路径
       this.updateGlobalData('targetPage', targetPage)
       const token = wepy.getStorageSync('token')
@@ -66,20 +66,20 @@
       }
     }
 
-    isObject(item) {
+    isObject (item) {
       return typeof item === 'object' && !this.isArray(item)
     }
 
-    isArray(item) {
+    isArray (item) {
       return Object.prototype.toString.apply(item) === '[object Array]'
     }
 
-    isUndefined(item) {
+    isUndefined (item) {
       return typeof item === 'undefined'
     }
 
     // 向下暴露一个更换globalData的方法
-    updateGlobalData(name, obj) {
+    updateGlobalData (name, obj) {
       // 校验: globalData
       if (!this.globalData) return
       // 校验: 操作字段
