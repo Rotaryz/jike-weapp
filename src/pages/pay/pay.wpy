@@ -512,6 +512,7 @@
       border-radius: 2px
       &::after
         border: none
+
       .end-moeny
         margin-right: 5px
     .submit-dis

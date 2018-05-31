@@ -37,7 +37,7 @@
               </view>
             </view>
           </view>
-          <view class="bargain-normal-btn {{item.activity_stock === 0 ? 'bargain-normal-btn-disable' : industry + '-bg'}} ">{{item.activity_stock === 0 ? '已抢光' : '去砍价'}}</view>
+          <view class="bargain-normal-btn {{industry + '-bg'}} {{item.activity_stock === 0 ? 'bargain-normal-btn-disable' : ''}} ">{{item.activity_stock === 0 ? '已抢光' : '去砍价'}}</view>
         </view>
         <view class="margin-box-10px"></view>
       </view>
@@ -358,7 +358,7 @@
         background :$color-theme
         position: absolute
       .bargain-normal-btn-disable
-        background : #DBDBDB
+        opacity : 0.5
   .mine-serve-avatar-box
     display: flex
     margin-right: 11.5px

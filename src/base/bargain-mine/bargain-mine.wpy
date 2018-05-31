@@ -45,8 +45,8 @@
       <view class="bargain-mine-msg border-top-1px">
         <view class="bargain-mine-tip">{{bargainCoupon.status === 1 ? '砍价中' : bargainCoupon.status === 0 || bargainCoupon.status === 3 ? '已关闭' : bargainCoupon.status === 2 ? '已抢光' : '砍价中'}}</view>
         <form class="bargain-mine-btn-all">
-          <button class="bargain-mine-btn-border {{industry}}" hover-class="none" open-type="share" wx:if="{{bargainCoupon.current_price !== bargainCoupon.bottom_price}}">找人帮砍</button>
-          <button class="bargain-mine-btn {{industry}}-bg" @tap.stop="goBuy({{item}})">立即购买</button>
+          <button class="bargain-mine-btn-border {{industry}}" hover-class="none" open-type="share" wx:if="{{bargainCoupon.current_price !== bargainCoupon.bottom_price && bargainCoupon.status === 1}}">找人帮砍</button>
+          <button class="bargain-mine-btn {{industry}}-bg" @tap.stop="goBuy({{item}})" wx:if="{{bargainCoupon.status === 1}}">立即购买</button>
         </form>
       </view>
     </view>
@@ -61,6 +61,7 @@
   import {ERR_OK} from 'api/base'
   import Order from 'api/order'
   import Bargain from 'api/bargain'
+  import tips from 'common/js/tips'
 
   export default class bargainMine extends wepy.component {
     mixins = [base]
@@ -93,6 +94,10 @@
         }
         const json = await Order.operation(data)
         this.loaded()
+        if (json.error !== ERR_OK) {
+          tips.error(json.message)
+          return
+        }
         const res = json.data
         const {timestamp, nonceStr, signType, paySign} = res.pay_info
         wx.requestPayment({

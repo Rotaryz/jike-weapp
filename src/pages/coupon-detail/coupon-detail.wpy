@@ -205,12 +205,18 @@
           客服
         </button>
       </view>
-      <button class="buy-btn" wx:if="{{activityStatus === 'bargain' && activitiesStatus === 4}}" @tap="postBargainOrder(1)">{{'¥' + bargainDetail.current_price + ' 立即购买'}}</button>
-      <button class="buy-btn {{industry + '-bg'}} {{activitiesStatus !== 2 ? '' : 'disable'}}" open-type="{{activitiesStatus === 4 ? 'share' : ''}}" @tap="postBargainOrder(2)" wx:if="{{activityStatus === 'bargain'}}">{{ activitiesStatus === 2 ? '已抢光' : activitiesStatus === 3 ? '底价¥'+bargainDetail.bottom_price+' 立即购买' : activitiesStatus === 4 ? '拉朋友一起砍' : '去砍价'}}</button>
-      <button class="buy-btn {{goodsStatus !== 1 ? 'disable' : ''}}" @tap="postOrder" wx:if="{{activityStatus === 'group'}}">{{ goodsStatus === 0 ? '该商品已下架' : goodsStatus === 1 ? '¥' + coupon.platform_price + '单买' : goodsStatus === 2  ? '已售罄' : '立即购买'}}</button>
-      <button class="buy-btn {{industry + '-bg'}} {{goodsStatus === 1? '' : 'disable' }}" @tap="postOrder" wx:if="{{activityStatus === ''}}">{{ goodsStatus === 0 ? '该商品已下架' : goodsStatus === 1 ? '立即购买' : goodsStatus === 2 ? '已售罄' : '立即购买'}}</button>
-      <button class="buy-btn {{industry + '-bg'}} {{(shareBuy === 1) ? '' : 'disable' }}" @tap="postOrder" wx:if="{{activityStatus === 'share'}}">{{shareBuy === 1 ? '立即购买' : shareBuy === 2 ? '已售罄' : '立即购买'}}</button>
-      <button class="group-buy-btn {{industry + '-bg'}} {{activitiesStatus !== 1 ? 'disable' : ''}}" @tap="postGroupOrder" wx:if="{{activityStatus === 'group'}}">{{ activitiesStatus === 0 ? '该商品已下架' : activitiesStatus === 1 ? '¥' + groupBuyDetail.group_price + (groupType === 'join' ? '参团' : '开团') : activitiesStatus === 2 ? '已售罄' : '立即购买'}}</button>
+      <view class="buy-btn-box">
+        <form bindsubmit="submit" report-submit='true'>
+          <view class="buy-btn-box-child">
+            <button class="buy-btn" form-type="submit" wx:if="{{activityStatus === 'bargain' && activitiesStatus === 4}}" @tap="postBargainOrder(1)">{{'¥' + bargainDetail.current_price + ' 立即购买'}}</button>
+            <button class="buy-btn {{industry + '-bg'}} {{activitiesStatus !== 2 ? '' : 'disable'}}" form-type="submit" open-type="{{activitiesStatus === 4 ? 'share' : ''}}" @tap="postBargainOrder(2)" wx:if="{{activityStatus === 'bargain'}}">{{ activitiesStatus === 2 ? '已抢光' : activitiesStatus === 3 ? '底价¥'+bargainDetail.bottom_price+' 立即购买' : activitiesStatus === 4 ? '拉朋友一起砍' : '去砍价'}}</button>
+            <button class="buy-btn {{goodsStatus !== 1 ? 'disable' : ''}}" @tap="postOrder" form-type="submit" wx:if="{{activityStatus === 'group'}}">{{ goodsStatus === 0 ? '该商品已下架' : goodsStatus === 1 ? '¥' + coupon.platform_price + '单买' : goodsStatus === 2  ? '已售罄' : '立即购买'}}</button>
+            <button class="buy-btn {{industry + '-bg'}} {{goodsStatus === 1? '' : 'disable' }}" form-type="submit" @tap="postOrder" wx:if="{{activityStatus === ''}}">{{ goodsStatus === 0 ? '该商品已下架' : goodsStatus === 1 ? '立即购买' : goodsStatus === 2 ? '已售罄' : '立即购买'}}</button>
+            <button class="buy-btn {{industry + '-bg'}} {{(shareBuy === 1) ? '' : 'disable' }}" form-type="submit" @tap="postOrder" wx:if="{{activityStatus === 'share'}}">{{shareBuy === 1 ? '立即购买' : shareBuy === 2 ? '已售罄' : '立即购买'}}</button>
+            <button class="group-buy-btn {{industry + '-bg'}} {{activitiesStatus !== 1 ? 'disable' : ''}}" form-type="submit" @tap="postGroupOrder" wx:if="{{activityStatus === 'group'}}">{{ activitiesStatus === 0 ? '该商品已下架' : activitiesStatus === 1 ? '¥' + groupBuyDetail.group_price + (groupType === 'join' ? '参团' : '开团') : activitiesStatus === 2 ? '已售罄' : '立即购买'}}</button>
+          </view>
+        </form>
+      </view>
     </view>
     <phone-test @isPhoneOk.user="getSymbol" :industry.sync="industry"></phone-test>
     <share :qrcode.sync="qrcode" :detail.sync="coupon" :promotionImages.sync="promotionImages" @sharePunchLine.user="sharePunchLine"></share>
@@ -624,7 +630,7 @@
         this.groupEndTime = this._groupTimeCheckout(this.bargainDetail.end_at_timestamp)
         this.$apply()
       }, 1000)
-      if (res.activitiesStatus === 2) {
+      if (res.activity_status === 2) {
         this.activitiesStatus = 2
         return
       } else if (this.bargainDetail.current_price === this.bargainDetail.bottom_price && this.bargainDetail.left_cut_num === 0) {
@@ -636,6 +642,7 @@
       } else {
         this.activitiesStatus = 1
       }
+      console.log(this.activitiesStatus)
       this.$apply()
     }
 
@@ -838,7 +845,7 @@
       return times
     }
 
-    submit(status) {
+    paySubmit(status) {
       wepy.pageScrollTo({scrollTop: 0})
       if (status === 'group') {
         this.orderInfo = {
@@ -919,6 +926,12 @@
       this.loaded()
     }
     methods = {
+      // 收集formid
+      submit(e) {
+        const formId = e.detail.formId
+        console.log(formId)
+        this.collectFormIds(formId)
+      },
       hideMoney() {
         this.showMoney = false
       },
@@ -972,7 +985,7 @@
         const isAuthorise = await this.isAuthorise()
         this.loaded()
         if (isAuthorise) {
-          this.submit(type)
+          this.paySubmit(type)
         }
       },
       async postOrder() {
@@ -988,7 +1001,7 @@
           this.$invoke('phone-test', 'show', '')
           return
         }
-        this.submit('')
+        this.paySubmit('')
       },
       async postGroupOrder() {
         if (this.activitiesStatus !== 1) {
@@ -1010,7 +1023,7 @@
           this.$invoke('toast', 'show', res.message)
           return
         }
-        this.submit('group')
+        this.paySubmit('group')
       },
       // 砍价按钮
       async postBargainOrder(type) {
@@ -1028,7 +1041,7 @@
               this.$invoke('phone-test', 'show', 'group')
               return
             }
-            this.submit('')
+            this.paySubmit('')
             break
           case 4: // 两个按钮
             if (type === 1) {
@@ -1038,7 +1051,7 @@
                 this.$invoke('phone-test', 'show', 'group')
                 return
               }
-              this.submit('')
+              this.paySubmit('')
             }
             break
         }
@@ -1567,15 +1580,26 @@
         width: 50px
         .collect
           font-size: $font-size-small-s
-      .buy-btn
+      .buy-btn-box
         flex :1
-        line-height: 44px
-        text-align: center
-        font-size: $font-size-medium
-        color: $color-white
-        background-color: $color-button
-        &.disable
-          opacity : 0.5
+        position: relative
+        .buy-btn-box-child
+          position: absolute
+          left: 0
+          bottom: 0
+          height: 100%
+          width: 100%
+          display :flex
+        .buy-btn
+          flex: 1
+          width :100%
+          line-height: 44px
+          text-align: center
+          font-size: $font-size-medium
+          color: $color-white
+          background-color: $color-button
+          &.disable
+            opacity : 0.5
     .buy-button-wrapper.group-buy
       .buy-btn
         flex: 1
