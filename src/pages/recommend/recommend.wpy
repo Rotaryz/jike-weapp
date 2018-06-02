@@ -264,14 +264,12 @@
       if (resData.error !== ERR_OK) {
         return
       }
+      // activity_status活动开关，1是正常开启状态
       if (!resData.activity_status) {
         this.bargainList = []
         return
       }
       let res = resData.data
-      if (!res.length) {
-        return []
-      }
       let first = res.slice(0, 3)
       let second = res.slice(3, 6)
       let third = res.slice(6, 9)
