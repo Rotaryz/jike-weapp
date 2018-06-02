@@ -57,6 +57,16 @@ export default class Merchants extends base {
   }
 
   /**
+   * 获取推荐异业联盟卡(全部)
+   * @param id  商家Id
+   * @returns {Promise.<*>}
+   */
+  static async getAlliance(id, data, loading) {
+    const url = `${this.baseUrl}/api/merchants/get-alliance-data/${id}`
+    return await this.get(url, data, loading)
+  }
+
+  /**
    * 获取推荐商家优惠券列表(分页)
    * @param id  商家Id
    * @returns {Promise.<*>}
@@ -94,5 +104,25 @@ export default class Merchants extends base {
   static async coupons(id, data) {
     const url = `${this.baseUrl}/api/merchants/coupons/${id}`
     return await this.get(url, data)
+  }
+
+  /**
+   * 异业活动详情
+   * @param data
+   * @returns {Promise.<*>}
+   */
+  static async linkDetails(id, data) {
+    const url = `${this.baseUrl}/api/merchants/alliance-send-promotion/${id}`
+    return await this.get(url, data)
+  }
+
+  /**
+   * 异业活动优惠券详情
+   * @param data
+   * @returns {Promise.<*>}
+   */
+  static async linkCouponDetails(id) {
+    const url = `${this.baseUrl}/api/merchants/activity-alliance/${id}`
+    return await this.get(url)
   }
 }

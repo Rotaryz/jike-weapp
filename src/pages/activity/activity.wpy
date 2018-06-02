@@ -13,7 +13,10 @@
     data = {
       webviewUrl: '',
       token: '',
-      merchantId: ''
+      merchantId: '',
+      a: '',
+      e: '',
+      type: ''
     }
 
     onShareAppMessage(res) {
@@ -23,6 +26,19 @@
         title = `大转盘`
       } else if (this.type === 'sign') {
         title = '签到红包'
+      } else if (this.type === 'y') {
+        title = '异业联盟活动'
+        return {
+          title: user.nickName + '邀请你参与' + title,
+          path: `/pages/activity/activity?a=${this.a}&e=${this.e}&type=${this.type}&merchantId=${this.merchantId}&type=${this.type}`,
+          success: async () => {
+            // 转发成功
+          },
+          fail: (res) => {
+            // 转发失败
+            console.info(res)
+          }
+        }
       }
       return {
         title: user.nickName + title,
@@ -32,20 +48,27 @@
         },
         fail: (res) => {
           // 转发失败
-          console.log(res)
+          console.info(res)
         }
       }
     }
 
     async onLoad(option) {
       this.type = option.type
-      this.loaded()
-      const token = wepy.getStorageSync('token')
+      this.a = option.a || ''
+      this.e = option.e || '0'
+      if (option.m) {
+        wepy.setStorageSync('merchantId', option.m * 1)
+      }
       this.merchantId = wepy.getStorageSync('merchantId')
+      const token = wepy.getStorageSync('token')
+      this.loaded()
       if (this.type === 'wheel') {
         this.webviewUrl = `${URIS.webview}/index.html?token=${token}&merchantId=${this.merchantId}#/wheel`
       } else if (this.type === 'sign') {
         this.webviewUrl = `${URIS.webview}/index.html?token=${token}&merchantId=${this.merchantId}#/registration`
+      } else if (this.type === 'y') {
+        this.webviewUrl = `${URIS.webview}/index.html#/activity?a=${this.a}&e=${this.e}&m=${this.merchantId}&type=${this.type}`
       }
       this.$apply()
     }

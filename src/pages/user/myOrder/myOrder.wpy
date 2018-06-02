@@ -68,7 +68,7 @@
   import getMyOrder from '@/api/myOrder'
   import Appraise from '@/base/appraise/appraise'
   import URIS from 'common/js/config'
-  import {ERR_OK} from '@/api/base'
+  import { ERR_OK } from '@/api/base'
   import Toast from '@/base/toast/toast'
   import Underline from '@/base/underline-block/underline-block'
   import BackHome from '@/base/back-home/back-home'
@@ -124,7 +124,7 @@
     }
 
     methods = {
-      setScroll(e) {
+      setScroll (e) {
         this.leftTmp = e.detail.scrollLeft * 1
       },
       async tabChange(type, idx, e) {
@@ -152,9 +152,9 @@
         this.$apply()
         this.loaded()
       },
-      orderUpper() {
+      orderUpper () {
       },
-      async orderLower() {
+      async orderLower () {
         if (!this.LowerLoading && !this.nothingAdd) {
           this.LowerLoading = true
           this.page++
@@ -177,11 +177,11 @@
           // 到底
         }
       },
-      showDetail(id, status) {
+      showDetail (id, status) {
         let url = '/pages/user/myOrder-detail/myOrderDetail?status=' + status + '&id=' + id
         this.$navigate(url)
       },
-      async useCoupon(item) {
+      async useCoupon (item) {
         switch (item.status) {
           case 0:
             let data = {
@@ -233,14 +233,14 @@
       }
     }
 
-    async onLoad(option) {
+    async onLoad (option) {
       await this.showIndustry()
       this.load(option)
       this.onShowfn = true
       this.$apply()
     }
 
-    async onShow() {
+    async onShow () {
       wepy.setStorageSync('tips', {order: false})
       const scene = wx.getStorageSync('scene')
       if (scene === 1014) {
@@ -254,11 +254,11 @@
       this.$apply()
     }
 
-    onHide() {
+    onHide () {
       this.$invoke('BackHome', 'hide')
     }
 
-    onUnload() {
+    onUnload () {
       this.$invoke('BackHome', 'hide')
     }
 
@@ -360,7 +360,7 @@
       orderDetail(order) {
         this.$navigate(`/pages/user/myOrder-detail/myOrderDetail?id=${order.id}`)
       },
-      async followWork(item) {
+      async followWork (item) {
         let status = item.status * 1
         switch (status) {
           case 0:

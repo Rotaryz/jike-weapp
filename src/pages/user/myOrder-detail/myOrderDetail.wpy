@@ -261,7 +261,7 @@
   import Appraise from '@/base/appraise/appraise'
   import Toast from '@/base/toast/toast'
   import URIS from 'common/js/config'
-  import {ERR_OK} from '@/api/base'
+  import { ERR_OK } from '@/api/base'
   import Popout from '@/base/integral-popout/integral-popout'
   import Shares from 'api/share'
 

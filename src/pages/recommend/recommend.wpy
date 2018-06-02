@@ -44,13 +44,9 @@
         </button>
       </view>
     </form>
-    <recom-buy
-      :list.sync="userCouponsList" :industry.sync="industry"></recom-buy>
-    <recom-giftbat
-      wx:if="{{giftbagList.length>0}}"
-      :list.sync="giftbagList"
-    ></recom-giftbat>
-
+    <recom-activity wx:if="{{activityList.length>0}}" :list.sync="activityList"></recom-activity>
+    <recom-buy :list.sync="userCouponsList" :industry.sync="industry"></recom-buy>
+    <!--<recom-giftbat wx:if="{{giftbagList.length>0}}" :list.sync="giftbagList"></recom-giftbat>-->
     <view class="group-buy" wx:if="{{groupBuyList.length}}">
       <navigator url="/pages/group-buy/group-buy" hover-class="none">
         <view class="group-buy-head">
@@ -133,11 +129,7 @@
       :hotSecond.sync="hotSecond"
       :hotThird.sync="hotThird"
     ></recom-hot>
-    <recom-discovery
-      wx:if="{{contentList.length>0}}"
-      :list.sync="contentList"
-    >
-    </recom-discovery>
+    <recom-discovery wx:if="{{contentList.length>0}}" :list.sync="contentList"></recom-discovery>
     <view class="nothing-box" wx:if="{{activeIsEmpty}}">
       <image src="{{imageUri + '/defaults/c-image/recom/icon-blank_tj@2x.png'}}" wx:if="{{imageUri}}" class="nothing-img"></image>
       <view class="nothing-txt">暂无内容</view>
@@ -161,6 +153,7 @@
   import URIS from 'common/js/config'
   import RecomBuy from '@/base/recommend-items/recom-buy'
   import RecomGiftbag from '@/base/recommend-items/recom-merchant-giftbag'
+  import RecomActivity from '@/base/recommend-items/recom-activity'
   import RecomHot from '@/base/recommend-items/recom-hot'
   import RecomDiscovery from '@/base/recommend-items/recom-discovery'
   import CouponApi from 'api/coupon'
@@ -189,6 +182,7 @@
       shopChange: true,
       industry: 'ktv',
       hotCouponsList: [],
+      activityList: [],
       giftbagList: [],
       contentList: [],
       userCouponsList: [],
@@ -333,6 +327,7 @@
         this._getCouponsAll(),
         this._getGroupList(),
         this._getContentsAll(),
+        this._getActivityAll(),
         this._getGiftBagsAll(),
         this._getUserCouponListAll(),
         this.getBargainList()
@@ -357,6 +352,18 @@
       }
     }
 
+    // 获取异业联盟卡列表(全部)+
+    async _getActivityAll() {
+      let params = {
+        page: 1,
+        limit: 4
+      }
+      let res = await Merchants.getAlliance(this.merchantId, params)
+      if (res.error === ERR_OK) {
+        this.activityList = res.data
+        this.$apply()
+      }
+    }
     // 获取礼包列表(全部)+
     async _getGiftBagsAll() {
       let params = {
@@ -561,6 +568,7 @@
       toast: Toast,
       'recom-buy': RecomBuy,
       'recom-giftbat': RecomGiftbag,
+      'recom-activity': RecomActivity,
       'recom-hot': RecomHot,
       'recom-discovery': RecomDiscovery,
       'integral-popout': IntegralPopout

@@ -212,6 +212,14 @@
             count: this.count,
             activity_id
           }
+        } else if (from === 'c_yylm') { // 异业卡
+          data = {
+            promotion_type,
+            promotion_id,
+            from,
+            count: this.count,
+            employees_id
+          }
         } else {
           data = {
             current_merchant,

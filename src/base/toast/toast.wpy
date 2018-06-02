@@ -33,11 +33,17 @@
     position: fixed
     z-index: 9999
     top: 42%
-    left: 50%
+    // new
+    left: 0px
+    right: 0px
+    margin: auto
+    width: max-content
+    // old
+    // left: 50%
+    // margin-left: -100px
     min-width: 200px
     max-width: 300px
-    margin-left: -100px
-    padding: 10px 0
+    padding: 10px 10px
     opacity: .9
     border-radius: 6px
     transition: all .5s ease-out
