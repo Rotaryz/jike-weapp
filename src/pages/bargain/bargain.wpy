@@ -89,7 +89,9 @@
       myPage: 1,
       bargainList: [],
       myList: [],
-      timer: null
+      timer: null,
+      shareNothing: false,
+      redNothing: false
     }
 
     infoRes(res) {
@@ -113,6 +115,10 @@
     }
     // 下拉刷新
     async onPullDownRefresh() {
+      this.page = 1
+      this.myPage = 1
+      this.redNothing = false
+      this.shareNothing = false
       if (this.navIdx === 1) {
         this.myList = await this.myBargainList() || []
         this.$apply()
@@ -125,24 +131,28 @@
     }
 
     //  底部加载更多
-    async redPacketLower() {
-      switch (this.checkIdx) {
+    async onReachBottom() {
+      switch (this.navIdx) {
         case 0:
-          this.page++
-          let res = await this.getList(this.page)
-          this.packetList.push(...res)
-          if (!res.length) {
-            this.$invoke('Underline', 'show')
-            this.redNothing = true
+          if (!this.redNothing) {
+            this.page++
+            let res = await this.getList(this.page)
+            this.bargainList.push(...res)
+            if (!res.length) {
+              this.$invoke('Underline', 'show')
+              this.redNothing = true
+            }
           }
           break
         case 1:
-          this.myPage++
-          let res2 = await this.myBargainList()
-          this.shareList.push(...res2)
-          if (!res2.length) {
-            this.$invoke('shareUnderline', 'show')
-            this.shareNothing = true
+          if (!this.shareNothing) {
+            this.myPage++
+            let res2 = await this.myBargainList()
+            this.myList.push(...res2)
+            if (!res2.length) {
+              this.$invoke('shareUnderline', 'show')
+              this.shareNothing = true
+            }
           }
           break
       }
@@ -154,6 +164,10 @@
       },
       checkNav(index) {
         this.navIdx = index * 1
+        wepy.pageScrollTo({
+          scrollTop: 0,
+          duration: 30
+        })
         let title = this.navIdx ? '我的砍价' : '疯狂砍价'
         wepy.setNavigationBarTitle({title})
       }

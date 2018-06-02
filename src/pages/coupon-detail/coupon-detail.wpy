@@ -181,7 +181,7 @@
       </block>
     </view>
     <view wx:if="{{type === 1}}" class="{{services.length === 0 ? 'cash-show border-top-1px' : 'border-top-1px'}}">
-      <know-detail :note.sync="note" :notAllowTime.sync="notAllowTime" :industry.sync="industry"></know-detail>
+      <know-detail :status.sync="activityStatus" :note.sync="note" :notAllowTime.sync="notAllowTime" :industry.sync="industry"></know-detail>
     </view>
     <view class="buy-button-wrapper border-top-1px {{activityStatus === 'group' ? 'group-buy' : ''}}">
       <view class="button-group button-group-index border-right-1px">
@@ -191,29 +191,33 @@
         </navigator>
       </view>
       <view class="button-group" wx:if="{{activityStatus !== 'bargain'}}">
-        <view class="collect border-right-1px" @tap="collectToggle" wx:if="{{activityStatus !== 'group' && activityStatus !== 'share'}}">
+        <view class="collect border-right-1px" @tap="collectToggle" wx:if="{{activityStatus !== 'group' && activityStatus !== 'share' && goodsStatus !== 4}}">
           <image wx:if="{{imageUri && !isFavorite}}" class="icon" src="{{imageUri + '/defaults/c-image/recommend/icon-r_collect32@2x.png'}}"></image>
           <image wx:if="{{imageUri && isFavorite}}" class="icon" src="{{imageUri + '/defaults/c-image/recommend/icon-r_collection32@2x.png'}}"></image>
           收藏
         </view>
-        <view class="collect border-right-1px dis" wx:if="{{activityStatus === 'group' || activityStatus === 'share'}}">
+        <view class="collect border-right-1px dis" wx:if="{{activityStatus === 'group' || activityStatus === 'share' || goodsStatus === 4}}">
           <image wx:if="{{imageUri}}" class="icon" src="{{imageUri + '/defaults/c-image/recommend/icon-no_collect@2x.png'}}"></image>
           收藏
         </view>
-        <button class="customer-service" session-from="{{currentMerchant}}" open-type="contact">
-          <image class="icon" wx:if="{{imageUri}}" src="{{imageUri + '/defaults/c-image/recommend/icon-r_service32@2x.png'}}"></image>
+        <button class="customer-service {{goodsStatus === 4 ? 'dis' : ''}}" session-from="{{currentMerchant}}" open-type="{{goodsStatus === 4 ? '' : 'contact'}}">
+          <image class="icon" wx:if="{{imageUri}}" src="{{goodsStatus === 4 ? imageUri + '/defaults/c-image/recommend/icon-service_not @2x.png' : imageUri + '/defaults/c-image/recommend/icon-r_service32@2x.png'}}"></image>
           客服
         </button>
       </view>
       <view class="buy-btn-box">
         <form bindsubmit="submit" report-submit='true'>
           <view class="buy-btn-box-child">
+            <!--砍价-->
             <button class="buy-btn" form-type="submit" wx:if="{{activityStatus === 'bargain' && activitiesStatus === 4}}" @tap="postBargainOrder(1)">{{'¥' + bargainDetail.current_price + ' 立即购买'}}</button>
             <button class="buy-btn {{industry + '-bg'}} {{activitiesStatus !== 2 ? '' : 'disable'}}" form-type="submit" open-type="{{activitiesStatus === 4 ? 'share' : ''}}" @tap="postBargainOrder(2)" wx:if="{{activityStatus === 'bargain'}}">{{ activitiesStatus === 2 ? '已抢光' : activitiesStatus === 3 ? '底价¥'+bargainDetail.bottom_price+' 立即购买' : activitiesStatus === 4 ? '拉朋友一起砍' : '去砍价'}}</button>
+            <!--团购-->
             <button class="buy-btn {{goodsStatus !== 1 ? 'disable' : ''}}" @tap="postOrder" form-type="submit" wx:if="{{activityStatus === 'group'}}">{{ goodsStatus === 0 ? '该商品已下架' : goodsStatus === 1 ? '¥' + coupon.platform_price + '单买' : goodsStatus === 2  ? '已售罄' : '立即购买'}}</button>
-            <button class="buy-btn {{industry + '-bg'}} {{goodsStatus === 1? '' : 'disable' }}" form-type="submit" @tap="postOrder" wx:if="{{activityStatus === ''}}">{{ goodsStatus === 0 ? '该商品已下架' : goodsStatus === 1 ? '立即购买' : goodsStatus === 2 ? '已售罄' : '立即购买'}}</button>
-            <button class="buy-btn {{industry + '-bg'}} {{(shareBuy === 1) ? '' : 'disable' }}" form-type="submit" @tap="postOrder" wx:if="{{activityStatus === 'share'}}">{{shareBuy === 1 ? '立即购买' : shareBuy === 2 ? '已售罄' : '立即购买'}}</button>
             <button class="group-buy-btn {{industry + '-bg'}} {{activitiesStatus !== 1 ? 'disable' : ''}}" form-type="submit" @tap="postGroupOrder" wx:if="{{activityStatus === 'group'}}">{{ activitiesStatus === 0 ? '该商品已下架' : activitiesStatus === 1 ? '¥' + groupBuyDetail.group_price + (groupType === 'join' ? '参团' : '开团') : activitiesStatus === 2 ? '已售罄' : '立即购买'}}</button>
+            <!--普通-->
+            <button class="buy-btn {{industry + '-bg'}} {{goodsStatus === 1? '' : 'disable' }}" form-type="submit" @tap="postOrder" wx:if="{{activityStatus === ''}}">{{ goodsStatus === 0 ? '该商品已下架' : goodsStatus === 1 ? '立即购买' : goodsStatus === 2 ? '已售罄' :  goodsStatus === 4 ? '待上线' : '立即购买'}}</button>
+            <!--分享赚钱-->
+            <button class="buy-btn {{industry + '-bg'}} {{(shareBuy === 1) ? '' : 'disable' }}" form-type="submit" @tap="postOrder" wx:if="{{activityStatus === 'share'}}">{{shareBuy === 1 ? '立即购买' : shareBuy === 2 ? '已售罄' : '立即购买'}}</button>
           </view>
         </form>
       </view>
@@ -397,17 +401,7 @@
     }
 
     async onLoad(option) {
-      wx.getLocation({
-        type: 'gcj02',
-        success: (res) => {
-          this.longitude = res.longitude || ''
-          this.latitude = res.latitude || ''
-        },
-        fail: (res) => {
-          this.longitude = ''
-          this.latitude = ''
-        }
-      })
+      this.$apply()
       // const res = await wepy.getLocation({type: 'gcj02'})
       this.isShowCoupon = option.isShowCoupon || this.isShowCoupon
       this.getShareCoupon = true
@@ -507,16 +501,16 @@
       if (this.type === COUPON_TYPE) {
         if (this.activityStatus === 'group') {
           this.userCoupon = ''
-          await this._getCouponDetail()
+          await this.getCouponDetailAdd()
           await this._getGroupDetail()
           this._groupTimePlay()
         } else if (this.activityStatus === 'share') {
-          await this._getShareMoney()
+          await this.getCouponDetailAdd()
         } else if (this.activityStatus === 'bargain') {
-          await this._getCouponDetail()
+          await this.getCouponDetailAdd()
           await this._getBargainDetail()
         } else {
-          await this._getCouponDetail()
+          await this.getCouponDetailAdd()
         }
       } else if (this.type === PACKAGE_TYPE) {
         await this._getPackageDetail()
@@ -531,7 +525,9 @@
       let shareData = {
         act_type: 1,
         act_id: this.actId, // 活动id
-        p_customer_id: this.fromCustomerId
+        p_customer_id: this.fromCustomerId,
+        latitude: this.latitude,
+        longitude: this.longitude
       }
       let res = await Merchants.coupons(this.id, shareData)
       if (res.error !== ERR_OK) {
@@ -545,6 +541,7 @@
       wepy.setNavigationBarTitle({title: data.title})
       this.promotionImages = data.promotion_images
       this.coupon = data
+      this.coupon.distance = this.coupon.distance < 1000 ? this.coupon.distance + 'm' : (this.coupon.distance / 1000).toFixed(2) + 'km'
       this.services = data.detail
       this.note = data.note
       this.notAllowTime = data.not_allow_time
@@ -701,13 +698,36 @@
     async _getUserInfo() {
       await this.$getUserInfo()
     }
-
+    async getCouponDetailAdd() {
+      wx.getLocation({
+        type: 'gcj02',
+        success: (res) => {
+          this.longitude = res.longitude || ''
+          this.latitude = res.latitude || ''
+          if (this.activityStatus === 'share') {
+            this._getShareMoney()
+            return
+          }
+          this._getCouponDetail()
+        },
+        fail: () => {
+          this.longitude = ''
+          this.latitude = ''
+          if (this.activityStatus === 'share') {
+            this._getShareMoney()
+            return
+          }
+          this._getCouponDetail()
+        }
+      })
+    }
     async _getCouponDetail() {
       let data = this.longitude !== '' && this.latitude !== '' ? {longitude: this.longitude, latitude: this.latitude} : {}
       const res = await CouponApi.getShopCouponDetail(this.id, data)
       if (res.error === ERR_OK) {
         const data = res.data
         this.goodsStatus = res.goods_status !== undefined ? res.goods_status : 1
+        // this.goodsStatus = 4
         this.activitiesStatus = null
         if (this.activityStatus !== 'group') {
           wepy.setNavigationBarTitle({title: data.title})
@@ -724,6 +744,7 @@
         this.stock = data.stock
         // 添shop照片
         this.shopImages = this._formatShopImages(data)
+        this.loaded()
         this.$apply()
       }
     }
@@ -969,7 +990,7 @@
           } else {
             await CouponApi.storeCoupon(this.id)
           }
-          await this._getCouponDetail()
+          await this.getCouponDetailAdd()
         } else {
           if (this.isFavorite) {
 //            取消收藏
@@ -1576,6 +1597,8 @@
             width: 16px
             height: 16px
             margin-bottom: 3px
+        .dis.customer-service
+          color: #dbdbdb
       .button-group-index
         width: 50px
         .collect
