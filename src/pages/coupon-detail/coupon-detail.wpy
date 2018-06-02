@@ -686,7 +686,7 @@
           stock: this.groupBuyDetail.surplus_stock,
           group_type: this.groupType,
           group_id: this.joinGroupId,
-          peopleStock: this.coupon.note ? this.coupon.note.buy_upper_limit : -1,
+          peopleStock: -1,
           from: 'c_groupon'
         }
       } else if (this.activityStatus === 'share') {
@@ -701,7 +701,7 @@
           price: this.coupon.platform_price,
           current_merchant: this.currentMerchant,
           stock: this.stock,
-          peopleStock: this.coupon.note ? this.coupon.note.buy_upper_limit : -1,
+          peopleStock: -1,
           from: 'c_sharemoney',
           deduction_id: this.shareCouponUserId, // 抵用券ID
           is_share_money: 1,

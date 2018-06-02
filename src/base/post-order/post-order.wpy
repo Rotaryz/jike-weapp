@@ -143,23 +143,33 @@
         } else {
           this.count -= 1
         }
-        if (this.orderInfo.from === 'c_sharemoney') {
-          this.total = (this.count * this.orderInfo.price).toFixed(2)
-          return
-        }
         this.total = (this.count * this.orderInfo.price).toFixed(2)
       },
       addCount() {
-        if (this.orderInfo.stock !== -1) {
-          if (this.count < this.orderInfo.stock) {
+        if (!this.orderInfo.from) {
+          if (this.orderInfo.stock === -1 && this.orderInfo.peopleStock === -1) {
             this.count += 1
+          } else if (this.orderInfo.stock === -1 && this.orderInfo.peopleStock !== -1) {
+            if (this.count < this.orderInfo.peopleStock) {
+              this.count += 1
+            }
+          } else if (this.orderInfo.stock !== -1 && this.orderInfo.peopleStock !== -1) {
+            if (this.count < this.orderInfo.stock && this.count < this.orderInfo.peopleStock) {
+              this.count += 1
+            }
+          } else {
+            if (this.count < this.orderInfo.stock) {
+              this.count += 1
+            }
           }
         } else {
-          this.count += 1
-        }
-        if (this.orderInfo.from === 'c_sharemoney') {
-          this.total = (this.count * this.orderInfo.price).toFixed(2)
-          return
+          if (this.orderInfo.stock !== -1) {
+            if (this.count < this.orderInfo.stock) {
+              this.count += 1
+            }
+          } else {
+            this.count += 1
+          }
         }
         this.total = (this.count * this.orderInfo.price).toFixed(2)
       },
