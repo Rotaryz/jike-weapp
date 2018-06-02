@@ -119,7 +119,8 @@
       nothingAdd: false,
       noOrder: false,
       leftIndex: 0,
-      leftTmp: 0
+      leftTmp: 0,
+      onShowfn: false // onShow刷新问题
     }
 
     methods = {
@@ -211,7 +212,7 @@
             break
           case 2:
             this.$invoke('Appraise', 'showCover')
-            this.$broadcast('sendCouponMsg', item.id, item.promotion.id)
+            this.$broadcast('sendCouponMsg', item.id)
             break
           default:
             let couponType
@@ -235,6 +236,7 @@
     async onLoad(option) {
       await this.showIndustry()
       this.load(option)
+      this.onShowfn = true
       this.$apply()
     }
 
@@ -245,6 +247,9 @@
         this.$invoke('BackHome', 'show')
       } else {
         this.$invoke('BackHome', 'hide')
+      }
+      if (this.onShowfn) {
+        this.show()
       }
       this.$apply()
     }
@@ -257,11 +262,31 @@
       this.$invoke('BackHome', 'hide')
     }
 
+    async show() {
+      let type = this.menuItems[this.menuIdx].type
+      this.page = 1
+      let limit
+      if (this.nothingAdd || this.orderList.length >= 100) {
+        limit = 100
+      } else {
+        limit = Math.ceil(this.orderList.length / 10) * 10 || 10
+      }
+      let resList = await this._getOrderList(type, 1, limit)
+      this.loaded()
+      if (resList.error !== ERR_OK) {
+        this.$invoke('Toast', 'show', resList.message)
+        return
+      }
+      this.nothingAdd = false
+      this.orderList = resList.data
+      this.noOrder = this.orderList.length === 0 ? 1 : false
+      this.$apply()
+    }
+
     async load(option) {
 //     判断type值
       let type = option.idx ? option.idx * 1 : 4
       this.menuIdx = this.menuItems.findIndex((item) => item.type === type)
-
       this.nothingAdd = false
       this.$invoke('Underline', 'hide')
       this.userInfo = this.$parent.globalData.user
@@ -271,7 +296,6 @@
       } else {
         limit = Math.ceil(this.orderList.length / 10) * 10 || 10
       }
-
       let resList = await this._getOrderList(type, 1, limit)
       if (resList.error !== 0) {
         this.loaded()
@@ -371,7 +395,7 @@
             break
           case 2:
             this.$invoke('Appraise', 'showCover')
-            this.$broadcast('sendCouponMsg', item.id, item.promotion.id)
+            this.$broadcast('sendCouponMsg', item.id)
             break
           case 3:
           case 4:
@@ -397,7 +421,7 @@
               couponType = 1
             }
             if (item.promotion_type * 1 === 4) {
-              let groupId = item.group_activity_id
+              let groupId = item.activity_id
               this.$navigate('/pages/coupon-detail/coupon-detail?s=group&id=' + item.promotion.id + '&type=' + couponType + '&currentMerchant=' + item.merchant_id + '&groupId=' + groupId)
             } else if (item.promotion_type * 1 === 7) {
               // 砍价跳转

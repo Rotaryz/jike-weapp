@@ -480,6 +480,7 @@
       await this.load()
       await this.showIndustry()
       await this.upLoadImage()
+      console.log(this.activitiesStatus, 2)
     }
 
 //    转1赚的选择优惠券判断
@@ -639,7 +640,6 @@
       } else {
         this.activitiesStatus = 1
       }
-      console.log(this.activitiesStatus)
       this.$apply()
     }
 
@@ -728,7 +728,6 @@
         const data = res.data
         this.goodsStatus = res.goods_status !== undefined ? res.goods_status : 1
         // this.goodsStatus = 4
-        this.activitiesStatus = null
         if (this.activityStatus !== 'group') {
           wepy.setNavigationBarTitle({title: data.title})
         } else if (this.activityStatus === 'bargain') {
@@ -880,7 +879,7 @@
           stock: this.groupBuyDetail.surplus_stock,
           group_type: this.groupType,
           group_id: this.joinGroupId,
-          peopleStock: this.coupon.note ? this.coupon.note.buy_upper_limit : -1,
+          peopleStock: -1,
           from: 'c_groupon'
         }
       } else if (this.activityStatus === 'share') {
@@ -895,7 +894,7 @@
           price: this.coupon.platform_price,
           current_merchant: this.currentMerchant,
           stock: this.stock,
-          peopleStock: this.coupon.note ? this.coupon.note.buy_upper_limit : -1,
+          peopleStock: -1,
           from: 'c_sharemoney',
           deduction_id: this.shareCouponUserId, // 抵用券ID
           is_share_money: 1,
@@ -1025,19 +1024,23 @@
         this.paySubmit('')
       },
       async postGroupOrder() {
+        // 查活动是否正常
         if (this.activitiesStatus !== 1) {
           return
         }
+        // 是否可以开团数据判断
         if (!this.groupBuyDetail.can_open_group && this.groupType === 'open') {
           this.$invoke('toast', 'show', '开团数已达上限')
           return
         }
+        // 是否绑定手机号
         const isAuthorise = await this.isAuthorise()
         if (!isAuthorise) {
           this.loaded()
           this.$invoke('phone-test', 'show', 'group')
           return
         }
+        // 请求是否可以执行下一部操作
         const res = await GroupApi.checkGroup(this.groupType, this.groupId, this.joinGroupId)
         this.loaded()
         if (res.error !== ERR_OK) {

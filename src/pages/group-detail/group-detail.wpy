@@ -269,7 +269,7 @@
         stock: this.groupDetails.surplus_stock,
         group_type: 'join',
         group_id: this.id,
-        peopleStock: this.groupDetails.buy_upper_limit,
+        peopleStock: -1,
         from: 'c_groupon'
       }
       this.$apply()

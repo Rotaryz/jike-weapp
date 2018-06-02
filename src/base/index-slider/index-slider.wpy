@@ -1,18 +1,31 @@
 <template>
-  <view class="slider" wx:if="{{list.length}}">
-    <view class="slider-content">
-      <view class="slider-content-ul" style="transition:{{transition}}; transform: translateX({{list.length===1?0:translateX}}px)"
-            bindtouchstart="touchBegin" bindtouchmove="touching" bindtouchend="touchEnd" animation="{{animationData}}">
-        <view class="slider-item" wx:if="{{list.length!==1}}">
-          <image src="{{list[list.length-1].image.url}}" class="slider-item-img" mode="widthFix"></image>
-        </view>
-        <view class="slider-item" wx:for="{{list}}" wx:key="{{item}}">
-          <image src="{{item.image.url}}" class="slider-item-img" mode="widthFix"></image>
-        </view>
-        <view class="slider-item" wx:if="{{list.length!==1}}">
-          <image src="{{list[0].image.url}}" class="slider-item-img" mode="widthFix"></image>
-        </view>
-      </view>
+  <!--<view class="slider" wx:if="{{list.length}}">-->
+    <!--<view class="slider-content">-->
+      <!--<view class="slider-content-ul" style="transition:{{transition}}; transform: translateX({{list.length===1?0:translateX}}px)"-->
+            <!--bindtouchstart="touchBegin" bindtouchmove="touching" bindtouchend="touchEnd" animation="{{animationData}}">-->
+        <!--<view class="slider-item" wx:if="{{list.length!==1}}">-->
+          <!--<image src="{{list[list.length-1].image.url}}" class="slider-item-img" mode="widthFix"></image>-->
+        <!--</view>-->
+        <!--<view class="slider-item" wx:for="{{list}}" wx:key="{{item}}">-->
+          <!--<image src="{{item.image.url}}" class="slider-item-img" mode="widthFix"></image>-->
+        <!--</view>-->
+        <!--<view class="slider-item" wx:if="{{list.length!==1}}">-->
+          <!--<image src="{{list[0].image.url}}" class="slider-item-img" mode="widthFix"></image>-->
+        <!--</view>-->
+      <!--</view>-->
+    <!--</view>-->
+  <!--</view>-->
+  <view class="slider">
+    <view class="swiper-content">
+      <swiper previous-margin="20px" next-margin="20px" circular autoplay interval="3000" duration="300" class="swiper-box">
+        <block wx:for="{{list}}" wx:key="{{index}}">
+          <swiper-item class="item-box">
+            <view class="img-box">
+              <image src="{{item.image.url}}" class="shop-img" mode="widthFix"></image>
+            </view>
+          </swiper-item>
+        </block>
+      </swiper>
     </view>
   </view>
 </template>
@@ -52,11 +65,11 @@
     }
 
     async onLoad() {
-      let res = await wepy.getSystemInfo()
-      let maxWidth = res.screenWidth
-      this.translateX = -0.893332 * maxWidth * this.index
-      this.baseTranslateX = 0.893332 * maxWidth
-      this.$apply()
+//      let res = await wepy.getSystemInfo()
+//      let maxWidth = res.screenWidth
+//      this.translateX = -0.893332 * maxWidth * this.index
+//      this.baseTranslateX = 0.893332 * maxWidth
+//      this.$apply()
     }
 
     _autoPlayMove() {
@@ -172,6 +185,26 @@
   .slider
     width: 100%
     height: 100%
+    position: absolute
+    left: 0
+    top: 0
+    .swiper-content
+      width: 100%
+      height: 100%
+      .swiper-box
+        width: 100%
+        height: 100%
+        .item-box
+          box-sizing: border-box
+          padding: 0 5px
+          .img-box
+            width: 100%
+            height: 100%
+            border-radius: 4px
+            overflow: hidden
+            background: $color-master-gray
+            .shop-img
+              width: 100%
     .slider-content
       position: absolute
       width: 86.6666vw

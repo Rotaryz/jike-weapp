@@ -201,6 +201,8 @@
       getLogs: true,
       groupBuyIdx: 0,
       groupBuyList: [],
+//      oldScrollTop: 0, // 距离顶部的距离
+//      tabBarShow: true // 是否显示底下tab
       bargainList: [],
       bargaiIdx: 0
     }
@@ -224,7 +226,7 @@
     }
 
     async onLoad() {
-      this.$invoke('Slider', 'init', this.shopImages.length)
+//      this.$invoke('Slider', 'init', this.shopImages.length)
       await this._userAddScore()
     }
 
@@ -233,15 +235,28 @@
       // 初始化
       await this._init()
       // last
-      if (this.shopImages.length) {
-        this.$invoke('Slider', 'init', this.shopImages.length)
-      }
+//      if (this.shopImages.length) {
+//        this.$invoke('Slider', 'init', this.shopImages.length)
+//      }
       this.loaded()
     }
 
     onHide() {
-      this.$invoke('Slider', 'stop')
+//      this.$invoke('Slider', 'stop')
     }
+
+    // 测试页面滑动隐藏tab
+//    onPageScroll(e) {
+//      let scrollTop = e.scrollTop
+//      if (scrollTop > this.oldScrollTop) {
+//        this.tabBarShow = false
+//      } else {
+//        this.tabBarShow = true
+//      }
+//      this.oldScrollTop = scrollTop > 0 ? scrollTop : 0
+//      this.$apply()
+//    }
+
     // 砍价列表
     async getBargainList() {
       let resData = await Bargain.bargainList()
@@ -282,7 +297,6 @@
         this.$parent.updateGlobalData('logTimes', ++this.logTimes)
       }
       await this._getMechantsMsg()
-      await this.getBargainList()
       // 切店存储对应的商家ID
       if (this.shopChange) {
         try {
@@ -322,7 +336,8 @@
         this._getGroupList(),
         this._getContentsAll(),
         this._getGiftBagsAll(),
-        this._getUserCouponListAll()
+        this._getUserCouponListAll(),
+        this.getBargainList()
       ])
     }
 
@@ -516,6 +531,17 @@
         this.$navigate('/pages/coupon-detail/coupon-detail?type=1&s=group&id=' + promotionId + '&currentMerchant=' + merchantId + '&groupId=' + groupId)
       }
     }
+
+    // 测试页面滑动隐藏tab
+//    watch = {
+//      tabBarShow() {
+//        if (this.tabBarShow) {
+//          wx.showTabBar({animation: true})
+//        } else {
+//          wx.hideTabBar({animation: true})
+//        }
+//      }
+//    }
 
     // 检查活动内容是否为空
     computed = {
