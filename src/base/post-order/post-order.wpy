@@ -53,6 +53,7 @@
   import Order from 'api/order'
   import base from 'common/mixins/base'
   import URIS from 'common/js/config'
+  import Bargain from 'api/bargain'
 
   export default class PostOrder extends wepy.component {
     mixins = [base]
@@ -202,6 +203,15 @@
             is_share_money,
             share_customer_id
           }
+        } else if (from === 'c_bargain') {
+          data = {
+            current_merchant,
+            promotion_type,
+            promotion_id,
+            from,
+            count: this.count,
+            activity_id
+          }
         } else {
           data = {
             current_merchant,
@@ -240,9 +250,15 @@
             }
             this._hide()
           },
-          fail: (res) => {
+          fail: async (data) => {
+            console.log(res)
             if (this.status === 'share') {
               this.orderInfo.deduction_id = 0
+            } else if (this.orderInfo.from === 'c_bargain') {
+              // 手动关闭订单
+              let orderSn = res.order_sn
+              await Bargain.endOrder(orderSn)
+              this.loaded()
             }
 //              单成功生成订单时需要锁定优惠券
             this.$emit('failPay')

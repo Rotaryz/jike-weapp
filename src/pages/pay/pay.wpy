@@ -503,6 +503,7 @@
   .pay-submit
     padding: 15px 10px
     .submit-btn
+      width: 100%
       height: 44px
       line-height: 46px
       font-size: $font-size-medium
@@ -511,6 +512,7 @@
       border-radius: 2px
       &::after
         border: none
+
       .end-moeny
         margin-right: 5px
     .submit-dis

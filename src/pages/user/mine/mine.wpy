@@ -180,6 +180,10 @@
           text: '我的优惠券',
           url: '/pages/user/myCoupon/myCoupon'
         }, {
+          imgUrl: URIS.image + '/defaults/c-image/bargain/icon-bargain@2x.png',
+          text: '我的砍价',
+          url: '/pages/my-bargain/my-bargain'
+        }, {
           imgUrl: URIS.image + '/defaults/c-image/share/icon-wallet@2x.png',
           text: '我的钱包',
           url: '/pages/user/redPacket/redPacket'

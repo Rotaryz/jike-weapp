@@ -9,6 +9,14 @@ view
   user-select: none
   color: $color-text
 
+button
+  border-radius : 0
+  padding: 0
+  overflow :visible
+  background :transparent
+  &:after
+    border :none
+
 .border-top-1px, .border-right-1px, .border-bottom-1px, .border-left-1px
   position: relative
   &:before, &:after
@@ -60,7 +68,7 @@ view
     position: absolute
     transform-origin: 0 0
     width: 200%
-    transform: scale(.5) translateZ(0)
+    transform: scaleY(.5) translateZ(0)
   &:before
     border-top: 1px solid $color-col-line
     left: 0

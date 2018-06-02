@@ -138,7 +138,9 @@
         'pages/share-detail/share-detail',
         'pages/bank-card/bank-card',
         'pages/group-detail/group-detail',
-        'pages/shop-introduce/shop-introduce'
+        'pages/shop-introduce/shop-introduce',
+        'pages/bargain/bargain',
+        'pages/my-bargain/my-bargain'
       ],
       window: {
         backgroundColor: '#F9F9F9',

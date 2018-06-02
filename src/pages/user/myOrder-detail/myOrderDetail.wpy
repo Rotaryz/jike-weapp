@@ -546,6 +546,8 @@
               this.$navigate('/pages/coupon-detail/coupon-detail?s=group&id=' + this.orderMsg.promotion_id + '&type=' + couponType + '&currentMerchant=' + merchantId + '&groupId=' + groupId)
             } else if (this.promotionType === 7) {
               // 砍价跳转
+              this.$navigate(`/pages/coupon-detail/coupon-detail?s=bargain&id=${this.orderMsg.promotion.id}&a=${this.orderMsg.activity_id}&m=${this.orderMsg.merchant_id}`)
+              console.log(this.orderMsg)
             } else {
               this.$navigate('/pages/coupon-detail/coupon-detail?id=' + this.orderMsg.promotion_id + '&type=' + couponType + '&currentMerchant=' + merchantId)
             }
@@ -582,6 +584,7 @@
           this.$navigate('/pages/coupon-detail/coupon-detail?s=group&id=' + id + '&type=' + couponType + '&currentMerchant=' + merchantId + '&groupId=' + groupId)
         } else if (this.promotionType === 7) {
           // 砍价跳转
+          this.$navigate(`/pages/coupon-detail/coupon-detail?s=bargain&id=${this.orderMsg.promotion.id}&a=${this.orderMsg.activity_id}&m=${this.orderMsg.merchant_id}`)
         } else {
           this.$navigate('/pages/coupon-detail/coupon-detail?id=' + id + '&type=' + couponType + '&currentMerchant=' + merchantId)
         }
