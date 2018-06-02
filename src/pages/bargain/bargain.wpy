@@ -119,6 +119,8 @@
       this.myPage = 1
       this.redNothing = false
       this.shareNothing = false
+      this.$invoke('Underline', 'hide')
+      this.$invoke('shareUnderline', 'hide')
       if (this.navIdx === 1) {
         this.myList = await this.myBargainList() || []
         this.$apply()

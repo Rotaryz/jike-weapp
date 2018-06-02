@@ -246,18 +246,23 @@
     async getBargainList() {
       let resData = await Bargain.bargainList()
       this.loaded()
-      if (resData.error === ERR_OK) {
-        let res = resData.data
-        if (!res.length) {
-          return []
-        }
-        let first = res.slice(0, 3)
-        let second = res.slice(3, 6)
-        let third = res.slice(6, 9)
-        this.bargainList = [first, second, third].filter((item) => {
-          return item.length > 0
-        })
+      if (resData.error !== ERR_OK) {
+        return
       }
+      if (!resData.activity_status) {
+        this.bargainList = []
+        return
+      }
+      let res = resData.data
+      if (!res.length) {
+        return []
+      }
+      let first = res.slice(0, 3)
+      let second = res.slice(3, 6)
+      let third = res.slice(6, 9)
+      this.bargainList = [first, second, third].filter((item) => {
+        return item.length > 0
+      })
     }
     async load() {
       let oldId = this.merchantId

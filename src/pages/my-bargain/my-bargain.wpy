@@ -4,6 +4,7 @@
       <bargain-mine :industry.sync="industry" :bargainCoupon.sync="item"></bargain-mine>
     </repeat>
   </view>
+  <Underline></Underline>
 </template>
 
 <script>
@@ -13,6 +14,7 @@
   import {ERR_OK} from 'api/base'
   import BargainMine from '@/base/bargain-mine/bargain-mine'
   import Bargain from 'api/bargain'
+  import Underline from '@/base/underline-block/underline-block'
 
   export default class myBargain extends wepy.page {
     mixins = [base]
@@ -29,6 +31,9 @@
     async onLoad() {
       await this.showIndustry()
       this.myList = await this.myBargainList() || []
+      if (this.myList.length === 0 || this.myList.length < 10) {
+        this.$invoke('Underline', 'show')
+      }
       this._groupTimePlay()
       this.$apply()
     }
@@ -99,7 +104,9 @@
     }
 
     components = {
-      'bargain-mine': BargainMine
+      'bargain-mine': BargainMine,
+      Underline
+
     }
   }
 </script>
