@@ -513,7 +513,7 @@
         this.$apply()
       },
       swiperBargain(e) {
-        this.bargainyIdx = e.detail.current * 1
+        this.bargaiIdx = e.detail.current * 1
         this.$apply()
       },
       groupDetail(msg) {
