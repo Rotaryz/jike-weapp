@@ -289,7 +289,6 @@
         this.$parent.updateGlobalData('logTimes', ++this.logTimes)
       }
       await this._getMechantsMsg()
-      await this.getBargainList()
       // 切店存储对应的商家ID
       if (this.shopChange) {
         try {
@@ -329,7 +328,8 @@
         this._getGroupList(),
         this._getContentsAll(),
         this._getGiftBagsAll(),
-        this._getUserCouponListAll()
+        this._getUserCouponListAll(),
+        this.getBargainList()
       ])
     }
 
