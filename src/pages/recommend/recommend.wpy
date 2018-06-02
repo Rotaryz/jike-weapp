@@ -264,7 +264,8 @@
       if (resData.error === ERR_OK) {
         let res = resData.data
         if (!res.length) {
-          return []
+          this.bargainList = []
+          return
         }
         let first = res.slice(0, 3)
         let second = res.slice(3, 6)
