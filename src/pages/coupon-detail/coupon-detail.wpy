@@ -730,7 +730,7 @@
         // this.goodsStatus = 4
         if (this.activityStatus !== 'group') {
           wepy.setNavigationBarTitle({title: data.title})
-        } else if (this.activityStatus !== 'bargain') {
+        } else if (this.activityStatus === 'bargain') {
           wepy.setNavigationBarTitle({title: '砍价详情'})
         }
         this.promotionImages = data.promotion_images
