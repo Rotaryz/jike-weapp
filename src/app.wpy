@@ -29,8 +29,8 @@
       if (!merchantId) {
         wepy.setStorageSync('merchantId', extConfig.current_merchant ? extConfig.current_merchant : this.config.current_merchant)
       }
-      this.globalData.env = extConfig.env || 'dev'
-      this.globalData.version = extConfig.version || 'v2'
+      this.globalData.env = extConfig.env || 'test'
+      this.globalData.version = extConfig.version || 'v1'
       console.log('环境：' + this.globalData.env)
       console.log('版本：' + this.globalData.version)
       const storageDate = wepy.getStorageSync('collectDate')
@@ -140,8 +140,7 @@
         'pages/group-detail/group-detail',
         'pages/shop-introduce/shop-introduce',
         'pages/bargain/bargain',
-        'pages/my-bargain/my-bargain'
-        'pages/shop-introduce/shop-introduce',
+        'pages/my-bargain/my-bargain',
         'pages/activity-detail/activity-detail'
       ],
       window: {
