@@ -480,7 +480,6 @@
       await this.load()
       await this.showIndustry()
       await this.upLoadImage()
-      console.log(this.activitiesStatus, 2)
     }
 
 //    转1赚的选择优惠券判断
