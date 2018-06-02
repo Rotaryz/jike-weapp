@@ -14,16 +14,14 @@
     <view class="refund-progress">
       <view class="refund-progress-title border-bottom-1px">退款进度</view>
       <view class="refund-progress-msg" wx:if="{{orderMsg.refund_schedule != 5}}">
-        <view class="refund-progress-image">
+        <view class="refund-progress-image-fail">
           <view class="line-box">
             <view class="refund-progress-item {{orderMsg.refund_schedule >= 2 ? 'active' : ''}}"></view>
-            <view class="refund-progress-item {{orderMsg.refund_schedule >= 4 ? 'active' : ''}}"></view>
             <view class="refund-progress-item {{orderMsg.refund_schedule >= 4 ? 'active' : ''}}"></view>
           </view>
           <view class="dot-box">
             <view class="refund-progress-dot active"></view>
             <view class="refund-progress-dot {{orderMsg.refund_schedule >= 2 ? 'active' : ''}}"></view>
-            <view class="refund-progress-dot {{orderMsg.refund_schedule >= 4 ? 'active' : ''}}"></view>
             <view class="refund-progress-dot {{orderMsg.refund_schedule >= 4 ? 'active' : ''}}"></view>
           </view>
         </view>
@@ -38,12 +36,8 @@
             <view class="refund-progress-stepMsg">您的退款申请已受理，审核时间预计需要1-2天</view>
           </view>
           <view class="refund-progress-step">
-            <view class="refund-progress-stepTitle">微信支付到账处理</view>
-            <view class="refund-progress-stepMsg">审核通过退款申请已提交给微信支付，微信支付会在1-3天内完成处理</view>
-          </view>
-          <view class="refund-progress-step">
-            <view class="{{orderMsg.refund_schedule == 4?'refund-progress-stepTitle active':'refund-progress-stepTitle'}}">退款成功</view>
-            <view class="refund-progress-stepMsg">微信支付处理完成后，退款会在3-5天内退回您的微信支付账户</view>
+            <view class="orderMsg.refund_schedule == 4?'refund-progress-stepTitle active':'refund-progress-stepTitle'">退款成功</view>
+            <view class="refund-progress-stepMsg">审核通过，退款申请已提交给微信支付，退款会在5天内退回您的微信支付账户</view>
           </view>
         </view>
       </view>

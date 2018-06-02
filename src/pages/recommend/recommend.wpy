@@ -186,7 +186,7 @@
     }
 
     async onLoad() {
-      this.$invoke('Slider', 'init', this.shopImages.length)
+//      this.$invoke('Slider', 'init', this.shopImages.length)
       await this._userAddScore()
     }
 
@@ -195,14 +195,14 @@
       // 初始化
       await this._init()
       // last
-      if (this.shopImages.length) {
-        this.$invoke('Slider', 'init', this.shopImages.length)
-      }
+//      if (this.shopImages.length) {
+//        this.$invoke('Slider', 'init', this.shopImages.length)
+//      }
       this.loaded()
     }
 
     onHide() {
-      this.$invoke('Slider', 'stop')
+//      this.$invoke('Slider', 'stop')
     }
 
     // 测试页面滑动隐藏tab
