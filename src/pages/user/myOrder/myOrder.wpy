@@ -202,7 +202,7 @@
               paySign
             })
             if (pay.errMsg === 'requestPayment:ok') {
-              this.load({idx: '0'})
+              this.load({idx: this.menuIdx})
               wepy.setStorageSync('tips', {order: true})
               this._getShareSoya(item.id)
             }
@@ -382,7 +382,7 @@
               paySign
             })
             if (pay.errMsg === 'requestPayment:ok') {
-              this.load({idx: '0'})
+              this.load({idx: this.menuIdx})
               this._getShareSoya(item.id)
             }
             break
