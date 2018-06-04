@@ -153,7 +153,7 @@
             <image class="ro-bargain-address-mav-icon" wx:if="{{imageUri}}" src="{{imageUri + '/defaults/c-image/mine/icon-navigation_1.png'}}"></image>
             <view class="ro-bargain-address-mav-text">导航</view>
           </view>
-          <view class="ro-bargain-address-mav-item" @tap="call({{orderMsg.merchant_data.mobile}})">
+          <view class="ro-bargain-address-mav-item" @tap="call({{coupon.merchant_data.mobile}})">
             <image class="ro-bargain-address-mav-icon" wx:if="{{imageUri}}" src="{{imageUri + '/defaults/c-image/mine/icon-call_1.png'}}"></image>
             <view class="ro-bargain-address-mav-text">电话</view>
           </view>
@@ -630,10 +630,10 @@
       if (res.activity_status === 2) {
         this.activitiesStatus = 2
         return
-      } else if (this.bargainDetail.current_price === this.bargainDetail.bottom_price && this.bargainDetail.left_cut_num === 0) {
+      } else if (this.bargainDetail.current_price * 1 === this.bargainDetail.bottom_price * 1 || this.bargainDetail.left_cut_num === 0) {
         this.activitiesStatus = 3
         return
-      } else if (this.bargainDetail.current_price !== this.bargainDetail.bottom_price && this.bargainDetail.is_cuted) {
+      } else if (this.bargainDetail.current_price * 1 !== this.bargainDetail.bottom_price * 1 && this.bargainDetail.is_cuted) {
         this.activitiesStatus = 4
         return
       } else {
