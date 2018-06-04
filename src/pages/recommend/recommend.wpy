@@ -1,11 +1,10 @@
 <template>
   <view class="recommend {{activeIsEmpty? '':'has-something'}}" ref="recommend">
     <view class="slider-wrapper">
+      <image wx:if="{{imageUri}}" src="{{imageUri + '/defaults/c-image/recommend/pic-r_shadow@2x.png'}}" class="underImage"></image>
       <repeat>
         <Slider :list.sync="shopImages"></Slider>
       </repeat>
-      <image wx:if="{{imageUri}}" src="{{imageUri + '/defaults/c-image/recommend/pic-r_shadow@2x.png'}}"
-             class="underImage"></image>
     </view>
     <form bindsubmit="submit" report-submit='true'>
       <view class="nav-wrapper">
@@ -44,9 +43,24 @@
         </button>
       </view>
     </form>
-    <recom-activity wx:if="{{activityList.length>0}}" :list.sync="activityList"></recom-activity>
+    <!--<recom-activity wx:if="{{activityList.length>0}}" :list.sync="activityList"></recom-activity>-->
     <recom-buy :list.sync="userCouponsList" :industry.sync="industry"></recom-buy>
     <!--<recom-giftbat wx:if="{{giftbagList.length>0}}" :list.sync="giftbagList"></recom-giftbat>-->
+    <view class="horizontal-box" wx:if="{{activityList.length}}">
+      <view class="horizontal-swiper-box">
+        <swiper class="horizontal-swiper" circular autoplay interval="3000" duration="300">
+          <block wx:for="{{activityList}}" wx:key="{{index}}">
+            <navigator url="{{'/pages/activity/activity?a=' + item.id + '&type=y&e=0'}}" hover-class="none">
+              <swiper-item class="horizontal-swiper-item">
+                <view class="horizontal-item">
+                  <image class="horizontal-item-img" src="{{item.image_url}}"></image>
+                </view>
+              </swiper-item>
+            </navigator>
+          </block>
+        </swiper>
+      </view>
+    </view>
     <view class="group-buy" wx:if="{{groupBuyList.length}}">
       <navigator url="/pages/group-buy/group-buy" hover-class="none">
         <view class="group-buy-head">
@@ -328,7 +342,7 @@
         this._getGroupList(),
         this._getContentsAll(),
         this._getActivityAll(),
-        this._getGiftBagsAll(),
+//        this._getGiftBagsAll(),
         this._getUserCouponListAll(),
         this.getBargainList()
       ])
@@ -641,6 +655,35 @@
         .content
           margin-top: 4px
           font-size: $font-size-small
+
+  .horizontal-box
+    margin-top: 10px
+    height: 20vw
+    background: $color-white
+    .horizontal-swiper-box
+      width: 100%
+      height: 20vw
+      .horizontal-swiper
+        width: 100%
+        height: 100%
+        display: flex
+        .horizontal-swiper-item
+          height: 100%
+          display: flex
+          padding: 0 12px
+          align-items: center
+          box-sizing: border-box
+        .horizontal-item
+          width: 100%
+          height: 0
+          padding-bottom: 18.518%
+          position: relative
+          .horizontal-item-img
+            width: 100%
+            height: 100%
+            position: absolute
+            left: 0
+            top: 0
 
   .group-buy
     background: $color-white
