@@ -489,6 +489,7 @@
         let shareCoupon = wepy.getStorageSync('shareCoupon')
         this.orderInfo.deduction_id = typeof (shareCoupon) === 'object' ? shareCoupon.id : typeof (shareCoupon) === 'string' ? this.orderInfo.deduction_id : 0
         this.shareCouponUserId = this.orderInfo.deduction_id
+        this.orderInfo.from = this.orderInfo.deduction_id ? 'c_sharemoney' : ''
         this.userCoupon = typeof (shareCoupon) === 'object' ? ` - ${shareCoupon.money}` : typeof (shareCoupon) === 'string' ? this.userCoupon : ''
         this.$apply()
       }
@@ -894,7 +895,7 @@
           current_merchant: this.currentMerchant,
           stock: this.stock,
           peopleStock: -1,
-          from: 'c_sharemoney',
+          from: this.shareCouponUserId ? 'c_sharemoney' : '',
           deduction_id: this.shareCouponUserId, // 抵用券ID
           is_share_money: 1,
           share_customer_id: this.fromCustomerId // 分享者id
@@ -1135,6 +1136,7 @@
 //              单成功生成订单时需要锁定优惠券
           this.userCoupon = ''
           this.orderInfo.deduction_id = 0
+          this.orderInfo.from = ''
           this.$apply()
         }
       },
@@ -1142,6 +1144,7 @@
 //        购买成功时的修改
         this.userCoupon = ''
         this.orderInfo.deduction_id = 0
+        this.orderInfo.from = ''
         this.$navigate(`/pages/pay-result/pay-result?orderId=${orderId}&total=${total}&status=${status}`)
         this.$apply()
       }

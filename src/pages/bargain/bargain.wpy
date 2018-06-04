@@ -165,11 +165,13 @@
         this.$navigate(`/pages/coupon-detail/coupon-detail?s=bargain&id=${item.promotion_id}&a=${item.id}&m=${item.merchant_id}`)
       },
       checkNav(index) {
+        if (index !== this.navIdx) {
+          wepy.pageScrollTo({
+            scrollTop: 0,
+            duration: 30
+          })
+        }
         this.navIdx = index * 1
-        wepy.pageScrollTo({
-          scrollTop: 0,
-          duration: 30
-        })
         let title = this.navIdx ? '我的砍价' : '疯狂砍价'
         wepy.setNavigationBarTitle({title})
       }

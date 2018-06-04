@@ -25,9 +25,21 @@
 
     data = {
       imageUrl: URIS.image,
-      myList: []
+      myList: [],
+      myPage: 1,
+      nothing: false
     }
-
+    async onReachBottom() {
+      if (!this.nothing) {
+        this.myPage++
+        let res = await this.myBargainList()
+        this.myList.push(...res)
+        if (!res.length) {
+          this.$invoke('Underline', 'show')
+          this.nothing = true
+        }
+      }
+    }
     async onLoad() {
       await this.showIndustry()
       this.myList = await this.myBargainList() || []

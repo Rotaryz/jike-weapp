@@ -437,6 +437,7 @@
             font-size : $font-size-medium
           .add
             width: 22px
+
             height: 22px
             text-align: center
             line-height: 22px
