@@ -987,12 +987,14 @@
         display: flex
         justify-content: space-between
         align-items: center
-        .merchantTxt
-          flex: 1
+        position: relative
         .orderDetail-merchant-icon
           width: 6px
           height: 10px
-          margin-right: 12px
+          position: absolute
+          right: 12px
+          top: 50%
+          transform: translate(0, -50%)
 
       .orderDetail-merchant-msgBox
         display: flex
