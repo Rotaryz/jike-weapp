@@ -107,7 +107,7 @@
       if (this.bargainList.length && this.bargainList.length < 10) {
         this.$invoke('Underline', 'show')
       }
-      if (this.bargainList.length && this.myList.length < 10) {
+      if (this.myList.length && this.myList.length < 10) {
         this.$invoke('shareUnderline', 'show')
       }
       this._groupTimePlay()

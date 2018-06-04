@@ -3,7 +3,7 @@
     <block wx:for="{{infoTop}}" wx:key="index" wx:for-index="i">
       <view class="max-modal">
         <block wx:for="{{item}}" wx:key="index" wx:for-item="items">
-          <view class="max-modal-title" wx:if="{{index===0}}">{{types[items.goods_type]}}</view>
+          <view class="max-modal-title line-{{industry}}" wx:if="{{index===0}}">{{types[items.goods_type]}}</view>
           <view class="modal-item">
             <view class="modal-item-img">
               <image wx:if="{{imageUri && i === 0 }}" src="{{imageUri + '/defaults/ipc-shopping/page/shop.png'}}"></image>
@@ -20,9 +20,9 @@
         </block>
       </view>
     </block>
-    <view wx:if="{{infoBottom.length > 0}}" class="max-modal max-modal-y {{hideFlag ? hide : '' }}" style="height:{{height}}">
+    <view wx:if="{{infoBottom.length > 0}}" class="max-modal {{infoBottom.length > 1 ? 'max-modal-y' : ''}} {{hideFlag ? hide : '' }}" style="height:{{height}}">
       <block wx:for="{{infoBottom}}" wx:key="index">
-        <view class="max-modal-title" wx:if="{{index===0}}">{{types[item.goods_type]}}</view>
+        <view class="max-modal-title line-{{industry}}" wx:if="{{index===0}}">{{types[item.goods_type]}}</view>
         <view class="modal-item">
           <view class="modal-item-img">
             <image src="{{item.goods_detail.url}}"></image>
@@ -37,7 +37,7 @@
           </view>
         </view>
       </block>
-      <view class="max-modal-hide" @tap.stop="hideFun">
+      <view class="max-modal-hide" @tap.stop="hideFun" wx:if="{{infoBottom.length > 1}}">
         <image class="m-m-h-pic" wx:if="{{imageUri && hideFlag}}" src="{{imageUri + '/defaults/ipc-shopping/page/icon-packup@2x.png'}}"></image>
         <image class="m-m-h-pic" wx:if="{{imageUri && !hideFlag}}" src="{{imageUri + '/defaults/ipc-shopping/page/icon-deploy@2x.png'}}"></image>
       </view>
@@ -65,7 +65,9 @@
           <view class="yuan">元</view>
         </view>
       </view>
-      <view class="bot-order {{btnDisable ? 'btn-disable': ''}}" @tap="postOrder">{{btnDisable ? '已售罄':'提交订单'}}</view>
+      <view class="bot-order" @tap="postOrder">
+        <view class="act-btn {{industry}}-bg {{btnDisable ? 'btn-disable': ''}}" >{{btnDisable ? '已售罄':'提交订单'}}</view>
+      </view>
     </view>
     <phone-test @isPhoneOk.user="getSymbol" :industry.sync="industry"></phone-test>
     <toast></toast>
@@ -112,8 +114,9 @@
       total: 0
     }
 
-    onLoad (options) {
+    async onLoad (options) {
       this.optionInfo = options
+      await this.showIndustry()
       this.$apply()
     }
 
@@ -431,6 +434,7 @@
             line-height: 22px
             border-1px($color-col-line, 2px)
             color: $color-text
+            font-size : $font-size-medium
           .add
             width: 22px
             height: 22px
@@ -445,25 +449,29 @@
         .right
           font-family: $font-family-meddle
           font-size: $font-size-large
-          color: $color-ktv-theme
+          color :$color-pay
           .yuan
             font-family: $font-family-regular
             font-size: $font-size-small-s
             margin-bottom: 2px
-            color: $color-ktv-theme
+            color :$color-pay
       .bot-order
         height: 45px
-        background: $color-main
-        line-height: 45px
+        background: $color-white
         text-align: center
         position: fixed
         width: 100%
         bottom: 0px
-        color: $color-white
+        z-index: 100
         font-family: $font-family-regular
         font-size: $font-size-medium
         letter-spacing: 0.56px
-        &.btn-disable
-          background: #b6b5bf
+        .act-btn
+          color: $color-white
+          line-height: 45px
+          width: 100%
+          height: 100%
+          &.btn-disable
+            opacity : 0.5
 
 </style>
