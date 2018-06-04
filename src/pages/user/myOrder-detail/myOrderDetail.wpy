@@ -536,10 +536,10 @@
               return
             }
             let couponType
-            if (this.promotionType === 1 || this.promotionType === 4) {
-              couponType = 1
-            } else if (this.promotionType === 2) {
+            if (this.promotionType === 2) {
               couponType = 2
+            } else {
+              couponType = 1
             }
             if (this.promotionType === 4) {
               let groupId = this.orderMsg.group_activity_id
@@ -573,10 +573,10 @@
         let id = this.orderMsg.promotion_id
         let merchantId = this.orderMsg.merchant_id
         let couponType
-        if (this.promotionType === 1 || this.promotionType === 4) {
-          couponType = 1
-        } else if (this.promotionType === 2) {
+        if (this.promotionType === 2) {
           couponType = 2
+        } else {
+          couponType = 1
         }
         // 根据不同类型传不同的参数
         if (this.promotionType === 4) {
