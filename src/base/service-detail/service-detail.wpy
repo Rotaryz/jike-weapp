@@ -54,7 +54,7 @@
         width: 2px
         height: 14px
         background: $color-orange
-        margin-right: 5px
+        margin-right: 8px
         margin-bottom: 2px
     .detail-wrapper
       .item-wrapper

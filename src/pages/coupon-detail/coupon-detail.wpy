@@ -1438,7 +1438,7 @@
         border-bottom: 0.5px solid $color-col-line
         font-size: $font-size-medium
         color: #6E697F
-        text-indent: 7px
+        text-indent: 10px
         position: relative
         &::before
           content: ''

@@ -55,6 +55,10 @@
       let res = await Bargain.myBargain(data)
       this.loaded()
       res = this.infoRes(res)
+      res = res.map((item) => {
+        item.end_ats = '00天00时00分00秒'
+        return item
+      })
       return res
     }
 
@@ -63,7 +67,7 @@
       this.groupEndTime = this._groupTimeCheckout(this.endTime)
       this.myList = this.myList.map((item) => {
         let endTime = this._groupTimeCheckout(item.end_at_timestamp)
-        item.end_at = `${endTime.day}天${endTime.hour}时${endTime.minute}分${endTime.second}秒`
+        item.end_ats = `${endTime.day}天${endTime.hour}时${endTime.minute}分${endTime.second}秒`
         return item
       })
       this.$apply()
@@ -71,7 +75,7 @@
         this.groupEndTime = this._groupTimeCheckout(this.endTime)
         this.myList = this.myList.map((item) => {
           let endTime = this._groupTimeCheckout(item.end_at_timestamp)
-          item.end_at = `${endTime.day}天${endTime.hour}时${endTime.minute}分${endTime.second}秒`
+          item.end_ats = `${endTime.day}天${endTime.hour}时${endTime.minute}分${endTime.second}秒`
           return item
         })
         this.$apply()

@@ -4,7 +4,7 @@
     <view class="bargain-mine-item">
       <view class="bargain-mine-time border-bottom-1px">
         <view class="bargain-mine-date">{{bargainCoupon.created_at}}</view>
-        <view class="bargain-mine-end-time">倒计时：{{bargainCoupon.end_at}}</view>
+        <view class="bargain-mine-end-time">倒计时：{{bargainCoupon.end_ats}}</view>
       </view>
       <!--内容-->
       <view class="bargain-normal-item">
@@ -45,7 +45,7 @@
       <view class="bargain-mine-msg border-top-1px">
         <view class="bargain-mine-tip">{{bargainCoupon.status === 1 ? '砍价中' : bargainCoupon.status === 0 || bargainCoupon.status === 3 ? '已关闭' : bargainCoupon.status === 2 ? '已抢光' : '砍价中'}}</view>
         <form class="bargain-mine-btn-all">
-          <button class="bargain-mine-btn-border {{industry}}" style="border: 1px solid {{industryColor}}" hover-class="none" open-type="share" wx:if="{{bargainCoupon.current_price !== bargainCoupon.bottom_price && bargainCoupon.status === 1}}">找人帮砍</button>
+          <button class="bargain-mine-btn-border {{industry}}" style="border: 1px solid {{industryColor}}" hover-class="none" open-type="share" wx:if="{{bargainCoupon.current_price * 1 !== bargainCoupon.bottom_price * 1 && bargainCoupon.status === 1}}">找人帮砍</button>
           <button class="bargain-mine-btn {{industry}}-bg " style="border: 1px solid {{industryColor}}" @tap.stop="goBuy({{item}})" wx:if="{{bargainCoupon.status === 1}}">立即购买</button>
         </form>
       </view>
