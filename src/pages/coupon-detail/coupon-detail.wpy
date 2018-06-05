@@ -311,6 +311,7 @@
   import tips from 'common/js/tips'
   import ShareMoney from 'api/sharemoney'
   import Bargain from 'api/bargain'
+  import UserApi from 'api/user'
 
   const COUPON_TYPE = 1
   const PACKAGE_TYPE = 2
@@ -407,7 +408,14 @@
     }
 
     async onLoad(option) {
-      this.$apply()
+      let token = wepy.getStorageSync('token')
+      if (!token) {
+        return
+      }
+      let userInfo = await UserApi.getUserInfo()
+      if (userInfo.error !== ERR_OK) {
+        return
+      }
       // const res = await wepy.getLocation({type: 'gcj02'})
       this.isShowCoupon = option.isShowCoupon || this.isShowCoupon
       this.getShareCoupon = true

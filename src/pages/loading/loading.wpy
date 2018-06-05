@@ -102,6 +102,7 @@
       if (token && options.type !== 'tokenOut') {
         this.navTo(this.targetPage)
       }
+      this.$apply()
     }
 
     async _authorization() {

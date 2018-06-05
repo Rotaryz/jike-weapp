@@ -49,6 +49,7 @@ export default class http {
       throw this.requestException(res)
     } else if (this.tokenAbnormal(res)) {
       const currentPage = wxUtils.getCurrentPage()
+      console.log(currentPage)
       wepy.$instance.globalData.targetPage = currentPage
       wepy.reLaunch({url: `/pages/loading/loading?type=tokenOut`})
       throw this.requestException(res)
