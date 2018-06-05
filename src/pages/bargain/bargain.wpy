@@ -39,7 +39,7 @@
           </view>
           <view class="bargain-normal-btn {{industry + '-bg'}} {{item.activity_stock === 0 ? 'bargain-normal-btn-disable' : ''}} ">{{item.activity_stock === 0 ? '已抢光' : '去砍价'}}</view>
         </view>
-        <view class="margin-box-10px"></view>
+        <view class="margin-box-10px" wx:if="{{index < bargainList.length - 1}}"></view>
       </view>
       <Underline></Underline>
     </view>
@@ -294,14 +294,14 @@
         color :$color-pay
 
   .bargain-normal
+    &:first-child
+      border-top :0.5px solid $color-col-line
     .bargain-normal-item
       background :$color-white
       position: relative
       box-sizing: border-box
       padding : $padding-all
       display :flex
-      &:first-child
-        border-top :0.5px solid $color-col-line
       .bargain-normal-img
         height: 84px
         width: 84px

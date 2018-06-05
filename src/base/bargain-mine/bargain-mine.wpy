@@ -142,6 +142,7 @@
   @import '../../common/stylus/mixin'
   .bargain-mine
     background: $color-white
+    padding-left: 12px
     box-sizing: border-box
     .bargain-mine-time, .bargain-mine-msg
       height: 40px
@@ -150,7 +151,7 @@
       font-size: $font-size-medium
       color: $color-text
       display: flex
-      padding: 0 12px
+      padding: 0 12px 0 0
       position: relative
       justify-content: space-between
       white-space :nowrap
@@ -187,7 +188,7 @@
       background: $color-white
       position: relative
       box-sizing: border-box
-      padding: $padding-all
+      padding: $padding-all 0 $padding-all
       display: flex
       &:first-child
         border-top: 0.5px solid $color-col-line
