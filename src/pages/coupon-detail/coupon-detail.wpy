@@ -90,7 +90,7 @@
         <view class="group-limit">{{groupBuyDetail.buy_number}}人已购买</view>
         <view class="group-money-box">
           <view class="group-icon-box">
-            <image class="group-icon" wx:if="{{imageUri}}" src="{{imageUri + '/defaults/c-image/template/pic-price_'+industry+'@2x.png'}}"></image>
+            <image class="group-icon" wx:if="{{imageUri && industry}}" src="{{imageUri + '/defaults/c-image/template/pic-price_'+ industry +'@2x.png'}}"></image>
             <view class="group-icon-txt {{industry}}-text">团购价</view>
           </view>
           <view class="small-money">¥</view>
