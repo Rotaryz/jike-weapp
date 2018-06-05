@@ -50,7 +50,7 @@
         <view class="ro-share-none-text">暂无数据</view>
       </view>
       <repeat for="{{myList}}" key="index" item="item" index="index">
-        <bargain-mine :industry.sync="industry" :bargainCoupon.sync="item"></bargain-mine>
+        <bargain-mine :industry.sync="industry" :bargainCoupon.sync="item" :industryColor.sync="industryColor"></bargain-mine>
       </repeat>
       <shareUnderline></shareUnderline>
     </view>

@@ -1,7 +1,7 @@
 <template>
   <view class="my-bargain">
     <repeat for="{{myList}}" key="index" item="item" index="index">
-      <bargain-mine :industry.sync="industry" :bargainCoupon.sync="item"></bargain-mine>
+      <bargain-mine :industryColor.sync="industryColor" :industry.sync="industry" :bargainCoupon.sync="item"></bargain-mine>
     </repeat>
   </view>
   <Underline></Underline>

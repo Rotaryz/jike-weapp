@@ -45,8 +45,8 @@
       <view class="bargain-mine-msg border-top-1px">
         <view class="bargain-mine-tip">{{bargainCoupon.status === 1 ? '砍价中' : bargainCoupon.status === 0 || bargainCoupon.status === 3 ? '已关闭' : bargainCoupon.status === 2 ? '已抢光' : '砍价中'}}</view>
         <form class="bargain-mine-btn-all">
-          <button class="bargain-mine-btn-border {{industry}}" hover-class="none" open-type="share" wx:if="{{bargainCoupon.current_price !== bargainCoupon.bottom_price && bargainCoupon.status === 1}}">找人帮砍</button>
-          <button class="bargain-mine-btn {{industry}}-bg" @tap.stop="goBuy({{item}})" wx:if="{{bargainCoupon.status === 1}}">立即购买</button>
+          <button class="bargain-mine-btn-border {{industry}}" style="border: 1px solid {{industryColor}}" hover-class="none" open-type="share" wx:if="{{bargainCoupon.current_price !== bargainCoupon.bottom_price && bargainCoupon.status === 1}}">找人帮砍</button>
+          <button class="bargain-mine-btn {{industry}}-bg " style="border: 1px solid {{industryColor}}" @tap.stop="goBuy({{item}})" wx:if="{{bargainCoupon.status === 1}}">立即购买</button>
         </form>
       </view>
     </view>
@@ -73,6 +73,10 @@
       industry: {
         type: String,
         default: ''
+      },
+      industryColor: {
+        type: String,
+        default: '#FF4E00'
       }
     }
     data = {
@@ -157,8 +161,6 @@
       align-items: center
       .bargain-mine-tip
         color: $color-theme
-      .bargain-mine-btn-all
-        display: flex
       .bargain-mine-btn-border
         box-sizing: border-box
         height: 24px

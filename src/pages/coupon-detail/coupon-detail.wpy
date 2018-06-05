@@ -271,7 +271,8 @@
       </view>
       <view class="ro-bargain-cut-bottom">
         <view class="ro-bargain-cut-title-num">仅剩{{cutDetail.stock}}件</view>
-        <view class="ro-bargain-cut-title">恭喜你成功帮自己砍掉<text class="ro-bargain-cut-title-num">{{cutDetail.cut_money}}</text>元人多力量大，拉朋友一起砍吧</view>
+        <view class="ro-bargain-cut-title">恭喜你成功帮自己砍掉<text class="ro-bargain-cut-title-num">{{cutDetail.cut_money}}</text>元</view>
+        <view class="ro-bargain-cut-title">人多力量大，拉朋友一起砍吧</view>
       </view>
     </view>
     <view class="close-box" @tap="hideMoney">
@@ -375,7 +376,8 @@
       longitude: '',
       latitude: '',
       cutDetail: 0,
-      showMoney: false
+      showMoney: false,
+      timeEnd: false
     }
 
     onShareAppMessage(res) {
@@ -398,6 +400,10 @@
           console.log(res)
         }
       }
+    }
+
+    onUnload() {
+      clearInterval(this.timer)
     }
 
     async onLoad(option) {
@@ -458,7 +464,7 @@
           case 'share': // 分享赚钱
             let id = option.i || ''
             id = id ? id.split(',') : []
-            console.log(id)
+            // console.log(id)
             if (id) {
               this.actId = id[0] * 1 // 抵用券
               this.currentMerchant = id[1] * 1// 商家id
@@ -484,6 +490,9 @@
 
 //    转1赚的选择优惠券判断
     onShow() {
+      if (this.timer) {
+        clearInterval(this.timer)
+      }
       if (this.activityStatus === 'share') {
         this.$invoke('post-order', 'infoOnce')
         let shareCoupon = wepy.getStorageSync('shareCoupon')
@@ -620,12 +629,13 @@
       this.bargainDetail = res.data
       this.stock = this.bargainDetail.stock ? 1 : 0
       // this.bargainDetail.is_cuted
-
-      clearInterval(this.timer)
       this.groupEndTime = this._groupTimeCheckout(this.bargainDetail.end_at_timestamp)
       this.$apply()
       this.timer = setInterval(() => {
         this.groupEndTime = this._groupTimeCheckout(this.bargainDetail.end_at_timestamp)
+        if (this.timeEnd) {
+          clearTimeout(this.timer)
+        }
         this.$apply()
       }, 1000)
       if (res.activity_status === 2) {
@@ -861,6 +871,8 @@
           minute: '00',
           second: '00'
         }
+        this.timeEnd = true
+        this.$apply()
       }
       return times
     }
@@ -949,7 +961,7 @@
       // 收集formid
       submit(e) {
         const formId = e.detail.formId
-        console.log(formId)
+        // console.log(formId)
         this.collectFormIds(formId)
       },
       hideMoney() {
@@ -1420,9 +1432,8 @@
       margin-bottom: 10px
       background: $color-white
       padding-left: 12px
-      padding-top: 13px
       .group-list-head
-        padding:0 12px 13px 0
+        padding:13px 12px 13px 0
         box-sizing :border-box
         border-bottom: 0.5px solid $color-col-line
         font-size: $font-size-medium
@@ -1434,7 +1445,7 @@
           width: 2px
           height: 14px
           position: absolute
-          top: 0
+          col-center()
           left: 0
           background: $color-orange
           display: block
@@ -1783,11 +1794,10 @@
   .ro-bargain-herder
     background :$color-white
     box-sizing :border-box
-    padding-top: 12.5px
     padding-left : $padding-all
     .ro-bargain-herder-title
       text-indent :10px
-      padding-bottom: 12.5px
+      padding: 12.5px 0
       color :#6E697F
       font-size :$font-size-medium
     .ro-bargain-herder-box
@@ -1915,11 +1925,14 @@
           font-size :$font-size-medium
           color :$color-theme
         .ro-bargain-cut-title
-          width: 186px
+          white-space :nowrap
+          width: 181px
           margin-top: 12.5px
           color :#9B9B9B
           font-size : $font-size-small
           line-height: 19px
+          &:last-child
+            margin-top: 0
     .close-box
       position: absolute
       bottom: 23.70vh
