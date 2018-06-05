@@ -23,7 +23,7 @@
       imageUrl: URIS.image,
       appId: '',
       businessCircleId: '',
-      content: '您访问的店铺已下架',
+      content: '',
       shop: false,
       image: URIS.image + '/defaults/c-image/mine/icon-shopsoldout@2x.png'
     }

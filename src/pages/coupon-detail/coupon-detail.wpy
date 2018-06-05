@@ -480,6 +480,7 @@
             this.actId = option.a ? option.a * 1 : ''
             this.currentMerchant = option.m ? option.m * 1 : ''
             this.id = option.id ? option.id * 1 : ''
+            wepy.setStorageSync('merchantId', this.currentMerchant)
             break
         }
       }

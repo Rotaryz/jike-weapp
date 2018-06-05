@@ -5,6 +5,10 @@
     </repeat>
   </view>
   <Underline></Underline>
+  <view class="ro-share-none" wx:if="{{!myList.length}}">
+    <image class="ro-share-none-img" wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/b-image/common/pic-empty_city@2x.png'}}"></image>
+    <view class="ro-share-none-text">暂无数据</view>
+  </view>
 </template>
 
 <script>
@@ -27,7 +31,9 @@
       imageUrl: URIS.image,
       myList: [],
       myPage: 1,
-      nothing: false
+      nothing: false,
+      currentPage: '',
+      title: ''
     }
     async onReachBottom() {
       if (!this.nothing) {
@@ -40,10 +46,32 @@
         }
       }
     }
+    onShareAppMessage(res) {
+      let item = res.target.dataset.item
+      this.title = `原价${item.promotion_price}元的超值优惠双人套餐，底价只要${item.bottom_price}元，一起砍完一起拿！`
+      this.currentPage = `/pages/coupon-detail/coupon-detail?s=bargain&id=${item.promotion_id}&a=${item.activity_id}&m=${item.merchant_id}`
+      if (res.from === 'button') {
+        // 来自页面内转发按钮
+      }
+      return {
+        title: this.title,
+        path: this.currentPage,
+        success: async () => {
+          // 转发成功
+          await this._getSharePrize()
+          await this._getShareSoya()
+          this.loaded()
+        },
+        fail: (res) => {
+          // 转发失败
+          console.log(res)
+        }
+      }
+    }
     async onLoad() {
       await this.showIndustry()
       this.myList = await this.myBargainList() || []
-      if (this.myList.length === 0 || this.myList.length < 10) {
+      if (this.myList.length && this.myList.length < 10) {
         this.$invoke('Underline', 'show')
       }
       this._groupTimePlay()
@@ -130,4 +158,18 @@
 <style lang="stylus">
   @import '../../common/stylus/variable'
   @import '../../common/stylus/mixin'
+
+  .ro-share-none
+    position: fixed
+    top: 45.3vw
+    row-center()
+    .ro-share-none-img
+      width: 86px
+      height: 71px
+    .ro-share-none-text
+      font-size: $font-size-small
+      margin-top: 10px
+      text-align: center
+      color: $color-text
+      font-family: $font-family-light
 </style>

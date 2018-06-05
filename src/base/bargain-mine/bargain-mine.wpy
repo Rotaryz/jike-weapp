@@ -45,7 +45,7 @@
       <view class="bargain-mine-msg border-top-1px">
         <view class="bargain-mine-tip">{{bargainCoupon.status === 1 ? '砍价中' : bargainCoupon.status === 0 || bargainCoupon.status === 3 ? '已关闭' : bargainCoupon.status === 2 ? '已抢光' : '砍价中'}}</view>
         <form class="bargain-mine-btn-all">
-          <button class="bargain-mine-btn-border {{industry}}" style="border: 1px solid {{industryColor}}" hover-class="none" open-type="share" wx:if="{{bargainCoupon.current_price * 1 !== bargainCoupon.bottom_price * 1 && bargainCoupon.status === 1}}">找人帮砍</button>
+          <button class="bargain-mine-btn-border {{industry}}" style="border: 1px solid {{industryColor}}" @tap.stop="pageDetail({{item}})" data-item="{{item}}" hover-class="none" open-type="share" wx:if="{{bargainCoupon.current_price * 1 !== bargainCoupon.bottom_price * 1 && bargainCoupon.status === 1}}">找人帮砍</button>
           <button class="bargain-mine-btn {{industry}}-bg " style="border: 1px solid {{industryColor}}" @tap.stop="goBuy({{item}})" wx:if="{{bargainCoupon.status === 1}}">立即购买</button>
         </form>
       </view>
@@ -80,10 +80,17 @@
       }
     }
     data = {
-      imageUrl: URIS.image
+      imageUrl: URIS.image,
+      title: '',
+      currentPage: ''
     }
-
     methods = {
+      pageDetail(item) {
+        this.title = `原价${item.promotion_price}元的超值优惠双人套餐，底价只要${item.bottom_price}元，一起砍完一起拿！`
+        this.currentPage = `/pages/coupon-detail/coupon-detail?s=bargain&id=${item.promotion_id}&a=${item.activity_id}&m=${item.merchant_id}`
+        this.$emit('shareBargain', this.title, this.currentPage)
+      },
+      // this.currentPage = `/pages/coupon-detail/coupon-detail?s=bargain&id=${this.id}&m=${this.currentMerchant}&a=${this.actId}`
       goDetails(item) {
         this.$parent.$navigate(`/pages/coupon-detail/coupon-detail?s=bargain&id=${item.promotion_id}&a=${item.activity_id}&m=${item.merchant_id}`)
       },

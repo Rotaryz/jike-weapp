@@ -91,14 +91,39 @@
       myList: [],
       timer: null,
       shareNothing: false,
-      redNothing: false
+      redNothing: false,
+      currentPage: '',
+      title: ''
     }
 
     infoRes(res) {
+      console.log(this.currentPage)
       if (res.error === ERR_OK) {
         return res.data
       }
       return false
+    }
+    onShareAppMessage(res) {
+      let item = res.target.dataset.item
+      this.title = `原价${item.promotion_price}元的超值优惠双人套餐，底价只要${item.bottom_price}元，一起砍完一起拿！`
+      this.currentPage = `/pages/coupon-detail/coupon-detail?s=bargain&id=${item.promotion_id}&a=${item.activity_id}&m=${item.merchant_id}`
+      if (res.from === 'button') {
+        // 来自页面内转发按钮
+      }
+      return {
+        title: this.title,
+        path: this.currentPage,
+        success: async () => {
+          // 转发成功
+          await this._getSharePrize()
+          await this._getShareSoya()
+          this.loaded()
+        },
+        fail: (res) => {
+          // 转发失败
+          console.log(res)
+        }
+      }
     }
     async onLoad() {
       await this.showIndustry()
