@@ -45,7 +45,7 @@
           <view class="ro-coupon-msg-name">{{bargainDetail.activity_name}}</view>
           <view class="ro-coupon-msg-money"><view class="ro-coupon-msg-big-money">{{bargainDetail.current_price}}</view><view class="ro-coupon-msg-small">原价:¥{{bargainDetail.promotion_price}}</view></view>
         </view>
-        <view class="ro-coupon-msg-right">剩余{{bargainDetail.stock}}件</view>
+        <view class="ro-coupon-msg-right">仅剩{{bargainDetail.stock}}件</view>
       </view>
       <view class="margin-box-10px"></view>
 
