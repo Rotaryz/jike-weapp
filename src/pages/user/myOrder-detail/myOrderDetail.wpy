@@ -80,7 +80,7 @@
           <view class="qrcode-title">商品兑换券</view>
           <view class="qrcode-use-btn {{industry}}-bg" wx:if="{{exChangeCanUse}}" @tap="toUse('alliance_goods')">进店使用</view>
         </view>
-        <view class="qrcode-li border-bottom-1px" wx:for="{{exChangeArrShow}}" wx:key="{{index}}" wx:if="{{exChangeShow ? true : index < 3}}">
+        <view class="qrcode-li border-bottom-1px" wx:for="{{exChangeArr}}" wx:key="{{index}}" wx:if="{{exChangeShow ? true : index < 3}}">
           <view class="qrcode-left">
             <image class="qrcode-icon" wx:if="{{imageUrlHead}}" src="{{imageUrlHead + '/defaults/c-image/mine/' + (item.is_used || item.is_expires ? 'icon-coupon_use@2x.png' : 'icon-coupon_unuse@2x.png')}}"></image>
             <view class="qrcode-num {{item.is_used || item.is_expires ? 'dis' : ''}}"><text class="num-title">券{{index + 1}}:</text>{{item.beautyCode}}</view>
@@ -96,7 +96,7 @@
           <view class="qrcode-title">代金券</view>
           <view class="qrcode-use-btn {{industry}}-bg" wx:if="{{cashCanUse}}" @tap="toUse('alliance_cash_10')">进店使用</view>
         </view>
-        <view class="qrcode-li border-bottom-1px" wx:for="{{cashArrShow}}" wx:key="{{index}}" wx:if="{{cashShow ? true : index < 3}}">
+        <view class="qrcode-li border-bottom-1px" wx:for="{{cashArr}}" wx:key="{{index}}" wx:if="{{cashShow ? true : index < 3}}">
           <view class="qrcode-left">
             <image class="qrcode-icon" wx:if="{{imageUrlHead}}" src="{{imageUrlHead + '/defaults/c-image/mine/' + (item.is_used || item.is_expires ? 'icon-coupon_use@2x.png' : 'icon-coupon_unuse@2x.png')}}"></image>
             <view class="qrcode-num {{item.is_used || item.is_expires ? 'dis' : ''}}"><text class="num-title">券{{index + 1}}:</text>{{item.beautyCode}}</view>
@@ -112,7 +112,7 @@
           <view class="qrcode-title">优惠券</view>
           <view class="qrcode-use-btn {{industry}}-bg" wx:if="{{couponCanUse}}" @tap="toUse('alliance_merchant_coupon')">进店使用</view>
         </view>
-        <view class="qrcode-li border-bottom-1px" wx:for="{{couponArrShow}}" wx:key="{{index}}" wx:if="{{couponShow ? true : index < 3}}">
+        <view class="qrcode-li border-bottom-1px" wx:for="{{couponArr}}" wx:key="{{index}}" wx:if="{{couponShow ? true : index < 3}}">
           <view class="qrcode-left">
             <image class="qrcode-icon" wx:if="{{imageUrlHead}}" src="{{imageUrlHead + '/defaults/c-image/mine/' + (item.is_used || item.is_expires ? 'icon-coupon_use@2x.png' : 'icon-coupon_unuse@2x.png')}}"></image>
             <view class="qrcode-num {{item.is_used || item.is_expires ? 'dis' : ''}}"><text class="num-title">券{{index + 1}}:</text>{{item.beautyCode}}</view>
