@@ -76,29 +76,23 @@ export default class base extends wepy.mixin {
 
   // 判断行业类型
   async showIndustry() {
-    let shop = wepy.getStorageSync('shop')
     let id = wepy.getStorageSync('merchantId')
     let token = wepy.getStorageSync('token')
     if (!token || !id) {
       token = await this.$getToken(true)
     }
-    if (!shop) {
-      let res = await merchants.showShop(id)
-      if (res.error === ERR_OK) {
-        let shop = {
-          industry: res.data.code_name,
-          shop_name: res.data.shop_name
-        }
-        this.industry = res.data.code_name ? res.data.code_name : 'ktv'
-        this.shopName = res.data.shop_name ? res.data.shop_name : ''
-        wepy.setStorageSync('shop', shop)
-        // 判断行业颜色
-        this.$apply()
+    let res = await merchants.showShop(id)
+    if (res.error === ERR_OK) {
+      let shop = {
+        industry: res.data.code_name,
+        shop_name: res.data.shop_name
       }
-      return
+      this.industry = res.data.code_name ? res.data.code_name : 'ktv'
+      this.shopName = res.data.shop_name ? res.data.shop_name : ''
+      wepy.setStorageSync('shop', shop)
+      // 判断行业颜色
+      this.$apply()
     }
-    this.industry = shop.industry
-    this.shopName = shop.shop_name
     this.setColor(this.industry)
   }
   setColor(industry) {
