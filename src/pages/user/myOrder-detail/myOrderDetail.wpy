@@ -204,7 +204,7 @@
       </view>
       <view class="orderDetail-orderList-pay" wx:if="{{promotionType !== 3 && promotionType !== 6}}">
         <view class="orderDetail-orderList-msgItem">数量：{{orderMsg.count}}</view>
-        <view class="orderDetail-orderList-msgItem">总价：{{orderMsg.total}}</view>
+        <view class="orderDetail-orderList-msgItem">总价：¥{{orderMsg.total}}</view>
       </view>
       <view class="orderDetail-orderList-pay" wx:if="{{promotionType === 3}}">
         <view class="orderDetail-orderList-msgItem">消费：¥{{orderMsg.offline_total}}</view>
@@ -213,13 +213,13 @@
       </view>
       <view class="orderDetail-orderList-pay" wx:if="{{promotionType === 6 && (orderStatus === 0 || orderStatus === 6)}}">
         <view class="orderDetail-orderList-msgItem">数量：{{orderMsg.count}}</view>
-        <view class="orderDetail-orderList-msgItem">总价：{{orderMsg.total}}</view>
+        <view class="orderDetail-orderList-msgItem">总价：¥{{orderMsg.total}}</view>
       </view>
       <view class="orderDetail-orderList-pay" wx:if="{{promotionType === 6 && orderStatus !== 0 && orderStatus !== 6}}">
         <view class="orderDetail-orderList-msgItem">数量：{{orderMsg.count}}</view>
-        <view class="orderDetail-orderList-msgItem">总价：{{orderMsg.total_price}}</view>
+        <view class="orderDetail-orderList-msgItem">总价：¥{{orderMsg.total_price}}</view>
         <view class="orderDetail-orderList-msgItem">优惠：{{orderMsg.discount ? '¥' + orderMsg.discount + '抵用券' : '无优惠'}}</view>
-        <view class="orderDetail-orderList-msgItem">实付：{{orderMsg.total}}</view>
+        <view class="orderDetail-orderList-msgItem">实付：¥{{orderMsg.total}}</view>
       </view>
     </view>
 
