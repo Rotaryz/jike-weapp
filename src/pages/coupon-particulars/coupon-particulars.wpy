@@ -9,7 +9,7 @@
         <view class="coupon-money">{{coupon.title}}</view>
         <view class="coupon-get">
           <view class="get-btn new-btn {{industry}}" wx:if="{{!coupon.is_obtain}}" @tap="getMore({{coupon.id}})">再领一张({{coupon.can_obtain === -1 ? '20' : coupon.can_obtain}})</view>
-          <view class="get-btn {{industry + '-bg'}} {{coupon.is_obtain ? '' : 'btn-small'}}" @tap="getCou({{coupon}})">{{getText}}</view>
+          <view class="get-btn {{industry + '-bg'}} {{goodsStatus === 4 ? 'disable' : ''}} {{coupon.is_obtain ? '' : 'btn-small'}}" @tap="getCou({{coupon}})">{{goodsStatus === 4 ? '待上线' : goodsStatus === 2 ? '已抢光' : getText}}</view>
         </view>
         <view class="coupon-time">有效期{{coupon.start_at}}至{{coupon.end_at}}</view>
         <view class="coupon-msg">
@@ -53,7 +53,8 @@
       coupon: {},
       getText: '免费领取',
       longitude: '',
-      latitude: ''
+      latitude: '',
+      goodsStatus: 1
     }
 
     async onShow() {
@@ -71,6 +72,8 @@
     async _load(longitude, latitude) {
       let data = {longitude, latitude}
       let res = await merchants.coupons(this.couponId, data)
+      this.goodsStatus = res.goods_status
+      // goodsStatus === 4 ? '待上线'
       this.loaded()
       this.coupon = this.infoRes(res)
       this.getText = this.coupon.is_obtain ? '免费领取' : '立即使用'
@@ -183,6 +186,8 @@
           line-height: 9.33vw
           border-radius: 4px
           box-sizing: border-box
+        .disable
+          opacity :0.5
         .new-btn
           border: 0.5px solid $color-main
           background: $color-white
