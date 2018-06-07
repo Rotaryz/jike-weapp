@@ -148,10 +148,10 @@
             if (!this.redNothing) {
               let res = await this._getRedPacketList(this.page)
               this.packetList.push(...res)
-              if (!res.length) {
+              if (res.length && res.length < 10) {
                 this.$invoke('Underline', 'show')
-                this.redNothing = true
               }
+              this.redNothing = true
             }
             break
           case 1:
@@ -159,10 +159,10 @@
             if (!this.shareNothing) {
               let res = await this._shareMoneyProfit()
               this.shareList.push(...res)
-              if (!res.length) {
+              if (res.length && res.length < 10) {
                 this.$invoke('shareUnderline', 'show')
-                this.shareNothing = true
               }
+              this.shareNothing = true
             }
             break
         }

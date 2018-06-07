@@ -259,7 +259,6 @@
             this._hide()
           },
           fail: async (data) => {
-            console.log(res)
             if (this.status === 'share') {
               this.orderInfo.deduction_id = 0
             } else if (this.orderInfo.from === 'c_bargain') {

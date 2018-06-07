@@ -51,6 +51,7 @@
       </view>
     </view>
   </view>
+  <Toast></Toast>
 </template>
 
 <script>
@@ -61,7 +62,7 @@
   import {ERR_OK} from 'api/base'
   import Order from 'api/order'
   import Bargain from 'api/bargain'
-  import tips from 'common/js/tips'
+  import Toast from '@/base/toast/toast'
 
   export default class bargainMine extends wepy.component {
     mixins = [base]
@@ -106,7 +107,7 @@
         const json = await Order.operation(data)
         this.loaded()
         if (json.error !== ERR_OK) {
-          tips.error(json.message)
+          this.$invoke('Toast', 'show', json.message)
           return
         }
         const res = json.data
@@ -125,7 +126,6 @@
           },
           fail: async (data) => {
             let orderSn = res.order_sn
-            console.log(orderSn)
             await Bargain.endOrder(orderSn)
             this.loaded()
           },
@@ -140,6 +140,9 @@
       if (res.error === ERR_OK) {
         return res.data
       }
+    }
+    components = {
+      Toast
     }
   }
 </script>

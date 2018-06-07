@@ -6,7 +6,7 @@
           <view class="orderDetail-head-img-box">
             <image wx:if="{{imageUrlHead}}" src="{{promotionType == 5 ? (imageUrlHead + '/defaults/c-image/mine/pic-moren2@2x.png') : (promotionType == 1 || 4 ? orderMsg.promotion.promotion_images[0].image.url : orderMsg.promotion.gift_bag_images[0].image.url)}}" mode="widthFix" class="orderDetail-head-img"></image>
           </view>
-          <view class="orderDetail-head-msg" wx:if="{{promotionType !== 4}}">
+          <view class="orderDetail-head-msg" wx:if="{{promotionType !== 4 && promotionType !== 7}}">
             <view class="orderDetail-head-msg-top">
               <view class="orderDetail-head-msg-title">{{orderMsg.title}}</view>
               <view class="orderDetail-head-msg-content" wx:if="{{promotionType !== 5}}">{{orderMsg.promotion.subhead}}</view>
@@ -27,6 +27,20 @@
             </view>
             <view class="orderDetail-head-msg-down">
               <view class="item-count {{industry}}-opacity">{{orderMsg.group_number}}人团</view>
+            </view>
+          </view>
+          <view class="orderDetail-head-msg" wx:if="{{promotionType === 7}}">
+            <view class="orderDetail-head-msg-top">
+              <view class="orderDetail-head-msg-title">{{orderMsg.title}}</view>
+              <view class="item-money">
+                <text class="red-small-money">¥</text>
+                <text class="red-big-money">{{orderMsg.total}}</text>
+                <text class="gray-small-money">原价: ¥{{orderMsg.promotion.platform_price}}</text>
+                <!--<text class="gray-big-money"></text>-->
+              </view>
+            </view>
+            <view class="orderDetail-head-msg-down">
+              <view class="item-count {{industry}}-opacity">仅剩{{orderMsg.activity_stock}}件</view>
             </view>
           </view>
         </view>
