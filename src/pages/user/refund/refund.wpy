@@ -36,7 +36,7 @@
             <view class="refund-progress-stepMsg">您的退款申请已受理，审核时间预计需要1-2天</view>
           </view>
           <view class="refund-progress-step">
-            <view class="orderMsg.refund_schedule == 4?'refund-progress-stepTitle active':'refund-progress-stepTitle'">退款成功</view>
+            <view class="{{orderMsg.refund_schedule == 4?'refund-progress-stepTitle active':'refund-progress-stepTitle'}}">退款成功</view>
             <view class="refund-progress-stepMsg">审核通过，退款申请已提交给微信支付，退款会在5天内退回您的微信支付账户</view>
           </view>
         </view>
