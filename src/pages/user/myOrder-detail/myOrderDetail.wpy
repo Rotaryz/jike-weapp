@@ -368,6 +368,7 @@
       this.$apply()
     }
 
+    // 付款获取播豆
     async _getShareSoya(id) {
       const resData = await Shares.getShareSoya('pay', id)
       if (resData.error !== ERR_OK) {
@@ -414,6 +415,7 @@
         this.qrcodesArr = qrcode
         this.qrcodeCanUse = this._filterUsed(this.qrcodesArr) // 检查是否显示进店使用
       }
+      // 团购状态
       if (res.data.promotion_type * 1 === 4 && res.data.group_status * 1 >= 5) {
         this.groupStatus = GROUPERRORARR
       } else {
@@ -428,6 +430,7 @@
       this.$apply()
     }
 
+    // 团购倒计时
     _groupTimePlay() {
       clearInterval(this.timer)
       let res = this._groupTimeCheckout(this.endTime)
@@ -443,6 +446,7 @@
       }, 1000)
     }
 
+    // 引入时间戳（秒）换算出时间差
     _groupTimeCheckout(time) {
       let nowSecond = parseInt(Date.now() / 1000)
       let differ = time * 1 - nowSecond
@@ -526,9 +530,9 @@
             break
           case 1:
             if (this.promotionType === 4) {
-              this.$navigate('/pages/group-detail/group-detail?from=order&id=' + this.orderMsg.group_id)
+              this.$navigate('/pages/group-detail/group-detail?from=order&id=' + this.orderMsg.group_id) // 团购时为拼团详情
             } else {
-              this.refundIng = true
+              this.refundIng = true // 其他状态有按钮时为退款
             }
             break
           case 2:
@@ -540,9 +544,9 @@
           case 7:
           case 8:
             if (this.promotionType === 4) {
-              this.$navigate('/pages/group-detail/group-detail?from=order&id=' + this.orderMsg.group_id)
+              this.$navigate('/pages/group-detail/group-detail?from=order&id=' + this.orderMsg.group_id) // 团购时为拼团详情
             } else {
-              this.$navigate('../refund/refund?id=' + id)
+              this.$navigate('../refund/refund?id=' + id) // 其他状态为查看退款详情
             }
             break
           case 5:
