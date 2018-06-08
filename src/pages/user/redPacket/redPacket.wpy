@@ -42,7 +42,7 @@
         </view>
       </view>
     </view>
-    <scroll-view scroll-y class="myRedPacket-list" bindscrolltolower="redPacketLower" scroll-top="{{redTop}}" bindscroll="getRedTop" style="display:{{checkIdx === 0 ? 'block' : 'none'}}">
+    <scroll-view scroll-y="{{packetList.length}}" class="myRedPacket-list" bindscrolltolower="redPacketLower" scroll-top="{{redTop}}" bindscroll="getRedTop" style="display:{{checkIdx === 0 ? 'block' : 'none'}}">
       <view class="myRedPacket-list-item" wx:for="{{packetList}}" wx:key="{{index}}">
         <view class="myRedPacket-list-item-left">
           <!--<image wx:if="{{imageUrlHead}}" src="{{imageUrlHead + '/defaults/c-image/mine/icon-my_money.png'}}" class="myRedPacket-list-item-image"></image>-->
@@ -59,7 +59,7 @@
         <view class="myRedPacket-noList-txt">您还没有红包</view>
       </view>
     </scroll-view>
-    <scroll-view scroll-y class="myRedPacket-list" bindscrolltolower="redPacketLower" scroll-top="{{shareTop}}" bindscroll="getShareTop" style="display:{{checkIdx === 1 ? 'block' : 'none'}}">
+    <scroll-view scroll-y="{{shareList.length}}" class="myRedPacket-list" bindscrolltolower="redPacketLower" scroll-top="{{shareTop}}" bindscroll="getShareTop" style="display:{{checkIdx === 1 ? 'block' : 'none'}}">
       <view class="myRedPacket-list-item" wx:for="{{shareList}}" wx:key="{{index}}">
         <view class="myRedPacket-list-item-left">
           <!--<image wx:if="{{imageUrlHead}}" src="{{imageUrlHead + '/defaults/c-image/mine/icon-my_money.png'}}" class="myRedPacket-list-item-image"></image>-->
