@@ -51,7 +51,7 @@
       </view>
       <view class="orderDetail-head-status">
         <view class="orderDetail-head-statusTxt">{{statusTxt[orderStatus]}}</view>
-        <view class="orderDetail-head-statusBtn {{industry}}-bg" @tap="followWork({{orderMsg.status}}, {{orderMsg.id}}, {{orderMsg.merchant_id}})" wx:if="{{orderStatus !== 1 && orderStatus !== 6 && orderStatus !== 9 && !(orderStatus === 5 && promotionType === 5)}}">{{promotionType === 4 ? groupBtnTxt[orderStatus] : btnTxt[orderStatus]}}</view>
+        <view class="orderDetail-head-statusBtn {{industry}}-bg" @tap="followWork({{orderMsg.status}}, {{orderMsg.id}}, {{orderMsg.merchant_id}})" wx:if="{{orderStatus !== 1 && orderStatus !== 6 && orderStatus !== 9 && !(orderStatus === 5 && (promotionType === 5 || promotionType === 7))}}">{{promotionType === 4 ? groupBtnTxt[orderStatus] : btnTxt[orderStatus]}}</view>
         <view class="orderDetail-head-statusBtn {{industry}}-bg" @tap="followWork({{orderMsg.status}}, {{orderMsg.id}}, {{orderMsg.merchant_id}})" wx:if="{{orderStatus === 1 && (orderMsg.can_refund || promotionType === 4)}}">{{promotionType === 4 ? '拼团详情' : '申请退款'}}</view>
       </view>
     </view>
