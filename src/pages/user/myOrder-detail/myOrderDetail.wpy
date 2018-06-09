@@ -694,7 +694,8 @@
         height: 64.5px
 
         .orderDetail-head-left
-          width: 100%
+          flex: 1
+          overflow: hidden
           display: flex
 
           .orderDetail-head-img-box
