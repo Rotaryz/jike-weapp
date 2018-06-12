@@ -9,15 +9,6 @@
     <form bindsubmit="submit" report-submit='true'>
       <view class="nav-wrapper">
         <button form-type="submit"
-                @tap="goToActivity('video_live', '/pages/live/live')"
-                type="default" size="mini"
-                class="content-wrapper">
-          <image class="icon" wx:if="{{imageUri && industry.length}}"
-                 src="{{imageUri + '/defaults/c-image/recommend/icon-live_'+ industry +'@2x.png'}}"></image>
-          <view class="content">点播优惠</view>
-        </button>
-
-        <button form-type="submit"
                 @tap="goToActivity('sign', '/pages/activity/activity?type=sign')"
                 type="default" size="mini"
                 class="content-wrapper">
@@ -32,6 +23,14 @@
           <image class="icon" wx:if="{{imageUri && industry.length}}"
                  src="{{imageUri + '/defaults/c-image/recommend/icon-turntable_'+industry+'@2x.png'}}"></image>
           <view class="content">大转盘</view>
+        </button>
+        <button form-type="submit"
+                @tap="goToActivity('video_live', '/pages/live/live')"
+                type="default" size="mini"
+                class="content-wrapper">
+          <image class="icon" wx:if="{{imageUri && industry.length}}"
+                 src="{{imageUri + '/defaults/c-image/recommend/icon-live_'+ industry +'@2x.png'}}"></image>
+          <view class="content">边看边买</view>
         </button>
         <button form-type="submit"
                 @tap="goToActivity('share_money', '/pages/share-list/share-list')"

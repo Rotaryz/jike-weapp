@@ -422,14 +422,14 @@
       this.activityStatus = option.s ? option.s === 's' ? 'share' : option.s : ''
       this.groupType = option.groupType ? option.groupType : 'open'
       this.joinGroupId = option.joinGroupId ? option.joinGroupId : ''
-
       if (option.scene) {
         let scene = decodeURIComponent(option.scene)
         const params = getParams(scene)
         if (params.i) {
 //          转1赚识别二维码进入
           this.activityStatus = params.s ? params.s === 's' ? 'share' : params.s : ''
-          switch (this.this.activityStatus) {
+          console.log(this.activityStatus)
+          switch (this.activityStatus) {
             case 'share':
               let id = params.i || ''
               id = id ? id.split(',') : []
