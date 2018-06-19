@@ -553,6 +553,7 @@
         this.loaded()
         return
       }
+      this.loaded()
       const data = res.data
       this.goodsStatus = res.goods_status !== undefined ? res.goods_status : 1
       this.activitiesStatus = res.activity_status !== undefined ? res.activity_status : 1

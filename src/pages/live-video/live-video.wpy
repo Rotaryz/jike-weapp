@@ -242,7 +242,6 @@
         this.title1 = this.conDes.title.slice(0, 4)
         this.title2 = this.conDes.title.slice(4)
         this.promotionId = id
-        this.conDes.platform_price = (this.conDes.platform_price * 1).toFixed(0)
         this.loaded()
         this.$apply()
       },
