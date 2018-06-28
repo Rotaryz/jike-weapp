@@ -14,7 +14,7 @@
   export default class Live extends wepy.page {
     mixins = [users, base]
     config = {
-      navigationBarTitleText: '点播优惠'
+      navigationBarTitleText: '边看边买'
     }
     components = {
       LiveVideo: LiveVideo
