@@ -4,7 +4,7 @@
       <view class="couponUse-item-head">
         <view class="couponUse-item-head-container">
           <image class="coupon-bc" wx:if="{{imageUrlHead}}" src="{{imageUrlHead + '/defaults/c-image/mine/pic-couponbg@2x.png'}}"></image>
-          <view class="couponUse-item-head-left">
+          <view class="couponUse-item-head-left" @tap="toDetail({{item}})">
             <view class="couponUse-itemPay">
               <image src="{{item.image_url}}" class="promotion-image" wx:if="{{item.type==='exchange'}}" mode="aspectFit"></image>
               <view wx:if="{{item.type!=='exchange'}}"><text class="couponUse-midMoney">¥</text><text class="couponUse-bigMoney">{{item.price}}</text></view>
@@ -16,7 +16,7 @@
               <view class="couponUse-item-time">有效期至{{item.endAt}}</view>
             </view>
           </view>
-          <view class="couponUse-item-head-right">
+          <view class="couponUse-item-head-right" @tap="toShop({{item}})">
             <view class="shopMsg">
               <image wx:if="{{imageUrlHead}}" src="{{item.orderType === 'alliance_cash_10' ? imageUrlHead + '/defaults/c-image/mine/pic-moren@2x.png' : item.shopLogo}}" class="shopLogo"></image>
               <view class="shopName">{{item.orderType === 'alliance_cash_10' ? item.activity_name : item.shopName}}</view>
@@ -59,7 +59,18 @@
     }
 
     methods = {
-
+      toDetail(item) {
+        if (item.type !== 'exchange' && item.orderType !== 'alliance_cash_10') {
+          wepy.setStorageSync('merchantId', item.merchantId)
+          this.$navigate('/pages/coupon-detail/coupon-detail?id=' + item.id + '&type=1&currentMerchant=' + item.merchantId)
+        }
+      },
+      toShop(item) {
+        if (item.merchantId && item.shopName) {
+          wepy.setStorageSync('merchantId', item.merchantId)
+          this.$navigate('/pages/shop-introduce/shop-introduce?merchant_id=' + item.merchantId + '&title=' + item.shopName)
+        }
+      }
     }
 
     async onLoad(option) {
@@ -122,13 +133,14 @@
           beautyCode,
           type: item.promotion.promotion_type,
           qrcodeUrl: item.qrcode_url,
-          id: item.promotion_id,
+          id: item.promotion.id,
           image_url: item.promotion.promotion_img || '',
           shopLogo: item.merchant_data.logo_image,
           shopName: item.merchant_data.shop_name,
           is_used: item.is_used,
           activity_name: item.activity_name,
-          orderType: item.type
+          orderType: item.type,
+          merchantId: item.merchant_data.merchant_id
         }
       })
     }

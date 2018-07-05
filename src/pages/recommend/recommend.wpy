@@ -216,7 +216,7 @@
 
     onShareAppMessage(res) {
       let merchantId = wepy.getStorageSync('merchantId')
-      const user = this.$parent.globalData.user
+      const user = wepy.getStorageSync('user')
       if (res.from === 'button') {
         // 来自页面内转发按钮
       }
