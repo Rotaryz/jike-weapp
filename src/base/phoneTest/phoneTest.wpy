@@ -58,6 +58,7 @@
   import Toast from '@/base/toast/toast'
   import URIS from 'common/js/config'
   import {ERR_OK} from '@/api/base'
+  import {TELREG} from '@/common/js/regs'
 
   export default class PhoneTest extends wepy.component {
     mixins = [users, base]
@@ -119,7 +120,7 @@
       },
       phoneNumIn(e) {
         this.phoneNum = e.detail.value
-        var reg = /^1[3|4|5|7|8][0-9]{9}$/
+        let reg = TELREG
         if (reg.test(this.phoneNum) && this.phoneCode.length === 6) {
           this.submitDisabled = false
         } else {
@@ -128,7 +129,7 @@
       },
       phoneCodeIn(e) {
         this.phoneCode = e.detail.value
-        var reg = /^1[3|4|5|7|8][0-9]{9}$/
+        let reg = TELREG
         if (reg.test(this.phoneNum) && this.phoneCode.length === 6) {
           this.submitDisabled = false
         } else {
@@ -136,8 +137,8 @@
         }
       },
       async getPhoneCode() {
-        var reg = /^1[3|4|5|7|8][0-9]{9}$/
-        var self = this
+        let reg = TELREG
+        let self = this
         if (reg.test(self.phoneNum) && !self.phoneCodeDisabled) {
           self.phoneCodeTime = '发送中···'
           let data = {
@@ -172,7 +173,7 @@
         }
       },
       async submitMsg() {
-        let reg = /^1[3|4|5|7|8][0-9]{9}$/
+        let reg = TELREG
         let self = this
         if (this.phoneNum && reg.test(self.phoneNum) && this.phoneCode && this.phoneCode.length === 6) {
           let tipsMsg, resData
@@ -210,7 +211,7 @@
 
     computed = {
       phoneNumError() {
-        let reg = /^1[3|4|5|7|8][0-9]{9}$/
+        let reg = TELREG
         if (this.phoneNum.length === 11) {
           return reg.test(this.phoneNum)
         } else {
