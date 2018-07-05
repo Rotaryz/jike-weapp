@@ -320,6 +320,9 @@
           couponId = 0
         }
         let discountMoney = this.allMoneyInput - this.noDiscountInput
+        if (discountMoney < 0) {
+          discountMoney = 0
+        }
         let url = `/pages/pay-coupon/pay-coupon?discountMoney=${discountMoney}&couponId=${couponId}`
         this.$navigate(url)
       },
@@ -336,6 +339,10 @@
         if (!this.noDiscountInput) {
           this.noDiscountInput = 0
           this.$apply()
+        }
+        if (this.noDiscountInput > this.allMoneyInput) {
+          this.$invoke('Toast', 'show', '您输入的总金额小于不参与优惠金额，请确认输入')
+          return
         }
         let data = {
           form: 'offline',
